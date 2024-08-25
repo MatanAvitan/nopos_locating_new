@@ -1,0 +1,6 @@
+datasets/**
+models/**
+tblogs/**
+__pycache__/**
+old_repo_stuff/s4/**
+analysis_notebooks/**
