@@ -6,6 +6,8 @@ import torch
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
 
+from evaluation import evaluate
+
 from transformer_lens import HookedTransformer, HookedTransformerConfig, utils
 from pathlib import Path
 from pytorch_lightning.loggers import TensorBoardLogger
@@ -14,9 +16,8 @@ import os
 from datetime import datetime
 t=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '6'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-EXP_NAME = 'predict_abs_pos_20_08_24'
 BASE = Path('.').resolve() 
 N_CTX = 64
 D_VOCAB = 64
@@ -31,7 +32,6 @@ class CustomDataset(TensorDataset):
     def __init__(self, tokens, targets):
         super().__init__(tokens, targets)
 
-exp_dir = Path(EXP_NAME)
 input_dir = Path('/home/nlp/matan_avitan/git/nopos_locating/datasets/abs_pos_pred_random_values')
 train_dataset = torch.load(input_dir / 'train_dataset.pt', map_location=torch.device(device))
 test_dataset = torch.load(input_dir / 'test_dataset.pt', map_location=torch.device(device))
@@ -40,7 +40,7 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 ################ Data
 
 cfg = HookedTransformerConfig(
-    n_layers=3,
+    n_layers=6,
     d_model=128,
     d_head=128,
     n_heads=1,
@@ -110,9 +110,17 @@ lit_model = LitTransformer(cfg, train_loader, test_loader)
 lit_model.to(device)
 
 # Setup the trainer
-checkpoint_callback = ModelCheckpoint(dirpath=f'models/synthetic_abs_pos_no_LN_{t}/', save_top_k=1, monitor='val_loss')
+write_path = Path(f'models/synthetic_abs_pos_{t}')
+write_path.mkdir()
+with open(write_path/'cfg', 'w') as f:
+   f.write(str(cfg)) 
+checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=1, monitor='val_loss')
 lr_monitor = LearningRateMonitor(logging_interval='step')
-trainer = Trainer(max_epochs=250, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
+trainer = Trainer(max_epochs=400, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
 
 # Train the model
 trainer.fit(lit_model)
+
+results = evaluate(lit_model.model, test_loader, device)
+with open(write_path/'results', 'w') as f:
+   f.write(str({'results_for_last_model': results})) 

@@ -6,6 +6,8 @@ import torch
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
 
+from evaluation import evaluate
+
 from transformer_lens import HookedTransformer, HookedTransformerConfig, utils
 from pathlib import Path
 from pytorch_lightning.loggers import TensorBoardLogger
@@ -14,7 +16,7 @@ import os
 from datetime import datetime
 t=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '6'
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 
 BASE = Path('.').resolve() 
 N_CTX = 64
@@ -22,7 +24,7 @@ D_VOCAB = 64
 
 TRAIN_RATIO = 0.8
 N_BATCHES = 5_000
-BATCH_SIZE = 8192
+BATCH_SIZE = 2048
 TBLOGSDIR = f'tblogs'
 
 ################ Data
@@ -39,10 +41,10 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
 cfg = HookedTransformerConfig(
     n_layers=3,
-    d_model=128,
-    d_head=128,
+    d_model=256,
+    d_head=256,
     n_heads=1,
-    d_mlp=512,
+    d_mlp=1024,
     d_vocab=D_VOCAB,
     n_ctx=N_CTX,
     act_fn='relu',
@@ -114,7 +116,11 @@ with open(write_path/'cfg', 'w') as f:
    f.write(str(cfg)) 
 checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=1, monitor='val_loss')
 lr_monitor = LearningRateMonitor(logging_interval='step')
-trainer = Trainer(max_epochs=250, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
+trainer = Trainer(max_epochs=400, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
 
 # Train the model
 trainer.fit(lit_model)
+
+results = evaluate(lit_model.model, test_loader, device)
+with open(write_path/'results', 'w') as f:
+   f.write(str({'results_for_last_model': results})) 
