@@ -16,7 +16,7 @@ import os
 from datetime import datetime
 t=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 
 BASE = Path('.').resolve() 
 N_CTX = 64
@@ -24,7 +24,7 @@ D_VOCAB = 64
 
 TRAIN_RATIO = 0.8
 N_BATCHES = 5_000
-BATCH_SIZE = 8192
+BATCH_SIZE = 2048
 TBLOGSDIR = f'tblogs'
 
 ################ Data
@@ -40,17 +40,30 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 ################ Data
 
 cfg = HookedTransformerConfig(
-    n_layers=6,
-    d_model=128,
-    d_head=128,
+    n_layers=3,
+    d_model=256,
+    d_head=256,
     n_heads=1,
-    d_mlp=512,
+    d_mlp=1024,
     d_vocab=D_VOCAB,
     n_ctx=N_CTX,
     act_fn='relu',
     normalization_type=None,
     device=device
 )
+
+# cfg = HookedTransformerConfig(
+#     n_layers=6,
+#     d_model=128,
+#     d_head=128,
+#     n_heads=1,
+#     d_mlp=512,
+#     d_vocab=D_VOCAB,
+#     n_ctx=N_CTX,
+#     act_fn='relu',
+#     normalization_type=None,
+#     device=device
+# )
 
 def deactivate_position(model):
     model.pos_embed.W_pos.data[:] = 0.0
@@ -87,8 +100,9 @@ class LitTransformer(pl.LightningModule):
         self.log('val_loss', loss)
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95), weight_decay=0.1)
-        scheduler = StepLR(optimizer, step_size=75, gamma=0.1)
+        # optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95), weight_decay=0.1)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95))
+        scheduler = StepLR(optimizer, step_size=150, gamma=0.1)
         return [optimizer], [scheduler]
 
     def train_dataloader(self):
@@ -114,9 +128,9 @@ write_path = Path(f'models/synthetic_abs_pos_{t}')
 write_path.mkdir()
 with open(write_path/'cfg', 'w') as f:
    f.write(str(cfg)) 
-checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=1, monitor='val_loss')
+checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=2, monitor='val_loss')
 lr_monitor = LearningRateMonitor(logging_interval='step')
-trainer = Trainer(max_epochs=400, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
+trainer = Trainer(max_epochs=300, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
 
 # Train the model
 trainer.fit(lit_model)
