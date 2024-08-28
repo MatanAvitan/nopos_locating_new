@@ -87,8 +87,9 @@ class LitTransformer(pl.LightningModule):
         self.log('val_loss', loss)
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95), weight_decay=0.1)
-        scheduler = StepLR(optimizer, step_size=75, gamma=0.1)
+        # optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95), weight_decay=0.1)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95))
+        scheduler = StepLR(optimizer, step_size=150, gamma=0.1)
         return [optimizer], [scheduler]
 
     def train_dataloader(self):
@@ -114,9 +115,9 @@ write_path = Path(f'models/synthetic_abs_pos_{t}')
 write_path.mkdir()
 with open(write_path/'cfg', 'w') as f:
    f.write(str(cfg)) 
-checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=1, monitor='val_loss')
+checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=2, monitor='val_loss')
 lr_monitor = LearningRateMonitor(logging_interval='step')
-trainer = Trainer(max_epochs=400, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
+trainer = Trainer(max_epochs=300, accelerator='gpu', devices=1, logger=TensorBoardLogger('tblogs/'), callbacks=[checkpoint_callback, lr_monitor])
 
 # Train the model
 trainer.fit(lit_model)
