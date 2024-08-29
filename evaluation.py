@@ -14,6 +14,7 @@ def loss_fn(logits, labels, per_token=False):
 
 def evaluate(model, test_loader, device):
     model.eval()  # Set the model to evaluation mode
+    model.to(device)
     total_loss = 0.0
     all_targets = []
     all_predictions = []
