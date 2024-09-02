@@ -41,10 +41,10 @@ print(f':={test_dataset.shape}')
 
 cfg = HookedTransformerConfig(
     n_layers=6,
-    d_model=64,
-    d_head=64,
+    d_model=32,
+    d_head=32,
     n_heads=1,
-    d_mlp=256,
+    d_mlp=128,
     d_vocab=D_VOCAB,
     n_ctx=N_CTX,
     act_fn='relu',
@@ -99,9 +99,8 @@ class LitTransformer(pl.LightningModule):
         self.log('val_loss', loss)
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95), weight_decay=0.1)
-        # optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95))
-        scheduler = StepLR(optimizer, step_size=150, gamma=0.1)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=5e-5, betas=(0.9, 0.95), weight_decay=0.1)
+        scheduler = StepLR(optimizer, step_size=100, gamma=0.1)
         return [optimizer], [scheduler]
 
     def train_dataloader(self):
