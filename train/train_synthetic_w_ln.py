@@ -40,11 +40,11 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 ################ Data
 
 cfg = HookedTransformerConfig(
-    n_layers=3,
-    d_model=256,
-    d_head=256,
+    n_layers=6,
+    d_model=32,
+    d_head=32,
     n_heads=1,
-    d_mlp=1024,
+    d_mlp=128,
     d_vocab=D_VOCAB,
     n_ctx=N_CTX,
     act_fn='relu',

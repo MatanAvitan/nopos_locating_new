@@ -101,7 +101,7 @@ class LitTransformer(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95), weight_decay=0.1)
         # optimizer = torch.optim.AdamW(self.parameters(), lr=1e-3, betas=(0.9, 0.95))
-        scheduler = StepLR(optimizer, step_size=150, gamma=0.1)
+        scheduler = StepLR(optimizer, step_size=50, gamma=0.1)
         return [optimizer], [scheduler]
 
     def train_dataloader(self):
