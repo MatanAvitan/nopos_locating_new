@@ -48,8 +48,9 @@ cfg = HookedTransformerConfig(
     d_vocab=D_VOCAB,
     n_ctx=N_CTX,
     act_fn='relu',
-    normalization_type='LN',
-    device=device
+    normalization_type="LN",
+    device=device,
+    use_hook_mlp_in=True
 )
 
 def deactivate_position(model):
