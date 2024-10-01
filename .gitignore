@@ -3,3 +3,4 @@ models/**
 tblogs/**
 __pycache__/**
 old_repo_stuff/s4/**
+saved_models/
