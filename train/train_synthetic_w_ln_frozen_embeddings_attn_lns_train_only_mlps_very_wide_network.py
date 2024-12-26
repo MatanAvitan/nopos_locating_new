@@ -24,7 +24,7 @@ D_VOCAB = 64
 
 TRAIN_RATIO = 0.8
 N_BATCHES = 5_000
-BATCH_SIZE = 2048
+BATCH_SIZE = 1024
 TBLOGSDIR = f'tblogs'
 
 ################ Data
@@ -41,10 +41,10 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
 cfg = HookedTransformerConfig(
     n_layers=1,
-    d_model=262_144,
-    d_head=262_144,
+    d_model=10_000,
+    d_head=10_000,
     n_heads=1,
-    d_mlp=262_144,
+    d_mlp=10_000,
     d_vocab=D_VOCAB,
     n_ctx=N_CTX,
     act_fn='relu',
