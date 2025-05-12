@@ -1,7 +1,7 @@
 
 import os
 os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
 
 from datetime import datetime
 from pathlib import Path
@@ -19,7 +19,7 @@ from nopos_lit_model import NoposLitTransformer
 from torch.optim.lr_scheduler import OneCycleLR
 
 # ─── Config ───────────────────────────────────────────────────────────────────
-IS_FIRST = True
+IS_FIRST = False
 BASE       = Path('.').resolve()
 TBLOGSDIR  = '/home/nlp/matan_avitan/tblogs'
 N_CTX      = 64
@@ -159,14 +159,14 @@ class PositionPredictorMLP(nn.Module):
 mlp_model = PositionPredictorMLP(D_MODEL, MLP_HIDDEN, N_CTX).to(device)
 #    - use reduce-overhead mode if you hit Dynamo errors
 #    - pass a tiny example_input so shapes become static
-mlp_model = torch.compile(
-    mlp_model,
-    backend="inductor",
-    mode="reduce-overhead",
-    fullgraph=True
-)
-# 3) warm up the graph
-_ = mlp_model(torch.randn(1, D_MODEL, device=device))
+# mlp_model = torch.compile(
+#     mlp_model,
+#     backend="inductor",
+#     mode="reduce-overhead",
+#     fullgraph=True
+# )
+# # 3) warm up the graph
+# _ = mlp_model(torch.randn(1, D_MODEL, device=device))
 
 if device == "cuda" and torch.cuda.device_count() > 1:
     mlp_model = nn.DataParallel(mlp_model)

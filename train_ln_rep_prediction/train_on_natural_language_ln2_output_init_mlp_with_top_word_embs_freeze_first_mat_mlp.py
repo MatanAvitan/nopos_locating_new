@@ -155,6 +155,9 @@ class PositionPredictorMLP(nn.Module):
             self.mlp[0].weight.data = top_k_vocab_embeddings
             self.mlp[0].bias.data.zero_()  # Set bias to zero
 
+        # Freeze the first layer
+        self.mlp[0].weight.requires_grad = False
+
     def forward(self, x):
         return self.mlp(x)
 
