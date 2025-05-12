@@ -15,29 +15,34 @@ from transformers import GPT2TokenizerFast
 from transformer_lens import HookedTransformerConfig
 from utils import tokenize_fn
 from nopos_lit_model import NoposLitTransformer
+from torch.optim.lr_scheduler import OneCycleLR
 
 # ─── Config ───────────────────────────────────────────────────────────────────
+IS_FIRST = True
 BASE       = Path('.').resolve()
 TBLOGSDIR  = '/home/nlp/matan_avitan/tblogs'
 N_CTX      = 64
 D_MODEL    = 2_048
-BATCH_SIZE = 64
-EPOCHS     = 100
+MLP_HIDDEN = 4*D_MODEL
+BATCH_SIZE = 1_024 
+EPOCHS     = 1_000
 BASE_LR    = 1e-3
-WEIGHT_DECAY = 1e-2
-TRAIN_AMOUNT_OF_SAMPLES = GPT2TokenizerFast.from_pretrained('gpt2').vocab_size * 3
+WEIGHT_DECAY = 1e-1
+TRAIN_AMOUNT_OF_SAMPLES = None 
 TEST_AMOUNT_OF_SAMPLES  = 1_024
 hf_cache_dir = '/home/nlp/matan_avitan/cache_dir'
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # ─── TensorBoard & HParams ───────────────────────────────────────────────────
-run_name  = f"run_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
+script_name = Path(__file__).stem  # Get the name of the current script without the extension
+run_name    = f"{script_name}_run_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 log_dir   = BASE / TBLOGSDIR / run_name
 writer    = SummaryWriter(log_dir=log_dir)
 
 hparams = {
     'n_ctx':          N_CTX,
     'd_model':        D_MODEL,
+    'd_mlp':          MLP_HIDDEN,
     'batch_size':     BATCH_SIZE,
     'epochs':         EPOCHS,
     'base_lr':        BASE_LR,
@@ -84,18 +89,23 @@ def get_labels(n_samples, max_length=N_CTX):
     return base.unsqueeze(0).repeat(n_samples, 1)
 
 # ─── Load & Tokenize ──────────────────────────────────────────────────────────
-train_ds = load_dataset('ccdv/arxiv-summarization', split='train', cache_dir=hf_cache_dir)\
-           .select(range(TRAIN_AMOUNT_OF_SAMPLES))
+train_ds = load_dataset('ccdv/arxiv-summarization', split='train', cache_dir=hf_cache_dir)
 test_ds  = load_dataset('ccdv/arxiv-summarization', split='test',  cache_dir=hf_cache_dir)\
            .select(range(TEST_AMOUNT_OF_SAMPLES))
-
+TRAIN_AMOUNT_OF_SAMPLES=len(train_ds)
 train_tokens = get_tokens(train_ds, tokenizer, TRAIN_AMOUNT_OF_SAMPLES)
 test_tokens  = get_tokens(test_ds,  tokenizer, TEST_AMOUNT_OF_SAMPLES)
 
 train_tokens_loader = DataLoader(TensorDataset(train_tokens), batch_size=BATCH_SIZE,
-                                 shuffle=True,  pin_memory=True, num_workers=16)
+                                 shuffle=True,  pin_memory=True, num_workers=64,
+                                 persistent_workers=True,      # keep workers alive across epochs
+                                 prefetch_factor=4,            # load 4 batches ahead
+                                 )
 test_tokens_loader  = DataLoader(TensorDataset(test_tokens),  batch_size=BATCH_SIZE,
-                                 shuffle=False, pin_memory=True, num_workers=16)
+                                 shuffle=False, pin_memory=True, num_workers=64,
+                                 persistent_workers=True,      # keep workers alive across epochs
+                                 prefetch_factor=4,            # load 4 batches ahead
+                                 )
 
 # ─── Precompute Embeddings ─────────────────────────────────────────────────────
 layers_to_cache = ['blocks.0.ln2.hook_normalized']
@@ -106,9 +116,14 @@ def precompute_embeddings(dl, model):
         acts = cache[layers_to_cache[0]].detach().cpu()
         embs.append(acts)
     return torch.cat(embs, dim=0)
-
-train_embeddings = precompute_embeddings(train_tokens_loader, model)
-test_embeddings  = precompute_embeddings(test_tokens_loader,  model)
+if IS_FIRST:
+    train_embeddings = precompute_embeddings(train_tokens_loader, model)
+    test_embeddings  = precompute_embeddings(test_tokens_loader,  model)
+    torch.save(train_embeddings, '/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings.pt')
+    torch.save(test_embeddings,  '/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings.pt')
+else:
+    train_embeddings = torch.load('/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings.pt')
+    test_embeddings  = torch.load('/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings.pt')
 train_labels     = get_labels(TRAIN_AMOUNT_OF_SAMPLES, N_CTX)
 test_labels      = get_labels(TEST_AMOUNT_OF_SAMPLES,  N_CTX)
 
@@ -116,6 +131,12 @@ train_loader = DataLoader(TensorDataset(train_embeddings, train_labels),
                           batch_size=BATCH_SIZE, shuffle=True,  pin_memory=True, num_workers=16)
 test_loader  = DataLoader(TensorDataset(test_embeddings,  test_labels),
                           batch_size=BATCH_SIZE, shuffle=False, pin_memory=True, num_workers=16)
+
+# ─── Compute Average Embedding Vector ─────────────────────────────────────────
+with torch.no_grad():
+    vocab_embeddings = (model.W_E.data @ (model.W_V.data.squeeze(0).squeeze(0) @ model.W_O.data.squeeze(0).squeeze(0)))
+    # vocab_embeddings = model.embed.tokens.weight  # Shape: (vocab_size, d_model)
+    avg_embedding = vocab_embeddings.mean(dim=0)  # Shape: (d_model,)
 
 # ─── MLP Definition ────────────────────────────────────────────────────────────
 class PositionPredictorMLP(nn.Module):
@@ -126,15 +147,40 @@ class PositionPredictorMLP(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, output_dim)
         )
+        # # Initialize the first layer weights
+        # with torch.no_grad():
+        #     self.mlp[0].weight.data = torch.normal(mean=0.0, std=0.1, size=self.mlp[0].weight.data.size(), device=device)  # Gaussian noise
+        #     self.mlp[0].weight.data += avg_embedding.unsqueeze(0)  # Broadcast avg_embedding
+        #     self.mlp[0].bias.data.zero_()  # Set bias to zero
+
     def forward(self, x):
         return self.mlp(x)
 
-mlp_model = PositionPredictorMLP(D_MODEL, D_MODEL, N_CTX).to(device)
+mlp_model = PositionPredictorMLP(D_MODEL, MLP_HIDDEN, N_CTX).to(device)
+#    - use reduce-overhead mode if you hit Dynamo errors
+#    - pass a tiny example_input so shapes become static
+# mlp_model = torch.compile(
+#     mlp_model,
+#     backend="inductor",
+#     mode="reduce-overhead",
+#     fullgraph=True
+# )
+# # 3) warm up the graph
+# _ = mlp_model(torch.randn(1, D_MODEL, device=device))
+
 if device == "cuda" and torch.cuda.device_count() > 1:
     mlp_model = nn.DataParallel(mlp_model)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.AdamW(mlp_model.parameters(), lr=BASE_LR, weight_decay=WEIGHT_DECAY)
+scheduler = OneCycleLR(
+    optimizer,
+    max_lr=BASE_LR * 10,
+    total_steps=EPOCHS * len(train_loader),
+    pct_start=0.1,
+    anneal_strategy="cos"
+)
+scaler = torch.cuda.amp.GradScaler()
 
 # ─── Training Loop ─────────────────────────────────────────────────────────────
 for epoch in range(1, EPOCHS + 1):
@@ -149,6 +195,8 @@ for epoch in range(1, EPOCHS + 1):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        scheduler.step()
+        scaler.update()
 
         running_loss += loss.item() * X.size(0)
         preds        = logits.argmax(dim=1)
