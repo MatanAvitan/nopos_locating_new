@@ -18,7 +18,7 @@ from nopos_lit_model import NoposLitTransformer
 from torch.optim.lr_scheduler import OneCycleLR
 
 # ─── Config ───────────────────────────────────────────────────────────────────
-IS_FIRST = True
+IS_FIRST = False
 BASE       = Path('.').resolve()
 TBLOGSDIR  = '/home/nlp/matan_avitan/tblogs'
 N_CTX      = 64
@@ -26,7 +26,7 @@ D_MODEL    = 2_048
 MLP_HIDDEN = 4*D_MODEL
 BATCH_SIZE = 1_024 
 EPOCHS     = 1_000
-BASE_LR    = 1e-3
+BASE_LR    = 5e-4
 WEIGHT_DECAY = 1e-1
 TRAIN_AMOUNT_OF_SAMPLES = None 
 TEST_AMOUNT_OF_SAMPLES  = 1_024

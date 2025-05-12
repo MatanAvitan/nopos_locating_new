@@ -1,10 +1,7 @@
 
 import os
-
-import joblib
-import numpy as np
 os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
 
 from datetime import datetime
 from pathlib import Path
@@ -137,9 +134,9 @@ test_loader  = DataLoader(TensorDataset(test_embeddings,  test_labels),
 
 # ─── Compute Average Embedding Vector ─────────────────────────────────────────
 with torch.no_grad():
-    top_k_token_ids = np.array(joblib.load('top_k_indices.pkl'))
-    top_k_vocab_embeddings = (model.W_E.data[top_k_token_ids] @ (model.W_V.data.squeeze(0).squeeze(0) @ model.W_O.data.squeeze(0).squeeze(0)))
-    # Shape: (4*input_dim, d_model)
+    vocab_embeddings = (model.W_E.data @ (model.W_V.data.squeeze(0).squeeze(0) @ model.W_O.data.squeeze(0).squeeze(0)))
+    # vocab_embeddings = model.embed.tokens.weight  # Shape: (vocab_size, d_model)
+    avg_embedding = vocab_embeddings.mean(dim=0)  # Shape: (d_model,)
 
 # ─── MLP Definition ────────────────────────────────────────────────────────────
 class PositionPredictorMLP(nn.Module):
@@ -152,8 +149,11 @@ class PositionPredictorMLP(nn.Module):
         )
         # Initialize the first layer weights
         with torch.no_grad():
-            self.mlp[0].weight.data = top_k_vocab_embeddings
+            self.mlp[0].weight.data = torch.normal(mean=0.0, std=0.01, size=self.mlp[0].weight.data.size(), device=device)  # Gaussian noise
+            self.mlp[0].weight.data += avg_embedding.unsqueeze(0)  # Broadcast avg_embedding
             self.mlp[0].bias.data.zero_()  # Set bias to zero
+        # Freeze the first layer
+        self.mlp[0].weight.requires_grad = False
 
     def forward(self, x):
         return self.mlp(x)
