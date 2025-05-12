@@ -4,4 +4,4 @@ tblogs/**
 __pycache__/**
 old_repo_stuff/s4/**
 saved_models/
-analysis_notebooks/synthetic_abs_pred/nopos_random_init_extract_LN_statistics_on_a_sample_compared_to_mean_load_trained_w_LN_images/*
+analysis_notebooks/synthetic_abs_pred/nopos_random_init_extract_LN_statistics_on_a_sample_compared_to_mean_load_trained_w_LN_images/*top_k_indices.pkl
