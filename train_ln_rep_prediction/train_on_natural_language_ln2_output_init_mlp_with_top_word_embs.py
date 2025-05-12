@@ -102,12 +102,10 @@ test_tokens  = get_tokens(test_ds,  tokenizer, TEST_AMOUNT_OF_SAMPLES)
 
 train_tokens_loader = DataLoader(TensorDataset(train_tokens), batch_size=BATCH_SIZE,
                                  shuffle=True,  pin_memory=True, num_workers=64,
-                                 persistent_workers=True,      # keep workers alive across epochs
                                  prefetch_factor=4,            # load 4 batches ahead
                                  )
 test_tokens_loader  = DataLoader(TensorDataset(test_tokens),  batch_size=BATCH_SIZE,
                                  shuffle=False, pin_memory=True, num_workers=64,
-                                 persistent_workers=True,      # keep workers alive across epochs
                                  prefetch_factor=4,            # load 4 batches ahead
                                  )
 
@@ -197,10 +195,14 @@ for epoch in range(1, EPOCHS + 1):
         loss   = criterion(logits, y)
 
         optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        scheduler.step()
+        # 1) scale the loss
+        scaler.scale(loss).backward()
+        # 2) step the optimizer through the scaler
+        scaler.step(optimizer)
+        # 3) update the scaler for the next iteration
         scaler.update()
+        # 4) step your LR scheduler after the optimizer (if you use one)
+        scheduler.step()
 
         running_loss += loss.item() * X.size(0)
         preds        = logits.argmax(dim=1)
