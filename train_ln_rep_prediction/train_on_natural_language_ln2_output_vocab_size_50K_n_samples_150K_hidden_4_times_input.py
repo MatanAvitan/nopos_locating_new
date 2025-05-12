@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +21,8 @@ BASE       = Path('.').resolve()
 TBLOGSDIR  = '/home/nlp/matan_avitan/tblogs'
 N_CTX      = 64
 D_MODEL    = 2_048
-BATCH_SIZE = 64
+MLP_HIDDEN = 4*D_MODEL
+BATCH_SIZE = 256 
 EPOCHS     = 100
 BASE_LR    = 1e-3
 WEIGHT_DECAY = 1e-2
@@ -38,6 +39,7 @@ writer    = SummaryWriter(log_dir=log_dir)
 hparams = {
     'n_ctx':          N_CTX,
     'd_model':        D_MODEL,
+    'd_mlp':          MLP_HIDDEN,
     'batch_size':     BATCH_SIZE,
     'epochs':         EPOCHS,
     'base_lr':        BASE_LR,
@@ -129,7 +131,7 @@ class PositionPredictorMLP(nn.Module):
     def forward(self, x):
         return self.mlp(x)
 
-mlp_model = PositionPredictorMLP(D_MODEL, D_MODEL, N_CTX).to(device)
+mlp_model = PositionPredictorMLP(D_MODEL, MLP_HIDDEN, N_CTX).to(device)
 if device == "cuda" and torch.cuda.device_count() > 1:
     mlp_model = nn.DataParallel(mlp_model)
 

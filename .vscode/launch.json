@@ -9,7 +9,7 @@
             "name": "Python: Attach",
             "type": "python",
             "request": "attach",
-            "connect": { "host": "localhost", "port": 1326 },
+            "connect": { "host": "localhost", "port": 1326 }
         }
     ]
 }
