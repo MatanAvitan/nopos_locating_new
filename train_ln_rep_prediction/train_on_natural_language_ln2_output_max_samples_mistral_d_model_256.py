@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]    = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning, message="You are using `torch.load` with `weights_only=False`")
@@ -19,17 +19,19 @@ from transformer_lens import HookedTransformerConfig
 from utils import tokenize_fn
 from nopos_lit_model import NoposLitTransformer
 from torch.optim.lr_scheduler import OneCycleLR
+from transformers import AutoTokenizer
 
 # ─── Config ───────────────────────────────────────────────────────────────────
-IS_FIRST = False
+IS_FIRST = True
+MODEL = 'mistral_v1'
 BASE       = Path('.').resolve()
 TBLOGSDIR  = '/home/nlp/matan_avitan/tblogs'
 N_CTX      = 64
-D_MODEL    = 2_048
+D_MODEL    = 256
 MLP_HIDDEN = 4*D_MODEL
-BATCH_SIZE = 1_024 
+BATCH_SIZE = 2_048
 EPOCHS     = 1_000
-BASE_LR    = 5e-4
+BASE_LR    = 4e-4
 WEIGHT_DECAY = 1e-1
 TRAIN_AMOUNT_OF_SAMPLES = None 
 TEST_AMOUNT_OF_SAMPLES  = 1_024
@@ -60,7 +62,7 @@ best_val_acc         = 0.0
 best_checkpoint_path = log_dir / "best_mlp.pt"
 
 # ─── Tokenizer ─────────────────────────────────────────────────────────────────
-tokenizer = GPT2TokenizerFast.from_pretrained('gpt2')
+tokenizer =  AutoTokenizer.from_pretrained('mistralai/Mistral-7B-v0.1')
 tokenizer.pad_token = tokenizer.eos_token
 D_VOCAB = tokenizer.vocab_size
 
@@ -120,11 +122,11 @@ def precompute_embeddings(dl, model):
 if IS_FIRST:
     train_embeddings = precompute_embeddings(train_tokens_loader, model)
     test_embeddings  = precompute_embeddings(test_tokens_loader,  model)
-    torch.save(train_embeddings, '/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings.pt')
-    torch.save(test_embeddings,  '/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings.pt')
+    torch.save(train_embeddings, f'/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
+    torch.save(test_embeddings,  f'/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
 else:
-    train_embeddings = torch.load('/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings.pt')
-    test_embeddings  = torch.load('/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings.pt')
+    train_embeddings = torch.load(f'/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
+    test_embeddings  = torch.load(f'/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
 train_labels     = get_labels(TRAIN_AMOUNT_OF_SAMPLES, N_CTX)
 test_labels      = get_labels(TEST_AMOUNT_OF_SAMPLES,  N_CTX)
 
