@@ -15,6 +15,7 @@ import os
 from datetime import datetime
 import numpy as np
 import random
+import json
 # Set random seeds for reproducibility
 seed = 1
 torch.manual_seed(seed)
@@ -22,7 +23,7 @@ np.random.seed(seed)
 random.seed(seed)
 t=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '6'
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 
 # Extract the filename without extension to use as the experiment name
 experiment_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -171,7 +172,7 @@ lit_model.to(device)
 
 # Setup the trainer
 write_path = Path(f'models/synthetic_abs_pos_{t}')
-write_path.mkdir()
+write_path.mkdir(parents=True, exist_ok=True)
 with open(write_path/'cfg', 'w') as f:
    f.write(str(cfg)) 
 checkpoint_callback = ModelCheckpoint(dirpath=write_path, save_top_k=2, monitor='val_loss')
@@ -188,4 +189,26 @@ trainer.fit(lit_model)
 
 results = evaluate(lit_model.model, test_loader, device)
 with open(write_path/'results', 'w') as f:
-   f.write(str({'results_for_last_model': results})) 
+   f.write(str({'results_for_last_model': results}))
+
+# Save results as JSON for easier consolidation
+results_dict = {
+    'experiment_name': experiment_name,
+    'timestamp': timestamp,
+    'accuracy': float(results[0]) if isinstance(results, tuple) else float(results.get('accuracy', 0)),
+    'loss': float(results[1]) if isinstance(results, tuple) and len(results) > 1 else float(results.get('loss', 0)),
+    'hyperparameters': {
+        'n_ctx': N_CTX,
+        'd_vocab': D_VOCAB,
+        'd_model': cfg.d_model,
+        'd_mlp': cfg.d_mlp,
+        'n_layers': cfg.n_layers,
+        'epochs': EPOCHS,
+        'batch_size': BATCH_SIZE,
+        'n_batches': N_BATCHES,
+        'seed': seed
+    }
+}
+with open(write_path/'results.json', 'w') as f:
+   json.dump(results_dict, f, indent=2)
+print(f"Results: Accuracy={results_dict['accuracy']:.4f}, Loss={results_dict['loss']:.4f}") 

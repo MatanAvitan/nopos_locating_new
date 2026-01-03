@@ -19,16 +19,18 @@ from transformer_lens import HookedTransformerConfig
 from utils import tokenize_fn
 from nopos_lit_model import NoposLitTransformer
 from torch.optim.lr_scheduler import OneCycleLR
+from transformers import AutoTokenizer
 
 # ─── Config ───────────────────────────────────────────────────────────────────
-IS_FIRST = False
+IS_FIRST = True
+MODEL = 'mistral_v1'
 BASE       = Path('.').resolve()
 TBLOGSDIR  = '/home/nlp/matan_avitan/tblogs'
 N_CTX      = 64
 D_MODEL    = 2_048
 MLP_HIDDEN = 4*D_MODEL
-BATCH_SIZE = 1_024 
-EPOCHS     = 1_000
+BATCH_SIZE = 2_048
+EPOCHS     = 10_000
 BASE_LR    = 5e-4
 WEIGHT_DECAY = 1e-1
 TRAIN_AMOUNT_OF_SAMPLES = None 
@@ -60,7 +62,7 @@ best_val_acc         = 0.0
 best_checkpoint_path = log_dir / "best_mlp.pt"
 
 # ─── Tokenizer ─────────────────────────────────────────────────────────────────
-tokenizer = GPT2TokenizerFast.from_pretrained('gpt2')
+tokenizer =  AutoTokenizer.from_pretrained('mistralai/Mistral-7B-v0.1')
 tokenizer.pad_token = tokenizer.eos_token
 D_VOCAB = tokenizer.vocab_size
 
@@ -120,11 +122,11 @@ def precompute_embeddings(dl, model):
 if IS_FIRST:
     train_embeddings = precompute_embeddings(train_tokens_loader, model)
     test_embeddings  = precompute_embeddings(test_tokens_loader,  model)
-    torch.save(train_embeddings, '/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings.pt')
-    torch.save(test_embeddings,  '/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings.pt')
+    torch.save(train_embeddings, f'/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
+    torch.save(test_embeddings,  f'/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
 else:
-    train_embeddings = torch.load('/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings.pt')
-    test_embeddings  = torch.load('/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings.pt')
+    train_embeddings = torch.load(f'/home/nlp/matan_avitan/ln_rep_prediction/train_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
+    test_embeddings  = torch.load(f'/home/nlp/matan_avitan/ln_rep_prediction/test_embeddings_tokenizer_{MODEL}_D_MODEL_{D_MODEL}.pt')
 train_labels     = get_labels(TRAIN_AMOUNT_OF_SAMPLES, N_CTX)
 test_labels      = get_labels(TEST_AMOUNT_OF_SAMPLES,  N_CTX)
 
@@ -134,11 +136,10 @@ test_loader  = DataLoader(TensorDataset(test_embeddings,  test_labels),
                           batch_size=BATCH_SIZE, shuffle=False, pin_memory=True, num_workers=16)
 
 # ─── Compute Average Embedding Vector ─────────────────────────────────────────
-with torch.no_grad():
-    vocab_embeddings = (model.W_E.data @ (model.W_V.data.squeeze(0).squeeze(0) @ model.W_O.data.squeeze(0).squeeze(0)))
-    # vocab_embeddings = model.embed.tokens.weight  # Shape: (vocab_size, d_model)
-    avg_embedding = vocab_embeddings.mean(dim=0)  # Shape: (d_model,)
-
+# with torch.no_grad():
+    # vocab_embeddings = (model.W_E.data @ (model.W_V.data.squeeze(0).squeeze(0) @ model.W_O.data.squeeze(0).squeeze(0)))
+    # avg_embedding = vocab_embeddings.mean(dim=0)  # Shape: (d_model,)
+ 
 # ─── MLP Definition ────────────────────────────────────────────────────────────
 class PositionPredictorMLP(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
@@ -228,13 +229,13 @@ for epoch in range(1, EPOCHS + 1):
     val_acc  = val_correct / val_total
 
     # — Checkpoint if improved —
-    if val_loss < best_val_loss:
-        best_val_loss = val_loss
-        state_dict = (mlp_model.module.state_dict()
-                      if isinstance(mlp_model, nn.DataParallel)
-                      else mlp_model.state_dict())
-        torch.save(state_dict, best_checkpoint_path)
-        print(f"→ Saved new best model at epoch {epoch} (val_loss={val_loss:.4f})")
+    # if val_loss < best_val_loss:
+    #     best_val_loss = val_loss
+    #     state_dict = (mlp_model.module.state_dict()
+    #                   if isinstance(mlp_model, nn.DataParallel)
+    #                   else mlp_model.state_dict())
+    #     torch.save(state_dict, best_checkpoint_path)
+    #     print(f"→ Saved new best model at epoch {epoch} (val_loss={val_loss:.4f})")
 
     # — TensorBoard logs —
     writer.add_scalar('Loss/train',     train_loss, epoch)

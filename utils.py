@@ -8,11 +8,11 @@ import plotly.express as px
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 # Utils
-def line(tensor, line_labels=None, yaxis="", xaxis="", title="", legend_title="", **kwargs):
+def line(tensor, line_labels=None, yaxis="", xaxis="", title="", legend_title="", save_path=None, **kwargs):
     tensor = to_numpy(tensor)
     # Use Plotly's white template and enforce a clean layout
     fig = px.line(tensor, template="plotly_white", **kwargs)
-    
+
     # Update layout with enhanced aesthetics
     fig.update_layout(
         title=dict(text=title, font=dict(size=24, family="Serif")),
@@ -23,21 +23,29 @@ def line(tensor, line_labels=None, yaxis="", xaxis="", title="", legend_title=""
         height=500,
         margin=dict(l=50, r=50, t=80, b=50)
     )
-    
+
     # Increase default line width and set marker styles
     for trace in fig.data:
         trace.line.width = 3
         trace.marker = dict(symbol="circle", size=8)
-    
+
     # Apply line labels if provided
     if line_labels:
         for c, label in enumerate(line_labels):
             fig.data[c].name = label
-    
-    fig.show()
+
+    # Save or show
+    if save_path:
+        fig.write_image(f"{save_path}.png", width=800, height=500, scale=2)  # 300 DPI
+        fig.write_image(f"{save_path}.pdf")
+        print(f"Saved figure to {save_path}.png and {save_path}.pdf")
+    else:
+        fig.show()
+
+    return fig
 
 
-def imshow(tensor, yaxis="", xaxis="", **kwargs):
+def imshow(tensor, yaxis="", xaxis="", save_path=None, **kwargs):
     tensor = to_numpy(tensor)
     # Use a high-quality continuous color scale and a white template
     plot_kwargs = {
@@ -47,7 +55,7 @@ def imshow(tensor, yaxis="", xaxis="", **kwargs):
         "template": "plotly_white",
         "aspect": "equal"
     }
-    if kwargs['title']:
+    if 'title' in kwargs and kwargs['title']:
         title = kwargs['title']
     else:
         title = 'Image'
@@ -61,7 +69,16 @@ def imshow(tensor, yaxis="", xaxis="", **kwargs):
         height=600,
         margin=dict(l=50, r=50, t=80, b=50)
     )
-    fig.show()
+
+    # Save or show
+    if save_path:
+        fig.write_image(f"{save_path}.png", width=800, height=600, scale=2)  # 300 DPI
+        fig.write_image(f"{save_path}.pdf")
+        print(f"Saved figure to {save_path}.png and {save_path}.pdf")
+    else:
+        fig.show()
+
+    return fig
 
 
 def deactivate_position(model):
