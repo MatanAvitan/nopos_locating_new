@@ -14,6 +14,8 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
 clear_screen() {
@@ -28,30 +30,95 @@ print_header() {
     echo ""
 }
 
-print_job_status() {
-    echo -e "${BLUE}═══ JOB QUEUE ══════════════════════════════════════════════════════════════════${NC}"
+print_job_summary() {
+    echo -e "${BLUE}═══ JOB SUMMARY ════════════════════════════════════════════════════════════════${NC}"
     
-    # Get job info
-    JOBS=$(squeue -u $USER -o "%.10i %.30j %.8T %.10M %.10l %.6D %R" 2>/dev/null)
+    # Count jobs by state
+    RUNNING_COUNT=$(squeue -u $USER -h -t RUNNING 2>/dev/null | wc -l)
+    PENDING_COUNT=$(squeue -u $USER -h -t PENDING 2>/dev/null | wc -l)
+    TOTAL_COUNT=$((RUNNING_COUNT + PENDING_COUNT))
     
-    if [ -z "$JOBS" ] || [ $(echo "$JOBS" | wc -l) -le 1 ]; then
-        echo -e "${YELLOW}No jobs currently in queue${NC}"
+    echo -e "  ${WHITE}Total Jobs:${NC} $TOTAL_COUNT    ${GREEN}Running:${NC} $RUNNING_COUNT    ${YELLOW}Pending:${NC} $PENDING_COUNT"
+    echo ""
+}
+
+print_job_details() {
+    echo -e "${BLUE}═══ RUNNING JOBS ═══════════════════════════════════════════════════════════════${NC}"
+    
+    # Get running jobs with detailed info
+    RUNNING=$(squeue -u $USER -h -t RUNNING -o "%.10i %.25j %.10P %.8T %.10M %.10l %.6m %.4C %N" 2>/dev/null)
+    
+    if [ -z "$RUNNING" ]; then
+        echo -e "  ${YELLOW}No running jobs${NC}"
     else
-        # Print header
-        echo -e "${GREEN}$(echo "$JOBS" | head -1)${NC}"
-        # Print jobs with color coding
-        echo "$JOBS" | tail -n +2 | while read line; do
-            if echo "$line" | grep -q "RUNNING"; then
-                echo -e "${GREEN}$line${NC}"
-            elif echo "$line" | grep -q "PENDING"; then
-                echo -e "${YELLOW}$line${NC}"
-            elif echo "$line" | grep -q "FAILED\|CANCELLED"; then
-                echo -e "${RED}$line${NC}"
-            else
-                echo "$line"
-            fi
+        echo -e "  ${WHITE}JOBID      NAME                      PARTITION  STATE    TIME       LIMIT      MEM    CPU  NODE${NC}"
+        echo "$RUNNING" | while read line; do
+            echo -e "  ${GREEN}$line${NC}"
         done
     fi
+    echo ""
+    
+    echo -e "${BLUE}═══ PENDING JOBS ═══════════════════════════════════════════════════════════════${NC}"
+    
+    # Get pending jobs
+    PENDING=$(squeue -u $USER -h -t PENDING -o "%.10i %.25j %.10P %.8T %.10M %.10l %.6m %.4C %R" 2>/dev/null)
+    
+    if [ -z "$PENDING" ]; then
+        echo -e "  ${YELLOW}No pending jobs${NC}"
+    else
+        echo -e "  ${WHITE}JOBID      NAME                      PARTITION  STATE    TIME       LIMIT      MEM    CPU  REASON${NC}"
+        echo "$PENDING" | while read line; do
+            echo -e "  ${YELLOW}$line${NC}"
+        done
+    fi
+    echo ""
+}
+
+print_resource_usage() {
+    echo -e "${BLUE}═══ RESOURCE USAGE BY PARTITION ════════════════════════════════════════════════${NC}"
+    
+    # Get partitions being used by user's jobs
+    PARTITIONS=$(squeue -u $USER -h -o "%P" 2>/dev/null | sort -u)
+    
+    if [ -z "$PARTITIONS" ]; then
+        echo -e "  ${YELLOW}No active jobs - no resources in use${NC}"
+    else
+        for part in $PARTITIONS; do
+            # Get partition info
+            PART_INFO=$(sinfo -p $part -h -o "%P %a %D %C %G %m" 2>/dev/null | head -1)
+            PART_NAME=$(echo "$PART_INFO" | awk '{print $1}')
+            PART_STATE=$(echo "$PART_INFO" | awk '{print $2}')
+            PART_NODES=$(echo "$PART_INFO" | awk '{print $3}')
+            PART_CPUS=$(echo "$PART_INFO" | awk '{print $4}')  # A/I/O/T format
+            PART_GPUS=$(echo "$PART_INFO" | awk '{print $5}')
+            PART_MEM=$(echo "$PART_INFO" | awk '{print $6}')
+            
+            # Count user's jobs on this partition
+            USER_JOBS=$(squeue -u $USER -p $part -h 2>/dev/null | wc -l)
+            
+            # Get total memory requested by user on this partition
+            USER_MEM=$(squeue -u $USER -p $part -h -o "%m" 2>/dev/null | awk '{sum+=$1} END {print sum}')
+            USER_MEM=${USER_MEM:-0}
+            
+            # Get total CPUs requested by user
+            USER_CPUS=$(squeue -u $USER -p $part -h -o "%C" 2>/dev/null | awk '{sum+=$1} END {print sum}')
+            USER_CPUS=${USER_CPUS:-0}
+            
+            # Get total GPUs requested by user
+            USER_GPUS=$(squeue -u $USER -p $part -h -o "%b" 2>/dev/null | grep -oP '\d+' | awk '{sum+=$1} END {print sum}')
+            USER_GPUS=${USER_GPUS:-0}
+            
+            echo -e "  ${MAGENTA}Partition: ${WHITE}$part${NC}"
+            echo -e "    State: $PART_STATE | Nodes: $PART_NODES | Available GPUs: $PART_GPUS"
+            echo -e "    ${CYAN}Your usage:${NC} $USER_JOBS jobs | ${USER_MEM}MB memory | $USER_CPUS CPUs | $USER_GPUS GPUs"
+            echo ""
+        done
+    fi
+    
+    # Show preferred partitions info
+    echo -e "  ${WHITE}Recommended Partitions:${NC}"
+    echo -e "    ${GREEN}H200-4h${NC}  - H200 GPUs, 4h limit (node: hpc8h200-01)"
+    echo -e "    ${GREEN}H200-12h${NC} - H200 GPUs, 12h limit (node: hpc8h200-01)"
     echo ""
 }
 
@@ -60,19 +127,22 @@ print_completed_jobs() {
     
     # Get recently completed jobs
     COMPLETED=$(sacct -u $USER --starttime=$(date -d '1 hour ago' '+%Y-%m-%dT%H:%M:%S') \
-                --format=JobID,JobName%30,State,ExitCode,Elapsed,End \
-                --noheader 2>/dev/null | grep -v "\.batch" | head -10)
+                --format=JobID,JobName%25,Partition%10,State%10,ExitCode,Elapsed,MaxRSS \
+                --noheader 2>/dev/null | grep -v "\.batch" | grep -v "\.extern" | head -10)
     
     if [ -z "$COMPLETED" ]; then
-        echo -e "${YELLOW}No recently completed jobs${NC}"
+        echo -e "  ${YELLOW}No recently completed jobs${NC}"
     else
+        echo -e "  ${WHITE}JOBID      NAME                      PARTITION  STATE      EXIT   ELAPSED  MAXMEM${NC}"
         echo "$COMPLETED" | while read line; do
             if echo "$line" | grep -q "COMPLETED"; then
-                echo -e "${GREEN}$line${NC}"
+                echo -e "  ${GREEN}$line${NC}"
             elif echo "$line" | grep -q "FAILED"; then
-                echo -e "${RED}$line${NC}"
+                echo -e "  ${RED}$line${NC}"
+            elif echo "$line" | grep -q "CANCELLED"; then
+                echo -e "  ${YELLOW}$line${NC}"
             elif echo "$line" | grep -q "RUNNING"; then
-                echo -e "${CYAN}$line${NC}"
+                echo -e "  ${CYAN}$line${NC}"
             else
                 echo "$line"
             fi
@@ -81,29 +151,8 @@ print_completed_jobs() {
     echo ""
 }
 
-print_log_tails() {
-    echo -e "${BLUE}═══ RECENT LOG OUTPUT ══════════════════════════════════════════════════════════${NC}"
-    
-    cd "$PROJECT_DIR"
-    
-    # Find most recently modified log files
-    LOGS=$(ls -t logs/slurm_*.out 2>/dev/null | head -3)
-    
-    if [ -z "$LOGS" ]; then
-        echo -e "${YELLOW}No Slurm log files found yet${NC}"
-    else
-        for log in $LOGS; do
-            if [ -f "$log" ]; then
-                echo -e "${CYAN}--- ${log} ---${NC}"
-                tail -n 3 "$log" 2>/dev/null || echo "(empty)"
-                echo ""
-            fi
-        done
-    fi
-}
-
 print_results_status() {
-    echo -e "${BLUE}═══ RESULTS STATUS ═════════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}═══ EXPERIMENT RESULTS STATUS ══════════════════════════════════════════════════${NC}"
     
     cd "$PROJECT_DIR"
     
@@ -125,7 +174,7 @@ print_results_status() {
             if [ "$file_count" -gt 0 ]; then
                 echo -e "  ${GREEN}✓${NC} $name ($file_count files)"
             else
-                echo -e "  ${YELLOW}○${NC} $name (empty)"
+                echo -e "  ${YELLOW}○${NC} $name (in progress)"
             fi
         else
             echo -e "  ${RED}✗${NC} $name (not started)"
@@ -134,19 +183,35 @@ print_results_status() {
     echo ""
 }
 
-print_gpu_info() {
-    echo -e "${BLUE}═══ CLUSTER GPU AVAILABILITY ═══════════════════════════════════════════════════${NC}"
+print_log_tails() {
+    echo -e "${BLUE}═══ RECENT LOG OUTPUT ══════════════════════════════════════════════════════════${NC}"
     
-    # This only works if sinfo has GPU info
-    sinfo -o "%P %a %D %G" 2>/dev/null | head -10 || echo "GPU info not available"
-    echo ""
+    cd "$PROJECT_DIR"
+    
+    # Find most recently modified log files
+    LOGS=$(ls -t logs/slurm_*.out 2>/dev/null | head -3)
+    
+    if [ -z "$LOGS" ]; then
+        echo -e "  ${YELLOW}No Slurm log files found yet${NC}"
+    else
+        for log in $LOGS; do
+            if [ -f "$log" ]; then
+                # Extract job name from filename
+                BASENAME=$(basename "$log" .out)
+                echo -e "  ${CYAN}─── ${BASENAME} ───${NC}"
+                tail -n 2 "$log" 2>/dev/null | sed 's/^/    /' || echo "    (empty)"
+                echo ""
+            fi
+        done
+    fi
 }
 
 print_help() {
-    echo -e "${BLUE}═══ COMMANDS ═══════════════════════════════════════════════════════════════════${NC}"
-    echo "  scancel <job_id>     Cancel a job"
-    echo "  tail -f logs/slurm_<name>_<id>.out   Follow specific job output"
-    echo "  scontrol show job <id>               Detailed job info"
+    echo -e "${BLUE}═══ QUICK COMMANDS ═════════════════════════════════════════════════════════════${NC}"
+    echo -e "  ${WHITE}scancel <job_id>${NC}                        Cancel a job"
+    echo -e "  ${WHITE}scancel -u \$USER${NC}                        Cancel all your jobs"
+    echo -e "  ${WHITE}tail -f logs/slurm_<name>_<id>.out${NC}      Follow job output"
+    echo -e "  ${WHITE}scontrol show job <id>${NC}                  Detailed job info"
     echo ""
     echo -e "  ${YELLOW}Refreshing every ${REFRESH_INTERVAL}s... Press Ctrl+C to exit${NC}"
 }
@@ -156,7 +221,9 @@ main() {
     while true; do
         clear_screen
         print_header
-        print_job_status
+        print_job_summary
+        print_job_details
+        print_resource_usage
         print_completed_jobs
         print_results_status
         print_log_tails

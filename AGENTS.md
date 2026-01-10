@@ -195,12 +195,14 @@ ssh -i ~/.ssh/dsinlp01_id_rsa slurm-login.lnx.biu.ac.il
 
 | Partition | Max Time | GPUs | Notes |
 |-----------|----------|------|-------|
-| `generic` | 4h | 2 per job, 4 jobs max | General GPU jobs (default) |
-| `H200-4h` | 4h | 2 | H200 GPUs |
-| `H200-12h` | 12h | 2 | H200 GPUs |
+| `H200-4h` | 4h | 2 | **Recommended** - H200 GPUs on hpc8h200-01 |
+| `H200-12h` | 12h | 2 | H200 GPUs for longer jobs |
+| `generic` | 4h | 2 per job, 4 jobs max | General GPU jobs |
 | `A100-4h` | 4h | 2 | A100 GPUs |
 | `cpu1T-24h` | 24h | - | CPU jobs, 1TB RAM |
 | `cpu192G-48h` | 48h | - | CPU jobs, 192GB RAM |
+
+**Preferred partitions**: Use `H200-4h` or `H200-12h` for best GPU performance (node: hpc8h200-01).
 
 ### Submitting Jobs
 
@@ -226,7 +228,7 @@ sbatch slurm_jobs/run_token_position_correlation.sh
 #SBATCH --job-name=my_job
 #SBATCH --output=logs/slurm_%j.out
 #SBATCH --error=logs/slurm_%j.err
-#SBATCH --partition=generic
+#SBATCH --partition=H200-4h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G

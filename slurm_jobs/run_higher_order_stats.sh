@@ -2,7 +2,7 @@
 #SBATCH --job-name=nope_higher_order
 #SBATCH --output=logs/slurm_higher_order_stats_%j.out
 #SBATCH --error=logs/slurm_higher_order_stats_%j.err
-#SBATCH --partition=generic
+#SBATCH --partition=H200-4h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
