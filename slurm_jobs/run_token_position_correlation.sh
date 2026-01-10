@@ -5,7 +5,7 @@
 #SBATCH --partition=H200-4h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
+#SBATCH --mem=128G
 #SBATCH --time=04:00:00
 
 # NoPE Analysis: Token-Position Correlation in Natural Language
