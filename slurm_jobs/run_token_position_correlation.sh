@@ -2,7 +2,7 @@
 #SBATCH --job-name=nope_token_corr
 #SBATCH --output=logs/slurm_token_position_correlation_%j.out
 #SBATCH --error=logs/slurm_token_position_correlation_%j.err
-#SBATCH --partition=generic
+#SBATCH --partition=H200-4h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G

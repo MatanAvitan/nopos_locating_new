@@ -2,7 +2,7 @@
 #SBATCH --job-name=nope_probe
 #SBATCH --output=logs/slurm_comprehensive_probe_%j.out
 #SBATCH --error=logs/slurm_comprehensive_probe_%j.err
-#SBATCH --partition=generic
+#SBATCH --partition=H200-4h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=96G
