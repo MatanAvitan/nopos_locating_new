@@ -1,0 +1,100 @@
+Starting Single-Sample Position Analysis...
+Job ID: 991436
+Running on node: hpc8h200-01
+Start time: Sun Jan 11 01:55:35 AM IST 2026
+
+======================================================================
+SINGLE-SAMPLE POSITION ANALYSIS
+======================================================================
+Samples: 5000
+Sequence length: 64
+Model dimension: 1024
+======================================================================
+
+Creating NoPE model (LayerNorm)...
+Extracting activations...
+
+======================================================================
+HYPOTHESIS 1: Activation norm encodes position
+======================================================================
+
+embed:
+  Per-sample correlation: 0.0009 ± 0.1256
+  Fraction with positive corr: 50.22%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: 0.0008
+
+post_ln1:
+  Per-sample correlation: 0.0008 ± 0.1257
+  Fraction with positive corr: 49.76%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: 0.0007
+
+post_attn:
+  Per-sample correlation: -0.7647 ± 0.0153
+  Fraction with positive corr: 0.00%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.7635
+
+post_attn_residual:
+  Per-sample correlation: -0.7624 ± 0.0154
+  Fraction with positive corr: 0.00%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.7612
+
+post_ln2:
+  Per-sample correlation: -0.9702 ± 0.0087
+  Fraction with positive corr: 0.00%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.9653
+
+post_mlp:
+  Per-sample correlation: -0.0037 ± 0.3330
+  Fraction with positive corr: 49.30%
+  Fraction with r > 0.5: 7.08%
+  Population correlation: -0.0043
+
+post_mlp_residual:
+  Per-sample correlation: -0.5211 ± 0.1467
+  Fraction with positive corr: 0.30%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.4990
+
+======================================================================
+HYPOTHESIS 2: Learned direction encodes position
+======================================================================
+
+embed:
+  Per-sample projection-position corr: 0.0062 ± 0.1252
+  Fraction with positive corr: 52.60%
+  Fraction with r > 0.5: 0.00%
+  R² from projection alone: 0.0000
+
+post_ln1:
+  Per-sample projection-position corr: 0.0064 ± 0.1255
+  Fraction with positive corr: 52.80%
+  Fraction with r > 0.5: 0.00%
+  R² from projection alone: 0.0000
+
+post_attn:
+  Per-sample projection-position corr: -0.0078 ± 0.4218
+  Fraction with positive corr: 49.20%
+  Fraction with r > 0.5: 13.60%
+  R² from projection alone: 0.0001
+
+post_attn_residual:
+  Per-sample projection-position corr: -0.0062 ± 0.3869
+  Fraction with positive corr: 49.30%
+  Fraction with r > 0.5: 11.30%
+  R² from projection alone: 0.0001
+
+post_ln2:
+  Per-sample projection-position corr: 0.1833 ± 0.3467
+  Fraction with positive corr: 69.30%
+  Fraction with r > 0.5: 21.30%
+  R² from projection alone: 0.0229
+
+post_mlp:
+
+End time: Sun Jan 11 01:56:10 AM IST 2026
+Job complete!

@@ -1,0 +1,240 @@
+Starting Single-Sample Position Analysis...
+Job ID: 991438
+Running on node: hpc8h200-01
+Start time: Sun Jan 11 03:00:03 AM IST 2026
+
+======================================================================
+SINGLE-SAMPLE POSITION ANALYSIS
+======================================================================
+Samples: 5000
+Sequence length: 64
+Model dimension: 1024
+======================================================================
+
+Creating NoPE model (LayerNorm)...
+Extracting activations...
+
+======================================================================
+HYPOTHESIS 1: Activation norm encodes position
+======================================================================
+
+embed:
+  Per-sample correlation: 0.0009 ± 0.1256
+  Fraction with positive corr: 50.22%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: 0.0008
+
+post_ln1:
+  Per-sample correlation: 0.0008 ± 0.1257
+  Fraction with positive corr: 49.76%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: 0.0007
+
+post_attn:
+  Per-sample correlation: -0.7647 ± 0.0153
+  Fraction with positive corr: 0.00%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.7635
+
+post_attn_residual:
+  Per-sample correlation: -0.7624 ± 0.0154
+  Fraction with positive corr: 0.00%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.7612
+
+post_ln2:
+  Per-sample correlation: -0.9702 ± 0.0087
+  Fraction with positive corr: 0.00%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.9653
+
+post_mlp_residual:
+  Per-sample correlation: -0.5211 ± 0.1467
+  Fraction with positive corr: 0.30%
+  Fraction with r > 0.5: 0.00%
+  Population correlation: -0.4990
+
+======================================================================
+HYPOTHESIS 2: Learned direction encodes position
+======================================================================
+
+embed:
+  Per-sample projection-position corr: 0.0062 ± 0.1252
+  Fraction with positive corr: 52.60%
+  Fraction with r > 0.5: 0.00%
+  R² from projection alone: 0.0000
+
+post_ln1:
+  Per-sample projection-position corr: 0.0064 ± 0.1255
+  Fraction with positive corr: 52.80%
+  Fraction with r > 0.5: 0.00%
+  R² from projection alone: 0.0000
+
+post_attn:
+  Per-sample projection-position corr: -0.0078 ± 0.4218
+  Fraction with positive corr: 49.20%
+  Fraction with r > 0.5: 13.60%
+  R² from projection alone: 0.0001
+
+post_attn_residual:
+  Per-sample projection-position corr: -0.0062 ± 0.3869
+  Fraction with positive corr: 49.30%
+  Fraction with r > 0.5: 11.30%
+  R² from projection alone: 0.0001
+
+post_ln2:
+  Per-sample projection-position corr: 0.1833 ± 0.3467
+  Fraction with positive corr: 69.30%
+  Fraction with r > 0.5: 21.30%
+  R² from projection alone: 0.0229
+
+post_mlp_residual:
+  Per-sample projection-position corr: 0.1056 ± 0.3454
+  Fraction with positive corr: 60.30%
+  Fraction with r > 0.5: 14.40%
+  R² from projection alone: 0.0087
+
+======================================================================
+HYPOTHESIS 3: Distance from centroid encodes position
+======================================================================
+
+embed:
+  Per-sample distance-position corr: 0.0011 ± 0.1252
+  Population correlation: 0.0009
+
+post_ln1:
+  Per-sample distance-position corr: 0.0011 ± 0.1251
+  Population correlation: 0.0009
+
+post_attn:
+  Per-sample distance-position corr: -0.7646 ± 0.0153
+  Population correlation: -0.7634
+
+post_attn_residual:
+  Per-sample distance-position corr: -0.7624 ± 0.0154
+  Population correlation: -0.7612
+
+post_ln2:
+  Per-sample distance-position corr: -0.9025 ± 0.0435
+  Population correlation: -0.8405
+
+post_mlp_residual:
+  Per-sample distance-position corr: -0.5211 ± 0.1467
+  Population correlation: -0.4990
+
+======================================================================
+HYPOTHESIS 4: Direction (not magnitude) encodes position
+======================================================================
+
+embed:
+  Unit-vector probe R²: -0.0034
+  Per-sample corr (predictions vs true): 0.0063 ± 0.1253
+
+post_ln1:
+  Unit-vector probe R²: -0.0033
+  Per-sample corr (predictions vs true): 0.0064 ± 0.1255
+
+post_attn:
+  Unit-vector probe R²: 0.0242
+  Per-sample corr (predictions vs true): 0.2185 ± 0.3777
+
+post_attn_residual:
+  Unit-vector probe R²: 0.0168
+  Per-sample corr (predictions vs true): 0.1836 ± 0.3489
+
+post_ln2:
+  Unit-vector probe R²: 0.0168
+  Per-sample corr (predictions vs true): 0.1835 ± 0.3487
+
+post_mlp_residual:
+  Unit-vector probe R²: 0.1678
+  Per-sample corr (predictions vs true): 0.4387 ± 0.2243
+
+======================================================================
+HYPOTHESIS 5: Cumulative average signature
+======================================================================
+
+embed:
+  Per-sample diff-norm vs position corr: -0.0001 ± 0.1539
+
+post_ln1:
+  Per-sample diff-norm vs position corr: -0.0011 ± 0.1278
+
+post_attn:
+  Per-sample diff-norm vs position corr: -0.6888 ± 0.0600
+
+post_attn_residual:
+  Per-sample diff-norm vs position corr: -0.6829 ± 0.0606
+
+post_ln2:
+  Per-sample diff-norm vs position corr: 0.2679 ± 0.1672
+
+post_mlp_residual:
+  Per-sample diff-norm vs position corr: 0.1260 ± 0.1815
+
+======================================================================
+CRITICAL TEST: Single-token position decoding
+======================================================================
+
+embed:
+  Single-token decoding R²: -0.0034
+  MAE: 16.02 positions
+  Accuracy within ±1: 3.09%
+  Accuracy within ±5: 15.64%
+
+post_ln1:
+  Single-token decoding R²: -0.0034
+  MAE: 16.02 positions
+  Accuracy within ±1: 3.10%
+  Accuracy within ±5: 15.63%
+
+post_attn:
+  Single-token decoding R²: -0.0445
+  MAE: 16.13 positions
+  Accuracy within ±1: 3.26%
+  Accuracy within ±5: 15.81%
+
+post_attn_residual:
+  Single-token decoding R²: -0.0352
+  MAE: 16.12 positions
+  Accuracy within ±1: 3.27%
+  Accuracy within ±5: 15.66%
+
+post_ln2:
+  Single-token decoding R²: 0.0164
+  MAE: 15.73 positions
+  Accuracy within ±1: 3.34%
+  Accuracy within ±5: 16.25%
+
+post_mlp_residual:
+  Single-token decoding R²: -0.0049
+  MAE: 15.93 positions
+  Accuracy within ±1: 3.13%
+  Accuracy within ±5: 15.91%
+
+======================================================================
+SUMMARY: Per-Sample Position Encoding
+======================================================================
+
+Which properties encode position WITHIN a single sample?
+----------------------------------------------------------------------
+Layer                Norm r       Direction r  Centroid r   Single R²   
+----------------------------------------------------------------------
+embed                0.0009       0.0062       0.0011       -0.0034     
+post_ln1             0.0008       0.0064       0.0011       -0.0034     
+post_attn            -0.7647      -0.0078      -0.7646      -0.0445     
+post_attn_residual   -0.7624      -0.0062      -0.7624      -0.0352     
+post_ln2             -0.9702      0.1833       -0.9025      0.0164      
+post_mlp_residual    -0.5211      0.1056       -0.5211      -0.0049     
+
+======================================================================
+GENERATING PLOTS
+======================================================================
+
+Results saved to results/single_sample_analysis
+======================================================================
+ANALYSIS COMPLETE
+======================================================================
+
+End time: Sun Jan 11 03:01:14 AM IST 2026
+Job complete!

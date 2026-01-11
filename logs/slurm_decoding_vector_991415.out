@@ -1,0 +1,131 @@
+Starting Decoding Vector Experiments...
+Job ID: 991415
+Running on node: dsisarit05
+Start time: Sat Jan 10 10:56:31 PM IST 2026
+
+============================================================
+DECODING VECTOR EXPERIMENTS
+============================================================
+Samples: 30000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.024998
+  Std cos(E_i, E_j): 0.031262
+  Max |cos(E_i, E_j)|: 0.133169
+  Expected for random: 0.031250
+
+[T4.2] Computing decoding vector...
+  Decoding vector norm: 4328.1138
+
+[T4.3] Testing decoding vector at different layers...
+
+  Testing at post_attn:
+    Pearson r: 0.0000
+    Per-sample mean r: 0.0008
+
+  Testing at post_attn_residual:
+    Pearson r: 0.0001
+    Per-sample mean r: 0.0009
+
+  Testing at post_ln2:
+    Pearson r: 0.1096
+    Per-sample mean r: 0.1366
+
+[T4.4] Decoding vector ablation...
+  Original R²: -0.0030
+  Ablated R²: -0.0030
+  Accuracy drop: 0.6%
+
+[T4.5] Comparing Decoding Vector Constructions
+------------------------------------------------------------
+  full_with_ln @ hook_attn_out: r = 0.0024
+  full_with_ln @ hook_resid_mid: r = 0.0026
+  full_with_ln @ hook_normalized: r = 0.1129
+  full_no_ln @ hook_attn_out: r = 0.0026
+  full_no_ln @ hook_resid_mid: r = 0.0029
+  full_no_ln @ hook_normalized: r = 0.1130
+  sum_embeddings @ hook_attn_out: r = 0.0097
+  sum_embeddings @ hook_resid_mid: r = 0.0099
+  sum_embeddings @ hook_normalized: r = 0.0150
+  sum_ln_embeddings @ hook_attn_out: r = 0.0097
+  sum_ln_embeddings @ hook_resid_mid: r = 0.0100
+  sum_ln_embeddings @ hook_normalized: r = 0.0153
+
+[T4.6] Vocabulary Size Scaling
+------------------------------------------------------------
+
+  Testing vocab_size = 100
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.025133
+  Std cos(E_i, E_j): 0.031350
+  Max |cos(E_i, E_j)|: 0.117950
+  Expected for random: 0.031250
+    Correlation: r = -0.0055
+    Orthogonality: |cos| = 0.025133
+
+  Testing vocab_size = 500
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.024627
+  Std cos(E_i, E_j): 0.030691
+  Max |cos(E_i, E_j)|: 0.130302
+  Expected for random: 0.031250
+    Correlation: r = -0.0035
+    Orthogonality: |cos| = 0.024627
+
+  Testing vocab_size = 1000
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.024969
+  Std cos(E_i, E_j): 0.031298
+  Max |cos(E_i, E_j)|: 0.125100
+  Expected for random: 0.031250
+    Correlation: r = -0.0011
+    Orthogonality: |cos| = 0.024969
+
+  Testing vocab_size = 5000
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.024700
+  Std cos(E_i, E_j): 0.030963
+  Max |cos(E_i, E_j)|: 0.115547
+  Expected for random: 0.031250
+    Correlation: r = 0.0094
+    Orthogonality: |cos| = 0.024700
+
+  Testing vocab_size = 10000
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.024780
+  Std cos(E_i, E_j): 0.031252
+  Max |cos(E_i, E_j)|: 0.127944
+  Expected for random: 0.031250
+    Correlation: r = -0.0054
+    Orthogonality: |cos| = 0.024780
+
+  Testing vocab_size = 30000
+
+[T4.1] Embedding Orthogonality Verification
+  Mean |cos(E_i, E_j)|: 0.024893
+  Std cos(E_i, E_j): 0.031291
+  Max |cos(E_i, E_j)|: 0.109064
+  Expected for random: 0.031250
+    Correlation: r = 0.0067
+    Orthogonality: |cos| = 0.024893
+
+[T4.7] Length Extrapolation
+------------------------------------------------------------
+
+  Testing seq_len = 32
+    Correlation: r = 0.0014
+
+  Testing seq_len = 64
+    Correlation: r = -0.0030
+
+  Testing seq_len = 128
+Finished at: Sat Jan 10 11:01:16 PM IST 2026

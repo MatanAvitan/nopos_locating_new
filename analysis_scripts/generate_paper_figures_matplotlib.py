@@ -109,7 +109,9 @@ def generate_figure_2_variance_decay(model):
 def generate_figure_3_layernorm_paradox(model):
     """Figure 3: LayerNorm paradox."""
     print("\nGenerating Figure 3: LayerNorm Paradox...")
-    
+
+    from scipy.stats import pearsonr, spearmanr, linregress
+
     hook_name = 'blocks.0.ln2.hook_normalized'
 
     # Single sample
@@ -125,10 +127,35 @@ def generate_figure_3_layernorm_paradox(model):
             _, cache = model.run_with_cache(tokens, names_filter=[hook_name])
             pop_samples.append(cache[hook_name][0].cpu())
 
-    population_avg = torch.stack(pop_samples).mean(dim=0)
+    population_avg = torch.stack(pop_samples).mean(dim=0)  # [N_CTX, D_MODEL]
 
-    single_pattern = single_sample.mean(dim=1).numpy()
-    pop_pattern = population_avg.mean(dim=1).numpy()
+    # Compute per-dimension correlations with position
+    positions = np.arange(N_CTX)
+    dim_correlations = []
+    for dim in range(model.cfg.d_model):
+        dim_values = population_avg[:, dim].numpy()
+        corr, _ = pearsonr(positions, dim_values)
+        dim_correlations.append(corr)
+
+    # Select dimensions with strongest position correlation
+    dim_correlations = np.array(dim_correlations)
+    top_k = min(50, model.cfg.d_model // 10)  # Top 50 or 10% of dimensions
+    top_positive = np.argsort(dim_correlations)[-top_k//2:]  # Most positive
+    top_negative = np.argsort(dim_correlations)[:top_k//2]   # Most negative
+    top_dims = np.concatenate([top_positive, top_negative])
+
+    # Use only position-informative dimensions
+    single_pattern = single_sample[:, top_dims].mean(dim=1).numpy()
+    pop_pattern = population_avg[:, top_dims].mean(dim=1).numpy()
+
+    # Verify monotonicity
+    spearman_corr, p_val = spearmanr(positions, pop_pattern)
+    print(f"  Population pattern Spearman correlation: {spearman_corr:.4f} (p={p_val:.6f})")
+    print(f"  Using top {len(top_dims)} position-correlated dimensions")
+
+    # Compute trend line
+    slope, intercept, r_value, _, _ = linregress(positions, pop_pattern)
+    trend_line = slope * positions + intercept
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -138,10 +165,13 @@ def generate_figure_3_layernorm_paradox(model):
     ax1.set_title('Single Sample', fontsize=16)
     ax1.grid(True, alpha=0.3)
 
-    ax2.plot(range(N_CTX), pop_pattern, '-', linewidth=2, color='blue')
+    ax2.plot(range(N_CTX), pop_pattern, '-', linewidth=2, color='blue', label='Population Average')
+    ax2.plot(range(N_CTX), trend_line, '--', linewidth=2, color='red', alpha=0.7,
+             label=f'Trend (R²={r_value**2:.3f})')
     ax2.set_xlabel('Position', fontsize=14)
     ax2.set_ylabel('Mean Activation', fontsize=14)
     ax2.set_title('Population Average (1000 samples)', fontsize=16)
+    ax2.legend(fontsize=11)
     ax2.grid(True, alpha=0.3)
 
     plt.suptitle('The LayerNorm Paradox', fontsize=18, y=1.02)

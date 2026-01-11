@@ -1,0 +1,59 @@
+Starting Causal Intervention Experiments...
+Job ID: 991416
+Running on node: dsisarit05
+Start time: Sat Jan 10 10:56:31 PM IST 2026
+
+============================================================
+CAUSAL INTERVENTION EXPERIMENTS
+============================================================
+Samples: 10000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+============================================================
+INTERVENTION 1: Activation Patching
+============================================================
+  Patch 0 -> 32: mean pred = 22.5, closer to source = 35.0%
+  Patch 16 -> 48: mean pred = 30.9, closer to source = 58.8%
+  Patch 32 -> 16: mean pred = 32.5, closer to source = 97.4%
+  Patch 63 -> 0: mean pred = 33.7, closer to source = 72.8%
+
+============================================================
+INTERVENTION 2: Attention Pattern Intervention
+============================================================
+  uniform: R² = -0.1102, r = 0.0185
+  diagonal: R² = -0.0075, r = 0.0073
+  first_only: R² = -0.0033, r = 0.0020
+  random: R² = -0.0796, r = 0.0216
+
+============================================================
+INTERVENTION 3: Decoding Vector Knockout
+============================================================
+  Clean R²: -0.0384
+  Knockout R²: -0.0383
+  R² Drop: -0.0001 (0.1%)
+
+============================================================
+INTERVENTION 4: LayerNorm Bypass
+============================================================
+  LN1 (pre-attention):
+    With LN: R² = -0.0043
+    Bypass LN: R² = -0.0043
+  LN2 (pre-MLP):
+    With LN: R² = 0.0148
+    Bypass LN: R² = -0.0384
+
+============================================================
+INTERVENTION 5: Population Mean Intervention
+============================================================
+  Clean R²: 0.0148
+  Mean Removed R²: -0.0333
+  Mean Swapped R²: 0.0115
+  Swap follows expected: True
+
+============================================================
+INTERVENTION 6: Value Vector Corruption
+============================================================
+Finished at: Sat Jan 10 10:58:49 PM IST 2026

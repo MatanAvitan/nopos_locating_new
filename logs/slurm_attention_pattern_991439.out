@@ -1,0 +1,51 @@
+Starting Attention Pattern Analysis...
+Job ID: 991439
+Running on node: dsicsgpu09
+Start time: Sun Jan 11 03:01:38 AM IST 2026
+======================================================================
+ATTENTION PATTERN POSITION ANALYSIS
+======================================================================
+
+==================================================
+Analyzing LN model
+==================================================
+
+Extracting attention patterns...
+
+1. Attention entropy analysis...
+   Mean normalized entropy: 0.9266
+
+2. Attention statistics...
+   Corr(attn_to_first, position): -0.5399
+   Corr(attn_to_self, position): -0.5378
+
+3. Position decoding from attention...
+   R²: 0.9855
+   MAE: 1.67
+
+4. Uniform vs learned attention comparison...
+   Learned attention norm-pos corr: -0.9703
+   Uniform attention norm-pos corr: -0.9969
+
+==================================================
+Analyzing RMS model
+==================================================
+
+Extracting attention patterns...
+
+1. Attention entropy analysis...
+   Mean normalized entropy: 0.9265
+
+2. Attention statistics...
+   Corr(attn_to_first, position): -0.5403
+   Corr(attn_to_self, position): -0.5385
+
+3. Position decoding from attention...
+   R²: 0.9856
+   MAE: 1.67
+
+4. Uniform vs learned attention comparison...
+   Learned attention norm-pos corr: -0.9702
+   Uniform attention norm-pos corr: -0.9968
+End time: Sun Jan 11 03:05:41 AM IST 2026
+Job complete!

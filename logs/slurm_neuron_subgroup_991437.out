@@ -1,0 +1,91 @@
+Starting Neuron Subgroup Position Analysis...
+Job ID: 991437
+Running on node: hpc8h200-01
+Start time: Sun Jan 11 02:04:07 AM IST 2026
+
+======================================================================
+NEURON SUBGROUP POSITION ENCODING ANALYSIS
+======================================================================
+Samples: 5000
+Sequence length: 64
+Model dimension: 1024
+======================================================================
+
+======================================================================
+ANALYZING LAYERNORM MODEL
+======================================================================
+
+Extracting pre-LN2 activations...
+Extracting post-LN2 activations...
+
+1. Per-neuron correlation analysis...
+   Significant neurons: 382
+   Max |correlation|: 0.0289
+
+2. Per-sample neuron consistency...
+   Consistent neurons (>50% samples): 0
+
+3. Sparse probe analysis...
+   Best tradeoff: alpha_1.0
+   R²: 0.0000
+   Neurons: 0
+
+4. Neuron subgroup analysis...
+   Best individual R²: 0.0008
+   Best pair R²: 0.0008
+   Best triplet R²: 0.0015
+
+5. Variance redistribution analysis...
+   Pre-norm var-position corr: -0.5990
+   Post-norm var-position corr: -0.9979
+
+======================================================================
+ANALYZING RMSNORM MODEL
+======================================================================
+
+Extracting pre-LN2 activations...
+Extracting post-LN2 activations...
+
+1. Per-neuron correlation analysis...
+   Significant neurons: 338
+   Max |correlation|: 0.0229
+
+2. Per-sample neuron consistency...
+   Consistent neurons (>50% samples): 0
+
+3. Sparse probe analysis...
+   Best tradeoff: alpha_0.5
+   R²: 0.0000
+   Neurons: 0
+
+4. Neuron subgroup analysis...
+   Best individual R²: 0.0005
+   Best pair R²: 0.0006
+   Best triplet R²: 0.0011
+
+5. Variance redistribution analysis...
+   Pre-norm var-position corr: -0.5988
+   Post-norm var-position corr: -0.9984
+
+======================================================================
+LN vs RMSNorm COMPARISON
+======================================================================
+
+Metric                                   LayerNorm       RMSNorm        
+----------------------------------------------------------------------
+Significant neurons                      382             338            
+Max |correlation|                        0.0289          0.0229         
+Consistent neurons                       0               0              
+Best pair R²                             0.0008          0.0006         
+
+======================================================================
+GENERATING PLOTS
+======================================================================
+
+Results saved to results/neuron_subgroup_analysis
+======================================================================
+ANALYSIS COMPLETE
+======================================================================
+
+End time: Sun Jan 11 02:26:37 AM IST 2026
+Job complete!
