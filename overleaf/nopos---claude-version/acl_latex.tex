@@ -582,24 +582,20 @@ Table~\ref{tab:direction-norm} reveals a striking pattern in randomly initialize
 Figure~\ref{fig:norm-over-positions} visualizes this phenomenon directly: in randomly initialized models, activation norms decay monotonically with position (consistent with the $1/\sqrt{i+1}$ theoretical prediction), while trained models show a qualitatively different---even inverted---pattern.
 
 \paragraph{Why LayerNorm Linearizes the Position Signal.}
-The key insight is that LayerNorm's normalization step converts the nonlinear relationship between position and activation structure into a near-linear relationship in the output norm. Consider the pre-LN activation $h_i$ at position $i$, which averages $i+1$ embedding vectors. The input variance $\sigma_i^2 \propto 1/(i+1)$ follows a hyperbolic decay. LayerNorm computes:
+LayerNorm converts the nonlinear, directional position signal into a nearly linear norm signal. Let $h_i$ denote the pre-LN activation at position $i$, produced by averaging $i{+}1$ value vectors. Each coordinate of $h_i$ has variance $\sigma_i^2 \propto 1/(i{+}1)$ and (because it is a sum of $i{+}1$ random embeddings) a kurtosis that shrinks with $i$. LayerNorm computes per-sample statistics
 \begin{equation}
-\text{LN}(h_i) = \gamma \cdot \frac{h_i - \mu_i}{\sigma_i} + \beta
+\text{LN}(h_i) = \gamma \cdot \frac{h_i - \mu_i}{\hat\sigma_i} + \beta,
 \end{equation}
-where $\mu_i$ and $\sigma_i$ are the mean and standard deviation across dimensions. The output norm becomes:
+where $\hat\sigma_i^2$ is the biased sample variance across $d$ channels. For an exactly Gaussian $h_i$, $\|\text{LN}(h_i)\|$ would concentrate near $\|\gamma\|\sqrt{d\cdot d/(d-1)}$ and be independent of $\sigma_i^2$. In practice, $h_i$ is only approximately Gaussian, and its higher moments (set by $i$) introduce a small, monotone correction:
 \begin{equation}
-\|\text{LN}(h_i)\| = \|\gamma\| \cdot \frac{\|h_i - \mu_i\|}{\sigma_i} \approx \|\gamma\| \cdot \sqrt{d} \cdot \sqrt{1 + \epsilon_i}
+\mathbb{E}\big[\|\text{LN}(h_i)\|\big] \approx \|\gamma\| \sqrt{d} \left(1 + \frac{\kappa_i - 3}{8d} + \delta_i\right),
 \end{equation}
-where $d$ is the embedding dimension and $\epsilon_i$ captures finite-sample deviations.
+where $\kappa_i$ is the (position-dependent) kurtosis of $h_i$ and $\delta_i = \mathcal{O}(1/d)$ captures the bias from using the biased variance estimator. Because $\kappa_i$ drifts smoothly with $\sigma_i^2 \propto 1/(i{+}1)$, the expected norm inherits a tiny but monotone dependence on position. LayerNorm thus maps the original variance signal into a nearly linear norm signal without amplifying its magnitude.
 
-\paragraph{The Bessel Correction Effect.}
-A subtle but important factor is the Bessel correction in variance estimation. PyTorch's LayerNorm uses the biased estimator (dividing by $n$), but when we measure the output variance, we observe:
-\begin{equation}
-\text{Var}_{\text{measured}}[\text{LN}(h_i)] = \frac{d}{d-1} \cdot \text{Var}_{\text{LN}}[h_i] = \frac{d}{d-1}
-\end{equation}
-This creates a constant offset. However, the \textit{input} to LayerNorm has position-dependent variance $\sigma_i^2 \propto 1/(i+1)$. The normalization process encodes this position-dependent input variance into tiny but highly systematic deviations in the output norm. Specifically, positions with higher input variance (early positions) produce outputs with slightly larger norms than positions with lower input variance (later positions).
+\paragraph{The Bessel/Bias Effect.}
+PyTorch's LayerNorm divides by $d$ (not $d{-}1$), so $\hat\sigma_i^2$ is a biased estimator. For Gaussian inputs this contributes a constant factor $\sqrt{d/(d-1)}$ to $\|\text{LN}(h_i)\|$, and for non-Gaussian inputs it introduces the $\delta_i$ term above. Importantly, the pre-LN variance still decays as $1/(i{+}1)$, so these $\mathcal{O}(1/d)$ biases become slightly position-dependent through $\kappa_i$, yielding the observed monotone residual in norms (range $\approx[27.54, 27.71]$ in the random Shakespeare model). The effect is small in magnitude but highly systematic, which is why a linear probe on norms attains high $R^2$ even though LayerNorm has largely equalized variance.
 
-The correlation between output variance and position increases from $r=-0.58$ pre-LN to $r=-0.96$ post-LN. This is not amplification---the absolute variance differences shrink dramatically (from range $[0.001, 0.025]$ to $[0.997, 1.003]$). Rather, the normalization process creates a \textit{monotonic, near-linear} mapping from input variance to output norm, making the position signal trivially decodable by a linear probe.
+Additional details and a first-order derivation for $\mathbb{E}[\|\text{LN}(h_i)\|]$ under a Gaussian-mixture approximation are provided in Appendix~\ref{sec:ln-norm-derivation}.
 
 \paragraph{Information Flow Through the Transformer Block.}
 Critically, \textbf{after the MLP}, direction again dominates ($R^2=0.75$ vs $0.37$), suggesting the MLP redistributes positional information back into directional components. This reveals a complete picture of information flow: position enters as directional structure (post-attention), is linearized into norm by LayerNorm, and is then re-encoded into directions by the MLP for downstream processing.
@@ -741,6 +737,22 @@ The discovery of implicit positional encoding opens several research directions 
 \bibliography{custom}
 
 \appendix
+
+\section{LayerNorm Norm Statistics}\label{sec:ln-norm-derivation}
+
+We model each pre-LN activation $h_i \in \mathbb{R}^d$ at position $i$ as approximately Gaussian with zero mean and covariance $\sigma_i^2 I$, where $\sigma_i^2 \propto 1/(i{+}1)$ comes from averaging $i{+}1$ value vectors under near-uniform attention. Let $d$ be large. PyTorch LayerNorm uses the biased variance estimator
+\[
+\hat\sigma_i^2 = \frac{1}{d} \sum_{k=1}^d (h_{i,k} - \bar{h}_i)^2,
+\]
+so for Gaussian inputs $\mathbb{E}[\hat\sigma_i^2] = \tfrac{d-1}{d} \sigma_i^2$ and the normalized vector is
+\[
+\text{LN}(h_i) = \gamma \cdot \frac{h_i - \bar{h}_i}{\hat\sigma_i} + \beta.
+\]
+A first-order delta-method expansion around $\hat\sigma_i^2 \approx \sigma_i^2$ gives
+\[
+\mathbb{E}\big[\|\text{LN}(h_i)\|\big] \approx \|\gamma\| \sqrt{d} \Big(1 + \frac{\kappa_i - 3}{8d} + \delta_i\Big),
+\]
+where $\kappa_i$ is the (position-dependent) kurtosis of $h_i$ (approaching 3 as $i$ grows) and $\delta_i = \mathcal{O}(1/d)$ captures the bias from $d$ vs. $d{-}1$. Because $\kappa_i$ drifts smoothly with $\sigma_i^2$, the expected norm inherits a tiny but monotone dependence on position, producing the residual trend seen in Fig.~\ref{fig:norm-over-positions}. Empirically, this residual is small in magnitude (e.g., norms in $[27.54, 27.71]$ for the random Shakespeare model) but sufficiently systematic to yield high norm-only $R^2$.
 
 \section{NoPE Language Model Training Details}\label{app:nope-training}
 
