@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Chi et~al.(2023)Chi, Fan, Chen, Rudnicky, and
+  Ramadge}]{chi-etal-2023-latent}
+Ta-Chung Chi, Ting-Han Fan, Li-Wei Chen, Alexander Rudnicky, and Peter Ramadge.
+  2023.
+\newblock \href {https://doi.org/10.18653/v1/2023.acl-short.102} {Latent
+  positional information is in the self-attention variance of transformer
+  language models without positional embeddings}.
+\newblock In \emph{Proceedings of the 61st Annual Meeting of the Association
+  for Computational Linguistics (Volume 2: Short Papers)}, pages 1183--1193,
+  Toronto, Canada. Association for Computational Linguistics.
+
+\end{thebibliography}
