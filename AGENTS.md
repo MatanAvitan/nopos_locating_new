@@ -379,38 +379,37 @@ Changes made:
   - post_ln2: norm=0.88, dir=0.19
 - Line 601: Fixed MLP paragraph - changed "direction dominates (0.75 vs 0.37)" to "direction recovers (0.35 vs 0.39)"
 
-### CRITICAL: Experiment Conditions Mismatch - MUST VERIFY
+### CRITICAL: Experiment Conditions Mismatch - RESOLVED
 
-**⚠️ CONCERN**: Different experiments use different conditions, and the paper may be mixing results inappropriately.
+**✅ RESOLVED**: Added Appendix documenting experimental conditions for all figures/tables (commit `f888a73`).
 
-| Source | Model | Tokens | Context | n_embd | Values |
-|--------|-------|--------|---------|--------|--------|
-| `direction_norm_independence_results.json` | Random init | Uniform random | 64 | 256 | Table 5 R² values |
-| `trained_model_results.json` | Random + Trained | Shakespeare | 256 | 768 | Table random-vs-trained |
-| `visualize_norm_over_positions.py` | Random + Trained | Uniform random | 64 | 768 | Figure norm_over_positions.png |
+The paper now clearly documents that different experiments use different conditions:
 
-**Specific issues to verify**:
+| Config Name | Model | Tokens | Context | n_embd | Used For |
+|-------------|-------|--------|---------|--------|----------|
+| Synthetic-Small | Random init | Uniform random | 64 | 256 | Table 5 (direction-norm) |
+| Synthetic-Large | Random init | Uniform random | 64 | 768 | Most main figures |
+| Trained | Trained 5K steps | Shakespeare | 256 | 768 | Random-vs-trained comparison |
 
-1. **Figure caption mismatch (line 578)**: Caption says `r=-0.998` (random) and `r=+0.86` (trained), but:
-   - `trained_model_results.json` shows: Random `r=-0.967`, Trained LN `r=+0.154`
-   - The figure may have been generated with different parameters
-   - **Action needed**: Re-run `visualize_norm_over_positions.py` and verify caption values match
+**Key clarifications added to paper**:
+1. New Appendix `\ref{app:experimental-conditions}` with full provenance table
+2. Figure caption (line 578) now references appendix for correlation value explanation
+3. Section explaining why R² values differ across experiments
 
-2. **Table 5 vs main text consistency**: The R² values in Table 5 (lines 560-562) now match the JSON, but make sure main text references (lines 382, 387, 601) use the same experiment's values.
-
-3. **Model size inconsistency**: `direction_norm_independence.py` uses n_embd=256, but trained models use n_embd=768. This may affect generalizability claims.
+**Remaining consideration**: The figure caption correlation values (r=-0.998, r=+0.86) come from `visualize_norm_over_positions.py` which uses uniform random tokens on context 64, while Table random-vs-trained uses Shakespeare on context 256. This is now documented but you may want to decide if experiments should be re-run with consistent settings.
 
 ### What Was Done in This Session
 
 1. ✅ Updated R² values in main text (lines 382, 387, 601) to match `direction_norm_independence_results.json`
 2. ✅ Fixed misleading "direction dominates" claim in line 601 (actual: dir=0.35 vs norm=0.39)
 3. ✅ Committed and pushed changes (commit `622cc64`)
+4. ✅ Added comprehensive Appendix documenting experimental conditions (commit `f888a73`)
+5. ✅ Updated AGENTS.md with correct R² values and session summary
 
-### What Still Needs to Be Done
+### What Still Could Be Done (Optional)
 
-1. **Verify figure caption correlations**: Check if `norm_over_positions.png` figure was generated with same conditions as claimed in caption
-2. **Consider re-running experiments with consistent settings**: Either all synthetic or all Shakespeare
-3. **Update AGENTS.md R² values**: The "Key Research Findings" section still has old values (0.80, 0.51, etc.)
+1. **Re-run experiments with consistent settings**: Either all synthetic or all Shakespeare
+2. **Verify figure exactly matches caption**: Re-generate `norm_over_positions.png` and confirm r values match caption
 
 ### Key JSON Files for Reference
 
