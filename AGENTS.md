@@ -154,6 +154,14 @@ np.random.seed(42)
 | `analysis_scripts/analyze_trained_nope.py` | Hypothesis testing for trained models |
 | `CLAUDE.md` | Detailed project context (paper overview, hypotheses) |
 
+## Trained Model Checkpoints
+
+Training is **COMPLETE**. Both models are saved:
+- **LayerNorm**: `nanoGPT/out-nope-1layer-ln/ckpt.pt` (548MB, 5000 steps)
+- **RMSNorm**: `nanoGPT/out-nope-1layer-rms/ckpt.pt` (548MB, 5000 steps)
+
+Intermediate checkpoints available every 250 steps in the same directories.
+
 ## Common Gotchas
 
 1. **Working directory**: nanoGPT scripts assume you're in the `nanoGPT/` directory
@@ -276,3 +284,149 @@ ssh -i ~/.ssh/dsinlp01_id_rsa slurm-login.lnx.biu.ac.il "tail -20 /home/nlp/mata
 3. **Time limits**: Jobs exceeding time limits are suspended and requeued; implement checkpointing for long jobs
 4. **Max jobs**: `generic` partition allows max 4 concurrent jobs per user
 5. **Log files**: Output goes to `logs/slurm_<jobname>_<jobid>.out` and `.err`
+
+## Experiment Results Summary
+
+### Completed Experiments (as of Jan 11, 2026)
+
+Results are stored in `results/<experiment_name>/`:
+
+| Experiment | Status | Key Findings |
+|------------|--------|--------------|
+| `norm_intervention` | ✅ Complete | Full R²=0.04 pre-LN, R²=0.76 post-LN; direction R²=0.80 pre-LN |
+| `layernorm_geometry` | ✅ Complete | LN linearizes position encoding, doesn't amplify |
+| `single_sample_analysis` | ✅ Complete | Norm-position correlation: -0.76 post-attn, -0.97 post-LN |
+| `decoding_vector_experiments` | ✅ Complete | Decoding vector correlates with position |
+| `causal_interventions` | ✅ Complete | Attention intervention results |
+| `token_position_correlation` | ✅ Complete | Natural language position correlations |
+| `higher_order_statistics` | ✅ Complete | Eigenvalue analysis by position |
+| `training_dynamics` | ✅ Complete | How position encoding emerges during training |
+| `neuron_subgroup_analysis` | ✅ Complete | Per-neuron position correlation distribution |
+| `attention_pattern_analysis` | ✅ Complete | Attention uniformity analysis |
+| `comprehensive_probe_analysis` | 🔄 Running | Full probe analysis (job 991413) |
+| `direction_norm_independence` | ✅ Complete | **Key source for Table 5**: dir/norm/full R² at each layer |
+| `trained_model_analysis` | ✅ Complete | Random vs trained comparison on Shakespeare |
+
+### Key Research Findings
+
+#### The Core Mechanism
+In NoPE transformers, causal attention naturally creates position-dependent activation patterns:
+- Position i averages i+1 embeddings
+- This creates a variance signal that decays as 1/(i+1)
+- Correlation with theory: r = 0.999
+
+#### LayerNorm's Role (CORRECTED)
+**Previous (incorrect) claim**: "LayerNorm transforms variance into mean and amplifies position signal"
+
+**Correct interpretation**: LayerNorm **linearizes** (not amplifies) the position encoding:
+- **Pre-LN (post_attn)**: Full R² = 0.04, Direction R² = 0.39, Norm R² = 0.56
+- **Post-LN (post_ln2)**: Full R² = 0.19, Direction R² = 0.19, Norm R² = 0.88
+- **Post-MLP (post_mlp_residual)**: Full R² = 0.22, Direction R² = 0.35, Norm R² = 0.39
+
+The position information exists pre-LN but in a complex, non-linear form (encoded in "directional structure"). LayerNorm makes it trivially decodable by a linear probe on the norm.
+
+#### Layer-by-Layer Position Encoding (from direction_norm_independence_results.json)
+
+| Layer | Full R² | Norm R² | Direction R² |
+|-------|---------|---------|--------------|
+| embed | ~0 | ~0 | ~0 |
+| post_ln1 | ~0 | ~0 | ~0 |
+| post_attn | 0.04 | 0.56 | 0.39 |
+| post_ln2 | 0.19 | 0.88 | 0.19 |
+| post_mlp_residual | 0.22 | 0.39 | 0.35 |
+
+### Known Issues / Bugs to Fix
+
+1. **`trained_model_direction_norm.py`** - Array dimension mismatch bug:
+   - Line 140: `acts["post_attn"][0]` incorrectly indexes again after batch dim already removed
+   - Fix: Change `acts["post_attn"][0]` to `acts["post_attn"]` (remove the `[0]`)
+   - Same fix needed for `acts["post_ln2"][0]` on line 141
+
+2. **`direction_norm_independence.py`** - Script runs but doesn't save JSON output
+   - The script completes but results aren't persisted
+   - Need to verify JSON saving at end of script
+
+3. **`long_context_analysis.py`** - No output saved
+   - Script runs quickly but results folder is empty
+   - May need to check file writing logic
+
+### Open Research Questions
+
+1. **What is "directional structure"?**
+   - Direction R² = 0.39 pre-LN but Full R² = 0.04 (updated values from JSON)
+   - Why does unit vector (direction) encode position better than full activation?
+   - Hypothesis: Position is encoded in angular relationships, not magnitudes
+
+2. **Why does Full R² ≠ Direction R² + Norm R²?**
+   - Pre-LN: Full=0.04, Norm=0.56, Direction=0.39
+   - These don't add up - suggests complex interaction
+
+3. **How does training affect position encoding?**
+   - Random vs trained models - does the mechanism change?
+   - Training dynamics analysis partially addresses this
+
+## Paper Status
+
+LaTeX source: `overleaf/nopos---claude-version/acl_latex.tex`
+
+### Latest Commit (Jan 11, 2026)
+`622cc64` - Update R² values to match direction_norm_independence JSON results
+
+Changes made:
+- Line 382: Changed post-LN R² from 0.76 to R²_norm=0.88
+- Line 387 (figure caption): Updated all R² values to match JSON:
+  - post_attn: dir=0.39, norm=0.56, full=0.04
+  - post_ln2: norm=0.88, dir=0.19
+- Line 601: Fixed MLP paragraph - changed "direction dominates (0.75 vs 0.37)" to "direction recovers (0.35 vs 0.39)"
+
+### CRITICAL: Experiment Conditions Mismatch - MUST VERIFY
+
+**⚠️ CONCERN**: Different experiments use different conditions, and the paper may be mixing results inappropriately.
+
+| Source | Model | Tokens | Context | n_embd | Values |
+|--------|-------|--------|---------|--------|--------|
+| `direction_norm_independence_results.json` | Random init | Uniform random | 64 | 256 | Table 5 R² values |
+| `trained_model_results.json` | Random + Trained | Shakespeare | 256 | 768 | Table random-vs-trained |
+| `visualize_norm_over_positions.py` | Random + Trained | Uniform random | 64 | 768 | Figure norm_over_positions.png |
+
+**Specific issues to verify**:
+
+1. **Figure caption mismatch (line 578)**: Caption says `r=-0.998` (random) and `r=+0.86` (trained), but:
+   - `trained_model_results.json` shows: Random `r=-0.967`, Trained LN `r=+0.154`
+   - The figure may have been generated with different parameters
+   - **Action needed**: Re-run `visualize_norm_over_positions.py` and verify caption values match
+
+2. **Table 5 vs main text consistency**: The R² values in Table 5 (lines 560-562) now match the JSON, but make sure main text references (lines 382, 387, 601) use the same experiment's values.
+
+3. **Model size inconsistency**: `direction_norm_independence.py` uses n_embd=256, but trained models use n_embd=768. This may affect generalizability claims.
+
+### What Was Done in This Session
+
+1. ✅ Updated R² values in main text (lines 382, 387, 601) to match `direction_norm_independence_results.json`
+2. ✅ Fixed misleading "direction dominates" claim in line 601 (actual: dir=0.35 vs norm=0.39)
+3. ✅ Committed and pushed changes (commit `622cc64`)
+
+### What Still Needs to Be Done
+
+1. **Verify figure caption correlations**: Check if `norm_over_positions.png` figure was generated with same conditions as claimed in caption
+2. **Consider re-running experiments with consistent settings**: Either all synthetic or all Shakespeare
+3. **Update AGENTS.md R² values**: The "Key Research Findings" section still has old values (0.80, 0.51, etc.)
+
+### Key JSON Files for Reference
+
+1. **Synthetic direction-norm experiment** (`results/direction_norm_independence/direction_norm_independence_results.json`):
+   ```
+   post_attn: direction_r2=0.393, norm_r2=0.556, full_r2=0.040
+   post_ln2: direction_r2=0.193, norm_r2=0.880, full_r2=0.191
+   post_mlp_residual: direction_r2=0.354, norm_r2=0.387, full_r2=0.216
+   ```
+
+2. **Random vs trained (Shakespeare)** (`results/trained_model_analysis/trained_model_results.json`):
+   ```
+   Random Init: post_ln2_norm_position_corr=-0.967, post_ln2_norm_r2=0.935
+   LayerNorm trained: post_ln2_norm_position_corr=+0.154, post_ln2_norm_r2=0.024
+   ```
+
+**Repositories**:
+- Main repo: `git@github.com:MatanAvitan/nopos_locating_new.git` (master branch)
+- Overleaf repo: `git@github.com:MatanAvitan/nopos---claude-version.git` (main branch)
