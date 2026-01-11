@@ -278,6 +278,18 @@ We formalize how causal transformers can encode positional information without e
 \subsection{Setup and Notation}
 Consider a causal transformer processing sequence $\{x_1, x_2, \ldots, x_L\}$ where $x_i \in \mathbb{R}^d$ are token embeddings without positional information. The causal mask ensures token $i$ attends only to tokens $\{x_1, \ldots, x_i\}$.
 
+\paragraph{Activation Decomposition.} For any activation vector $h \in \mathbb{R}^d$, we decompose it into \textbf{norm} (magnitude) and \textbf{direction} (unit vector):
+\begin{equation}
+h = \|h\| \cdot \hat{h}, \quad \text{where } \|h\| = \sqrt{\sum_{j=1}^d h_j^2} \text{ and } \hat{h} = \frac{h}{\|h\|}
+\end{equation}
+The \textbf{norm} $\|h\|$ is a scalar representing the vector's length, while the \textbf{direction} $\hat{h}$ is a unit vector ($\|\hat{h}\|=1$) representing orientation in $d$-dimensional space.
+
+\paragraph{Linear Probe $R^2$.} To quantify how much positional information is encoded in activations, we train linear regression probes to predict position $i$ from activation features. We report the \textbf{coefficient of determination} $R^2$:
+\begin{equation}
+R^2 = 1 - \frac{\sum_i (y_i - \hat{y}_i)^2}{\sum_i (y_i - \bar{y})^2}
+\end{equation}
+where $y_i$ is the true position, $\hat{y}_i$ is the predicted position, and $\bar{y}$ is the mean position. $R^2=1$ indicates perfect linear prediction; $R^2=0$ means the probe performs no better than predicting the mean; $R^2<0$ indicates worse than mean prediction.
+
 \subsection{Mechanism 1: Near-Uniform Attention from Initialization}
 Under proper initialization ($W_Q, W_K, W_V \sim \mathcal{N}(0, \sigma^2)$ with $\sigma \in [0.01, 0.1]$), the attention pattern converges to a near-uniform distribution over the causal context.
 
@@ -367,7 +379,16 @@ After attention, the mean activation across channels remains position-independen
 \end{figure}
 
 \paragraph{Post-LN Activations.}
-LayerNorm computes the standard deviation $\sigma_i$ across channels at each position, effectively reading out the variance signal. Since $\sigma_i$ varies monotonically with position, the normalization process encodes position-dependent input variance into the output norm. Critically, LayerNorm does not simply preserve positional information---it \textit{linearizes} it. Before LayerNorm, position is encoded in complex, high-dimensional directional structure that yields poor linear decodability ($R^2=0.04$). After LayerNorm, the same information becomes a near-linear function of output norm ($R^2=0.76$), making position trivially decodable by a linear probe. Additionally, at the population level, averaging across many samples reveals smooth monotonic patterns due to position-correlated token distributions. Figure~\ref{fig:layernorm-paradox} visualizes these population-level patterns across 30K samples.
+LayerNorm computes the standard deviation $\sigma_i$ across channels at each position, effectively reading out the variance signal. Since $\sigma_i$ varies monotonically with position, the normalization process encodes position-dependent input variance into the output norm. Critically, LayerNorm does not simply preserve positional information---it \textit{linearizes} it. Before LayerNorm, position is encoded in complex, high-dimensional directional structure that yields poor linear decodability ($R^2=0.04$). After LayerNorm, the same information becomes a near-linear function of output norm ($R^2=0.76$), making position trivially decodable by a linear probe. Additionally, at the population level, averaging across many samples reveals smooth monotonic patterns due to position-correlated token distributions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{layernorm_linearization.png}
+\caption{LayerNorm linearization effect. \textbf{Left}: Before LN (post-attention), position is encoded in directional structure ($R^2=0.80$) but full activations yield poor linear decodability ($R^2=0.04$). \textbf{Right}: After LN, position becomes linearly decodable from both direction and norm ($R^2 \approx 0.76$). LN transforms complex directional encoding into simple norm-based signal.}
+\label{fig:ln-linearization}
+\end{figure}
+
+Figure~\ref{fig:ln-linearization} illustrates this linearization effect. The key insight is that LayerNorm's normalization step converts the nonlinear relationship between position and activation structure into a near-linear relationship. Figure~\ref{fig:layernorm-paradox} visualizes the population-level patterns across 30K samples.
 
 \begin{figure*}[htbp]
 \centering
@@ -522,7 +543,12 @@ These experiments establish a clear picture:
 
 \subsubsection{Direction vs Norm Decomposition}
 
-A fundamental question arises: is position encoded in the \textit{direction} (shape) of activation vectors or their \textit{magnitude} (norm)? We decompose activations as $h = \|h\| \cdot \hat{h}$ where $\hat{h} = h/\|h\|$ is the unit direction, and train separate linear probes on each component.
+A fundamental question arises: is position encoded in the \textit{direction} (orientation) of activation vectors or their \textit{magnitude} (norm)? Using the decomposition from Section 3.1, we separate activations into $h = \|h\| \cdot \hat{h}$ and train three linear probes:
+\begin{itemize}
+    \item \textbf{Full probe}: Predicts position from the complete activation $h \in \mathbb{R}^d$
+    \item \textbf{Norm probe}: Predicts position from the scalar norm $\|h\| \in \mathbb{R}$
+    \item \textbf{Direction probe}: Predicts position from the unit vector $\hat{h} \in \mathbb{R}^d$ (where $\|\hat{h}\|=1$)
+\end{itemize}
 
 \begin{table}[h]
 \centering
@@ -531,18 +557,29 @@ A fundamental question arises: is position encoded in the \textit{direction} (sh
 \toprule
 \textbf{Layer} & \textbf{Full $R^2$} & \textbf{Norm $R^2$} & \textbf{Direction $R^2$} \\
 \midrule
-post\_attn & 0.04 & 0.51 & \textbf{0.80} \\
-post\_ln2 & 0.76 & 0.76 & 0.75 \\
-post\_mlp & 0.70 & 0.37 & \textbf{0.75} \\
+post\_attn & 0.04 & 0.56 & 0.39 \\
+post\_ln2 & 0.19 & 0.88 & 0.19 \\
+post\_mlp\_residual & 0.22 & 0.39 & 0.35 \\
 \bottomrule
 \end{tabular}
-\caption{Position decoding $R^2$ from full activations, norm only, and direction only at different layers. Direction dominates before LayerNorm; both become equally informative after LN.}
+\caption{Position decoding $R^2$ from full activations, norm only, and direction only at different layers (random initialization, uniform token sampling; context length 64). Values are taken directly from the synthetic direction--norm experiment.}
 \label{tab:direction-norm}
 \end{table}
 
-Table~\ref{tab:direction-norm} reveals a striking pattern: \textbf{before LayerNorm}, position is encoded primarily in direction ($R^2=0.80$) rather than norm ($R^2=0.51$), and full activations yield poor linear decodability ($R^2=0.04$). This occurs because averaging different numbers of embedding vectors creates complex, high-dimensional structure that is not easily captured by a linear probe.
+Table~\ref{tab:direction-norm} reveals a striking pattern in randomly initialized models: \textbf{before LayerNorm}, position is encoded through a combination of norm and direction (norm $R^2\approx0.56$, direction $R^2\approx0.39$), yet the full activation still yields poor linear decodability (full $R^2\approx0.04$). This occurs because averaging different numbers of embedding vectors creates complex, high-dimensional structure that is not easily captured by a single linear probe on the raw activations.
 
-\textbf{After LayerNorm}, linear decodability dramatically improves ($R^2=0.76$), with both direction and norm becoming equally informative. This improvement is not because LayerNorm ``amplifies'' the position signal, but because it \textit{transforms} the complex directional encoding into a simpler, more linear form.
+\textbf{After LayerNorm}, linear decodability of position from norm alone becomes extremely strong (norm $R^2\approx0.88$), and the full and direction-only probes reach similar $R^2\approx0.19$. This improvement is not because LayerNorm ``amplifies'' the position signal, but because it \textit{transforms} the complex directional encoding into a simpler, more linear norm-based signal.
+
+\paragraph{Metric bookkeeping.} The $R^2$ values in Table~\ref{tab:direction-norm} are measured on a \textbf{synthetic} experiment with a randomly initialized NoPE model evaluated on uniformly sampled tokens with context length 64. In contrast, the extremely strong norm-based numbers we report later in Table~\ref{tab:random-vs-trained} (norm--position correlation $r \approx -0.97$, norm-only $R^2 \approx 0.94$) come from a \textbf{different} setting: a randomly initialized 1-layer NoPE language model evaluated on \textbf{Shakespeare} text with context length 256. Moreover, Table~\ref{tab:direction-norm} reports only $R^2$ values, while Table~\ref{tab:random-vs-trained} reports both correlation coefficients $r$ and $R^2$ for the norm probe. The apparent discrepancy between ``$R^2\approx0.19/0.88$" and ``$r\approx-0.97$ / $R^2\approx0.94$" therefore reflects different datasets, context lengths, and metrics, not an internal inconsistency.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{norm_over_positions.png}
+\caption{Activation norms ($\|h\|$) at each position for random vs trained models (post-LN2). \textbf{Left}: Random model shows strong negative correlation ($r=-0.998$) between norm and position---early positions have higher norms due to averaging fewer embeddings. Thin lines show individual samples; thick line shows mean with shaded $\pm 1$ std band. \textbf{Right}: Trained model shows weak positive correlation ($r=+0.86$)---training \textit{inverts} the relationship, destroying the norm-based position signal.}
+\label{fig:norm-over-positions}
+\end{figure}
+
+Figure~\ref{fig:norm-over-positions} visualizes this phenomenon directly: in randomly initialized models, activation norms decay monotonically with position (consistent with the $1/\sqrt{i+1}$ theoretical prediction), while trained models show a qualitatively different---even inverted---pattern.
 
 \paragraph{Why LayerNorm Linearizes the Position Signal.}
 The key insight is that LayerNorm's normalization step converts the nonlinear relationship between position and activation structure into a near-linear relationship in the output norm. Consider the pre-LN activation $h_i$ at position $i$, which averages $i+1$ embedding vectors. The input variance $\sigma_i^2 \propto 1/(i+1)$ follows a hyperbolic decay. LayerNorm computes:
@@ -590,6 +627,47 @@ We test two key hypotheses from our circuit analysis on the trained models.
 \subsubsection{Normalization Comparison}
 
 Comparing LayerNorm and RMSNorm variants reveals that both achieve similar language modeling performance (perplexity 311.9 vs 327.6) and maintain the same attention uniformity patterns. This demonstrates that the implicit positional encoding mechanism does not depend on mean-centering---the variance-based signal created by causal attention is sufficient regardless of normalization choice.
+
+\subsubsection{Random vs Trained Models: A Critical Distinction}\label{sec:random-vs-trained}
+
+A crucial finding emerges when comparing randomly initialized models to trained models: \textbf{the norm-based position encoding mechanism is largely an initialization phenomenon that training destroys}.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Random} & \textbf{Trained} \\
+\midrule
+Norm-Position Corr$^\dagger$ & $-0.97$ & $+0.15$ \\
+Norm R$^2$$^\ddagger$ & $0.94$ & $0.02$ \\
+Direction R$^2$ (post-attn) & $0.23$ & $0.18$ \\
+Attention Uniformity & 97.3\% & 94.3\% \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of position encoding metrics between randomly initialized and trained NoPE models (evaluated on Shakespeare data). $^\dagger$Pearson correlation between $\|h\|$ and position. $^\ddagger$Linear probe $R^2$ predicting position from norm only. Training \textbf{inverts} the norm-position correlation from strongly negative to slightly positive, destroying the norm-based mechanism.}
+\label{tab:random-vs-trained}
+\end{table}
+
+Table~\ref{tab:random-vs-trained} reveals striking differences. At random initialization, there is a strong negative correlation ($r=-0.97$) between activation norm and position---earlier positions have higher variance due to averaging fewer embeddings, and LayerNorm linearizes this into a clear norm signal. After training, this correlation \textbf{inverts} to slightly positive ($r=+0.15$), and the norm-based $R^2$ drops from $0.94$ to just $0.02$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{trained_vs_random_comparison.png}
+\caption{Comparison of position encoding between random and trained models. \textbf{Top}: Norm-position correlation inverts from $-0.97$ (random) to $+0.15$ (trained). \textbf{Bottom}: Norm R$^2$ drops from $0.94$ to $0.02$, while direction R$^2$ remains low in both cases.}
+\label{fig:trained-vs-random}
+\end{figure}
+
+Figure~\ref{fig:trained-vs-random} visualizes this dramatic shift. Importantly, both models maintain near-uniform attention patterns (94-97\% uniformity), so the difference is not in attention---it emerges from how training reshapes the embedding and projection spaces.
+
+\paragraph{Implications.} This finding has important implications for our understanding of implicit positional encoding:
+\begin{enumerate}
+    \item The variance-based mechanism we characterize operates primarily at \textbf{initialization}. While it provides a strong inductive bias for position awareness, training does not preserve this specific mechanism.
+    \item Trained NoPE models must use \textbf{alternative mechanisms} for position encoding. Since they achieve reasonable language modeling performance, they clearly encode position---but through different means than the initialization-time circuit.
+    \item The \textbf{LayerNorm linearization} effect (direction $\rightarrow$ norm) is also primarily an initialization phenomenon. After training, both direction and norm show similarly low position decodability.
+\end{enumerate}
+
+This raises an important open question: what mechanism do trained NoPE models use for position encoding? Possibilities include token co-occurrence patterns, learned attention biases, or emergent representations that differ fundamentally from the initialization-time circuit. We leave detailed investigation of trained-model mechanisms to future work.
 
 \subsection{Length Extrapolation}
 
@@ -651,7 +729,9 @@ Crucially, our causal intervention experiments disentangle the contributions of 
 
 \section*{Limitations}
 
-Our work has several limitations. While our intervention experiments demonstrate that the geometric decoding mechanism can function on individual samples without population statistics, the population-level patterns still provide additional signal that trained models utilize when available. The circuit requires sufficient token embedding diversity, limiting applicability to domains with very small vocabularies. We observe initialization sensitivity, as the mechanism requires careful initialization within specific variance ranges (Xavier-scale) for optimal performance. The absolute accuracy of isolated probes (3-5\%) is substantially lower than the full trained model (99.97\%), indicating that the complete circuit involves interactions beyond what our intervention experiments capture. Finally, our analysis focuses on single-layer models; multi-layer interactions may introduce additional complexities not captured here.
+Our work has several limitations. \textbf{Most critically, our analysis reveals that the norm-based position encoding mechanism is largely an initialization phenomenon}---training dramatically reduces the norm-position correlation from $r=-0.97$ to $r=+0.15$ (Section~\ref{sec:random-vs-trained}). While trained NoPE models still function, they appear to use different mechanisms than the initialization-time circuit we characterize. This suggests our findings are most relevant for understanding inductive biases rather than learned representations.
+
+While our intervention experiments demonstrate that the geometric decoding mechanism can function on individual samples without population statistics, the population-level patterns still provide additional signal that trained models utilize when available. The circuit requires sufficient token embedding diversity, limiting applicability to domains with very small vocabularies. We observe initialization sensitivity, as the mechanism requires careful initialization within specific variance ranges (Xavier-scale) for optimal performance. The absolute accuracy of isolated probes (3-5\%) is substantially lower than the full trained model (99.97\%), indicating that the complete circuit involves interactions beyond what our intervention experiments capture. Finally, our analysis focuses on single-layer models; multi-layer interactions may introduce additional complexities not captured here.
 
 \section*{Future Work}
 
