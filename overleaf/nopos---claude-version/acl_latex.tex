@@ -575,7 +575,7 @@ Table~\ref{tab:direction-norm} reveals a striking pattern in randomly initialize
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{norm_over_positions.png}
-\caption{Activation norms ($\|h\|$) at each position for random vs trained models (post-LN2). \textbf{Left}: Random model shows strong negative correlation ($r=-0.998$) between norm and position---early positions have higher norms due to averaging fewer embeddings. Thin lines show individual samples; thick line shows mean with shaded $\pm 1$ std band. \textbf{Right}: Trained model shows weak positive correlation ($r=+0.86$)---training \textit{inverts} the relationship, destroying the norm-based position signal.}
+\caption{Activation norms ($\|h\|$) at each position for random vs trained models (post-LN2), using uniform random tokens with context length 64. \textbf{Left}: Random model shows strong negative correlation ($r=-0.998$) between norm and position---early positions have higher norms due to averaging fewer embeddings. Thin lines show individual samples; thick line shows mean with shaded $\pm 1$ std band. \textbf{Right}: Trained model shows weak positive correlation ($r=+0.86$)---training \textit{inverts} the relationship, destroying the norm-based position signal. Note: These correlations differ from Table~\ref{tab:random-vs-trained} due to different experimental conditions; see Appendix~\ref{app:experimental-conditions} for details.}
 \label{fig:norm-over-positions}
 \end{figure}
 
@@ -846,5 +846,107 @@ Both models converge to similar perplexities, indicating that the language model
 \paragraph{H1: Attention Uniformity.} We computed the variance of attention weights at each position and compared to the theoretical $1/(i+1)$ decay. All 12 heads in both models showed Pearson $r > 0.99$ correlation with the theoretical curve, confirming that near-uniform attention persists through training.
 
 \paragraph{H2: Population Statistics.} Linear probes trained on population means (averaged across 5000 samples) achieve $r = 1.0$ between probe predictions and true positions, confirming that position-correlated token distributions create exploitable patterns in the mean activations through the LayerNorm paradox mechanism.
+
+\section{Experimental Conditions for Figures and Tables}\label{app:experimental-conditions}
+
+This appendix documents the exact experimental conditions used to generate each figure and table in the paper. Different experiments use different model configurations and data sources; this section provides full provenance for reproducibility.
+
+\subsection{Model Configurations}
+
+We use three distinct model configurations across experiments:
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Config} & \textbf{Synthetic-Small} & \textbf{Synthetic-Large} & \textbf{Trained} \\
+\midrule
+Model state & Random init & Random init & Trained 5K steps \\
+n\_embd & 256 & 768 & 768 \\
+n\_head & 4 & 12 & 12 \\
+n\_ctx & 64 & 64 & 256 \\
+vocab\_size & 1,000 & 50,257 & 50,304 \\
+Input tokens & Uniform random & Uniform random & Shakespeare \\
+\bottomrule
+\end{tabular}
+\caption{Model configurations used across experiments.}
+\label{tab:model-configs}
+\end{table}
+
+\subsection{Figure and Table Provenance}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Figure/Table} & \textbf{Config} & \textbf{Source Script} \\
+\midrule
+\multicolumn{3}{l}{\textit{Main paper figures}} \\
+Fig.~\ref{fig:single-sample-pred} & Synthetic-Large & \texttt{layernorm\_paradox\_investigation.py} \\
+Fig.~\ref{fig:attention-patterns} & Synthetic-Large & \texttt{attention\_std\_phases.py} \\
+Fig.~\ref{fig:variance-decay} & Synthetic-Large & \texttt{generate\_all\_paper\_figures.py} \\
+Fig.~\ref{fig:ln-linearization} & Synthetic-Small & \texttt{direction\_norm\_independence.py} \\
+Fig.~\ref{fig:layernorm-paradox} & Synthetic-Large & \texttt{layernorm\_paradox\_investigation.py} \\
+Fig.~\ref{fig:mlp-contributions} & Synthetic (d=1024) & \texttt{mlp\_decoding\_peaks.py} \\
+Fig.~\ref{fig:mlp-decoding} & Synthetic (d=1024) & \texttt{mlp\_decoding\_peaks.py} \\
+Fig.~\ref{fig:vocab-scaling} & Synthetic (varied) & \texttt{vocabulary\_scaling\_linear.py} \\
+Fig.~\ref{fig:critical-neurons} & Synthetic-Large & \texttt{layernorm\_paradox\_investigation.py} \\
+Fig.~\ref{fig:neuron-avg-activations} & Synthetic-Large & \texttt{layernorm\_paradox\_investigation.py} \\
+\midrule
+\multicolumn{3}{l}{\textit{Direction vs norm analysis}} \\
+Tab.~\ref{tab:direction-norm} & Synthetic-Small & \texttt{direction\_norm\_independence.py} \\
+Fig.~\ref{fig:norm-over-positions} & Synthetic-Large + Trained & \texttt{visualize\_norm\_over\_positions.py} \\
+\midrule
+\multicolumn{3}{l}{\textit{Random vs trained comparison}} \\
+Tab.~\ref{tab:random-vs-trained} & Trained + Random & \texttt{trained\_model\_analysis.py} \\
+Fig.~\ref{fig:trained-vs-random} & Trained + Random & \texttt{visualize\_norm\_over\_positions.py} \\
+\midrule
+\multicolumn{3}{l}{\textit{Appendix figures}} \\
+Fig.~\ref{fig:post-ln-heatmap} & Synthetic-Large & \texttt{layernorm\_paradox\_investigation.py} \\
+Fig.~\ref{fig:sample-convergence} & Synthetic-Large & \texttt{sample\_convergence\_analysis.py} \\
+\bottomrule
+\end{tabular}
+\caption{Experimental conditions for each figure and table.}
+\label{tab:figure-provenance}
+\end{table}
+
+\subsection{Key Values by Experiment}
+
+\paragraph{Table~\ref{tab:direction-norm} (Direction vs Norm R\textsuperscript{2}).} 
+Values from \texttt{direction\_norm\_independence\_results.json} using \textbf{Synthetic-Small} config:
+\begin{itemize}
+    \item post\_attn: Full $R^2=0.04$, Norm $R^2=0.56$, Direction $R^2=0.39$
+    \item post\_ln2: Full $R^2=0.19$, Norm $R^2=0.88$, Direction $R^2=0.19$
+    \item post\_mlp\_residual: Full $R^2=0.22$, Norm $R^2=0.39$, Direction $R^2=0.35$
+\end{itemize}
+
+\paragraph{Table~\ref{tab:random-vs-trained} (Random vs Trained).}
+Values from \texttt{trained\_model\_results.json} using \textbf{Trained} config on Shakespeare:
+\begin{itemize}
+    \item Random Init: norm-position $r=-0.97$, norm $R^2=0.94$, direction $R^2=0.23$
+    \item Trained LN: norm-position $r=+0.15$, norm $R^2=0.02$, direction $R^2=0.18$
+\end{itemize}
+
+\paragraph{Figure~\ref{fig:norm-over-positions} (Norm Over Positions).}
+Generated by \texttt{visualize\_norm\_over\_positions.py} using \textbf{Synthetic-Large} (random) and \textbf{Trained} (LayerNorm) configs with uniform random tokens (n\_ctx=64). The correlations shown ($r=-0.998$ random, $r=+0.86$ trained) are computed within the script on this specific setup and differ from Table~\ref{tab:random-vs-trained} values due to:
+\begin{enumerate}
+    \item Different context length (64 vs 256)
+    \item Different input tokens (uniform random vs Shakespeare)
+    \item Different sample sizes
+\end{enumerate}
+
+\subsection{Reconciling Different R\textsuperscript{2} Values}
+
+The paper reports several sets of R\textsuperscript{2} values that may appear inconsistent but arise from different experimental conditions:
+
+\begin{enumerate}
+    \item \textbf{$R^2_{\text{norm}}=0.88$ (post-LN)} from Table~\ref{tab:direction-norm}: Synthetic-Small config, n\_embd=256, uniform tokens
+    \item \textbf{$R^2_{\text{norm}}=0.94$ (post-LN)} from Table~\ref{tab:random-vs-trained}: Random init with n\_embd=768 on Shakespeare
+    \item \textbf{$r=-0.998$} in Fig.~\ref{fig:norm-over-positions}: Random n\_embd=768, uniform tokens, n\_ctx=64
+\end{enumerate}
+
+These differences reflect how the positional encoding mechanism scales with model size and responds to different input distributions. The core finding---that LayerNorm linearizes position encoding from direction into norm---is consistent across all conditions.
 
 \end{document}
