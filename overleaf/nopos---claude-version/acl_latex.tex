@@ -379,12 +379,12 @@ After attention, the mean activation across channels remains position-independen
 \end{figure}
 
 \paragraph{Post-LN Activations.}
-LayerNorm computes the standard deviation $\sigma_i$ across channels at each position, effectively reading out the variance signal. Since $\sigma_i$ varies monotonically with position, the normalization process encodes position-dependent input variance into the output norm. Critically, LayerNorm does not simply preserve positional information---it \textit{linearizes} it. Before LayerNorm, position is encoded in complex, high-dimensional directional structure that yields poor linear decodability ($R^2=0.04$). After LayerNorm, the same information becomes a near-linear function of output norm ($R^2=0.76$), making position trivially decodable by a linear probe. Additionally, at the population level, averaging across many samples reveals smooth monotonic patterns due to position-correlated token distributions.
+LayerNorm computes the standard deviation $\sigma_i$ across channels at each position, effectively reading out the variance signal. Since $\sigma_i$ varies monotonically with position, the normalization process encodes position-dependent input variance into the output norm. Critically, LayerNorm does not simply preserve positional information---it \textit{linearizes} it. Before LayerNorm, position is encoded in complex, high-dimensional directional structure that yields poor linear decodability ($R^2=0.04$). After LayerNorm, the same information becomes a near-linear function of output norm ($R^2_{\text{norm}}=0.88$), making position trivially decodable by a linear probe. Additionally, at the population level, averaging across many samples reveals smooth monotonic patterns due to position-correlated token distributions.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{layernorm_linearization.png}
-\caption{LayerNorm linearization effect. \textbf{Left}: Before LN (post-attention), position is encoded in directional structure ($R^2=0.80$) but full activations yield poor linear decodability ($R^2=0.04$). \textbf{Right}: After LN, position becomes linearly decodable from both direction and norm ($R^2 \approx 0.76$). LN transforms complex directional encoding into simple norm-based signal.}
+\caption{LayerNorm linearization effect. \textbf{Left}: Before LN (post-attention), position is encoded in directional structure ($R^2_{\text{dir}}=0.39$) and norm ($R^2_{\text{norm}}=0.56$), but full activations yield poor linear decodability ($R^2_{\text{full}}=0.04$). \textbf{Right}: After LN, norm dominates ($R^2_{\text{norm}}=0.88$) while direction R\textsuperscript{2} drops to $0.19$. LN transforms complex directional encoding into simple norm-based signal.}
 \label{fig:ln-linearization}
 \end{figure}
 
@@ -598,7 +598,7 @@ PyTorch's LayerNorm divides by $d$ (not $d{-}1$), so $\hat\sigma_i^2$ is a biase
 Additional details and a first-order derivation for $\mathbb{E}[\|\text{LN}(h_i)\|]$ under a Gaussian-mixture approximation are provided in Appendix~\ref{sec:ln-norm-derivation}.
 
 \paragraph{Information Flow Through the Transformer Block.}
-Critically, \textbf{after the MLP}, direction again dominates ($R^2=0.75$ vs $0.37$), suggesting the MLP redistributes positional information back into directional components. This reveals a complete picture of information flow: position enters as directional structure (post-attention), is linearized into norm by LayerNorm, and is then re-encoded into directions by the MLP for downstream processing.
+Critically, \textbf{after the MLP}, direction recovers relative to post-LN ($R^2_{\text{dir}}=0.35$ vs $R^2_{\text{norm}}=0.39$, compared to post-LN where $R^2_{\text{norm}}=0.88$ strongly dominated). This suggests the MLP redistributes positional information back into directional components. The complete picture of information flow: position enters as directional structure (post-attention), is linearized into norm by LayerNorm, and is partially re-encoded into directions by the MLP for downstream processing.
 
 Causal intervention experiments confirm these findings: when we swap norms between positions while preserving directions, the trained probe's predictions follow the \textit{original} position (correlation $r=0.50$) rather than the swapped norm position ($r=-0.50$), demonstrating that direction carries the primary signal used by trained decoders.
 
