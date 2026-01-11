@@ -1,0 +1,48 @@
+Starting LayerNorm Geometry Analysis
+Date: Sun Jan 11 03:06:23 AM IST 2026
+Node: hpc8h200-01
+GPU: NVIDIA H200
+Using device: cuda
+======================================================================
+LayerNorm Geometric Analysis
+======================================================================
+
+Creating random NoPE model...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                4
+  Embedding Dim:        256
+  Block Size:           64
+  Vocab Size:           65
+  Attention Stats:      False
+  Parameters:           0.81M
+============================================================
+
+
+Running LayerNorm geometry analysis...
+
+=== Analysis 1: Variance Redistribution ===
+Pre-LN2 variance-position correlation: -0.5773
+Post-LN2 variance-position correlation: -0.9600
+
+=== Analysis 2: Norm vs Variance Decomposition ===
+Pre-LN2 norm-position correlation: -0.7161
+Pre-LN2 |mean|-position correlation: 0.1926
+Pre-LN2 std-position correlation: -0.7161
+
+=== Analysis 3: LN Mean Subtraction Effect ===
+LN mean subtracted - position correlation: -0.1926
+Post-centering norm - position correlation: -0.7161
+
+=== Analysis 4: Normalized Vector Analysis ===
+Normalized vector norm - position correlation: -0.9601
+Normalized vector norm mean: 15.9598
+Expected (sqrt(n_embd)): 16.0000
+
+=== Analysis 5: LN Gain/Bias Effect ===
+Completed at: Sun Jan 11 03:06:29 AM IST 2026

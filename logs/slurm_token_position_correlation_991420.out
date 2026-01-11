@@ -1,0 +1,91 @@
+Starting Token-Position Correlation Analysis...
+Job ID: 991420
+Running on node: hpc8h200-01
+Start time: Sat Jan 10 11:11:56 PM IST 2026
+Loading wikitext (train)...
+Tokenizing...
+Created 50000 sequences of length 256
+
+============================================================
+RUNNING TOKEN-POSITION CORRELATION ANALYSIS
+============================================================
+Dataset: wikitext
+Sequences: 50000
+Sequence length: 256
+Vocabulary size: 50257
+============================================================
+
+
+[T1.1] Computing token frequency by position...
+Computing token frequency by position...
+
+[T1.2] Computing entropy by position...
+Computing entropy by position...
+
+[T1.3] Computing transition probabilities...
+Computing transition probabilities...
+
+[T1.4] Computing top-k concentration...
+Computing top-k concentration...
+
+[T1.5] Finding position-specific tokens...
+Finding position-specific tokens...
+
+[Extra] Computing position distinguishability...
+Computing position distinguishability...
+
+============================================================
+SUMMARY STATISTICS
+============================================================
+Entropy range: 7.11 - 7.19 nats
+Entropy mean: 7.15 nats
+Entropy std: 0.01 nats
+Avg KL divergence: 1.6255
+Max KL divergence: 1.7090
+
+Top-k concentration at position 0 vs position 128:
+  Top-10: pos 0 = 0.242, pos 128 = 0.238
+  Top-50: pos 0 = 0.419, pos 128 = 0.418
+  Top-100: pos 0 = 0.467, pos 128 = 0.467
+  Top-500: pos 0 = 0.600, pos 128 = 0.601
+
+Position-specific tokens (examples):
+
+  Position 0:
+    ' reiterate' (LLR=5.54, P=0.0000)
+    '772' (LLR=5.54, P=0.0000)
+    'ITIES' (LLR=5.54, P=0.0000)
+    ' Forsaken' (LLR=5.54, P=0.0000)
+    'remember' (LLR=5.54, P=0.0000)
+
+  Position 1:
+    'rely' (LLR=5.54, P=0.0000)
+    'rpm' (LLR=5.54, P=0.0000)
+    'aligned' (LLR=5.54, P=0.0000)
+    'nr' (LLR=5.54, P=0.0000)
+    'Hero' (LLR=5.54, P=0.0000)
+
+  Position 255:
+    'renches' (LLR=5.54, P=0.0000)
+    'filter' (LLR=5.54, P=0.0000)
+    ' Mongo' (LLR=5.54, P=0.0000)
+    ' mig' (LLR=5.54, P=0.0000)
+    ' 「' (LLR=5.54, P=0.0000)
+
+============================================================
+GENERATING PLOTS
+============================================================
+Saved results/token_position_correlation/token_frequency_heatmap.png and .pdf
+Saved results/token_position_correlation/entropy_by_position.png and .pdf
+Saved results/token_position_correlation/topk_concentration.png and .pdf
+Saved results/token_position_correlation/kl_divergence_heatmap.png and .pdf
+Saved results/token_position_correlation/transition_entropy.png and .pdf
+Saved overleaf/nopos---claude-version/plots/token_position_correlation_summary.png and .pdf
+Saved results to results/token_position_correlation/token_position_correlation_results.json
+
+============================================================
+ANALYSIS COMPLETE
+============================================================
+Results saved to: results/token_position_correlation
+Paper figure saved to: overleaf/nopos---claude-version/plots/token_position_correlation_summary.png
+Finished at: Sat Jan 10 11:24:53 PM IST 2026

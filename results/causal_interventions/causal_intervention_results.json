@@ -1,0 +1,117 @@
+{
+  "activation_patching": [
+    {
+      "source_pos": 0,
+      "target_pos": 32,
+      "mean_prediction": 22.189163208007812,
+      "std_prediction": 17.19928741455078,
+      "fraction_closer_to_source": 0.36,
+      "expected_if_causal": "predictions should be close to source_pos"
+    },
+    {
+      "source_pos": 16,
+      "target_pos": 48,
+      "mean_prediction": 30.716279983520508,
+      "std_prediction": 5.633488178253174,
+      "fraction_closer_to_source": 0.582,
+      "expected_if_causal": "predictions should be close to source_pos"
+    },
+    {
+      "source_pos": 32,
+      "target_pos": 16,
+      "mean_prediction": 32.52859115600586,
+      "std_prediction": 4.22678279876709,
+      "fraction_closer_to_source": 0.979,
+      "expected_if_causal": "predictions should be close to source_pos"
+    },
+    {
+      "source_pos": 63,
+      "target_pos": 0,
+      "mean_prediction": 33.399200439453125,
+      "std_prediction": 3.466186046600342,
+      "fraction_closer_to_source": 0.719,
+      "expected_if_causal": "predictions should be close to source_pos"
+    }
+  ],
+  "attention_intervention": {
+    "uniform": {
+      "intervention_type": "uniform",
+      "r2": -0.12435436248779297,
+      "pearson_r": 0.0006661815976220231,
+      "mae": 16.36777248226106
+    },
+    "diagonal": {
+      "intervention_type": "diagonal",
+      "r2": -0.009943366050720215,
+      "pearson_r": -0.003142003726987416,
+      "mae": 16.053982069268823
+    },
+    "first_only": {
+      "intervention_type": "first_only",
+      "r2": -0.0037593841552734375,
+      "pearson_r": 0.00045621500416195533,
+      "mae": 16.019264382719992
+    },
+    "random": {
+      "intervention_type": "random",
+      "r2": -0.08868563175201416,
+      "pearson_r": 0.010635887756237089,
+      "mae": 16.248513172790407
+    }
+  },
+  "decoding_knockout": {
+    "clean": {
+      "r2": -0.034232378005981445,
+      "pearson_r": -0.0025322870340808426,
+      "mae": 16.11695827010274
+    },
+    "knockout": {
+      "r2": -0.034237027168273926,
+      "pearson_r": -0.002535101958520849,
+      "mae": 16.116999871194363
+    },
+    "r2_drop": 4.649162292480469e-06,
+    "relative_drop": -0.013581184139962808
+  },
+  "layernorm_bypass": {
+    "LN1 (pre-attention)": {
+      "with_ln": {
+        "r2": -0.004230856895446777,
+        "pearson_r": -0.00173390616291102
+      },
+      "bypass_ln": {
+        "r2": -0.004158616065979004,
+        "pearson_r": -0.0016072232362500131
+      }
+    },
+    "LN2 (pre-MLP)": {
+      "with_ln": {
+        "r2": 0.004498898983001709,
+        "pearson_r": 0.12415511551444072
+      },
+      "bypass_ln": {
+        "r2": -0.034232378005981445,
+        "pearson_r": -0.0025322870340808426
+      }
+    }
+  },
+  "population_mean": {
+    "clean": {
+      "r2": 0.004498898983001709,
+      "pearson_r": 0.12415511551444072,
+      "mae": 15.848368382900953
+    },
+    "mean_removed": {
+      "r2": -0.03779196739196777,
+      "pearson_r": -0.24090174971905068,
+      "mae": 16.295613564252854
+    },
+    "mean_swapped": {
+      "r2": 0.012425482273101807,
+      "pearson_r": 0.14063741206906294,
+      "mae": 15.786383084744214
+    },
+    "swap_analysis": {
+      "corr_with_true_pos": -0.27280551668383574,
+      "corr_with_swapped_pos": 0.27280551668383574,
+      "follows_swap": 

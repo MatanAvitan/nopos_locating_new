@@ -1,0 +1,67 @@
+Starting Causal Intervention Experiments...
+Job ID: 991429
+Running on node: hpc2a100-01
+Start time: Sun Jan 11 12:17:58 AM IST 2026
+
+============================================================
+CAUSAL INTERVENTION EXPERIMENTS
+============================================================
+Samples: 10000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+============================================================
+INTERVENTION 1: Activation Patching
+============================================================
+  Patch 0 -> 32: mean pred = 22.2, closer to source = 36.0%
+  Patch 16 -> 48: mean pred = 30.7, closer to source = 58.2%
+  Patch 32 -> 16: mean pred = 32.5, closer to source = 97.9%
+  Patch 63 -> 0: mean pred = 33.4, closer to source = 71.9%
+
+============================================================
+INTERVENTION 2: Attention Pattern Intervention
+============================================================
+  uniform: R² = -0.1244, r = 0.0007
+  diagonal: R² = -0.0099, r = -0.0031
+  first_only: R² = -0.0038, r = 0.0005
+  random: R² = -0.0887, r = 0.0106
+
+============================================================
+INTERVENTION 3: Decoding Vector Knockout
+============================================================
+  Clean R²: -0.0342
+  Knockout R²: -0.0342
+  R² Drop: 0.0000 (-0.0%)
+
+============================================================
+INTERVENTION 4: LayerNorm Bypass
+============================================================
+  LN1 (pre-attention):
+    With LN: R² = -0.0042
+    Bypass LN: R² = -0.0042
+  LN2 (pre-MLP):
+    With LN: R² = 0.0045
+    Bypass LN: R² = -0.0342
+
+============================================================
+INTERVENTION 5: Population Mean Intervention
+============================================================
+  Clean R²: 0.0045
+  Mean Removed R²: -0.0378
+  Mean Swapped R²: 0.0124
+  Swap follows expected: True
+
+============================================================
+INTERVENTION 6: Value Vector Corruption
+============================================================
+  clean: R² = -0.0546
+  zero_values: R² = -0.0059
+  noisy_values: R² = -0.0797
+  shuffled_values: R² = -0.0533
+
+============================================================
+GENERATING PLOTS
+============================================================
+Finished at: Sun Jan 11 12:19:24 AM IST 2026

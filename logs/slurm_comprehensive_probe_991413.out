@@ -1,0 +1,18 @@
+Starting Comprehensive Probe Analysis...
+Job ID: 991413
+Running on node: dsisarit05
+Start time: Sun Jan 11 11:03:44 AM IST 2026
+
+============================================================
+COMPREHENSIVE PROBE ANALYSIS
+============================================================
+Samples: 10000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+============================================================
+EXPERIMENT: LayerNorm Model
+============================================================
+Extracting activations (LayerNorm)...

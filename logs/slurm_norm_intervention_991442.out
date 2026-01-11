@@ -1,0 +1,68 @@
+Starting Norm Intervention Experiment
+Date: Sun Jan 11 03:06:29 AM IST 2026
+Node: hpc8h200-01
+GPU: NVIDIA H200
+Using device: cuda
+======================================================================
+Norm Intervention Experiment
+Causal Verification that Norm Encodes Position
+======================================================================
+
+Creating random NoPE model...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                4
+  Embedding Dim:        256
+  Block Size:           64
+  Vocab Size:           65
+  Attention Stats:      False
+  Parameters:           0.81M
+============================================================
+
+
+=== Experiment 1: Norm Equalization ===
+Baseline R²: 0.0650, MAE: 15.28
+After norm equalization R²: 0.1011, MAE: 15.09
+R² drop: -0.0361 (-55.6% relative)
+Retrained on equalized R²: 0.7504, MAE: 7.63
+
+=== Experiment 2: Norm Swapping ===
+Correlation with original position: 0.4983
+Correlation with swapped position (norm source): -0.4983
+MAE to original: 14.41, MAE to swapped: 17.90
+Predictions follow ORIGINAL POSITION
+
+=== Experiment 3: Norm-Only Decoding ===
+embed: Full R²=-0.0003, Norm R²=-0.0001, Direction R²=-0.0004
+post_ln1: Full R²=-0.0004, Norm R²=-0.0001, Direction R²=-0.0004
+post_attn: Full R²=0.0427, Norm R²=0.5144, Direction R²=0.8033
+post_attn_residual: Full R²=0.0381, Norm R²=0.4937, Direction R²=0.7551
+post_ln2: Full R²=0.7645, Norm R²=0.7599, Direction R²=0.7550
+post_mlp_residual: Full R²=0.7021, Norm R²=0.3675, Direction R²=0.7478
+
+=== Experiment 4: Targeted Norm Change ===
+Position 32 with norm of pos 0: Predicted 35.3 ± 11.5 (actual: 32)
+Position 63 with norm of pos 0: Predicted 37.9 ± 9.9 (actual: 63)
+Position 0 with norm of pos 32: Predicted 30.1 ± 2.8 (actual: 0)
+Position 0 with norm of pos 63: Predicted 30.2 ± 2.5 (actual: 0)
+
+=== Experiment 5: Synthetic Norm Positions ===
+Norm-position relationship: norm = 1.2056 + -0.0128 * position
+
+Synthetic norm -> Expected position mapping:
+  Norm 15.0 -> Expected position -1079.1
+  Norm 10.0 -> Expected position -687.9
+  Norm 5.0 -> Expected position -296.8
+  Norm 3.0 -> Expected position -140.4
+  Norm 25.0 -> Expected position -1861.3
+Norm 15.0: Predicted 86.4 ± 73.7 (expected: -1079.1)
+Norm 10.0: Predicted 67.2 ± 49.2 (expected: -687.9)
+Norm 5.0: Predicted 48.1 ± 24.6 (expected: -296.8)
+Norm 3.0: Predicted 40.4 ± 14.7 (expected: -140.4)
+Norm 25.0: Predicted 124.6 ± 122.9 (expected: -1861.3)
+Completed at: Sun Jan 11 03:06:35 AM IST 2026

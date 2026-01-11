@@ -1,0 +1,65 @@
+Starting direction vs norm independence analysis
+Job ID: 991445
+Node: hpc8h200-01
+GPU: 0
+============================================================
+Direction vs Norm Independence Analysis
+============================================================
+
+Using device: cuda
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                4
+  Embedding Dim:        256
+  Block Size:           64
+  Vocab Size:           1000
+  Attention Stats:      False
+  Parameters:           1.05M
+============================================================
+
+Created random NoPE model
+
+=== Experiment 1: Direction Isolation ===
+  Full activations R²: 0.1770
+  Direction only (norm=1) R²: 0.1787
+  Norm only R²: 0.8812
+  Direction with random norm R²: 0.1784
+  Direction with mean norm R²: 0.1784
+
+=== Experiment 2: Cross-Decoding ===
+  Same-domain direction R²: 0.1787
+  Same-domain norm R²: 0.8812
+  Correlation of direction vs norm predictions: 0.4148
+
+=== Experiment 3: Orthogonalize Norm from Direction ===
+  Full activations after removing norm direction R²: 0.1009
+  Directions after removing norm direction R²: 0.1019
+  Fraction of variance removed: 0.0085
+
+=== Experiment 4: PCA Analysis ===
+  Top 5 PCs position correlations: [np.float64(-0.055049502297707914), np.float64(-0.006103303260746644), np.float64(-0.02233071042368114), np.float64(0.03692218255828619), np.float64(-0.027355488018787063)]
+  Top 5 PCs norm correlations: [np.float64(0.03669467470722041), np.float64(0.007860098638764206), np.float64(0.02087839428474799), np.float64(-0.020086743903301396), np.float64(0.029071111514957726)]
+  Best PC for position: PC8 (r=-0.0834)
+  Best PC for norm: PC13 (r=-0.0699)
+  -> Position and norm are encoded by DIFFERENT PCs
+  -> Correlation between best position/norm PCs: 0.0000
+  Position R² with top 1 PCs: 0.0006
+  Position R² with top 5 PCs: 0.0046
+  Position R² with top 10 PCs: 0.0207
+  Position R² with top 20 PCs: 0.0419
+
+=== Experiment 5: Position-Specific Analysis ===
+  Mean norm range: 15.9143 to 15.9968
+  Variance range: 0.960965 to 0.996509
+  Mean adjacent cosine similarity: 0.9452
+  Prototype-based classification accuracy: 0.0461
+
+=== Experiment 6: Layer-by-Layer Direction vs Norm ===
+  embed: dir R²=-0.0071, norm R²=0.0000, full R²=-0.0055
+  post_ln1: dir R²=-0.0140, norm R²=0.0001, full R²=-0.0143
+Done!

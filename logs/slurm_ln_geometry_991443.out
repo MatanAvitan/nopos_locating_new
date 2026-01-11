@@ -1,0 +1,99 @@
+Starting LayerNorm Geometry Analysis
+Date: Sun Jan 11 03:07:34 AM IST 2026
+Node: hpc8h200-01
+GPU: NVIDIA H200
+Using device: cuda
+======================================================================
+LayerNorm Geometric Analysis
+======================================================================
+
+Creating random NoPE model...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                4
+  Embedding Dim:        256
+  Block Size:           64
+  Vocab Size:           65
+  Attention Stats:      False
+  Parameters:           0.81M
+============================================================
+
+
+Running LayerNorm geometry analysis...
+
+=== Analysis 1: Variance Redistribution ===
+Pre-LN2 variance-position correlation: -0.5773
+Post-LN2 variance-position correlation: -0.9600
+
+=== Analysis 2: Norm vs Variance Decomposition ===
+Pre-LN2 norm-position correlation: -0.7161
+Pre-LN2 |mean|-position correlation: 0.1926
+Pre-LN2 std-position correlation: -0.7161
+
+=== Analysis 3: LN Mean Subtraction Effect ===
+LN mean subtracted - position correlation: -0.1926
+Post-centering norm - position correlation: -0.7161
+
+=== Analysis 4: Normalized Vector Analysis ===
+Normalized vector norm - position correlation: -0.9601
+Normalized vector norm mean: 15.9598
+Expected (sqrt(n_embd)): 16.0000
+
+=== Analysis 5: LN Gain/Bias Effect ===
+After normalization only - norm-position corr: -0.9601
+After gain only - norm-position corr: -0.9601
+After gain+bias (full LN) - norm-position corr: -0.9601
+LN gain mean: 1.0000, std: 0.0000
+LN bias mean: 0.0000, std: 0.0000
+
+=== Analysis 6: Per-Sample Correlation Analysis ===
+Pre-LN2 variance-pos per-sample corr: -0.5718 ± 0.0425
+Post-LN2 variance-pos per-sample corr: -0.9068 ± 0.0395
+Pre-LN2 norm-pos per-sample corr: -0.7052 ± 0.0425
+Post-LN2 norm-pos per-sample corr: -0.9068 ± 0.0395
+
+=== Analysis 7: Direction vs Magnitude After LN ===
+Full activations R²: 0.7633
+Unit vectors (direction) R²: 0.7537
+Norm (magnitude) R²: 0.7599
+
+=== Analysis 8: Theoretical Expected Norm ===
+Correlation between expected and actual norm ratios: 0.9994
+
+Results saved to /home/nlp/matan_avitan/git/nopos_locating_new/results/layernorm_geometry/layernorm_geometry_results.json
+Plots saved to /home/nlp/matan_avitan/git/nopos_locating_new/results/layernorm_geometry
+
+======================================================================
+SUMMARY: Why LayerNorm Amplifies Position Signal
+======================================================================
+
+Key Findings:
+
+1. VARIANCE REDISTRIBUTION:
+   - Pre-LN variance-position correlation: -0.5773
+   - Post-LN variance-position correlation: -0.9600
+   
+2. NORM vs DIRECTION vs MAGNITUDE:
+   - Full activations R²: 0.7633
+   - Direction only R²: 0.7537  
+   - Magnitude only R²: 0.7599
+
+3. LN GAIN/BIAS EFFECT:
+   - Before gain/bias: norm-pos corr = -0.9601
+   - After gain/bias: norm-pos corr = -0.9601
+
+4. THEORETICAL FIT:
+   - Expected norm ratio (1/sqrt(i+1)) correlation with actual: 0.9994
+
+Interpretation:
+- LayerNorm normalizes variance to 1, but this doesn't destroy position info
+- Position is encoded in the OUTPUT NORM of LN (not input variance)
+- The gain/bias parameters maintain the position signal
+- Direction vs Magnitude: Magnitude dominates
+
+Completed at: Sun Jan 11 03:07:41 AM IST 2026

@@ -1,0 +1,80 @@
+Starting Higher-Order Statistics Analysis...
+Job ID: 991414
+Running on node: dsicsgpu09
+Start time: Sat Jan 10 10:56:31 PM IST 2026
+
+============================================================
+HIGHER-ORDER STATISTICS ANALYSIS
+============================================================
+Samples: 30000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+Extracting activations from: blocks.0.ln2.hook_normalized
+
+[S1] Computing population mean...
+  Population mean norm correlation with position: r = 0.9833
+
+[S2] Computing kurtosis...
+  Mean kurtosis correlation with position: r = 0.5161
+
+[S3] Computing skewness...
+  Mean skewness correlation with position: r = 0.2354
+
+[S4] Computing eigenspectrum...
+  Top eigenvalue correlation with position: r = -0.9269
+
+[S5] Finding position-encoding direction...
+  Optimal direction correlation: r = 0.1806
+
+[S6] Computing pairwise correlations...
+  Correlation matrix Frobenius norm vs position: r = -0.9949
+
+[S7] Computing Lp norms...
+  L1 norm correlation with position: r = -0.9620
+  L2 norm correlation with position: r = -0.9996
+  Linf norm correlation with position: r = -0.1584
+
+[S8] Computing neuron correlations...
+  Max neuron correlation: r = 0.0225
+  Top 10 neuron correlations: [-0.02247262 -0.01980457  0.01961137  0.0195941   0.01884631 -0.01876326
+ -0.01806512  0.0169648  -0.01671806  0.01639289]
+
+============================================================
+PROBING WITH DIFFERENT STATISTICS
+============================================================
+  raw_activations: R² = 0.0266, r = 0.1643
+  kurtosis: R² = 1.0000, r = 1.0000
+  skewness: R² = 1.0000, r = 1.0000
+  eigenvalues: R² = 0.9988, r = 0.9994
+
+============================================================
+SUMMARY: Correlation with Position
+============================================================
+  L2 Norm                  : r = -0.9996
+  Correlation Frobenius    : r = -0.9949
+  Population Mean Norm     : r = +0.9833
+  L1 Norm                  : r = -0.9620
+  Top Eigenvalue           : r = -0.9269
+  Mean Kurtosis            : r = +0.5161
+  Mean Skewness            : r = +0.2354
+  Optimal Direction        : r = +0.1806
+  Linf Norm                : r = -0.1584
+
+============================================================
+GENERATING PLOTS
+============================================================
+Saved results/higher_order_statistics/kurtosis_skewness_by_position.png and .pdf
+Saved results/higher_order_statistics/eigenvalue_heatmap.png and .pdf
+Saved results/higher_order_statistics/neuron_position_correlations.png and .pdf
+Saved overleaf/nopos---claude-version/plots/higher_order_statistics_summary.png and .pdf
+Saved results to results/higher_order_statistics/higher_order_statistics_results.json
+
+============================================================
+ANALYSIS COMPLETE
+============================================================
+Results saved to: results/higher_order_statistics
+Paper figure saved to: overleaf/nopos---claude-version/plots/higher_order_statistics_summary.png
+Finished at: Sat Jan 10 11:07:35 PM IST 2026
