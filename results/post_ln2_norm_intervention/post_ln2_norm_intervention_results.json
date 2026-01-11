@@ -1,0 +1,110 @@
+{
+  "synthetic_uniform": {
+    "experiment_name": "synthetic_uniform",
+    "n_samples": 500,
+    "n_ctx": 64,
+    "baseline": {
+      "norm_position_corr": -0.984102938996636,
+      "norm_probe_r2": 0.9643274545669556,
+      "full_probe_r2": 0.13617342710494995
+    },
+    "interventions": {
+      "norm_equalization": {
+        "full_probe_r2": 0.1362801194190979,
+        "pred_position_corr": 0.3691614996533733,
+        "r2_drop": -0.00010669231414794922,
+        "r2_drop_percent": -0.0783503187194669
+      },
+      "norm_shuffle": {
+        "full_probe_r2": 0.13627445697784424,
+        "pred_position_corr": 0.36915365680765805,
+        "r2_drop": -0.00010102987289428711
+      },
+      "direction_shuffle": {
+        "full_probe_r2": -0.14160490036010742,
+        "norm_probe_r2": 0.9643274545669556,
+        "pred_position_corr": -0.0073546940557930995
+      },
+      "norm_swap_5_55": {
+        "baseline_pred_pos5": 27.46685218811035,
+        "baseline_pred_pos55": 34.69509506225586,
+        "after_swap_pred_pos5": 27.471160888671875,
+        "after_swap_pred_pos55": 34.70574951171875,
+        "shift_pos5": 0.0043087005615234375,
+        "shift_pos55": 0.010654449462890625
+      }
+    }
+  },
+  "synthetic_small": {
+    "experiment_name": "synthetic_small",
+    "n_samples": 500,
+    "n_ctx": 64,
+    "baseline": {
+      "norm_position_corr": -0.9400132029268088,
+      "norm_probe_r2": 0.8814677596092224,
+      "full_probe_r2": 0.18345385789871216
+    },
+    "interventions": {
+      "norm_equalization": {
+        "full_probe_r2": 0.18487489223480225,
+        "pred_position_corr": 0.42997295581240913,
+        "r2_drop": -0.0014210343360900879,
+        "r2_drop_percent": -0.7746004103520483
+      },
+      "norm_shuffle": {
+        "full_probe_r2": 0.18487012386322021,
+        "pred_position_corr": 0.4299674143661082,
+        "r2_drop": -0.0014162659645080566
+      },
+      "direction_shuffle": {
+        "full_probe_r2": -0.18268167972564697,
+        "norm_probe_r2": 0.881467878818512,
+        "pred_position_corr": 0.001227658988151239
+      },
+      "norm_swap_5_55": {
+        "baseline_pred_pos5": 25.35009765625,
+        "baseline_pred_pos55": 35.07473373413086,
+        "after_swap_pred_pos5": 25.32427978515625,
+        "after_swap_pred_pos55": 35.14070129394531,
+        "shift_pos5": -0.02581787109375,
+        "shift_pos55": 0.06596755981445312
+      }
+    }
+  },
+  "trained_shakespeare": {
+    "experiment_name": "trained_shakespeare",
+    "n_samples": 500,
+    "n_ctx": 64,
+    "baseline": {
+      "norm_position_corr": -0.06612196887435808,
+      "norm_probe_r2": 0.004371523857116699,
+      "full_probe_r2": 0.4638352394104004
+    },
+    "interventions": {
+      "norm_equalization": {
+        "full_probe_r2": 0.4639635682106018,
+        "pred_position_corr": 0.6811487132500654,
+        "r2_drop": -0.00012832880020141602,
+        "r2_drop_percent": -0.02766689317623644
+      },
+      "norm_shuffle": {
+        "full_probe_r2": 0.4639407992362976,
+        "pred_position_corr": 0.6811319953826822,
+        "r2_drop": -0.0001055598258972168
+      },
+      "direction_shuffle": {
+        "full_probe_r2": -0.4656546115875244,
+        "norm_probe_r2": 0.004371523857116699,
+        "pred_position_corr": -0.0012970464588908767
+      },
+      "norm_swap_5_55": {
+        "baseline_pred_pos5": 17.574838638305664,
+        "baseline_pred_pos55": 41.464725494384766,
+        "after_swap_pred_pos5": 17.568567276000977,
+        "after_swap_pred_pos55": 41.48147964477539,
+        "shift_pos5": -0.0062713623046875,
+        "shift_pos55": 0.016754150390625
+      }
+    }
+  }
+}
