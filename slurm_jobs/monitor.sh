@@ -1,292 +1,161 @@
 #!/bin/bash
-# NoPE Experiment Slurm Monitor
-# Usage: ./slurm_jobs/monitor.sh
+# Fast Slurm Job Monitor
+# Usage: ./monitor.sh [OPTIONS]
 #
-# This script provides a real-time dashboard for monitoring Slurm jobs.
-# Press Ctrl+C to exit.
+# Options:
+#   -r, --refresh SEC     Refresh interval in seconds (default: 10)
+#   -l, --logs DIR        Log directory to monitor (default: ./logs)
+#   -n, --lines N         Number of log lines to show per file (default: 5)
+#   -j, --job JOBID       Follow specific job output
+#   -o, --once            Run once and exit
+#   -h, --help            Show this help
 
-REFRESH_INTERVAL=5
-PROJECT_DIR="/home/nlp/matan_avitan/git/nopos_locating_new"
+REFRESH=10
+LOG_DIR="logs"
+LINES=5
+JOB=""
+ONCE=false
+SSH_KEY="$HOME/.ssh/dsinlp01_id_rsa"
+HOST="slurm-login.lnx.biu.ac.il"
+
+# Parse args
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -r|--refresh) REFRESH="$2"; shift 2 ;;
+        -l|--logs) LOG_DIR="$2"; shift 2 ;;
+        -n|--lines) LINES="$2"; shift 2 ;;
+        -j|--job) JOB="$2"; shift 2 ;;
+        -o|--once) ONCE=true; shift ;;
+        -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+        *) shift ;;
+    esac
+done
+
+[[ "$LOG_DIR" != /* ]] && LOG_DIR="$(pwd)/$LOG_DIR"
 
 # Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-MAGENTA='\033[0;35m'
-WHITE='\033[1;37m'
-NC='\033[0m' # No Color
-BOLD='\033[1m'
+R=$'\e[31m'; G=$'\e[32m'; Y=$'\e[33m'; B=$'\e[34m'; C=$'\e[36m'
+W=$'\e[1;37m'; D=$'\e[2m'; N=$'\e[0m'
 
-print_header() {
-    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}                    ${YELLOW}${BOLD}NoPE Analysis - Slurm Job Monitor${NC}                              ${CYAN}║${NC}"
-    echo -e "${CYAN}║${NC}                    Last updated: $(date '+%Y-%m-%d %H:%M:%S')                                ${CYAN}║${NC}"
-    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-}
+# Check if local slurm
+has_slurm() { command -v squeue &>/dev/null; }
 
-print_job_summary() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${BOLD}                                    JOB SUMMARY${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    
-    # Count jobs by state
-    RUNNING_COUNT=$(squeue -u $USER -h -t RUNNING 2>/dev/null | wc -l)
-    PENDING_COUNT=$(squeue -u $USER -h -t PENDING 2>/dev/null | wc -l)
-    TOTAL_COUNT=$((RUNNING_COUNT + PENDING_COUNT))
-    
-    echo ""
-    echo -e "  ${WHITE}Total Jobs:${NC} ${BOLD}$TOTAL_COUNT${NC}        ${GREEN}● Running:${NC} ${BOLD}$RUNNING_COUNT${NC}        ${YELLOW}○ Pending:${NC} ${BOLD}$PENDING_COUNT${NC}"
-    echo ""
-}
-
-print_running_jobs() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}${BOLD}                                  RUNNING JOBS${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    
-    # Get running jobs
-    RUNNING=$(squeue -u $USER -h -t RUNNING -o "%.10i|%.25j|%.10P|%.10M|%.10l|%.7m|%.4C|%N" 2>/dev/null)
-    
-    if [ -z "$RUNNING" ]; then
-        echo -e "  ${YELLOW}No running jobs${NC}"
+# Run slurm command
+slurm() {
+    if has_slurm; then
+        eval "$1"
     else
-        # Print header
-        printf "  ${WHITE}%-10s %-25s %-12s %-10s %-10s %-8s %-5s %-20s${NC}\n" \
-               "JOBID" "NAME" "PARTITION" "TIME" "LIMIT" "MEM" "CPUs" "NODE"
-        echo -e "  ${WHITE}─────────────────────────────────────────────────────────────────────────────────────${NC}"
-        
-        # Print each job
-        echo "$RUNNING" | while IFS='|' read jobid name partition time limit mem cpus node; do
-            # Trim whitespace
-            jobid=$(echo "$jobid" | xargs)
-            name=$(echo "$name" | xargs)
-            partition=$(echo "$partition" | xargs)
-            time=$(echo "$time" | xargs)
-            limit=$(echo "$limit" | xargs)
-            mem=$(echo "$mem" | xargs)
-            cpus=$(echo "$cpus" | xargs)
-            node=$(echo "$node" | xargs)
-            
-            printf "  ${GREEN}%-10s %-25s %-12s %-10s %-10s %-8s %-5s %-20s${NC}\n" \
-                   "$jobid" "$name" "$partition" "$time" "$limit" "$mem" "$cpus" "$node"
-        done
+        ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=3 -o StrictHostKeyChecking=no "$HOST" "$1" 2>/dev/null
     fi
-    echo ""
 }
 
-print_pending_jobs() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${YELLOW}${BOLD}                                  PENDING JOBS${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    
-    # Get pending jobs
-    PENDING=$(squeue -u $USER -h -t PENDING -o "%.10i|%.25j|%.10P|%.10l|%.7m|%.4C|%R" 2>/dev/null)
-    
-    if [ -z "$PENDING" ]; then
-        echo -e "  ${YELLOW}No pending jobs${NC}"
-    else
-        # Print header
-        printf "  ${WHITE}%-10s %-25s %-12s %-10s %-8s %-5s %-25s${NC}\n" \
-               "JOBID" "NAME" "PARTITION" "LIMIT" "MEM" "CPUs" "REASON"
-        echo -e "  ${WHITE}─────────────────────────────────────────────────────────────────────────────────────${NC}"
-        
-        # Print each job
-        echo "$PENDING" | while IFS='|' read jobid name partition limit mem cpus reason; do
-            jobid=$(echo "$jobid" | xargs)
-            name=$(echo "$name" | xargs)
-            partition=$(echo "$partition" | xargs)
-            limit=$(echo "$limit" | xargs)
-            mem=$(echo "$mem" | xargs)
-            cpus=$(echo "$cpus" | xargs)
-            reason=$(echo "$reason" | xargs)
-            
-            printf "  ${YELLOW}%-10s %-25s %-12s %-10s %-8s %-5s %-25s${NC}\n" \
-                   "$jobid" "$name" "$partition" "$limit" "$mem" "$cpus" "$reason"
-        done
-    fi
-    echo ""
-}
+# Follow job log
+if [ -n "$JOB" ]; then
+    f=$(find "$LOG_DIR" -name "*${JOB}*.out" 2>/dev/null | head -1)
+    [ -f "$f" ] && exec tail -f "$f" || { echo "Log not found for $JOB"; exit 1; }
+fi
 
-print_resource_usage() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${MAGENTA}${BOLD}                              RESOURCE USAGE BY PARTITION${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
+# Build temp file for output
+TMP=$(mktemp)
+trap "rm -f $TMP; echo; exit 0" INT TERM EXIT
+
+show() {
+    > "$TMP"
     
-    # Get partitions being used by user's jobs
-    PARTITIONS=$(squeue -u $USER -h -o "%P" 2>/dev/null | sort -u)
+    # Header
+    echo "${C}════════════════════════════════════════════════════════════════════════════${N}" >> "$TMP"
+    echo "  ${W}SLURM MONITOR${N}  │  $(date +%H:%M:%S)  │  ${D}Refresh: ${REFRESH}s${N}" >> "$TMP"
+    echo "${C}════════════════════════════════════════════════════════════════════════════${N}" >> "$TMP"
+    echo >> "$TMP"
     
-    if [ -z "$PARTITIONS" ]; then
-        echo -e "  ${YELLOW}No active jobs - no resources in use${NC}"
-    else
-        for part in $PARTITIONS; do
-            # Get partition info
-            PART_INFO=$(sinfo -p $part -h -o "%P|%a|%D|%C|%G|%m" 2>/dev/null | head -1)
-            PART_STATE=$(echo "$PART_INFO" | cut -d'|' -f2)
-            PART_NODES=$(echo "$PART_INFO" | cut -d'|' -f3)
-            PART_CPUS=$(echo "$PART_INFO" | cut -d'|' -f4)
-            PART_GPUS=$(echo "$PART_INFO" | cut -d'|' -f5)
-            PART_MEM=$(echo "$PART_INFO" | cut -d'|' -f6)
-            
-            # Count user's jobs on this partition
-            USER_JOBS=$(squeue -u $USER -p $part -h 2>/dev/null | wc -l)
-            
-            # Get total memory requested by user on this partition (in MB)
-            USER_MEM=$(squeue -u $USER -p $part -h -o "%m" 2>/dev/null | sed 's/G/*1024/g; s/M//g' | bc 2>/dev/null | awk '{sum+=$1} END {printf "%.0f", sum/1024}')
-            USER_MEM=${USER_MEM:-0}
-            
-            # Get total CPUs requested by user
-            USER_CPUS=$(squeue -u $USER -p $part -h -o "%C" 2>/dev/null | awk '{sum+=$1} END {print sum}')
-            USER_CPUS=${USER_CPUS:-0}
-            
-            # Get total GPUs requested by user
-            USER_GPUS=$(squeue -u $USER -p $part -h -o "%b" 2>/dev/null | grep -oE '[0-9]+' | awk '{sum+=$1} END {print sum}')
-            USER_GPUS=${USER_GPUS:-0}
-            
-            echo -e "  ${WHITE}┌─ Partition: ${MAGENTA}${BOLD}$part${NC}"
-            echo -e "  ${WHITE}│  ${NC}State: $PART_STATE │ Nodes: $PART_NODES │ Cluster GPUs: $PART_GPUS │ Node Memory: $PART_MEM"
-            echo -e "  ${WHITE}│  ${CYAN}Your usage: ${NC}${BOLD}$USER_JOBS${NC} jobs │ ${BOLD}${USER_MEM}GB${NC} memory │ ${BOLD}$USER_CPUS${NC} CPUs │ ${BOLD}$USER_GPUS${NC} GPUs"
-            echo -e "  ${WHITE}└────────────────────────────────────────────────────────────────${NC}"
-            echo ""
-        done
+    # Get queue (single SSH call with all data)
+    local data=$(slurm 'squeue -u $(whoami) -o "%.8i %.9P %.16j %.8T %.8M %.8l %R" 2>/dev/null')
+    
+    local running=$(echo "$data" | grep -c RUNNING || true)
+    local pending=$(echo "$data" | grep -c PENDING || true)
+    running=${running:-0}
+    pending=${pending:-0}
+    
+    echo "${W}Jobs:${N} ${G}● Running: $running${N}  ${Y}○ Pending: $pending${N}" >> "$TMP"
+    echo >> "$TMP"
+    
+    # Running jobs table
+    if [ "$running" -gt 0 ] 2>/dev/null; then
+        echo "${G}▶ RUNNING${N}" >> "$TMP"
+        echo "$data" | head -1 >> "$TMP"
+        echo "$data" | grep RUNNING | while read line; do
+            echo "${G}$line${N}"
+        done >> "$TMP"
+        echo >> "$TMP"
     fi
     
-    # Show recommended partitions
-    echo -e "  ${WHITE}Recommended: ${GREEN}H200-4h${NC} or ${GREEN}H200-12h${NC} (node: hpc8h200-01) for best performance${NC}"
-    echo ""
-}
-
-print_completed_jobs() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}${BOLD}                            RECENTLY COMPLETED (last hour)${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
+    # Pending jobs
+    if [ "$pending" -gt 0 ] 2>/dev/null; then
+        echo "${Y}◷ PENDING${N}" >> "$TMP"
+        echo "$data" | grep PENDING | while read line; do
+            echo "${Y}$line${N}"
+        done >> "$TMP"
+        echo >> "$TMP"
+    fi
     
-    # Get recently completed jobs
-    COMPLETED=$(sacct -u $USER --starttime=$(date -d '1 hour ago' '+%Y-%m-%dT%H:%M:%S') \
-                --format=JobID,JobName%20,Partition%10,State%12,ExitCode,Elapsed \
-                --noheader 2>/dev/null | grep -v "\.batch" | grep -v "\.extern" | head -8)
+    # Recent completions (separate quick call)
+    local acct=$(slurm 'sacct -u $(whoami) -S $(date -d "1 hour ago" +%Y-%m-%dT%H:%M 2>/dev/null || date -v-1H +%Y-%m-%dT%H:%M) --format=JobID%8,JobName%16,State%10,Elapsed --noheader 2>/dev/null | grep -v -E "\.(batch|extern)" | head -4')
     
-    if [ -z "$COMPLETED" ]; then
-        echo -e "  ${YELLOW}No recently completed jobs${NC}"
-    else
-        printf "  ${WHITE}%-12s %-20s %-12s %-12s %-8s %-10s${NC}\n" \
-               "JOBID" "NAME" "PARTITION" "STATE" "EXIT" "ELAPSED"
-        echo -e "  ${WHITE}─────────────────────────────────────────────────────────────────────────────────────${NC}"
-        echo "$COMPLETED" | while read line; do
-            if echo "$line" | grep -q "COMPLETED"; then
-                echo -e "  ${GREEN}$line${NC}"
-            elif echo "$line" | grep -q "FAILED\|OUT_OF"; then
-                echo -e "  ${RED}$line${NC}"
-            elif echo "$line" | grep -q "CANCELLED"; then
-                echo -e "  ${YELLOW}$line${NC}"
-            elif echo "$line" | grep -q "RUNNING"; then
-                echo -e "  ${CYAN}$line${NC}"
+    if [ -n "$acct" ]; then
+        echo "${C}◉ COMPLETED (1h)${N}" >> "$TMP"
+        echo "$acct" | while read line; do
+            if echo "$line" | grep -q COMPLETED; then
+                echo "${G}$line${N}"
+            elif echo "$line" | grep -qE "FAIL|TIME|OUT_OF"; then
+                echo "${R}$line${N}"
             else
-                echo "  $line"
+                echo "$line"
             fi
+        done >> "$TMP"
+        echo >> "$TMP"
+    fi
+    
+    # Local logs (fast, no SSH)
+    echo "${W}◆ LOGS${N} ${D}($LOG_DIR)${N}" >> "$TMP"
+    
+    if [ -d "$LOG_DIR" ]; then
+        for f in $(ls -t "$LOG_DIR"/*.out 2>/dev/null | head -3); do
+            [ -f "$f" ] || continue
+            local name=$(basename "$f")
+            local age=$(( ($(date +%s) - $(stat -c %Y "$f" 2>/dev/null || stat -f %m "$f")) / 60 ))
+            [ "$age" -gt 120 ] 2>/dev/null && continue
+            
+            echo "${C}─ ${name}${N} ${D}(${age}m)${N}" >> "$TMP"
+            tail -$LINES "$f" 2>/dev/null | while IFS= read -r line; do
+                line="${line:0:74}"
+                if echo "$line" | grep -qiE "error|fail|exception"; then
+                    echo "  ${R}$line${N}"
+                elif echo "$line" | grep -qiE "iter.*loss|step.*loss|saving|epoch"; then
+                    echo "  ${G}$line${N}"
+                else
+                    echo "  ${D}$line${N}"
+                fi
+            done >> "$TMP"
         done
     fi
-    echo ""
-}
-
-print_results_status() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${WHITE}${BOLD}                              EXPERIMENT RESULTS STATUS${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
     
-    cd "$PROJECT_DIR" 2>/dev/null || return
+    echo >> "$TMP"
+    echo "${D}──────────────────────────────────────────────────────────────────────────────${N}" >> "$TMP"
+    echo "${D}Commands: scancel <id>  │  tail -f logs/*<id>.out  │  Ctrl+C to exit${N}" >> "$TMP"
     
-    declare -A EXPERIMENTS=(
-        ["token_position_correlation"]="Token-Position Correlation"
-        ["comprehensive_probe_analysis"]="Comprehensive Probe Analysis"
-        ["higher_order_statistics"]="Higher-Order Statistics"
-        ["decoding_vector_experiments"]="Decoding Vector Experiments"
-        ["causal_interventions"]="Causal Interventions"
-        ["training_dynamics"]="Training Dynamics"
-    )
-    
-    for dir in "${!EXPERIMENTS[@]}"; do
-        name="${EXPERIMENTS[$dir]}"
-        result_dir="results/$dir"
-        
-        if [ -d "$result_dir" ]; then
-            file_count=$(find "$result_dir" -type f 2>/dev/null | wc -l)
-            if [ "$file_count" -gt 0 ]; then
-                printf "  ${GREEN}✓${NC} %-35s ${GREEN}%d files${NC}\n" "$name" "$file_count"
-            else
-                printf "  ${YELLOW}○${NC} %-35s ${YELLOW}in progress${NC}\n" "$name"
-            fi
-        else
-            printf "  ${RED}✗${NC} %-35s ${RED}not started${NC}\n" "$name"
-        fi
-    done
-    echo ""
-}
-
-print_log_tails() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${WHITE}${BOLD}                                 RECENT LOG OUTPUT${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    
-    cd "$PROJECT_DIR" 2>/dev/null || return
-    
-    # Find most recently modified log files
-    LOGS=$(ls -t logs/slurm_*.out 2>/dev/null | head -3)
-    
-    if [ -z "$LOGS" ]; then
-        echo -e "  ${YELLOW}No Slurm log files found${NC}"
-    else
-        for log in $LOGS; do
-            if [ -f "$log" ]; then
-                BASENAME=$(basename "$log" .out)
-                echo -e "  ${CYAN}┌─── ${BASENAME} ───${NC}"
-                tail -n 2 "$log" 2>/dev/null | sed 's/^/  │ /' || echo "  │ (empty)"
-                echo -e "  ${CYAN}└────────────────────────────────────────────────────────${NC}"
-                echo ""
-            fi
-        done
-    fi
-}
-
-print_help() {
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${WHITE}${BOLD}                                  QUICK COMMANDS${NC}"
-    echo -e "${BLUE}════════════════════════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "  ${WHITE}scancel <job_id>${NC}                          Cancel a specific job"
-    echo -e "  ${WHITE}scancel -u \$USER${NC}                          Cancel all your jobs"
-    echo -e "  ${WHITE}tail -f logs/slurm_<name>_<id>.out${NC}        Follow job output live"
-    echo -e "  ${WHITE}scontrol show job <id>${NC}                    Show detailed job info"
-    echo ""
-    echo -e "  ${YELLOW}Refreshing every ${REFRESH_INTERVAL}s... Press Ctrl+C to exit${NC}"
-    echo ""
+    # Clear and show all at once (smooth)
+    clear
+    cat "$TMP"
 }
 
 # Main loop
-main() {
-    while true; do
-        clear
-        print_header
-        print_job_summary
-        print_running_jobs
-        print_pending_jobs
-        print_resource_usage
-        print_completed_jobs
-        print_results_status
-        print_log_tails
-        print_help
-        sleep $REFRESH_INTERVAL
+while true; do
+    show
+    $ONCE && exit 0
+    
+    # Countdown
+    for ((i=REFRESH; i>0; i--)); do
+        printf "\r${D}Refresh in %2ds...${N} " $i
+        sleep 1 || break
     done
-}
-
-# Run with error handling
-trap "echo -e '\n${YELLOW}Monitor stopped.${NC}'; exit 0" INT TERM
-main
+done

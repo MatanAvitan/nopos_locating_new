@@ -1,19 +1,19 @@
 #!/bin/bash
-#SBATCH --job-name=train_owt_ln
-#SBATCH --output=logs/slurm_train_owt_ln_%j.out
-#SBATCH --error=logs/slurm_train_owt_ln_%j.err
+#SBATCH --job-name=train_owt_rms
+#SBATCH --output=logs/slurm_train_owt_rms_%j.out
+#SBATCH --error=logs/slurm_train_owt_rms_%j.err
 #SBATCH --partition=H200-12h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=128G
+#SBATCH --mem=64G
 #SBATCH --time=12:00:00
 
-# Train NoPE transformer with LayerNorm on OpenWebText
+# Train NoPE transformer with RMSNorm on OpenWebText
 # Requires data to be prepared first (run prepare_openwebtext.sh)
 
 cd /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT
 
-echo "Starting NoPE training (LayerNorm) on OpenWebText at $(date)"
+echo "Starting NoPE training (RMSNorm) on OpenWebText at $(date)"
 echo "GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader)"
 echo "Python: $(which python)"
 
@@ -24,7 +24,7 @@ if [ ! -f "data/openwebtext/train.bin" ]; then
 fi
 
 # Run training
-python train_nope.py config/train_nope_owt_ln.py
+python train_nope.py config/train_nope_owt_rms.py
 
 echo "Finished at $(date)"
-echo "Checkpoint saved to: out-nope-owt-ln/"
+echo "Checkpoint saved to: out-nope-owt-rms/"
