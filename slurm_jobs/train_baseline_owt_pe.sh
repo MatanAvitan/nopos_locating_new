@@ -5,7 +5,7 @@
 #SBATCH --partition=H200-12h
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
+#SBATCH --mem=128G
 #SBATCH --time=12:00:00
 
 # Train BASELINE transformer WITH positional embeddings on OpenWebText
