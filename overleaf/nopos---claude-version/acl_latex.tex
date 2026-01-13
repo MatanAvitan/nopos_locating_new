@@ -788,6 +788,46 @@ Figure~\ref{fig:owt-summary} provides a visual summary of the OWT experiments, s
 \label{fig:owt-summary}
 \end{figure*}
 
+\subsubsection{Decoding Vector Analysis on OWT Models}
+
+We test whether the theoretical decoding vector $w = W_O \cdot W_V \cdot \sum_j \text{LN}(E_j)$ remains effective across random and trained models. The decoding vector exploits near-uniform attention and embedding orthogonality to decode position by projecting activations onto $w$---theory predicts the mean projection should increase linearly with position.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Model (post-LN2)} & \textbf{Random $r$} & \textbf{Trained $r$} \\
+\midrule
+NoPE + LN & 0.74 & 0.68 \\
+NoPE + BN2 & 0.32 & 0.44 \\
+NoPE + No LN2 & $-0.16$ & $-0.56$ \\
+Baseline + PE & 0.22 & 0.50 \\
+\bottomrule
+\end{tabular}
+\caption{Mean projection correlation ($r$) between decoding vector projection and position at post-LN2, averaged across 100 samples. NoPE + LayerNorm shows the strongest decoding signal in both random ($r=0.74$) and trained ($r=0.68$) models. The No-LN2 variant shows negative correlation, confirming LayerNorm's role in linearizing the position signal.}
+\label{tab:decoding-vector-owt}
+\end{table}
+
+Table~\ref{tab:decoding-vector-owt} reveals several insights:
+
+\begin{enumerate}
+    \item \textbf{LayerNorm enables decoding}: The NoPE + LN variant achieves the highest correlations ($r=0.74$ random, $r=0.68$ trained), while No-LN2 shows \textit{negative} correlation ($r=-0.16$ random), confirming that LayerNorm is essential for the decoding vector mechanism.
+    
+    \item \textbf{Training preserves decoding}: Unlike the norm-based mechanism which training destroys (Table~\ref{tab:random-vs-trained}), the decoding vector correlation \textit{persists} through training ($0.74 \rightarrow 0.68$), suggesting this mechanism is more robust.
+    
+    \item \textbf{BatchNorm performs worse}: The BN2 variant shows lower correlations despite having explicit population access, suggesting the decoding vector mechanism specifically requires per-sample LayerNorm statistics.
+\end{enumerate}
+
+Figure~\ref{fig:decoding-vector-owt} shows the layer-wise decoding vector correlation and mean projection patterns across all model variants.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{plots/decoding_vector_comprehensive.pdf}
+\caption{Decoding vector analysis across OWT model variants. \textbf{Top row}: Layer-wise correlation between decoding vector projection and position for random (left) and trained (right) models. NoPE + LayerNorm (blue) shows the strongest signal at post-LN2. \textbf{Bottom rows}: Mean projection vs position at post-attention for each variant, showing 100 samples. The decoding vector mechanism is most effective with LayerNorm normalization.}
+\label{fig:decoding-vector-owt}
+\end{figure*}
+
 \subsection{Length Extrapolation}
 
 We test the model's ability to generalize to longer sequences than seen during training. After training on sequences of length 64, we evaluate on sequences up to length 128. The model maintains \textbf{over 80\% accuracy} even on positions never encountered during training, demonstrating superior extrapolation capabilities compared to explicit positional embeddings which typically struggle beyond the trained context window.
