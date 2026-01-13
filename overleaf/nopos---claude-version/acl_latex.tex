@@ -579,7 +579,14 @@ Table~\ref{tab:direction-norm} reveals a striking pattern in randomly initialize
 \label{fig:norm-over-positions}
 \end{figure}
 
-Figure~\ref{fig:norm-over-positions} visualizes this phenomenon directly: in randomly initialized models, activation norms decay monotonically with position (consistent with the $1/\sqrt{i+1}$ theoretical prediction), while trained models show a qualitatively different---even inverted---pattern.
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{plots/norm_position_scatter.pdf}
+\caption{Scatter plot visualization of the norm-position correlation at random initialization ($n=500$ samples, context length 256). \textbf{Left}: Post-LN2 activation norms vs position showing the strong negative correlation ($r=-0.97$). Each blue dot is one (position, norm) pair from one sample; red line shows mean with $\pm 1$ std band. The tight clustering reflects LayerNorm's variance normalization. \textbf{Right}: Post-attention norms vs position ($r=-0.66$) showing the raw variance signal before LayerNorm, with larger spread due to token diversity. The correlation is computed across all 128,000 data points (500 samples $\times$ 256 positions), yielding the $r=-0.97$ value reported throughout. Higher positions have systematically lower norms because causal attention averages more embeddings, reducing variance.}
+\label{fig:norm-position-scatter}
+\end{figure*}
+
+Figure~\ref{fig:norm-over-positions} visualizes this phenomenon directly: in randomly initialized models, activation norms decay monotonically with position (consistent with the $1/\sqrt{i+1}$ theoretical prediction), while trained models show a qualitatively different---even inverted---pattern. Figure~\ref{fig:norm-position-scatter} provides a detailed scatter plot showing exactly how the $r=-0.97$ correlation is computed: across 128,000 (position, norm) pairs from 500 random samples, each position maps to a tight distribution of norms that decreases systematically with position index.
 
 \paragraph{Why LayerNorm Linearizes the Position Signal.}
 LayerNorm converts the nonlinear, directional position signal into a nearly linear norm signal. Let $h_i$ denote the pre-LN activation at position $i$, produced by averaging $i{+}1$ value vectors. Each coordinate of $h_i$ has variance $\sigma_i^2 \propto 1/(i{+}1)$ and (because it is a sum of $i{+}1$ random embeddings) a kurtosis that shrinks with $i$. LayerNorm computes per-sample statistics
