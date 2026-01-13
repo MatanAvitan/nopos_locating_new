@@ -1,0 +1,222 @@
+{
+  "NoPE + LayerNorm": {
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": false
+    },
+    "random": {
+      "model_name": "NoPE + LayerNorm (random)",
+      "n_samples": 200,
+      "context": 512,
+      "n_classes": 512,
+      "embed": {
+        "full_accuracy": 0.0296875,
+        "direction_accuracy": 0.029541015625,
+        "norm_accuracy": 0.031005859375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln1": {
+        "full_accuracy": 0.028857421875,
+        "direction_accuracy": 0.02890625,
+        "norm_accuracy": 0.0298828125,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn": {
+        "full_accuracy": 0.113232421875,
+        "direction_accuracy": 0.1107421875,
+        "norm_accuracy": 0.368310546875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn_residual": {
+        "full_accuracy": 0.07685546875,
+        "direction_accuracy": 0.069970703125,
+        "norm_accuracy": 0.31064453125,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln2": {
+        "full_accuracy": 0.0708984375,
+        "direction_accuracy": 0.070849609375,
+        "norm_accuracy": 0.306640625,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_mlp_residual": {
+        "full_accuracy": 0.07275390625,
+        "direction_accuracy": 0.077685546875,
+        "norm_accuracy": 0.06455078125,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      }
+    }
+  },
+  "NoPE + BatchNorm2": {
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": true,
+      "skip_ln2": false
+    },
+    "random": {
+      "model_name": "NoPE + BatchNorm2 (random)",
+      "n_samples": 200,
+      "context": 512,
+      "n_classes": 512,
+      "embed": {
+        "full_accuracy": 0.030322265625,
+        "direction_accuracy": 0.0298828125,
+        "norm_accuracy": 0.02939453125,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln1": {
+        "full_accuracy": 0.03056640625,
+        "direction_accuracy": 0.03056640625,
+        "norm_accuracy": 0.031005859375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn": {
+        "full_accuracy": 0.1072265625,
+        "direction_accuracy": 0.111962890625,
+        "norm_accuracy": 0.36015625,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn_residual": {
+        "full_accuracy": 0.074951171875,
+        "direction_accuracy": 0.06865234375,
+        "norm_accuracy": 0.305859375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln2": {
+        "full_accuracy": 0.07470703125,
+        "direction_accuracy": 0.07021484375,
+        "norm_accuracy": 0.307861328125,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_mlp_residual": {
+        "full_accuracy": 0.0775390625,
+        "direction_accuracy": 0.070556640625,
+        "norm_accuracy": 0.30498046875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      }
+    }
+  },
+  "NoPE + No LN2": {
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": true
+    },
+    "random": {
+      "model_name": "NoPE + No LN2 (random)",
+      "n_samples": 200,
+      "context": 512,
+      "n_classes": 512,
+      "embed": {
+        "full_accuracy": 0.030615234375,
+        "direction_accuracy": 0.030712890625,
+        "norm_accuracy": 0.031201171875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln1": {
+        "full_accuracy": 0.032177734375,
+        "direction_accuracy": 0.03212890625,
+        "norm_accuracy": 0.030859375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn": {
+        "full_accuracy": 0.116357421875,
+        "direction_accuracy": 0.11259765625,
+        "norm_accuracy": 0.3701171875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn_residual": {
+        "full_accuracy": 0.075537109375,
+        "direction_accuracy": 0.071240234375,
+        "norm_accuracy": 0.307568359375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln2": {
+        "full_accuracy": 0.075341796875,
+        "direction_accuracy": 0.069677734375,
+        "norm_accuracy": 0.3107421875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_mlp_residual": {
+        "full_accuracy": 0.0787109375,
+        "direction_accuracy": 0.071142578125,
+        "norm_accuracy": 0.306591796875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      }
+    }
+  },
+  "Baseline + PE": {
+    "config": {
+      "use_positional_embedding": true,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": false
+    },
+    "random": {
+      "model_name": "Baseline + PE (random)",
+      "n_samples": 200,
+      "context": 512,
+      "n_classes": 512,
+      "embed": {
+        "full_accuracy": 0.99970703125,
+        "direction_accuracy": 0.999755859375,
+        "norm_accuracy": 0.036279296875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln1": {
+        "full_accuracy": 0.999609375,
+        "direction_accuracy": 0.999609375,
+        "norm_accuracy": 0.0365234375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn": {
+        "full_accuracy": 0.975927734375,
+        "direction_accuracy": 0.972412109375,
+        "norm_accuracy": 0.385107421875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_attn_residual": {
+        "full_accuracy": 0.999755859375,
+        "direction_accuracy": 0.999853515625,
+        "norm_accuracy": 0.28623046875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_ln2": {
+        "full_accuracy": 0.99990234375,
+        "direction_accuracy": 0.99990234375,
+        "norm_accuracy": 0.281787109375,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      },
+      "post_mlp_residual": {
+        "full_accuracy": 0.99052734375,
+        "direction_accuracy": 0.990673828125,
+        "norm_accuracy": 0.067529296875,
+        "random_baseline": 0.03125,
+        "n_bins": 32
+      }
+    }
+  }
+}
