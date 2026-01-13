@@ -152,26 +152,25 @@ def load_trained_model(exp: ExperimentConfig) -> Tuple[GPT, GPTConfig]:
     return model, config
 
 
-def compute_decoding_vector(
-    model: GPT, include_output_proj: bool = True
-) -> torch.Tensor:
+def compute_decoding_vectors(model: GPT) -> Dict[str, torch.Tensor]:
     """
-    Compute the theoretical decoding vector: w = W_V · Σ_j LN(E_j)
+    Compute layer-appropriate decoding vectors.
 
-    The decoding vector exploits:
-    1. Near-uniform causal attention: A_{ij} ≈ 1/(i+1)
-    2. Orthogonality of embeddings: E_i · E_j ≈ 0 for i≠j
-
-    Args:
-        model: GPT model
-        include_output_proj: If True, also apply W_O to get w in output space
+    The decoding vector formula depends on the layer:
+    - embed, post_ln1: w = Σ_j E_j (or Σ_j LN(E_j) for post_ln1)
+      Just the sum of embeddings, no attention transforms yet
+    - post_attn and beyond: w = W_O @ W_V @ Σ_j LN(E_j)
+      After attention, need to account for value and output projections
 
     Returns:
-        w: [n_embd] decoding vector (normalized)
+        dict mapping layer name to normalized decoding vector
     """
     with torch.no_grad():
         # Get token embeddings
         E = model.transformer.wte.weight.detach()  # [vocab_size, n_embd]
+
+        # Sum of raw embeddings (for embed layer)
+        sum_E = E.sum(dim=0)  # [n_embd]
 
         # Apply LN1 to embeddings
         ln1 = model.transformer.h[0].ln_1
@@ -186,42 +185,47 @@ def compute_decoding_vector(
         if hasattr(ln1, "bias") and ln1.bias is not None:
             E_ln = E_ln + ln1.bias
 
-        # Sum of LN'd embeddings
+        # Sum of LN'd embeddings (for post_ln1)
         sum_ln_E = E_ln.sum(dim=0)  # [n_embd]
 
-        # Get W_V from attention (c_attn contains W_Q, W_K, W_V concatenated)
+        # Get W_V and W_O from attention
         attn = model.transformer.h[0].attn
         n_embd = model.config.n_embd
 
         # W_V is the last n_embd rows of c_attn.weight
-        # c_attn.weight shape: [3*n_embd, n_embd] -> output dim is 3*n_embd
         W_V = attn.c_attn.weight[2 * n_embd :, :].detach()  # [n_embd, n_embd]
+        W_O = attn.c_proj.weight.detach()  # [n_embd, n_embd]
 
-        # Compute decoding vector in value space: w_v = W_V @ sum_ln_E
-        w_v = W_V @ sum_ln_E  # [n_embd]
+        # Compute post-attention decoding vector: w = W_O @ W_V @ sum_ln_E
+        w_post_attn = W_O @ W_V @ sum_ln_E  # [n_embd]
 
-        if include_output_proj:
-            # Also apply output projection to get w in attention output space
-            # c_proj.weight shape: [n_embd, n_embd]
-            W_O = attn.c_proj.weight.detach()  # [n_embd, n_embd]
-            w = W_O @ w_v  # [n_embd]
-        else:
-            w = w_v
+        # Normalize all vectors
+        def normalize(v):
+            return v / (torch.norm(v) + 1e-8)
 
-        # Normalize
-        w = w / (torch.norm(w) + 1e-8)
-
-    return w
+        return {
+            "embed": normalize(sum_E),
+            "post_ln1": normalize(sum_ln_E),
+            "post_attn": normalize(w_post_attn),
+            "post_attn_residual": normalize(w_post_attn),  # Same space as post_attn
+            "post_ln2": normalize(w_post_attn),  # Still in same space
+            "post_mlp_residual": normalize(w_post_attn),  # Still in same space
+        }
 
 
 def get_activations_with_decoding(
     model: GPT,
     tokens: torch.Tensor,
-    decoding_vector: torch.Tensor,
+    decoding_vectors: Dict[str, torch.Tensor],
     skip_ln2: bool = False,
 ) -> Dict[str, Dict[str, np.ndarray]]:
     """
     Get activations at each layer and compute decoding vector projection.
+
+    Uses layer-appropriate decoding vectors:
+    - embed: sum of embeddings
+    - post_ln1: sum of LN'd embeddings
+    - post_attn onwards: W_O @ W_V @ sum of LN'd embeddings
 
     Returns dict with:
         - activations: raw activations at each layer
@@ -243,43 +247,50 @@ def get_activations_with_decoding(
         else:
             x = tok_emb
 
-        # Embedding layer
+        # Embedding layer - use embedding-space decoding vector
         activations["embed"] = x.detach()
-        projections["embed"] = (x * decoding_vector).sum(dim=-1).detach()
+        w_embed = decoding_vectors["embed"]
+        projections["embed"] = (x * w_embed).sum(dim=-1).detach()
 
         block = model.transformer.h[0]
 
-        # Post LN1
+        # Post LN1 - use LN'd embedding-space decoding vector
         x_ln1 = block.ln_1(x)
         activations["post_ln1"] = x_ln1.detach()
-        projections["post_ln1"] = (x_ln1 * decoding_vector).sum(dim=-1).detach()
+        w_ln1 = decoding_vectors["post_ln1"]
+        projections["post_ln1"] = (x_ln1 * w_ln1).sum(dim=-1).detach()
 
-        # Post attention (before residual)
+        # Post attention (before residual) - use post-attention decoding vector
         attn_out = block.attn(x_ln1)
         activations["post_attn"] = attn_out.detach()
-        projections["post_attn"] = (attn_out * decoding_vector).sum(dim=-1).detach()
+        w_attn = decoding_vectors["post_attn"]
+        projections["post_attn"] = (attn_out * w_attn).sum(dim=-1).detach()
 
         # Post attention residual
         x = x + attn_out
         activations["post_attn_residual"] = x.detach()
-        projections["post_attn_residual"] = (x * decoding_vector).sum(dim=-1).detach()
+        w_res = decoding_vectors["post_attn_residual"]
+        projections["post_attn_residual"] = (x * w_res).sum(dim=-1).detach()
 
         # Post LN2 (if not skipped)
         if not skip_ln2 and hasattr(block, "ln_2"):
             x_ln2 = block.ln_2(x)
             activations["post_ln2"] = x_ln2.detach()
-            projections["post_ln2"] = (x_ln2 * decoding_vector).sum(dim=-1).detach()
+            w_ln2 = decoding_vectors["post_ln2"]
+            projections["post_ln2"] = (x_ln2 * w_ln2).sum(dim=-1).detach()
             mlp_input = x_ln2
         else:
             activations["post_ln2"] = x.detach()
-            projections["post_ln2"] = (x * decoding_vector).sum(dim=-1).detach()
+            w_ln2 = decoding_vectors["post_ln2"]
+            projections["post_ln2"] = (x * w_ln2).sum(dim=-1).detach()
             mlp_input = x
 
         # Post MLP residual
         mlp_out = block.mlp(mlp_input)
         x = x + mlp_out
         activations["post_mlp_residual"] = x.detach()
-        projections["post_mlp_residual"] = (x * decoding_vector).sum(dim=-1).detach()
+        w_mlp = decoding_vectors["post_mlp_residual"]
+        projections["post_mlp_residual"] = (x * w_mlp).sum(dim=-1).detach()
 
     return {"activations": activations, "projections": projections}
 
@@ -294,8 +305,10 @@ def analyze_decoding_vector(
     """
     Analyze decoding vector performance at all layers.
 
-    Uses the decoding vector WITH output projection (W_O) by default,
-    since this is the correct formulation for comparing with post_attn output.
+    Uses layer-appropriate decoding vectors:
+    - embed: w = Σ_j E_j (sum of embeddings)
+    - post_ln1: w = Σ_j LN(E_j) (sum of LN'd embeddings)
+    - post_attn onwards: w = W_O @ W_V @ Σ_j LN(E_j) (with attention transforms)
 
     Returns:
         results: dict with correlation and projection statistics per layer
@@ -305,16 +318,17 @@ def analyze_decoding_vector(
 
     print(f"\n  Analyzing: {model_name}")
 
-    # Compute decoding vector WITH output projection
-    # This is w = W_O @ W_V @ Σ_j LN(E_j)
-    w = compute_decoding_vector(model, include_output_proj=True)
+    # Compute layer-appropriate decoding vectors
+    decoding_vectors = compute_decoding_vectors(model)
 
     # Collect projections across samples
     all_projections = {layer: [] for layer in LAYERS}
 
     for i in range(n_samples):
         tokens = torch.randint(0, vocab_size, (1, ctx), device=DEVICE)
-        result = get_activations_with_decoding(model, tokens, w, skip_ln2=skip_ln2)
+        result = get_activations_with_decoding(
+            model, tokens, decoding_vectors, skip_ln2=skip_ln2
+        )
 
         for layer in LAYERS:
             all_projections[layer].append(result["projections"][layer][0].cpu().numpy())
