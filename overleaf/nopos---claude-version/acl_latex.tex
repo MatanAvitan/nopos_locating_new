@@ -397,7 +397,7 @@ Figure~\ref{fig:ln-linearization} illustrates this linearization effect. The key
 \label{fig:layernorm-paradox}
 \end{figure*}
 
-\subsubsection{MLP Position Decoding}
+\subsubsection{MLP Position Decoding}\label{sec:mlp-decoding}
 
 The MLP extracts position information by exploiting the approximate orthogonality of token embeddings in high-dimensional spaces. We derive a constructive proof showing how this decoding works.
 
@@ -805,7 +805,7 @@ NoPE + No LN2 & $-0.16$ & $-0.56$ \\
 Baseline + PE & 0.22 & 0.50 \\
 \bottomrule
 \end{tabular}
-\caption{Mean projection correlation ($r$) between decoding vector projection and position at post-LN2, averaged across 100 samples. NoPE + LayerNorm shows the strongest decoding signal in both random ($r=0.74$) and trained ($r=0.68$) models. The No-LN2 variant shows negative correlation, confirming LayerNorm's role in linearizing the position signal.}
+\caption{Mean projection correlation ($r$) between decoding vector projection and position at post-LN2, averaged across 100 samples (context length 512). NoPE + LayerNorm shows the strongest decoding signal in both random ($r=0.74$) and trained ($r=0.68$) models. The No-LN2 variant shows negative correlation, confirming LayerNorm's role in linearizing the position signal. Note: The correlation is lower than the theoretical $r=0.999$ (Section~\ref{sec:mlp-decoding}) due to longer context and architectural differences; with context 64, we observe $r=0.82$.}
 \label{tab:decoding-vector-owt}
 \end{table}
 
