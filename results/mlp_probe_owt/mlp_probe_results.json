@@ -1,0 +1,246 @@
+{
+  "nope_ln_random": {
+    "post_attn_linear": {
+      "r2": -0.256
+    },
+    "post_attn_mlp": {
+      "r2": 0.296
+    },
+    "post_ln1_linear": {
+      "r2": -0.041
+    },
+    "post_ln1_mlp": {
+      "r2": -0.112
+    },
+    "post_ln2_linear": {
+      "r2": -0.224
+    },
+    "post_ln2_mlp": {
+      "r2": -0.675
+    },
+    "post_mlp_residual_linear": {
+      "r2": -0.227
+    },
+    "post_mlp_residual_mlp": {
+      "r2": -0.612
+    },
+    "raw_embed_linear": {
+      "r2": -0.032
+    },
+    "raw_embed_mlp": {
+      "r2": -0.016
+    }
+  },
+  "nope_ln_trained": {
+    "post_attn_linear": {
+      "r2": -0.092
+    },
+    "post_attn_mlp": {
+      "r2": 0.367
+    },
+    "post_ln1_linear": {
+      "r2": -0.046
+    },
+    "post_ln1_mlp": {
+      "r2": -0.067
+    },
+    "post_ln2_linear": {
+      "r2": 0.552
+    },
+    "post_ln2_mlp": {
+      "r2": 0.59
+    },
+    "post_mlp_residual_linear": {
+      "r2": 0.663
+    },
+    "post_mlp_residual_mlp": {
+      "r2": 0.724
+    },
+    "raw_embed_linear": {
+      "r2": -0.043
+    },
+    "raw_embed_mlp": {
+      "r2": -0.047
+    }
+  },
+  "nope_bn2_random": {
+    "post_attn_linear": {
+      "r2": -0.265
+    },
+    "post_attn_mlp": {
+      "r2": 0.297
+    },
+    "post_ln1_linear": {
+      "r2": -0.047
+    },
+    "post_ln1_mlp": {
+      "r2": -0.119
+    },
+    "post_ln2_linear": {
+      "r2": -0.265
+    },
+    "post_ln2_mlp": {
+      "r2": 0.298
+    },
+    "post_mlp_residual_linear": {
+      "r2": -0.117
+    },
+    "post_mlp_residual_mlp": {
+      "r2": 0.312
+    },
+    "raw_embed_linear": {
+      "r2": -0.036
+    },
+    "raw_embed_mlp": {
+      "r2": -0.015
+    }
+  },
+  "nope_bn2_trained": {
+    "post_attn_linear": {
+      "r2": -0.1
+    },
+    "post_attn_mlp": {
+      "r2": 0.355
+    },
+    "post_ln1_linear": {
+      "r2": -0.041
+    },
+    "post_ln1_mlp": {
+      "r2": -0.048
+    },
+    "post_ln2_linear": {
+      "r2": -0.104
+    },
+    "post_ln2_mlp": {
+      "r2": 0.327
+    },
+    "post_mlp_residual_linear": {
+      "r2": 0.508
+    },
+    "post_mlp_residual_mlp": {
+      "r2": 0.687
+    },
+    "raw_embed_linear": {
+      "r2": -0.038
+    },
+    "raw_embed_mlp": {
+      "r2": -0.034
+    }
+  },
+  "nope_no_ln2_random": {
+    "post_attn_linear": {
+      "r2": -0.265
+    },
+    "post_attn_mlp": {
+      "r2": 0.297
+    },
+    "post_ln1_linear": {
+      "r2": -0.047
+    },
+    "post_ln1_mlp": {
+      "r2": -0.119
+    },
+    "post_mlp_residual_linear": {
+      "r2": -0.117
+    },
+    "post_mlp_residual_mlp": {
+      "r2": 0.313
+    },
+    "raw_embed_linear": {
+      "r2": -0.036
+    },
+    "raw_embed_mlp": {
+      "r2": -0.015
+    }
+  },
+  "nope_no_ln2_trained": {
+    "post_attn_linear": {
+      "r2": -0.099
+    },
+    "post_attn_mlp": {
+      "r2": 0.343
+    },
+    "post_ln1_linear": {
+      "r2": -0.038
+    },
+    "post_ln1_mlp": {
+      "r2": -0.072
+    },
+    "post_mlp_residual_linear": {
+      "r2": 0.456
+    },
+    "post_mlp_residual_mlp": {
+      "r2": 0.695
+    },
+    "raw_embed_linear": {
+      "r2": -0.035
+    },
+    "raw_embed_mlp": {
+      "r2": -0.043
+    }
+  },
+  "baseline_pe_random": {
+    "post_attn_linear": {
+      "r2": -0.338
+    },
+    "post_attn_mlp": {
+      "r2": 0.272
+    },
+    "post_ln1_linear": {
+      "r2": -0.029
+    },
+    "post_ln1_mlp": {
+      "r2": -0.103
+    },
+    "post_ln2_linear": {
+      "r2": -0.292
+    },
+    "post_ln2_mlp": {
+      "r2": -0.733
+    },
+    "post_mlp_residual_linear": {
+      "r2": -0.309
+    },
+    "post_mlp_residual_mlp": {
+      "r2": -0.721
+    },
+    "raw_embed_linear": {
+      "r2": -0.021
+    },
+    "raw_embed_mlp": {
+      "r2": -0.012
+    }
+  },
+  "baseline_pe_trained": {
+    "post_attn_linear": {
+      "r2": -0.165
+    },
+    "post_attn_mlp": {
+      "r2": 0.324
+    },
+    "post_ln1_linear": {
+      "r2": -0.041
+    },
+    "post_ln1_mlp": {
+      "r2": -0.073
+    },
+    "post_ln2_linear": {
+      "r2": 0.632
+    },
+    "post_ln2_mlp": {
+      "r2": 0.595
+    },
+    "post_mlp_residual_linear": {
+      "r2": 0.679
+    },
+    "post_mlp_residual_mlp": {
+      "r2": 0.727
+    },
+    "raw_embed_linear": {
+      "r2": -0.037
+    },
+    "raw_embed_mlp": {
+      "r2": -0.047
+    }
+  }
+}
