@@ -329,16 +329,15 @@ def create_comparison_tsne(
         pos_sample = position_buckets
         prefix_sample = prefix_groups
 
-        # Run t-SNE with exact method on CPU for better quality
+        # Run t-SNE with barnes_hut but higher quality settings
         print(f"    Running t-SNE for {subtitle} ({len(acts_sample)} samples)...")
         tsne = TSNE(
             n_components=2,
-            perplexity=min(
-                perplexity, len(acts_sample) // 3
-            ),  # Adjust perplexity if needed
+            perplexity=min(perplexity, len(acts_sample) // 3),
             random_state=42,
-            method="exact",  # CPU-based exact method for sharper results
-            n_iter=1000,
+            method="barnes_hut",  # Faster than exact
+            angle=0.2,  # Lower angle = higher precision
+            n_iter=1000,  # More iterations for better convergence
             verbose=0,
         )
         embeddings = tsne.fit_transform(acts_sample)
