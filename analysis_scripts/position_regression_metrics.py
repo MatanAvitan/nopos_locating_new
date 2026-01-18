@@ -10,10 +10,11 @@ Key metrics computed per-K (0-23 unique prefix tokens):
 3. PCA/Singular values at each layer (Metric 3)
 
 Usage:
-    CUDA_VISIBLE_DEVICES=3 python analysis_scripts/position_regression_metrics.py \
+    CUDA_VISIBLE_DEVICES=4 python analysis_scripts/position_regression_metrics.py \
         --checkpoint-dir out-posreg-6layer-until-mlp \
         --experiment-name nope-6layer-until-first-mlp \
-        --n-samples 24
+        --n-samples 24 \
+        --mode unique
 """
 
 import io
@@ -117,6 +118,16 @@ def generate_unique_prefix_sequences(
         for pos in range(n_unique):
             sequences[sample_idx, pos] = base_token + 1 + pos
     return sequences
+
+
+def generate_random_sequences(
+    n_samples: int,
+    seq_len: int,
+    vocab_size: int,
+    device: str = "cuda",
+) -> torch.Tensor:
+    """Generate completely random sequences."""
+    return torch.randint(0, vocab_size, (n_samples, seq_len), device=device)
 
 
 def extract_basis_embeddings(
@@ -240,15 +251,15 @@ def compute_per_k_metrics(
             heatmap = torch.abs(projections).mean(dim=0)
             results["projections_heatmap"][layer] = heatmap.T.detach().cpu().numpy()
         else:
+            # If dimensions don't match (mlp_hidden), skip projection
             results["basis_contrib_by_k"][layer] = [0.0] * n_samples
-            results["projections_heatmap"][layer] = np.zeros((n_samples, seq_len))
+            results["projections_heatmap"][layer] = np.zeros((basis.shape[0], seq_len))
 
         # Metric 3: Per-K PCA (Cumulative variance curves)
         pca_cumvar_curves = []
-        max_components = min(n_samples * 2, 100)  # Increased to see beyond K
+        max_components = 100
 
         for k in range(n_samples):
-            # Get activations for sample k: (seq_len, n_embd)
             sample_acts = acts[k].detach().cpu().numpy().astype(np.float64)
             sample_centered = sample_acts - sample_acts.mean(axis=0, keepdims=True)
 
@@ -305,7 +316,6 @@ def create_pca_cumvar_curves_plot(result: Dict, layer: str = "post_mlp") -> Figu
             x_vals = list(range(1, len(cumvar) + 1))
             color = plt.cm.viridis(k / n_samples)
             ax.plot(x_vals, cumvar, "-", color=color, alpha=0.4, linewidth=1)
-            # Mark the K-th component
             if k <= len(cumvar):
                 ax.scatter(
                     [k], [cumvar[k - 1]], color=color, s=40, marker="o", zorder=5
@@ -338,8 +348,8 @@ def create_pythagorean_norms_plot(all_results: List[Dict]) -> Figure:
     steps = [r["step"] for r in all_results]
 
     ax = axes[0]
-    mean_before = [r["norms_before_attn"].mean() for r in all_results]
-    mean_after = [r["norms_after_attn"].mean() for r in all_results]
+    mean_before = [np.mean(r["norms_before_attn"]) for r in all_results]
+    mean_after = [np.mean(r["norms_after_attn"]) for r in all_results]
     ax.plot(steps, mean_before, "o-", label="Before Attention")
     ax.plot(steps, mean_after, "s-", label="After Attention")
     ax.set_xlabel("Training Step")
@@ -349,7 +359,7 @@ def create_pythagorean_norms_plot(all_results: List[Dict]) -> Figure:
     ax.grid(True, alpha=0.3)
 
     ax = axes[1]
-    mean_ratio = [r["norm_ratios"].mean() for r in all_results]
+    mean_ratio = [np.mean(r["norm_ratios"]) for r in all_results]
     ax.plot(steps, mean_ratio, "o-", color="purple")
     ax.axhline(y=1.0, color="red", linestyle="--")
     ax.set_xlabel("Training Step")
@@ -372,24 +382,29 @@ def fig_to_image(fig: Figure):
 
 
 def analyze_checkpoint(
-    ckpt_path: Path, n_samples: int = 24, device: str = "cuda"
+    ckpt_path: Path, n_samples: int = 24, device: str = "cuda", mode: str = "unique"
 ) -> Dict:
-    """Analyze single checkpoint with all 3 metrics."""
+    """Analyze single checkpoint with all metrics."""
     model, meta = load_checkpoint(str(ckpt_path), device)
     seq_len = model.config.block_size
     vocab_size = model.config.vocab_size
     n_embd = model.config.n_embd
 
-    tokens = generate_unique_prefix_sequences(n_samples, seq_len, vocab_size, device)
+    if mode == "unique":
+        tokens = generate_unique_prefix_sequences(
+            n_samples, seq_len, vocab_size, device
+        )
+    else:
+        tokens = generate_random_sequences(n_samples, seq_len, vocab_size, device)
+
     basis = extract_basis_embeddings(model, n_basis=n_samples)
 
     # Metric 2
     norms_before, norms_after = compute_pythagorean_norms(model, tokens)
 
-    # Per-K metrics (Metric 1 & 3)
+    # Per-K metrics
     per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
 
-    # Global PCA for each layer
     pca_results = {}
     for layer in ["post_attn", "post_ln2", "mlp_hidden", "post_mlp"]:
         pca_results[f"pca_{layer}"] = compute_pca_analysis(per_k["activations"][layer])
@@ -419,6 +434,9 @@ def main():
     parser.add_argument("--experiment-name", type=str, default=None)
     parser.add_argument("--n-samples", type=int, default=24)
     parser.add_argument("--no-wandb", action="store_true")
+    parser.add_argument(
+        "--mode", type=str, choices=["unique", "random"], default="unique"
+    )
     args = parser.parse_args()
 
     checkpoint_dir = PROJECT_ROOT / "nanoGPT" / args.checkpoint_dir
@@ -426,13 +444,12 @@ def main():
         print(f"Error: Checkpoint directory {checkpoint_dir} does not exist!")
         return
 
-    experiment_name = args.experiment_name or args.checkpoint_dir
+    experiment_name = args.experiment_name or f"{args.checkpoint_dir}_{args.mode}"
     results_dir = (
         PROJECT_ROOT / "results" / f"position_regression_metrics_{experiment_name}"
     )
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    # Check for checkpoints
     checkpoint_steps = [0] + list(range(1000, 21000, 1000))
     available_steps = [
         s for s in checkpoint_steps if (checkpoint_dir / f"ckpt_{s:05d}.pt").exists()
@@ -442,7 +459,6 @@ def main():
         print("Error: No checkpoints found!")
         return
 
-    # Initialize wandb
     use_wandb = WANDB_AVAILABLE and not args.no_wandb
     if use_wandb:
         wandb.init(
@@ -452,6 +468,7 @@ def main():
                 "n_samples": args.n_samples,
                 "checkpoint_steps": available_steps,
                 "experiment": experiment_name,
+                "mode": args.mode,
             },
         )
 
@@ -459,7 +476,9 @@ def main():
     for step in tqdm(available_steps, desc="Analyzing"):
         ckpt_path = checkpoint_dir / f"ckpt_{step:05d}.pt"
         try:
-            result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+            result = analyze_checkpoint(
+                ckpt_path, args.n_samples, DEVICE, mode=args.mode
+            )
             all_results.append(result)
 
             if use_wandb:
@@ -469,7 +488,6 @@ def main():
                     "summary/mean_norm_ratio": float(np.mean(result["norm_ratios"])),
                 }
 
-                # Global PCA metrics
                 for layer in layers:
                     pca = result[f"pca_{layer}"]
                     metrics[f"pca/{layer}_sv1"] = pca["singular_values"][0]
@@ -477,8 +495,15 @@ def main():
                         pca["explained_variance"][:10]
                     )
 
-                # Plots
-                for layer in layers:
+                    # Basis Scaling Graphs for ALL layers
+                    contrib_by_k = result["per_k_metrics"]["basis_contrib_by_k"][layer]
+                    for k, contrib in enumerate(contrib_by_k):
+                        metrics[f"basis_scaling_{layer}/K_{k:02d}"] = float(contrib)
+                    metrics[f"summary/mean_basis_contrib_{layer}"] = float(
+                        np.mean(contrib_by_k)
+                    )
+
+                    # Cumulative Variance Plots
                     fig_cumvar = create_pca_cumvar_curves_plot(result, layer)
                     metrics[f"plots/pca_cumvar_curves_{layer}"] = wandb.Image(
                         fig_to_image(fig_cumvar)
