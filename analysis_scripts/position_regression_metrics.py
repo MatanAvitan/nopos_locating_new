@@ -1,29 +1,37 @@
 """
-Position Regression Metrics Analysis
+Position Regression Metrics Analysis - Per-K Basis Hypothesis Testing
 
-Extracts 3 key metrics across training checkpoints for nope-6layer-until-first-mlp model:
-1. Basis validation via decoding vector theory
-2. Pythagorean numbers (L2 norm squared) before/after attention
-3. PCA/Singular values at each layer
+Tests the hypothesis: K unique prefix tokens form a basis that the MLP
+uses to decode position.
+
+Key metrics computed per-K (0-23 unique prefix tokens):
+1. Basis contribution: |activation · E_basis| (Metric 1)
+2. Pythagorean numbers: ||v||² before/after attention (Metric 2)
+3. PCA/Singular values at each layer (Metric 3)
 
 Usage:
-    CUDA_VISIBLE_DEVICES=4 python analysis_scripts/position_regression_metrics.py \
+    CUDA_VISIBLE_DEVICES=3 python analysis_scripts/position_regression_metrics.py \
         --checkpoint-dir out-posreg-6layer-until-mlp \
         --experiment-name nope-6layer-until-first-mlp \
         --n-samples 24
 """
 
+import io
 import sys
 import argparse
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 import warnings
+
+# Use non-interactive backend BEFORE importing pyplot
+import matplotlib
+
+matplotlib.use("Agg")
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
+from matplotlib.figure import Figure
 from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
@@ -50,11 +58,8 @@ PROJECT_ROOT = Path(__file__).parent.parent
 def load_checkpoint(ckpt_path: str, device: str = "cuda") -> Tuple[GPT, dict]:
     """Load a model checkpoint."""
     checkpoint = torch.load(ckpt_path, map_location=device, weights_only=False)
-
-    # Get model config from checkpoint
     model_args = checkpoint.get("model_args", {})
 
-    # Create config
     gptconf = GPTConfig(
         n_layer=model_args.get("n_layer", 6),
         n_head=model_args.get("n_head", 1),
@@ -70,13 +75,12 @@ def load_checkpoint(ckpt_path: str, device: str = "cuda") -> Tuple[GPT, dict]:
         use_ln2=model_args.get("use_ln2", True),
     )
 
-    # Create and load model
     model = GPT(gptconf)
 
     # Handle state dict with _orig_mod prefix (from torch.compile)
     state_dict = checkpoint["model"]
     unwanted_prefix = "_orig_mod."
-    for k, v in list(state_dict.items()):
+    for k in list(state_dict.keys()):
         if k.startswith(unwanted_prefix):
             state_dict[k[len(unwanted_prefix) :]] = state_dict.pop(k)
 
@@ -84,7 +88,6 @@ def load_checkpoint(ckpt_path: str, device: str = "cuda") -> Tuple[GPT, dict]:
     model.to(device)
     model.eval()
 
-    # Extract training metadata
     meta = {
         "step": checkpoint.get("iter_num", 0),
         "train_loss": checkpoint.get("best_val_loss", None),
@@ -102,33 +105,24 @@ def generate_unique_prefix_sequences(
     base_token: int = 1000,
 ) -> torch.Tensor:
     """
-    Generate sequences where EACH sample i has i unique prefix tokens.
-
-    Returns:
-        tokens: (n_samples, seq_len) tensor - each row has different prefix length
+    Generate sequences where sample i has i unique prefix tokens.
+    Sample 0: [1000, 1000, ...] (K=0)
+    Sample i: [1001, ..., 1000+i, 1000, ...] (K=i unique tokens)
     """
     sequences = torch.full(
         (n_samples, seq_len), base_token, dtype=torch.long, device=device
     )
-
-    # For each sample i, fill first i positions with unique tokens
     for sample_idx in range(n_samples):
         n_unique = min(sample_idx, seq_len)
         for pos in range(n_unique):
             sequences[sample_idx, pos] = base_token + 1 + pos
-
     return sequences
 
 
 def extract_basis_embeddings(
     model: GPT, base_token: int = 1000, n_basis: int = 24
 ) -> torch.Tensor:
-    """
-    Extract embeddings for unique prefix tokens: [1001, 1002, ..., 1024]
-
-    Returns:
-        basis: (n_basis, n_embd) - Raw embeddings of unique prefix tokens
-    """
+    """Extract embeddings for unique prefix tokens: [1001, 1002, ..., 1000+n_basis]"""
     unique_tokens = torch.arange(
         base_token + 1, base_token + n_basis + 1, device=next(model.parameters()).device
     )
@@ -139,48 +133,24 @@ def extract_basis_embeddings(
 def extract_weight_matrices(
     model: GPT, layer_idx: int = 0
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    """
-    Extract W_v and W_o from attention layer.
-
-    Returns:
-        W_v: (n_embd, n_embd) - Value projection
-        W_o: (n_embd, n_embd) - Output projection
-    """
+    """Extract W_v and W_o from attention layer."""
     block = model.transformer.h[layer_idx]
-    c_attn_weight = block.attn.c_attn.weight.data  # (3*n_embd, n_embd)
+    c_attn_weight = block.attn.c_attn.weight.data
     n_embd = model.config.n_embd
-
-    # Extract W_v (last third of c_attn)
-    W_v = c_attn_weight[2 * n_embd :, :].T  # (n_embd, n_embd)
-
-    # Extract W_o
-    W_o = block.attn.c_proj.weight.data.T  # (n_embd, n_embd)
-
+    W_v = c_attn_weight[2 * n_embd :, :].T
+    W_o = block.attn.c_proj.weight.data.T
     return W_v, W_o
 
 
 def get_detailed_activations(
-    model: GPT,
-    tokens: torch.Tensor,
-    layer_idx: int = 0,
+    model: GPT, tokens: torch.Tensor, layer_idx: int = 0
 ) -> Dict[str, torch.Tensor]:
-    """
-    Extract activations at all key points.
-
-    Returns dict with:
-    - post_attn: After attention (before residual)
-    - post_ln2: After second LayerNorm
-    - mlp_hidden: After GELU activation inside MLP
-    - post_mlp: After whole MLP (before residual)
-    """
+    """Extract activations at key points including mlp_hidden."""
     activations = {}
 
     with torch.no_grad():
-        # Embedding
         tok_emb = model.transformer.wte(tokens)
         x = model.transformer.drop(tok_emb)
-
-        # Get the specified block
         block = model.transformer.h[layer_idx]
 
         # Post-LN1 and Attention
@@ -188,10 +158,10 @@ def get_detailed_activations(
         attn_out = block.attn(x_ln1)
         activations["post_attn"] = attn_out.clone()
 
-        # After first residual connection
+        # After first residual
         x = x + attn_out
 
-        # Post-LN2 (BEFORE MLP)
+        # Post-LN2
         if block.use_ln2:
             x_ln2 = block.ln_2(x)
             activations["post_ln2"] = x_ln2.clone()
@@ -200,349 +170,257 @@ def get_detailed_activations(
             activations["post_ln2"] = x.clone()
             mlp_input = x
 
-        # Inside MLP - extract hidden activation after GELU
-        mlp = block.mlp
-        mlp_fc = mlp.c_fc(mlp_input)
-        mlp_after_gelu = mlp.gelu(mlp_fc)
-        activations["mlp_hidden"] = mlp_after_gelu.clone()
+        # MLP hidden activations (after c_fc and GELU)
+        mlp_hidden = block.mlp.c_fc(mlp_input)
+        mlp_hidden = block.mlp.gelu(mlp_hidden)
+        activations["mlp_hidden"] = mlp_hidden.clone()
 
-        # Complete MLP forward
-        mlp_proj = mlp.c_proj(mlp_after_gelu)
-        mlp_out = mlp.dropout(mlp_proj)
+        # Post-MLP
+        mlp_out = block.mlp.c_proj(mlp_hidden)
+        if hasattr(block.mlp, "dropout"):
+            mlp_out = block.mlp.dropout(mlp_out)
         activations["post_mlp"] = mlp_out.clone()
 
     return activations
 
 
-def compute_basis_projections(
-    activations: torch.Tensor, basis: torch.Tensor
-) -> Tuple[torch.Tensor, torch.Tensor]:
-    """
-    Compute dot product projection of activations onto basis vectors.
-
-    Args:
-        activations: (n_samples, seq_len, n_embd)
-        basis: (n_basis, n_embd)
-
-    Returns:
-        projections: (n_samples, seq_len, n_basis) - Dot product with each basis vector
-        total_contribution: (n_samples, seq_len) - Sum of absolute projections
-    """
-    # projections[i, j, k] = dot(activations[i, j], basis[k])
-    projections = torch.einsum("ijk,mk->ijm", activations, basis)
-    total_contribution = torch.abs(projections).sum(dim=-1)
-    return projections, total_contribution
-
-
 def compute_pythagorean_norms(
     model: GPT, tokens: torch.Tensor
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    """
-    Compute ||v||² before and after attention.
-
-    Returns:
-        norms_before: (n_samples, seq_len) - ||W_v @ LN1(e)||²
-        norms_after: (n_samples, seq_len) - ||attn_out||²
-    """
+    """Metric 2: Compute ||v||² before and after attention."""
     with torch.no_grad():
-        # Get embeddings
         tok_emb = model.transformer.wte(tokens)
-
-        # First block
         block = model.transformer.h[0]
-
-        # Apply LN1
         ln1_out = block.ln_1(tok_emb)
-
-        # Extract W_v
         W_v, _ = extract_weight_matrices(model)
-
-        # Compute value vectors: v = ln1_out @ W_v.T
         value_vectors = ln1_out @ W_v.T
-
-        # Before attention: ||v||²
         norms_before = (value_vectors**2).sum(dim=-1)
-
-        # After attention
         attn_out = block.attn(ln1_out)
         norms_after = (attn_out**2).sum(dim=-1)
-
     return norms_before, norms_after
 
 
-def compute_pca_analysis(
-    activations_dict: Dict[str, torch.Tensor],
-) -> Dict[str, np.ndarray]:
-    """
-    Compute singular value decomposition at each layer.
+def compute_per_k_metrics(
+    model: GPT,
+    tokens: torch.Tensor,
+    basis: torch.Tensor,
+    n_samples: int,
+    seq_len: int,
+) -> Dict:
+    """Compute metrics grouped by K (number of unique prefix tokens)."""
+    layers = ["post_attn", "post_ln2", "mlp_hidden", "post_mlp"]
+    results = {
+        "basis_contrib_by_k": {},
+        "projections_heatmap": {},
+        "pca_cumvar_curves": {},
+        "activations": {},
+    }
 
-    Args:
-        activations_dict: {
-            'post_attn': (n_samples, seq_len, n_embd),
-            'post_ln2': (n_samples, seq_len, n_embd),
-            'mlp_hidden': (n_samples, seq_len, 4*n_embd),
-            'post_mlp': (n_samples, seq_len, n_embd),
-        }
+    all_acts = {layer: [] for layer in layers}
+    for k in range(n_samples):
+        acts = get_detailed_activations(model, tokens[k : k + 1])
+        for layer in layers:
+            all_acts[layer].append(acts[layer])
 
-    Returns:
-        results: Dict with singular values and explained variance for each layer
-    """
-    results = {}
+    for layer in layers:
+        results["activations"][layer] = torch.cat(all_acts[layer], dim=0)
 
-    for layer_name, acts in activations_dict.items():
-        # Reshape to (n_samples * seq_len, d_model)
-        n_samples, seq_len, d_model = acts.shape
-        acts_flat = acts.reshape(-1, d_model).cpu().numpy()
+    for layer in layers:
+        acts = results["activations"][layer]
+        D = acts.shape[-1]
 
-        # Center the data
-        acts_centered = acts_flat - acts_flat.mean(axis=0, keepdims=True)
+        # Metric 1: Projections onto basis vectors
+        if D == basis.shape[-1]:
+            projections = torch.einsum("ksd,bd->ksb", acts, basis)
+            contrib_by_k = []
+            for k in range(n_samples):
+                contrib = torch.abs(projections[k]).mean().item()
+                contrib_by_k.append(contrib)
+            results["basis_contrib_by_k"][layer] = contrib_by_k
+            heatmap = torch.abs(projections).mean(dim=0)
+            results["projections_heatmap"][layer] = heatmap.T.detach().cpu().numpy()
+        else:
+            results["basis_contrib_by_k"][layer] = [0.0] * n_samples
+            results["projections_heatmap"][layer] = np.zeros((n_samples, seq_len))
 
-        # SVD
-        U, S, Vh = np.linalg.svd(acts_centered, full_matrices=False)
+        # Metric 3: Per-K PCA (Cumulative variance curves)
+        pca_cumvar_curves = []
+        max_components = min(n_samples * 2, 100)  # Increased to see beyond K
 
-        # Explained variance
-        explained_var = (S**2) / (S**2).sum()
+        for k in range(n_samples):
+            # Get activations for sample k: (seq_len, n_embd)
+            sample_acts = acts[k].detach().cpu().numpy().astype(np.float64)
+            sample_centered = sample_acts - sample_acts.mean(axis=0, keepdims=True)
 
-        results[f"singular_values_{layer_name}"] = S.tolist()
-        results[f"explained_variance_{layer_name}"] = explained_var.tolist()
+            try:
+                from sklearn.decomposition import TruncatedSVD
+
+                n_comp = min(max_components, sample_acts.shape[0] - 1)
+                svd = TruncatedSVD(
+                    n_components=n_comp,
+                    algorithm="randomized",
+                    n_iter=5,
+                    random_state=42,
+                )
+                svd.fit(sample_centered)
+                cumvar = np.cumsum(svd.explained_variance_ratio_).tolist()
+                pca_cumvar_curves.append(cumvar)
+            except Exception:
+                pca_cumvar_curves.append([0.0])
+
+        results["pca_cumvar_curves"][layer] = pca_cumvar_curves
 
     return results
+
+
+def compute_pca_analysis(activations: torch.Tensor, max_components: int = 100) -> Dict:
+    """Metric 3: Global PCA analysis."""
+    from sklearn.decomposition import TruncatedSVD
+
+    n_samples, seq_len, d_model = activations.shape
+    acts_flat = (
+        activations.reshape(-1, d_model).detach().cpu().numpy().astype(np.float64)
+    )
+    acts_centered = acts_flat - acts_flat.mean(axis=0, keepdims=True)
+    k = min(max_components, min(acts_flat.shape) - 1)
+    svd = TruncatedSVD(
+        n_components=k, algorithm="randomized", n_iter=5, random_state=42
+    )
+    svd.fit(acts_centered)
+    return {
+        "singular_values": svd.singular_values_.tolist(),
+        "explained_variance": svd.explained_variance_ratio_.tolist(),
+    }
+
+
+def create_pca_cumvar_curves_plot(result: Dict, layer: str = "post_mlp") -> Figure:
+    """Plot cumulative variance curves with K markers."""
+    fig, ax = plt.subplots(figsize=(12, 7))
+    curves = result["per_k_metrics"]["pca_cumvar_curves"][layer]
+    n_samples = len(curves)
+
+    for k in range(1, n_samples):
+        cumvar = curves[k]
+        if len(cumvar) > 0:
+            x_vals = list(range(1, len(cumvar) + 1))
+            color = plt.cm.viridis(k / n_samples)
+            ax.plot(x_vals, cumvar, "-", color=color, alpha=0.4, linewidth=1)
+            # Mark the K-th component
+            if k <= len(cumvar):
+                ax.scatter(
+                    [k], [cumvar[k - 1]], color=color, s=40, marker="o", zorder=5
+                )
+
+    ax.axhline(y=0.9, color="red", linestyle="--", alpha=0.5, label="90%")
+    ax.set_xlabel("Number of PCA Components", fontsize=12)
+    ax.set_ylabel("Cumulative Variance Explained", fontsize=12)
+    ax.set_title(
+        f"PCA Cumulative Variance Curves by K ({layer}, step {result['step']})\nDots mark the K-th component",
+        fontsize=13,
+        fontweight="bold",
+    )
+    ax.grid(True, alpha=0.3)
+    ax.set_ylim(0, 1.05)
+
+    sm = plt.cm.ScalarMappable(
+        cmap=plt.cm.viridis, norm=plt.Normalize(vmin=1, vmax=n_samples - 1)
+    )
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=ax)
+    cbar.set_label("K (unique prefix tokens)", fontsize=11)
+    plt.tight_layout()
+    return fig
+
+
+def create_pythagorean_norms_plot(all_results: List[Dict]) -> Figure:
+    """Metric 2: Plot Pythagorean norms evolution."""
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    steps = [r["step"] for r in all_results]
+
+    ax = axes[0]
+    mean_before = [r["norms_before_attn"].mean() for r in all_results]
+    mean_after = [r["norms_after_attn"].mean() for r in all_results]
+    ax.plot(steps, mean_before, "o-", label="Before Attention")
+    ax.plot(steps, mean_after, "s-", label="After Attention")
+    ax.set_xlabel("Training Step")
+    ax.set_ylabel("Mean ||v||²")
+    ax.set_title("Pythagorean Norms Evolution")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    ax = axes[1]
+    mean_ratio = [r["norm_ratios"].mean() for r in all_results]
+    ax.plot(steps, mean_ratio, "o-", color="purple")
+    ax.axhline(y=1.0, color="red", linestyle="--")
+    ax.set_xlabel("Training Step")
+    ax.set_ylabel("Norm Ratio (After/Before)")
+    ax.set_title("Attention Norm Transformation")
+    ax.grid(True, alpha=0.3)
+    plt.tight_layout()
+    return fig
+
+
+def fig_to_image(fig: Figure):
+    """Convert matplotlib figure to PIL Image for wandb."""
+    from PIL import Image
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
+    buf.seek(0)
+    plt.close(fig)
+    return Image.open(buf)
 
 
 def analyze_checkpoint(
     ckpt_path: Path, n_samples: int = 24, device: str = "cuda"
 ) -> Dict:
-    """Analyze single checkpoint - extract all 3 metrics."""
-
-    # Load model
+    """Analyze single checkpoint with all 3 metrics."""
     model, meta = load_checkpoint(str(ckpt_path), device)
-    vocab_size = model.config.vocab_size
     seq_len = model.config.block_size
+    vocab_size = model.config.vocab_size
     n_embd = model.config.n_embd
 
-    # Generate sequences (same as t-SNE)
     tokens = generate_unique_prefix_sequences(n_samples, seq_len, vocab_size, device)
-
-    # Extract basis
     basis = extract_basis_embeddings(model, n_basis=n_samples)
 
-    # Get activations at all layers
-    all_activations = []
-    for i in range(n_samples):
-        acts = get_detailed_activations(model, tokens[i : i + 1])
-        all_activations.append(acts)
-
-    # Stack activations: {layer: (n_samples, seq_len, d_model)}
-    stacked_acts = {}
-    for layer in ["post_attn", "post_ln2", "mlp_hidden", "post_mlp"]:
-        stacked_acts[layer] = torch.cat([a[layer] for a in all_activations], dim=0)
-
-    # Metric 1: Basis projections
-    proj_attn, contrib_attn = compute_basis_projections(
-        stacked_acts["post_attn"], basis
-    )
-    proj_ln2, contrib_ln2 = compute_basis_projections(stacked_acts["post_ln2"], basis)
-
-    # Metric 2: Pythagorean norms
+    # Metric 2
     norms_before, norms_after = compute_pythagorean_norms(model, tokens)
 
-    # Metric 3: PCA
-    pca_results = compute_pca_analysis(stacked_acts)
+    # Per-K metrics (Metric 1 & 3)
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+
+    # Global PCA for each layer
+    pca_results = {}
+    for layer in ["post_attn", "post_ln2", "mlp_hidden", "post_mlp"]:
+        pca_results[f"pca_{layer}"] = compute_pca_analysis(per_k["activations"][layer])
 
     return {
         "step": meta["step"],
         "n_embd": n_embd,
         "n_samples": n_samples,
         "seq_len": seq_len,
-        # Metric 1
-        "basis_projections_post_attn": proj_attn.detach().cpu().numpy(),
-        "basis_contributions_post_attn": contrib_attn.detach().cpu().numpy(),
-        "basis_projections_post_ln2": proj_ln2.detach().cpu().numpy(),
-        "basis_contributions_post_ln2": contrib_ln2.detach().cpu().numpy(),
-        # Metric 2
         "norms_before_attn": norms_before.detach().cpu().numpy(),
         "norms_after_attn": norms_after.detach().cpu().numpy(),
         "norm_ratios": (norms_after / (norms_before + 1e-8)).detach().cpu().numpy(),
-        # Metric 3
+        "per_k_metrics": {
+            "basis_contrib_by_k": per_k["basis_contrib_by_k"],
+            "projections_heatmap": per_k["projections_heatmap"],
+            "pca_cumvar_curves": per_k["pca_cumvar_curves"],
+        },
         **pca_results,
     }
 
 
-def create_visualizations(all_results, save_dir: Path):
-    """Create all visualization plots."""
-    plots_dir = save_dir / "plots"
-    plots_dir.mkdir(parents=True, exist_ok=True)
-
-    steps = [r["step"] for r in all_results]
-
-    # 1. Basis Contributions Evolution
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-    for idx, (layer, ax) in enumerate(zip(["post_attn", "post_ln2"], axes)):
-        key = f"basis_contributions_{layer}"
-        # Average over samples and positions
-        mean_contrib = [r[key].mean() for r in all_results]
-        std_contrib = [r[key].std() for r in all_results]
-
-        ax.plot(steps, mean_contrib, "o-", linewidth=2, markersize=6, label="Mean")
-        ax.fill_between(
-            steps,
-            np.array(mean_contrib) - np.array(std_contrib),
-            np.array(mean_contrib) + np.array(std_contrib),
-            alpha=0.3,
-        )
-        ax.set_xlabel("Training Step", fontsize=11)
-        ax.set_ylabel("Total Basis Contribution", fontsize=11)
-        ax.set_title(
-            f"{layer.replace('_', ' ').title()}", fontsize=12, fontweight="bold"
-        )
-        ax.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-    fig.savefig(
-        plots_dir / "basis_contributions_evolution.png", dpi=300, bbox_inches="tight"
-    )
-    plt.close(fig)
-
-    # 2. Pythagorean Norms Evolution
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-    # Before/After norms
-    ax = axes[0]
-    mean_before = [r["norms_before_attn"].mean() for r in all_results]
-    mean_after = [r["norms_after_attn"].mean() for r in all_results]
-    ax.plot(
-        steps, mean_before, "o-", linewidth=2, markersize=6, label="Before Attention"
-    )
-    ax.plot(steps, mean_after, "s-", linewidth=2, markersize=6, label="After Attention")
-    ax.set_xlabel("Training Step", fontsize=11)
-    ax.set_ylabel("Mean ||v||²", fontsize=11)
-    ax.set_title("L2 Norm Squared Evolution", fontsize=12, fontweight="bold")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    # Norm ratio
-    ax = axes[1]
-    mean_ratio = [r["norm_ratios"].mean() for r in all_results]
-    ax.plot(steps, mean_ratio, "o-", linewidth=2, markersize=6, color="purple")
-    ax.axhline(y=1.0, color="red", linestyle="--", alpha=0.7, label="Ratio=1")
-    ax.set_xlabel("Training Step", fontsize=11)
-    ax.set_ylabel("Norm Ratio (After/Before)", fontsize=11)
-    ax.set_title("Attention Norm Transformation", fontsize=12, fontweight="bold")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-    fig.savefig(
-        plots_dir / "pythagorean_norms_evolution.png", dpi=300, bbox_inches="tight"
-    )
-    plt.close(fig)
-
-    # 3. Singular Values Spectrum (4 layers)
-    fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-    axes = axes.flatten()
-
-    layers = ["post_attn", "post_ln2", "mlp_hidden", "post_mlp"]
-
-    for layer, ax in zip(layers, axes):
-        key = f"singular_values_{layer}"
-
-        # Plot top 50 singular values for each checkpoint
-        for i, result in enumerate(all_results):
-            s_vals = np.array(result[key])[:50]  # Top 50
-            color = plt.cm.viridis(i / len(all_results))
-            ax.plot(s_vals, alpha=0.7, color=color, linewidth=1.5)
-
-        ax.set_xlabel("Component Index", fontsize=10)
-        ax.set_ylabel("Singular Value", fontsize=10)
-        ax.set_title(
-            f"{layer.replace('_', ' ').title()}", fontsize=11, fontweight="bold"
-        )
-        ax.set_yscale("log")
-        ax.grid(True, alpha=0.3)
-
-    # Add colorbar for steps
-    sm = plt.cm.ScalarMappable(
-        cmap=plt.cm.viridis, norm=plt.Normalize(vmin=min(steps), vmax=max(steps))
-    )
-    sm.set_array([])
-    cbar = fig.colorbar(sm, ax=axes, orientation="horizontal", pad=0.05, aspect=50)
-    cbar.set_label("Training Step", fontsize=11)
-
-    plt.tight_layout()
-    fig.savefig(
-        plots_dir / "singular_values_spectrum.png", dpi=300, bbox_inches="tight"
-    )
-    plt.close(fig)
-
-    # 4. Cumulative Explained Variance
-    fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-    axes = axes.flatten()
-
-    for layer, ax in zip(layers, axes):
-        key = f"explained_variance_{layer}"
-
-        for i, result in enumerate(all_results):
-            exp_var = np.array(result[key])
-            cumsum = np.cumsum(exp_var)[:100]  # Top 100 components
-            color = plt.cm.viridis(i / len(all_results))
-            ax.plot(cumsum, alpha=0.7, color=color, linewidth=1.5)
-
-        ax.axhline(y=0.9, color="red", linestyle="--", alpha=0.5, label="90%")
-        ax.axhline(y=0.99, color="orange", linestyle="--", alpha=0.5, label="99%")
-        ax.set_xlabel("Number of Components", fontsize=10)
-        ax.set_ylabel("Cumulative Explained Variance", fontsize=10)
-        ax.set_title(
-            f"{layer.replace('_', ' ').title()}", fontsize=11, fontweight="bold"
-        )
-        ax.legend(loc="lower right", fontsize=8)
-        ax.grid(True, alpha=0.3)
-
-    # Add colorbar
-    sm = plt.cm.ScalarMappable(
-        cmap=plt.cm.viridis, norm=plt.Normalize(vmin=min(steps), vmax=max(steps))
-    )
-    sm.set_array([])
-    cbar = fig.colorbar(sm, ax=axes, orientation="horizontal", pad=0.05, aspect=50)
-    cbar.set_label("Training Step", fontsize=11)
-
-    plt.tight_layout()
-    fig.savefig(
-        plots_dir / "explained_variance_cumulative.png", dpi=300, bbox_inches="tight"
-    )
-    plt.close(fig)
-
-    print(f"\n✓ All visualizations saved to: {plots_dir}")
-
-
 def main():
-    parser = argparse.ArgumentParser(description="Position Regression Metrics Analysis")
-    parser.add_argument(
-        "--checkpoint-dir",
-        type=str,
-        required=True,
-        help="Checkpoint directory (e.g., out-posreg-6layer-until-mlp)",
+    parser = argparse.ArgumentParser(
+        description="Position Regression Metrics - Per-K Analysis"
     )
-    parser.add_argument(
-        "--experiment-name",
-        type=str,
-        default=None,
-        help="Experiment name for wandb and results",
-    )
-    parser.add_argument(
-        "--n-samples",
-        type=int,
-        default=24,
-        help="Number of samples (each with varying prefix diversity)",
-    )
-    parser.add_argument(
-        "--no-wandb",
-        action="store_true",
-        help="Disable wandb logging",
-    )
+    parser.add_argument("--checkpoint-dir", type=str, required=True)
+    parser.add_argument("--experiment-name", type=str, default=None)
+    parser.add_argument("--n-samples", type=int, default=24)
+    parser.add_argument("--no-wandb", action="store_true")
     args = parser.parse_args()
 
-    # Set up directories
     checkpoint_dir = PROJECT_ROOT / "nanoGPT" / args.checkpoint_dir
     if not checkpoint_dir.exists():
         print(f"Error: Checkpoint directory {checkpoint_dir} does not exist!")
@@ -554,120 +432,74 @@ def main():
     )
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    # Verify checkpoints exist
-    checkpoint_steps = list(range(1000, 21000, 1000))  # Every 1000 steps
-    print(f"\n{'=' * 70}")
-    print(f"Position Regression Metrics - {experiment_name}")
-    print(f"{'=' * 70}")
-    print(f"Checkpoint dir: {checkpoint_dir}")
-    print(f"Verifying checkpoints...")
-
-    available_steps = []
-    for step in checkpoint_steps:
-        ckpt_path = checkpoint_dir / f"ckpt_{step:05d}.pt"
-        if ckpt_path.exists():
-            available_steps.append(step)
-        else:
-            print(f"  Warning: Checkpoint {step} not found")
+    # Check for checkpoints
+    checkpoint_steps = [0] + list(range(1000, 21000, 1000))
+    available_steps = [
+        s for s in checkpoint_steps if (checkpoint_dir / f"ckpt_{s:05d}.pt").exists()
+    ]
 
     if not available_steps:
         print("Error: No checkpoints found!")
         return
-
-    print(f"Found {len(available_steps)} checkpoints: {available_steps}")
 
     # Initialize wandb
     use_wandb = WANDB_AVAILABLE and not args.no_wandb
     if use_wandb:
         wandb.init(
             project="nope-position-regression-metrics",
-            name=f"metrics_{experiment_name}",
+            name=f"per_k_{experiment_name}",
             config={
                 "n_samples": args.n_samples,
                 "checkpoint_steps": available_steps,
                 "experiment": experiment_name,
             },
         )
-        print(
-            f"\nWandB initialized: nope-position-regression-metrics/metrics_{experiment_name}"
-        )
 
-    # Analyze all checkpoints
     all_results = []
-
-    for step in tqdm(available_steps, desc="Analyzing checkpoints"):
+    for step in tqdm(available_steps, desc="Analyzing"):
         ckpt_path = checkpoint_dir / f"ckpt_{step:05d}.pt"
-
-        print(f"\n--- Checkpoint {step} ---")
         try:
             result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
             all_results.append(result)
 
-            # Log to wandb
             if use_wandb:
-                # Log scalar metrics
-                wandb.log(
-                    {
-                        "step": step,
-                        "basis_contrib_post_attn_mean": result[
-                            "basis_contributions_post_attn"
-                        ].mean(),
-                        "basis_contrib_post_ln2_mean": result[
-                            "basis_contributions_post_ln2"
-                        ].mean(),
-                        "norm_before_mean": result["norms_before_attn"].mean(),
-                        "norm_after_mean": result["norms_after_attn"].mean(),
-                        "norm_ratio_mean": result["norm_ratios"].mean(),
-                        "singular_value_1_post_ln2": result["singular_values_post_ln2"][
-                            0
-                        ],
-                        "explained_var_top10_post_ln2": sum(
-                            result["explained_variance_post_ln2"][:10]
-                        ),
-                    }
-                )
+                layers = ["post_attn", "post_ln2", "mlp_hidden", "post_mlp"]
+                metrics = {
+                    "checkpoint/step": step,
+                    "summary/mean_norm_ratio": float(np.mean(result["norm_ratios"])),
+                }
 
-            print(f"  ✓ Analysis complete")
+                # Global PCA metrics
+                for layer in layers:
+                    pca = result[f"pca_{layer}"]
+                    metrics[f"pca/{layer}_sv1"] = pca["singular_values"][0]
+                    metrics[f"pca/{layer}_top10_var"] = sum(
+                        pca["explained_variance"][:10]
+                    )
 
+                # Plots
+                for layer in layers:
+                    fig_cumvar = create_pca_cumvar_curves_plot(result, layer)
+                    metrics[f"plots/pca_cumvar_curves_{layer}"] = wandb.Image(
+                        fig_to_image(fig_cumvar)
+                    )
+
+                if len(all_results) > 1:
+                    fig_norms = create_pythagorean_norms_plot(all_results)
+                    metrics["plots/pythagorean_norms"] = wandb.Image(
+                        fig_to_image(fig_norms)
+                    )
+
+                wandb.log(metrics, commit=True)
         except Exception as e:
-            print(f"  Error: {e}")
+            print(f"Step {step}: Error - {e}")
             import traceback
 
             traceback.print_exc()
-            continue
-
-    # Create visualizations
-    print(f"\n{'=' * 70}")
-    print("Creating visualizations...")
-    create_visualizations(all_results, results_dir)
-
-    # Save summary
-    import json
-
-    summary_path = results_dir / "summary.json"
-    summary = {
-        "experiment": experiment_name,
-        "n_samples": args.n_samples,
-        "checkpoints_analyzed": [r["step"] for r in all_results],
-        "n_embd": all_results[0]["n_embd"] if all_results else None,
-    }
-    with open(summary_path, "w") as f:
-        json.dump(summary, f, indent=2)
-
-    print(f"\n✓ Summary saved to: {summary_path}")
 
     if use_wandb:
-        # Log final visualizations to wandb
-        plots_dir = results_dir / "plots"
-        for plot_file in plots_dir.glob("*.png"):
-            wandb.log({f"final_plots/{plot_file.stem}": wandb.Image(str(plot_file))})
-
         wandb.finish()
-        print("\nWandB run finished.")
-
-    print(f"\n{'=' * 70}")
-    print(f"Analysis complete! Results saved to: {results_dir}")
-    print(f"{'=' * 70}")
+    print(f"\nAnalysis complete! Results in {results_dir}")
 
 
 if __name__ == "__main__":
