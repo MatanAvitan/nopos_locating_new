@@ -1,15 +1,18 @@
 """
-Causal Intervention V3: Embedding Direction at First Base Token After MLP
+Causal Intervention V3: Value Vector Replacement in Layer 0 Attention
 
 Experiment:
 1. Generate 24 sequences with unique prefix pattern (sample K has K unique prefix tokens)
-2. Intervention: Add embedding of a new token to position K (first base_token) after first MLP
-3. Due to causal attention, intervention at K only affects positions >= K
-4. Measure whether intervention improves or worsens position predictions for pos >= K
+2. Intervention: Replace the VALUE vector at position K in layer 0 attention with
+   the value vector of a NEW unique token (W_V @ embedding[new_token])
+3. This propagates through W_O automatically in the attention output
+4. Due to causal attention, intervention at K only affects positions >= K
+5. Measure whether intervention improves or worsens position predictions for pos >= K
 
-Output:
-- Grid of 24 subplots (one per K) showing original vs intervened predictions
-- Summary plot showing improvement/worsening of predictions per K
+The intervention is:
+    V[:, K, :] = W_V @ embedding[intervention_token]
+
+Where W_V is part of c_attn projection and W_O (c_proj) is applied to attention output.
 
 Usage:
     CUDA_VISIBLE_DEVICES=3 python analysis_scripts/causal_intervention_v3.py \
@@ -22,6 +25,7 @@ import argparse
 from pathlib import Path
 from typing import Dict, Tuple
 import warnings
+import math
 
 import matplotlib
 
@@ -29,6 +33,7 @@ matplotlib.use("Agg")
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from tqdm import tqdm
@@ -126,6 +131,8 @@ def generate_unique_prefix_sequences(
     - Sample 0: [1000, 1000, 1000, ...] (all base_token)
     - Sample 1: [1001, 1000, 1000, ...] (1 unique, rest base_token)
     - Sample i: [1001, ..., 1000+i, 1000, ...] (i unique, rest base_token)
+
+    Tokens used: base_token (1000) and 1001 to 1000+n_samples-1
     """
     sequences = torch.full(
         (n_samples, seq_len), base_token, dtype=torch.long, device=device
@@ -137,6 +144,64 @@ def generate_unique_prefix_sequences(
             sequences[sample_idx, pos] = base_token + 1 + pos
 
     return sequences
+
+
+def attention_forward_with_value_intervention(
+    attn_module,
+    x: torch.Tensor,
+    intervention_positions: torch.Tensor,
+    v_new: torch.Tensor,
+) -> torch.Tensor:
+    """
+    Custom attention forward that replaces the value vector at specified positions.
+
+    Args:
+        attn_module: The CausalSelfAttention module
+        x: Input tensor (B, T, C)
+        intervention_positions: (B,) position to intervene for each batch element
+        v_new: (C,) the new value vector to insert (already computed as W_V @ emb[new_token])
+
+    Returns:
+        Attention output (B, T, C)
+    """
+    B, T, C = x.size()
+    n_head = attn_module.n_head
+    head_dim = C // n_head
+
+    # Compute Q, K, V
+    qkv = attn_module.c_attn(x)
+    q, k, v = qkv.split(attn_module.n_embd, dim=2)
+
+    # Replace V at intervention positions
+    # v has shape (B, T, C)
+    for b in range(B):
+        pos = intervention_positions[b].item()
+        if 0 <= pos < T:
+            v[b, pos, :] = v_new
+
+    # Reshape for multi-head attention
+    k = k.view(B, T, n_head, head_dim).transpose(1, 2)  # (B, n_head, T, head_dim)
+    q = q.view(B, T, n_head, head_dim).transpose(1, 2)
+    v = v.view(B, T, n_head, head_dim).transpose(1, 2)
+
+    # Compute attention (manual implementation to avoid flash attention)
+    att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(head_dim))
+
+    # Causal mask
+    causal_mask = torch.triu(
+        torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+    )
+    att = att.masked_fill(causal_mask, float("-inf"))
+    att = F.softmax(att, dim=-1)
+
+    # Apply attention to values
+    y = att @ v  # (B, n_head, T, head_dim)
+
+    # Reshape and project
+    y = y.transpose(1, 2).contiguous().view(B, T, C)
+    y = attn_module.c_proj(y)  # This is W_O
+
+    return y
 
 
 def get_position_predictions(model: GPT, tokens: torch.Tensor) -> torch.Tensor:
@@ -163,30 +228,65 @@ def get_position_predictions(model: GPT, tokens: torch.Tensor) -> torch.Tensor:
     return pos_out
 
 
-def get_position_predictions_with_intervention(
+def get_position_predictions_with_value_intervention(
     model: GPT,
     tokens: torch.Tensor,
     intervention_positions: torch.Tensor,
-    intervention_embedding: torch.Tensor,
+    intervention_token: int,
 ) -> torch.Tensor:
     """
-    Get predictions with intervention: add embedding to position K after first MLP.
+    Get predictions with VALUE vector intervention in layer 0 attention.
+
+    The intervention replaces V[:, K, :] with W_V @ embedding[intervention_token]
+    for each sample, where K is the intervention position for that sample.
+
+    Args:
+        model: The GPT model
+        tokens: (batch, seq_len) input tokens
+        intervention_positions: (batch,) position to intervene for each sample
+        intervention_token: Token ID whose embedding to use for the new value vector
+
+    Returns:
+        pos_out: (batch, seq_len) in [0, block_size-1]
     """
-    batch_size, seq_len = tokens.shape
     block_size = model.config.block_size
+    n_embd = model.config.n_embd
 
     with torch.no_grad():
+        # Get the intervention token's embedding
+        intervention_emb = model.transformer.wte.weight[intervention_token]  # (n_embd,)
+
+        # Compute the new VALUE vector: this is W_V @ emb
+        # c_attn projects to [Q, K, V], so V part is the last n_embd
+        # c_attn.weight has shape (3*n_embd, n_embd)
+        # For a single embedding: qkv = c_attn(emb.unsqueeze(0).unsqueeze(0))
+        layer0_attn = model.transformer.h[0].attn
+
+        # Get V projection for the intervention embedding
+        qkv_new = layer0_attn.c_attn(intervention_emb.unsqueeze(0))  # (1, 3*n_embd)
+        v_new = qkv_new[0, 2 * n_embd :]  # (n_embd,) - the V part
+
+        # Forward pass with intervention
         tok_emb = model.transformer.wte(tokens)
         x = model.transformer.drop(tok_emb)
 
-        for layer_idx, block in enumerate(model.transformer.h):
-            x = block(x)
+        # Layer 0: Apply LN1, then attention with intervention
+        block0 = model.transformer.h[0]
+        x_ln1 = block0.ln_1(x)
+        attn_out = attention_forward_with_value_intervention(
+            block0.attn, x_ln1, intervention_positions, v_new
+        )
+        x = x + attn_out
 
-            if layer_idx == 0:
-                for b in range(batch_size):
-                    pos = intervention_positions[b].item()
-                    if pos < seq_len:
-                        x[b, pos, :] = x[b, pos, :] + intervention_embedding
+        # Layer 0: MLP
+        if block0.use_ln2:
+            x = x + block0.mlp(block0.ln_2(x))
+        else:
+            x = x + block0.mlp(x)
+
+        # Remaining layers (no intervention)
+        for block in model.transformer.h[1:]:
+            x = block(x)
 
         x = model.transformer.ln_f(x)
         raw_out = model.pos_head(x).squeeze(-1)
@@ -301,15 +401,15 @@ def create_per_k_grid_plot(
             ax.axvspan(k, seq_len, alpha=0.05, color="gray")
 
         # Title with improvement indicator
-        if metrics["improvement"] > 0:
+        if metrics["improvement"] > 0.1:
             title_color = "darkgreen"
-            arrow = "↑"
-        elif metrics["improvement"] < 0:
+            arrow = r"$\uparrow$"
+        elif metrics["improvement"] < -0.1:
             title_color = "darkred"
-            arrow = "↓"
+            arrow = r"$\downarrow$"
         else:
             title_color = "black"
-            arrow = "−"
+            arrow = r"$\approx$"
 
         ax.set_title(f"$K={k}$ {arrow}", fontsize=8, color=title_color, pad=2)
 
@@ -333,8 +433,8 @@ def create_per_k_grid_plot(
     axes[0].legend(loc="lower right", fontsize=5, framealpha=0.9)
 
     fig.suptitle(
-        f"Position Predictions per $K$ (Step {step})\n"
-        f"Green ↑ = intervention improved, Red ↓ = worsened (for pos ≥ K)",
+        f"Value Vector Intervention in Layer 0 Attention (Step {step})\n"
+        r"Green $\uparrow$ = improved, Red $\downarrow$ = worsened (pos $\geq$ K)",
         fontsize=9,
         y=1.02,
     )
@@ -377,7 +477,10 @@ def create_improvement_summary_plot(
 
     # Plot 1: Improvement (MAE reduction)
     ax = axes[0]
-    colors = ["darkgreen" if x > 0 else "darkred" for x in improvements]
+    colors = [
+        "darkgreen" if x > 0.1 else ("darkred" if x < -0.1 else "gray")
+        for x in improvements
+    ]
     ax.bar(
         k_values,
         improvements,
@@ -436,124 +539,14 @@ def create_improvement_summary_plot(
         linewidth=0.3,
     )
     ax.set_xlabel(r"$K$ (unique prefix)", fontsize=9)
-    ax.set_ylabel("MAE (pos ≥ K)", fontsize=9)
+    ax.set_ylabel(r"MAE (pos $\geq$ K)", fontsize=9)
     ax.set_title("MAE Comparison\n(lower = better)", fontsize=9)
     ax.set_xticks([0, 6, 12, 18, 23])
     ax.legend(fontsize=6, loc="upper right")
     ax.grid(True, alpha=0.15, axis="y", linewidth=0.3)
 
     fig.suptitle(
-        f"Causal Intervention Analysis (Step {step}) — Effect measured only for positions ≥ K",
-        fontsize=9,
-        y=1.08,
-    )
-
-    plt.tight_layout()
-    return fig
-
-
-def create_single_k_detail_plot(
-    predictions_original: torch.Tensor,
-    predictions_intervened: torch.Tensor,
-    seq_len: int,
-    step: int,
-    k: int,
-) -> Figure:
-    """
-    Create detailed plot for a single K value showing the intervention effect.
-    """
-    fig, axes = plt.subplots(1, 2, figsize=(ICML_FULL_WIDTH, 2.5))
-
-    true_positions = torch.arange(seq_len, device=predictions_original.device).float()
-    pred_orig = predictions_original[k]
-    pred_interv = predictions_intervened[k]
-
-    positions_np = np.arange(seq_len)
-
-    # Left: Predictions
-    ax = axes[0]
-    ax.plot(
-        positions_np,
-        pred_orig.cpu().numpy(),
-        "b-",
-        linewidth=1.0,
-        label="Original",
-        alpha=0.8,
-    )
-    ax.plot(
-        positions_np,
-        pred_interv.cpu().numpy(),
-        "r-",
-        linewidth=1.0,
-        label="Intervened",
-        alpha=0.8,
-    )
-    ax.plot(positions_np, positions_np, "k--", linewidth=0.5, alpha=0.5, label=r"$y=x$")
-
-    if k < seq_len:
-        ax.axvline(
-            x=k,
-            color="green",
-            linestyle=":",
-            linewidth=1.0,
-            alpha=0.8,
-            label=f"Intervention (pos={k})",
-        )
-        ax.axvspan(k, seq_len, alpha=0.08, color="green", label="Causal region")
-
-    ax.set_xlabel(r"True Position $t$", fontsize=10)
-    ax.set_ylabel(r"Predicted Position $\hat{t}$", fontsize=10)
-    ax.set_title(f"$K={k}$: Predictions", fontsize=10)
-    ax.legend(fontsize=7, loc="lower right")
-    ax.set_xlim(0, seq_len)
-    ax.set_ylim(0, seq_len)
-    ax.grid(True, alpha=0.15, linewidth=0.3)
-
-    # Right: Error difference (only for pos >= K)
-    ax = axes[1]
-
-    error_orig = torch.abs(pred_orig - true_positions).cpu().numpy()
-    error_interv = torch.abs(pred_interv - true_positions).cpu().numpy()
-    error_diff = error_orig - error_interv  # Positive = intervention helped
-
-    # Color by improvement
-    colors = np.where(error_diff > 0, "darkgreen", "darkred")
-    colors[:k] = (
-        "lightgray"  # Gray out positions before K (not affected by intervention)
-    )
-
-    ax.bar(
-        positions_np, error_diff, color=colors, alpha=0.7, width=1.0, edgecolor="none"
-    )
-    ax.axhline(y=0, color="black", linewidth=0.5)
-
-    if k < seq_len:
-        ax.axvline(x=k, color="green", linestyle=":", linewidth=1.0, alpha=0.8)
-
-    ax.set_xlabel(r"Position $t$", fontsize=10)
-    ax.set_ylabel("Error Reduction", fontsize=10)
-    ax.set_title(
-        f"$K={k}$: Intervention Effect\n(+) = closer to truth, gray = pre-intervention",
-        fontsize=9,
-    )
-    ax.set_xlim(0, seq_len)
-    ax.grid(True, alpha=0.15, axis="y", linewidth=0.3)
-
-    # Add metrics text
-    metrics = compute_causal_metrics(pred_orig, pred_interv, true_positions, k)
-    textstr = (
-        f"MAE reduction: {metrics['improvement']:.2f}\n"
-        f"% improved: {metrics['pct_improved']:.1f}%"
-    )
-    ax.text(
-        0.98,
-        0.98,
-        textstr,
-        transform=ax.transAxes,
-        fontsize=7,
-        verticalalignment="top",
-        horizontalalignment="right",
-        bbox=dict(boxstyle="round", facecolor="white", alpha=0.9),
+        f"Value Vector Intervention Analysis (Step {step})", fontsize=9, y=1.08
     )
 
     plt.tight_layout()
@@ -574,12 +567,17 @@ def fig_to_image(fig: Figure):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Causal Intervention V3 - Embedding at First Base Token After MLP"
+        description="Causal Intervention V3 - Value Vector Replacement in Layer 0 Attention"
     )
     parser.add_argument("--checkpoint-dir", type=str, required=True)
     parser.add_argument("--experiment-name", type=str, default="causal-intervention-v3")
     parser.add_argument("--n-samples", type=int, default=24)
-    parser.add_argument("--intervention-token", type=int, default=2000)
+    parser.add_argument(
+        "--intervention-token",
+        type=int,
+        default=2000,
+        help="Token ID for intervention (should not appear in sequences)",
+    )
     parser.add_argument("--no-wandb", action="store_true")
     parser.add_argument("--save-dir", type=str, default=None)
     parser.add_argument(
@@ -610,13 +608,14 @@ def main():
         return
 
     print(f"\n{'=' * 70}")
-    print(f"Causal Intervention V3 - {args.experiment_name}")
+    print(f"Causal Intervention V3 - Value Vector Replacement")
     print(f"{'=' * 70}")
+    print(f"Experiment: {args.experiment_name}")
     print(f"Checkpoint dir: {checkpoint_dir}")
     print(f"Analyzing {len(available_steps)} checkpoints")
     print(f"N samples: {args.n_samples} (K=0 to K={args.n_samples - 1})")
     print(
-        f"Intervention: Add embedding[{args.intervention_token}] at pos K after MLP 0"
+        f"Intervention: Replace V[K] = W_V @ emb[{args.intervention_token}] in layer 0"
     )
     print(f"Note: Effect measured only for positions >= K (causal masking)")
     print(f"Device: {DEVICE}")
@@ -637,6 +636,7 @@ def main():
             config={
                 "n_samples": args.n_samples,
                 "intervention_token": args.intervention_token,
+                "intervention_type": "value_vector_replacement_layer0",
                 "checkpoint_steps": available_steps,
             },
         )
@@ -654,16 +654,13 @@ def main():
                 args.n_samples, seq_len, base_token=1000, device=DEVICE
             )
 
-            # Get intervention embedding
-            intervention_embedding = model.transformer.wte.weight[
-                args.intervention_token
-            ].clone()
+            # Intervention positions: for sample K, intervene at position K
             intervention_positions = torch.arange(args.n_samples, device=DEVICE)
 
             # Get predictions
             predictions_original = get_position_predictions(model, tokens)
-            predictions_intervened = get_position_predictions_with_intervention(
-                model, tokens, intervention_positions, intervention_embedding
+            predictions_intervened = get_position_predictions_with_value_intervention(
+                model, tokens, intervention_positions, args.intervention_token
             )
 
             # Create plots
@@ -682,7 +679,7 @@ def main():
                 args.n_samples,
             )
 
-            # Save in both PNG and PDF
+            # Save in both PNG and PDF (separate files)
             fig_grid.savefig(
                 save_dir / f"grid_step{step:05d}.png", dpi=300, bbox_inches="tight"
             )
@@ -693,23 +690,6 @@ def main():
             fig_summary.savefig(
                 save_dir / f"summary_step{step:05d}.pdf", bbox_inches="tight"
             )
-
-            # Create detail plots for selected K values
-            for k in [0, 8, 16, 23]:
-                if k < args.n_samples:
-                    fig_detail = create_single_k_detail_plot(
-                        predictions_original, predictions_intervened, seq_len, step, k
-                    )
-                    fig_detail.savefig(
-                        save_dir / f"detail_K{k}_step{step:05d}.png",
-                        dpi=300,
-                        bbox_inches="tight",
-                    )
-                    fig_detail.savefig(
-                        save_dir / f"detail_K{k}_step{step:05d}.pdf",
-                        bbox_inches="tight",
-                    )
-                    plt.close(fig_detail)
 
             # Log to wandb
             if use_wandb:
@@ -737,7 +717,6 @@ def main():
     print(f"Analysis complete! Plots saved to: {save_dir}")
     print(f"  - grid_stepXXXXX.png/pdf: 24 subplots, one per K")
     print(f"  - summary_stepXXXXX.png/pdf: Improvement metrics per K")
-    print(f"  - detail_KX_stepXXXXX.png/pdf: Detailed view for K=0,8,16,23")
 
     if use_wandb:
         wandb.finish()
