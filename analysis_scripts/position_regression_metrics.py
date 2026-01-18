@@ -355,14 +355,14 @@ def analyze_checkpoint(
         "n_samples": n_samples,
         "seq_len": seq_len,
         # Metric 1
-        "basis_projections_post_attn": proj_attn.cpu().numpy(),
-        "basis_contributions_post_attn": contrib_attn.cpu().numpy(),
-        "basis_projections_post_ln2": proj_ln2.cpu().numpy(),
-        "basis_contributions_post_ln2": contrib_ln2.cpu().numpy(),
+        "basis_projections_post_attn": proj_attn.detach().cpu().numpy(),
+        "basis_contributions_post_attn": contrib_attn.detach().cpu().numpy(),
+        "basis_projections_post_ln2": proj_ln2.detach().cpu().numpy(),
+        "basis_contributions_post_ln2": contrib_ln2.detach().cpu().numpy(),
         # Metric 2
-        "norms_before_attn": norms_before.cpu().numpy(),
-        "norms_after_attn": norms_after.cpu().numpy(),
-        "norm_ratios": (norms_after / (norms_before + 1e-8)).cpu().numpy(),
+        "norms_before_attn": norms_before.detach().cpu().numpy(),
+        "norms_after_attn": norms_after.detach().cpu().numpy(),
+        "norm_ratios": (norms_after / (norms_before + 1e-8)).detach().cpu().numpy(),
         # Metric 3
         **pca_results,
     }

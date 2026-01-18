@@ -286,9 +286,6 @@ def create_comparison_tsne(
     """
     Create side-by-side t-SNE comparison: unique prefix vs random.
 
-    Uses CPU-based exact t-SNE for sharper, nicer-looking results.
-    Visualizes ALL token positions (no subsampling).
-
     Dual encoding: Color = position bucket, Marker shape = prefix diversity group
 
     Args:
@@ -316,36 +313,31 @@ def create_comparison_tsne(
 
     cmap = plt.cm.get_cmap("viridis", n_buckets)
 
-    for idx, (acts, sample_ids_side, subtitle) in enumerate(
+    for idx, (acts, subtitle) in enumerate(
         [
-            (unique_acts, sample_ids, "Unique Prefix (varying)"),
-            (random_acts, sample_ids, "Random Sequences"),
+            (unique_acts, "Unique Prefix (varying)"),
+            (random_acts, "Random Sequences"),
         ]
     ):
         ax = fig.add_subplot(gs[idx])
 
-        # Use all samples - no subsampling
-        acts_sample = acts
-        pos_sample = position_buckets
-        prefix_sample = prefix_groups
-
         # Run t-SNE with barnes_hut but higher quality settings
-        print(f"    Running t-SNE for {subtitle} ({len(acts_sample)} samples)...")
+        print(f"    Running t-SNE for {subtitle} ({len(acts)} samples)...")
         tsne = TSNE(
             n_components=2,
-            perplexity=min(perplexity, len(acts_sample) // 3),
+            perplexity=min(perplexity, len(acts) // 3),
             random_state=42,
             method="barnes_hut",  # Faster than exact
             angle=0.2,  # Lower angle = higher precision
             n_iter=1000,  # More iterations for better convergence
             verbose=0,
         )
-        embeddings = tsne.fit_transform(acts_sample)
+        embeddings = tsne.fit_transform(acts)
 
         # Plot each combination of position bucket and prefix group
         for prefix_group in range(4):
             for bucket in range(n_buckets):
-                mask = (pos_sample == bucket) & (prefix_sample == prefix_group)
+                mask = (position_buckets == bucket) & (prefix_groups == prefix_group)
                 if mask.sum() > 0:
                     start_pos = int(bucket * bucket_size)
                     end_pos = int((bucket + 1) * bucket_size) - 1
@@ -355,6 +347,8 @@ def create_comparison_tsne(
                         label = marker_labels[prefix_group]
                     elif prefix_group == 0 and bucket < n_buckets:
                         label = f"pos {start_pos}-{end_pos}"
+                    elif bucket == 0 and prefix_group > 0:
+                        label = marker_labels[prefix_group]
                     else:
                         label = None
 
@@ -365,9 +359,7 @@ def create_comparison_tsne(
                         marker=markers[prefix_group],
                         label=label,
                         alpha=0.6,
-                        s=20
-                        + prefix_group
-                        * 5,  # Slightly larger markers for higher diversity
+                        s=20 + prefix_group * 5,
                         edgecolors="black",
                         linewidths=0.3,
                     )
@@ -495,10 +487,12 @@ def analyze_checkpoints(
 
             # Collect activations
             print(f"  Collecting activations (unique prefix)...")
-            unique_acts, positions = collect_activations(model, unique_tokens)
+            unique_acts, positions, sample_ids = collect_activations(
+                model, unique_tokens
+            )
 
             print(f"  Collecting activations (random)...")
-            random_acts, _ = collect_activations(model, random_tokens)
+            random_acts, _, _ = collect_activations(model, random_tokens)
 
             # Create comparison plots for each layer
             for layer in LAYERS_TO_PLOT:
@@ -551,11 +545,76 @@ def analyze_checkpoints(
     print(f"\n{'=' * 70}")
     print(f"Analysis complete! Plots saved to: {plots_dir}")
     print(f"{'=' * 70}")
+
+
+def main():
+    """Main entry point."""
+    parser = argparse.ArgumentParser(
+        description="Create side-by-side t-SNE: unique prefix vs random sequences"
+    )
+    parser.add_argument(
+        "--n-samples",
+        type=int,
+        default=24,
+        help="Number of samples per checkpoint (each with varying prefix diversity)",
+    )
+    parser.add_argument(
+        "--no-wandb",
+        action="store_true",
+        help="Disable wandb logging",
+    )
+    parser.add_argument(
+        "--steps",
+        type=int,
+        nargs="+",
+        default=CHECKPOINT_STEPS,
+        help="Checkpoint steps to analyze",
+    )
+    parser.add_argument(
+        "--checkpoint-dir",
+        type=str,
+        required=True,
+        help="Checkpoint directory (e.g., out-posreg-6layer-until-mlp)",
+    )
+    parser.add_argument(
+        "--experiment-name",
+        type=str,
+        default=None,
+        help="Experiment name for wandb",
+    )
+    args = parser.parse_args()
+
+    # Set up checkpoint directory
+    checkpoint_dir = PROJECT_ROOT / "nanoGPT" / args.checkpoint_dir
+    if not checkpoint_dir.exists():
+        print(f"Error: Checkpoint directory {checkpoint_dir} does not exist!")
+        return
+
+    # Set experiment name
+    experiment_name = args.experiment_name or args.checkpoint_dir
+
+    # Set random seed
+    torch.manual_seed(42)
+    np.random.seed(42)
+
+    # Run analysis
+    use_wandb = WANDB_AVAILABLE and not args.no_wandb
+    analyze_checkpoints(
+        checkpoint_dir=checkpoint_dir,
+        checkpoint_steps=args.steps,
+        n_samples=args.n_samples,
+        use_wandb=use_wandb,
+        experiment_name=experiment_name,
+    )
+
+
+if __name__ == "__main__":
+    main()
+
     print(f"Checkpoint dir: {checkpoint_dir}")
     print(f"Checkpoints: {checkpoint_steps}")
-    print(f"Prefix diversity levels: {prefix_diversity_levels}")
     print(f"Layers: {LAYERS_TO_PLOT}")
-    print(f"Samples: {n_samples}")
+    print(f"Samples: {n_samples} (each with varying prefix diversity)")
 
     # Initialize wandb
     if use_wandb and WANDB_AVAILABLE:
@@ -565,10 +624,10 @@ def analyze_checkpoints(
             config={
                 "n_samples": n_samples,
                 "checkpoint_steps": checkpoint_steps,
-                "prefix_diversity_levels": prefix_diversity_levels,
                 "layers": LAYERS_TO_PLOT,
                 "experiment": experiment_name,
                 "comparison": "unique_vs_random",
+                "note": "Each sample i has i unique prefix tokens",
             },
         )
         print(
@@ -591,141 +650,17 @@ def analyze_checkpoints(
             vocab_size = model.config.vocab_size
             seq_len = model.config.block_size
             print(f"  Loaded model (n_embd={model.config.n_embd}, seq_len={seq_len})")
-
-            # Generate random sequences once (same for all prefix diversity levels)
-            print(f"  Generating random sequences...")
-            random_tokens = generate_random_sequences(
-                n_samples, seq_len, vocab_size, DEVICE
+            print(
+                f"  Total t-SNE points: {n_samples} × {seq_len} = {n_samples * seq_len}"
             )
 
-            print(f"  Collecting activations (random)...")
-            random_acts, positions = collect_activations(model, random_tokens)
-
-            # Process each prefix diversity level
-            for n_prefix in prefix_diversity_levels:
-                # Clip n_prefix to seq_len
-                n_prefix_actual = min(n_prefix, seq_len)
-
-                print(f"\n  --- Prefix diversity: {n_prefix_actual} unique tokens ---")
-
-                # Generate unique prefix sequences
-                print(
-                    f"    Generating unique prefix sequences (n={n_prefix_actual})..."
-                )
-                unique_tokens = generate_unique_prefix_sequences(
-                    n_samples, seq_len, n_prefix_actual, vocab_size, DEVICE
-                )
-
-                # Collect activations
-                print(f"    Collecting activations (unique prefix)...")
-                unique_acts, _ = collect_activations(model, unique_tokens)
-
-                # Create comparison plots for each layer
-                for layer in LAYERS_TO_PLOT:
-                    if layer not in unique_acts or layer not in random_acts:
-                        continue
-
-                    print(f"    Creating comparison t-SNE for {layer}...")
-                    layer_title = layer.replace("_", " ").title()
-                    fig = create_comparison_tsne(
-                        unique_acts[layer],
-                        random_acts[layer],
-                        positions,
-                        f"Step {step}, n_prefix={n_prefix_actual}, {layer_title}",
-                        n_buckets=8,
-                        n_samples_tsne=2000,
-                    )
-
-                    # Save locally
-                    save_path = (
-                        plots_dir
-                        / f"step{step:05d}_prefix{n_prefix_actual:03d}_{layer}_comparison.png"
-                    )
-                    fig.savefig(save_path, dpi=300, bbox_inches="tight")
-                    print(f"      Saved: {save_path.name}")
-
-                    # Log to wandb
-                    if use_wandb and WANDB_AVAILABLE:
-                        wandb.log(
-                            {
-                                f"comparison/{layer}/prefix_{n_prefix_actual}": wandb.Image(
-                                    fig
-                                ),
-                                "checkpoint_step": step,
-                                "n_prefix_unique": n_prefix_actual,
-                            }
-                        )
-
-                    plt.close(fig)
-
-                # Clean up
-                del unique_acts, unique_tokens
-                torch.cuda.empty_cache()
-
-            # Clean up model and random sequences
-            del model, random_acts, random_tokens
-            torch.cuda.empty_cache()
-
-        except Exception as e:
-            print(f"  Error processing checkpoint {step}: {e}")
-            import traceback
-
-            traceback.print_exc()
-            continue
-
-    # Finish wandb
-    if use_wandb and WANDB_AVAILABLE:
-        wandb.finish()
-        print("\nWandB run finished.")
-
-    print(f"\n{'=' * 70}")
-    print(f"Analysis complete! Plots saved to: {plots_dir}")
-    print(f"{'=' * 70}")
-    print(f"Checkpoint dir: {checkpoint_dir}")
-    print(f"Checkpoints: {checkpoint_steps}")
-    print(f"Layers: {LAYERS_TO_PLOT}")
-    print(f"Samples: {n_samples}")
-
-    # Initialize wandb
-    if use_wandb and WANDB_AVAILABLE:
-        wandb.init(
-            project="nope-position-regression-tsne",
-            name=f"comparison_{experiment_name}",
-            config={
-                "n_samples": n_samples,
-                "checkpoint_steps": checkpoint_steps,
-                "layers": LAYERS_TO_PLOT,
-                "experiment": experiment_name,
-                "comparison": "unique_vs_random",
-            },
-        )
-        print(
-            f"\nWandB initialized: nope-position-regression-tsne/comparison_{experiment_name}"
-        )
-
-    # Process each checkpoint
-    for step in tqdm(checkpoint_steps, desc="Analyzing checkpoints"):
-        ckpt_path = checkpoint_dir / f"ckpt_{step:05d}.pt"
-
-        if not ckpt_path.exists():
-            print(f"\nWarning: Checkpoint {ckpt_path} not found, skipping...")
-            continue
-
-        print(f"\n--- Checkpoint {step} ---")
-
-        try:
-            # Load model
-            model, meta = load_checkpoint(str(ckpt_path), DEVICE)
-            vocab_size = model.config.vocab_size
-            seq_len = model.config.block_size
-            print(f"  Loaded model (n_embd={model.config.n_embd}, seq_len={seq_len})")
-
-            # Generate both types of sequences
+            # Generate unique prefix sequences (each sample i has i unique tokens)
             print(f"  Generating unique prefix sequences...")
             unique_tokens = generate_unique_prefix_sequences(
                 n_samples, seq_len, vocab_size, DEVICE
             )
 
+            # Generate random sequences
             print(f"  Generating random sequences...")
             random_tokens = generate_random_sequences(
                 n_samples, seq_len, vocab_size, DEVICE
@@ -733,10 +668,12 @@ def analyze_checkpoints(
 
             # Collect activations
             print(f"  Collecting activations (unique prefix)...")
-            unique_acts, positions = collect_activations(model, unique_tokens)
+            unique_acts, positions, sample_ids = collect_activations(
+                model, unique_tokens
+            )
 
             print(f"  Collecting activations (random)...")
-            random_acts, _ = collect_activations(model, random_tokens)
+            random_acts, _, _ = collect_activations(model, random_tokens)
 
             # Create comparison plots for each layer
             for layer in LAYERS_TO_PLOT:
@@ -749,14 +686,14 @@ def analyze_checkpoints(
                     unique_acts[layer],
                     random_acts[layer],
                     positions,
+                    sample_ids,
                     f"Step {step} - {layer_title}",
                     n_buckets=8,
-                    n_samples_tsne=2000,
                 )
 
                 # Save locally
                 save_path = plots_dir / f"step{step:05d}_{layer}_comparison.png"
-                fig.savefig(save_path, dpi=150, bbox_inches="tight")
+                fig.savefig(save_path, dpi=300, bbox_inches="tight")
                 print(f"    Saved: {save_path.name}")
 
                 # Log to wandb
