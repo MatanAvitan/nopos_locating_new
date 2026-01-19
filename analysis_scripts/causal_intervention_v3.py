@@ -112,7 +112,7 @@ def load_checkpoint(ckpt_path: str, device: str = "cuda") -> Tuple[GPT, dict]:
         if k.startswith(unwanted_prefix):
             state_dict[k[len(unwanted_prefix) :]] = state_dict.pop(k)
 
-    model.load_state_dict(state_dict)
+    model.load_state_dict(state_dict, strict=False)
     model.to(device)
     model.eval()
 

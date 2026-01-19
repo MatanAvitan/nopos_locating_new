@@ -91,14 +91,14 @@ def load_checkpoint(ckpt_path: str, device: str = "cuda") -> Tuple[GPT, dict]:
     # Create and load model
     model = GPT(gptconf)
 
-    # Handle state dict with _orig_mod prefix (from torch.compile)
+    # Handle state dict
     state_dict = checkpoint["model"]
     unwanted_prefix = "_orig_mod."
     for k, v in list(state_dict.items()):
         if k.startswith(unwanted_prefix):
             state_dict[k[len(unwanted_prefix) :]] = state_dict.pop(k)
 
-    model.load_state_dict(state_dict)
+    model.load_state_dict(state_dict, strict=False)
     model.to(device)
     model.eval()
 
@@ -430,187 +430,6 @@ def analyze_checkpoints(
     print(f"\n{'=' * 70}")
     print(f"t-SNE Comparison: Unique Prefix vs Random - {experiment_name}")
     print(f"{'=' * 70}")
-    print(f"Checkpoint dir: {checkpoint_dir}")
-    print(f"Checkpoints: {checkpoint_steps}")
-    print(f"Layers: {LAYERS_TO_PLOT}")
-    print(f"Samples: {n_samples} (each with varying prefix diversity)")
-
-    # Initialize wandb
-    if use_wandb and WANDB_AVAILABLE:
-        wandb.init(
-            project="nope-position-regression-tsne",
-            name=f"comparison_{experiment_name}",
-            config={
-                "n_samples": n_samples,
-                "checkpoint_steps": checkpoint_steps,
-                "layers": LAYERS_TO_PLOT,
-                "experiment": experiment_name,
-                "comparison": "unique_vs_random",
-                "note": "Each sample i has i unique prefix tokens",
-            },
-        )
-        print(
-            f"\nWandB initialized: nope-position-regression-tsne/comparison_{experiment_name}"
-        )
-
-    # Process each checkpoint
-    for step in tqdm(checkpoint_steps, desc="Analyzing checkpoints"):
-        ckpt_path = checkpoint_dir / f"ckpt_{step:05d}.pt"
-
-        if not ckpt_path.exists():
-            print(f"\nWarning: Checkpoint {ckpt_path} not found, skipping...")
-            continue
-
-        print(f"\n--- Checkpoint {step} ---")
-
-        try:
-            # Load model
-            model, meta = load_checkpoint(str(ckpt_path), DEVICE)
-            vocab_size = model.config.vocab_size
-            seq_len = model.config.block_size
-            print(f"  Loaded model (n_embd={model.config.n_embd}, seq_len={seq_len})")
-            print(
-                f"  Total t-SNE points: {n_samples} × {seq_len} = {n_samples * seq_len}"
-            )
-
-            # Generate unique prefix sequences (each sample i has i unique tokens)
-            print(f"  Generating unique prefix sequences...")
-            unique_tokens = generate_unique_prefix_sequences(
-                n_samples, seq_len, vocab_size, DEVICE
-            )
-
-            # Generate random sequences
-            print(f"  Generating random sequences...")
-            random_tokens = generate_random_sequences(
-                n_samples, seq_len, vocab_size, DEVICE
-            )
-
-            # Collect activations
-            print(f"  Collecting activations (unique prefix)...")
-            unique_acts, positions, sample_ids = collect_activations(
-                model, unique_tokens
-            )
-
-            print(f"  Collecting activations (random)...")
-            random_acts, _, _ = collect_activations(model, random_tokens)
-
-            # Create comparison plots for each layer
-            for layer in LAYERS_TO_PLOT:
-                if layer not in unique_acts or layer not in random_acts:
-                    continue
-
-                print(f"  Creating comparison t-SNE for {layer}...")
-                layer_title = layer.replace("_", " ").title()
-                fig = create_comparison_tsne(
-                    unique_acts[layer],
-                    random_acts[layer],
-                    positions,
-                    sample_ids,
-                    f"Step {step} - {layer_title}",
-                    n_buckets=8,
-                )
-
-                # Save locally
-                save_path = plots_dir / f"step{step:05d}_{layer}_comparison.png"
-                fig.savefig(save_path, dpi=300, bbox_inches="tight")
-                print(f"    Saved: {save_path.name}")
-
-                # Log to wandb
-                if use_wandb and WANDB_AVAILABLE:
-                    wandb.log(
-                        {
-                            f"comparison/{layer}": wandb.Image(fig),
-                            "checkpoint_step": step,
-                        }
-                    )
-
-                plt.close(fig)
-
-            # Clean up
-            del model, unique_acts, random_acts, unique_tokens, random_tokens
-            torch.cuda.empty_cache()
-
-        except Exception as e:
-            print(f"  Error processing checkpoint {step}: {e}")
-            import traceback
-
-            traceback.print_exc()
-            continue
-
-    # Finish wandb
-    if use_wandb and WANDB_AVAILABLE:
-        wandb.finish()
-        print("\nWandB run finished.")
-
-    print(f"\n{'=' * 70}")
-    print(f"Analysis complete! Plots saved to: {plots_dir}")
-    print(f"{'=' * 70}")
-
-
-def main():
-    """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Create side-by-side t-SNE: unique prefix vs random sequences"
-    )
-    parser.add_argument(
-        "--n-samples",
-        type=int,
-        default=24,
-        help="Number of samples per checkpoint (each with varying prefix diversity)",
-    )
-    parser.add_argument(
-        "--no-wandb",
-        action="store_true",
-        help="Disable wandb logging",
-    )
-    parser.add_argument(
-        "--steps",
-        type=int,
-        nargs="+",
-        default=CHECKPOINT_STEPS,
-        help="Checkpoint steps to analyze",
-    )
-    parser.add_argument(
-        "--checkpoint-dir",
-        type=str,
-        required=True,
-        help="Checkpoint directory (e.g., out-posreg-6layer-until-mlp)",
-    )
-    parser.add_argument(
-        "--experiment-name",
-        type=str,
-        default=None,
-        help="Experiment name for wandb",
-    )
-    args = parser.parse_args()
-
-    # Set up checkpoint directory
-    checkpoint_dir = PROJECT_ROOT / "nanoGPT" / args.checkpoint_dir
-    if not checkpoint_dir.exists():
-        print(f"Error: Checkpoint directory {checkpoint_dir} does not exist!")
-        return
-
-    # Set experiment name
-    experiment_name = args.experiment_name or args.checkpoint_dir
-
-    # Set random seed
-    torch.manual_seed(42)
-    np.random.seed(42)
-
-    # Run analysis
-    use_wandb = WANDB_AVAILABLE and not args.no_wandb
-    analyze_checkpoints(
-        checkpoint_dir=checkpoint_dir,
-        checkpoint_steps=args.steps,
-        n_samples=args.n_samples,
-        use_wandb=use_wandb,
-        experiment_name=experiment_name,
-    )
-
-
-if __name__ == "__main__":
-    main()
-
     print(f"Checkpoint dir: {checkpoint_dir}")
     print(f"Checkpoints: {checkpoint_steps}")
     print(f"Layers: {LAYERS_TO_PLOT}")
