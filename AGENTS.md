@@ -138,6 +138,11 @@ log_attention_stats = True  # For analysis
 dropout = 0.0  # Clean analysis
 ```
 
+### Axis Alignment Metrics
+- Define K as the number of unique tokens in the full sequence (includes the base token)
+- Plot K from 1..K (no zero index)
+- Normalize scalar projections by `||E||` (embedding norm), not `||E||^2`
+
 ### Reproducibility
 ```python
 torch.manual_seed(42)
@@ -161,6 +166,76 @@ Training is **COMPLETE**. Both models are saved:
 - **RMSNorm**: `nanoGPT/out-nope-1layer-rms/ckpt.pt` (548MB, 5000 steps)
 
 Intermediate checkpoints available every 250 steps in the same directories.
+
+## OWT Large-Scale Training (COMPLETED as of Jan 15, 2026)
+
+Large-scale training experiments on OpenWebText comparing NoPE vs standard transformers.
+
+### Primary Experiments (ONLY THESE ARE USED)
+
+**IMPORTANT**: Only analyze NoPE + LayerNorm and Baseline + PE. Do NOT include BatchNorm or No-LN2 variants in experiments.
+
+| Experiment | Config File | Status | Purpose |
+|------------|-------------|--------|---------|
+| **NoPE + LayerNorm** | `config/train_nope_owt_ln.py` | ✅ COMPLETE | Main NoPE model - LayerNorm linearizes position signal from attention averaging |
+| **Baseline + PE** | `config/train_baseline_owt_pe.py` | ✅ COMPLETE | Standard transformer with positional embeddings for comparison |
+
+### Output Directories (PRIMARY)
+- `nanoGPT/out-nope-owt-ln/` - NoPE + LayerNorm trained model
+- `nanoGPT/out-baseline-owt-pe/` - Baseline + PE trained model
+
+### Deprecated Experiments (DO NOT USE)
+The following experiments were exploratory and should NOT be included in analysis scripts:
+- ~~NoPE + BatchNorm (LN2)~~ - `out-nope-owt-bn2/`
+- ~~NoPE + No LN2~~ - `out-nope-owt-no-ln2/`
+
+### Monitoring Commands
+```bash
+# Check Slurm jobs
+ssh -i ~/.ssh/dsinlp01_id_rsa slurm-login.lnx.biu.ac.il "squeue -u \$USER"
+
+# Check local GPU processes
+ps aux | grep train_nope
+```
+
+## Decoding Vector Ablation Experiments (Jan 15, 2026)
+
+### t-SNE Visualization: 24 Snake Clusters
+
+**CRITICAL**: The 24 snake-like clusters are visible at the `pre_ln2` layer (after attention residual, BEFORE LN2), NOT at `post_attn` or `post_ln2`.
+
+```python
+# Correct layer for 24 snake visualization:
+layer = "pre_ln2"  # x + attn_out (after residual, before LN2)
+
+# NOT these layers:
+# layer = "post_attn"  # Shows different structure
+# layer = "post_ln2"   # Shows different structure
+```
+
+### WandB Logging Requirements
+
+1. **Prefer aggregative images** over scalar/bar plots for readability
+2. **Color t-SNE by position groups**, not by cluster ID
+3. For each cluster, extract and log:
+   - Mean vector of original high-dim activations
+   - Std of original high-dim activations
+   - Mean norm of original high-dim activations
+
+### Running the Comprehensive Analysis
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python analysis_scripts/decoding_vector_ablation_comprehensive.py \
+    --n_sequences 1000 \
+    --context_length 512 \
+    --wandb
+```
+
+Results are saved to:
+- `results/decoding_ablation_comprehensive/comprehensive_results.json`
+- `results/decoding_ablation_comprehensive/plots/`
+
+WandB project: `nope-decoding-ablation`
 
 ## Common Gotchas
 
@@ -187,9 +262,52 @@ nopos_locating_new/
 └── slurm_jobs/            # Slurm job submission scripts
 ```
 
+## Compute Resources
+
+### Resource Priority (Use in This Order)
+
+1. **dgx-b200-01** - 8x NVIDIA B200 (183GB each) - Fastest, use first
+2. **dsinlp01** (current server) - 8x NVIDIA A100-SXM4-80GB - Local, no queue
+3. **Slurm H200** - `H200-4h` or `H200-12h` partitions on hpc8h200-01
+4. **Slurm A100** - `A100-4h` partition on hpc2a100-01
+5. **dgx02-03** - Legacy DGX servers, use as fallback
+
+### Server Details
+
+| Server | GPUs | Memory/GPU | Access | Notes |
+|--------|------|------------|--------|-------|
+| `dgx-b200-01` | 8x B200 | 183GB | `ssh dgx-b200-01` | Newest, fastest |
+| `dsinlp01` | 8x A100-SXM4 | 80GB | Local (current) | Good for parallel runs |
+| `hpc8h200-01` | 2x H200 | - | Slurm `H200-*` | Via Slurm only |
+| `hpc2a100-01` | 2x A100 | - | Slurm `A100-4h` | Via Slurm only |
+| `dgx02-03` | Varies | - | SSH | Legacy, lower priority |
+
+### Running on dgx-b200-01
+
+```bash
+# Check available GPUs
+ssh dgx-b200-01 "nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu --format=csv"
+
+# Run training on specific GPU
+ssh dgx-b200-01 "cd /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT && CUDA_VISIBLE_DEVICES=0 nohup python train_nope.py config/train_nope_owt_ln.py > ../logs/train_b200.out 2>&1 &"
+
+# Check running processes
+ssh dgx-b200-01 "nvidia-smi --query-compute-apps=pid,used_memory --format=csv"
+```
+
+### Running on dsinlp01 (Current Server)
+
+```bash
+# Run on specific GPU (0-7 available)
+CUDA_VISIBLE_DEVICES=0 nohup python train_nope.py config/train_nope_owt_ln.py > ../logs/train.out 2>&1 &
+
+# Check GPU usage
+nvidia-smi
+```
+
 ## Slurm Cluster Usage
 
-The BIU Slurm cluster is available for running GPU jobs. This is the preferred method for running long-running experiments.
+The BIU Slurm cluster is available for running GPU jobs. Use when dgx-b200-01 and dsinlp01 are fully occupied.
 
 ### SSH Access
 
@@ -429,3 +547,33 @@ The paper now clearly documents that different experiments use different conditi
 **Repositories**:
 - Main repo: `git@github.com:MatanAvitan/nopos_locating_new.git` (master branch)
 - Overleaf repo: `git@github.com:MatanAvitan/nopos---claude-version.git` (main branch)
+
+## Latest Session Updates (Jan 19, 2026)
+
+### Axis Alignment (Paper Section 4.3)
+- Alignment plots now focus on **post-MLP** activations (post-attn/LN2 are frozen and constant), plus optional post-attn/post-LN2 baselines.
+- Metric uses **absolute cosine similarity** (|cos(h,e)|), not scalar projection.
+- Latest 6-layer pos-reg (step 20000):
+  - Post-attn: max |cos| ≈ 0.0967, mean other ≈ 0.0278, ratio ≈ 3.47
+  - Post-LN2: max |cos| ≈ 0.658, mean other ≈ 0.0288, ratio ≈ 22.84
+  - MLP hidden: max |cos| ≈ 0.447, mean other ≈ 0.0682, ratio ≈ 6.56
+  - Post-MLP: max |cos| ≈ 0.104, mean other ≈ 0.0278, ratio ≈ 3.74
+- OWT usage: K is the number of **unique tokens in the full sequence** (includes base token), typically ~50–106 at position 128 (mean ≈ 88.4).
+- Controlled-K setting uses sequences `[t1, t2, …, t_{k-1}, t0, t0, …]` with base token `t0`.
+- Plots must be ICML-safe: legends outside axes, no overlap with ticks or labels.
+- Axis-alignment metrics now require:
+  - K counts **unique tokens in the full sequence** (includes base token).
+  - K plotted from **1..K** (no zero index).
+  - Cosine alignment uses `|h·e| / (||h|| ||e||)`.
+
+### Alignment Plot Logging
+- `analysis_scripts/axis_alignment_owt.py` now supports W&B logging via `--wandb`.
+- Suggested run naming: `axis-alignment-owt{suffix}` in project `nope-position-regression-metrics`.
+
+### LM Training (NoPE, OpenWebText)
+- Two LM runs are expected:
+  - **Frozen-first-MLP LM**: `config/train_lm_6layer_until_mlp.py` (NoPE, LM loss, block0 frozen except MLP).
+  - **Full-train LM**: `config/train_lm_6layer_fulltrain_ddp.py` (DDP, all layers trainable).
+- Current high-throughput targets: batch size `512`, `bfloat16`, `eval_interval=500`.
+- Use `torchrun` for DDP and set `find_unused_parameters=True` in DDP to avoid reduction errors.
+- Matplotlib backend forced to `Agg` in `train_position_classifier.py` to avoid XIO crashes during headless runs.
