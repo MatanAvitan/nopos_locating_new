@@ -1,0 +1,6 @@
+{"time":"2026-01-18T15:12:07.753237814+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-18T15:12:08.186158669+02:00","level":"INFO","msg":"stream: created new stream","id":"gvcllqus"}
+{"time":"2026-01-18T15:12:08.186247753+02:00","level":"INFO","msg":"handler: started","stream_id":"gvcllqus"}
+{"time":"2026-01-18T15:12:08.187679123+02:00","level":"INFO","msg":"stream: started","id":"gvcllqus"}
+{"time":"2026-01-18T15:12:08.187689573+02:00","level":"INFO","msg":"writer: started","stream_id":"gvcllqus"}
+{"time":"2026-01-18T15:12:08.187702428+02:00","level":"INFO","msg":"sender: started","stream_id":"gvcllqus"}

@@ -1,0 +1,40 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:266: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run z8xhm89e
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260116_155010-z8xhm89e
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-6layer-mlp-only
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/position-regression
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/position-regression/runs/z8xhm89e
+Exception ignored in: <function Image.__del__ at 0x7f7adf374b80>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7f7adf2c22a0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7f7adf2c22a0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7f7adf2c22a0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7f7adf2c22a0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Tcl_AsyncDelete: async handler deleted by the wrong thread

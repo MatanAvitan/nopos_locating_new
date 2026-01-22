@@ -1,0 +1,254 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run iyt1uvi6
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_164535-iyt1uvi6
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run comparison_nope-6layer-until-first-mlp
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-tsne
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-tsne/runs/iyt1uvi6
+
+======================================================================
+t-SNE Comparison: Unique Prefix vs Random - nope-6layer-until-first-mlp
+======================================================================
+Checkpoint dir: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-posreg-6layer-until-mlp
+Checkpoints: [500, 2000, 5000, 10000, 15000, 20000]
+Layers: ['post_ln2', 'mlp_hidden', 'post_mlp']
+Samples: 24 (each with varying prefix diversity)
+
+WandB initialized: nope-position-regression-tsne/comparison_nope-6layer-until-first-mlp
+Analyzing checkpoints:   0%|          | 0/6 [00:00<?, ?it/s]Analyzing checkpoints:  17%|█▋        | 1/6 [22:13<1:51:07, 1333.57s/it]Analyzing checkpoints:  33%|███▎      | 2/6 [43:05<1:25:42, 1285.58s/it]Analyzing checkpoints:  50%|█████     | 3/6 [54:53<51:05, 1021.98s/it]  Analyzing checkpoints:  67%|██████▋   | 4/6 [1:17:36<38:32, 1156.30s/it]Analyzing checkpoints:  83%|████████▎ | 5/6 [1:25:23<15:07, 907.79s/it] Analyzing checkpoints: 100%|██████████| 6/6 [1:33:14<00:00, 759.21s/it]Analyzing checkpoints: 100%|██████████| 6/6 [1:33:14<00:00, 932.34s/it]
+wandb: uploading media/images/comparison/post_mlp_17_3fd744cabbf5cfd2183d.png; updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json
+wandb: uploading history steps 17-17, summary, console lines 212-212
+wandb: 
+wandb: Run history:
+wandb: checkpoint_step ▁▁▁▂▂▂▃▃▃▄▄▄▆▆▆███
+wandb: 
+wandb: Run summary:
+wandb: checkpoint_step 20000
+wandb: 
+wandb: 🚀 View run comparison_nope-6layer-until-first-mlp at: https://wandb.ai/matan_avitan/nope-position-regression-tsne/runs/iyt1uvi6
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-position-regression-tsne
+wandb: Synced 5 W&B file(s), 18 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260118_164535-iyt1uvi6/logs
+
+--- Checkpoint 500 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Collecting activations (random)...
+  Creating comparison t-SNE for post_ln2...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step00500_post_ln2_comparison.png
+  Creating comparison t-SNE for mlp_hidden...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step00500_mlp_hidden_comparison.png
+  Creating comparison t-SNE for post_mlp...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step00500_post_mlp_comparison.png
+
+--- Checkpoint 2000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Collecting activations (random)...
+  Creating comparison t-SNE for post_ln2...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step02000_post_ln2_comparison.png
+  Creating comparison t-SNE for mlp_hidden...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step02000_mlp_hidden_comparison.png
+  Creating comparison t-SNE for post_mlp...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step02000_post_mlp_comparison.png
+
+--- Checkpoint 5000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Collecting activations (random)...
+  Creating comparison t-SNE for post_ln2...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step05000_post_ln2_comparison.png
+  Creating comparison t-SNE for mlp_hidden...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step05000_mlp_hidden_comparison.png
+  Creating comparison t-SNE for post_mlp...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step05000_post_mlp_comparison.png
+
+--- Checkpoint 10000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Collecting activations (random)...
+  Creating comparison t-SNE for post_ln2...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step10000_post_ln2_comparison.png
+  Creating comparison t-SNE for mlp_hidden...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step10000_mlp_hidden_comparison.png
+  Creating comparison t-SNE for post_mlp...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step10000_post_mlp_comparison.png
+
+--- Checkpoint 15000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Collecting activations (random)...
+  Creating comparison t-SNE for post_ln2...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step15000_post_ln2_comparison.png
+  Creating comparison t-SNE for mlp_hidden...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step15000_mlp_hidden_comparison.png
+  Creating comparison t-SNE for post_mlp...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step15000_post_mlp_comparison.png
+
+--- Checkpoint 20000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Collecting activations (random)...
+  Creating comparison t-SNE for post_ln2...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step20000_post_ln2_comparison.png
+  Creating comparison t-SNE for mlp_hidden...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step20000_mlp_hidden_comparison.png
+  Creating comparison t-SNE for post_mlp...
+    Running t-SNE for Unique Prefix (varying) (3072 samples)...
+    Running t-SNE for Random Sequences (3072 samples)...
+    Saved: step20000_post_mlp_comparison.png
+
+WandB run finished.
+
+======================================================================
+Analysis complete! Plots saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/tsne_comparison_nope-6layer-until-first-mlp/plots
+======================================================================
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 614, in <module>
+    print(f"Checkpoint dir: {checkpoint_dir}")
+                             ^^^^^^^^^^^^^^
+NameError: name 'checkpoint_dir' is not defined

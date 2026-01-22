@@ -1,0 +1,6 @@
+{"time":"2026-01-18T15:38:29.494394917+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-18T15:38:29.928493805+02:00","level":"INFO","msg":"stream: created new stream","id":"bm8iohoc"}
+{"time":"2026-01-18T15:38:29.928589943+02:00","level":"INFO","msg":"handler: started","stream_id":"bm8iohoc"}
+{"time":"2026-01-18T15:38:29.929803739+02:00","level":"INFO","msg":"stream: started","id":"bm8iohoc"}
+{"time":"2026-01-18T15:38:29.929826303+02:00","level":"INFO","msg":"sender: started","stream_id":"bm8iohoc"}
+{"time":"2026-01-18T15:38:29.929830872+02:00","level":"INFO","msg":"writer: started","stream_id":"bm8iohoc"}

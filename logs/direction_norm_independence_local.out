@@ -1,0 +1,93 @@
+============================================================
+Direction vs Norm Independence Analysis
+============================================================
+
+Using device: cuda
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                4
+  Embedding Dim:        256
+  Block Size:           64
+  Vocab Size:           1000
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           1.05M
+============================================================
+
+Created random NoPE model
+
+=== Experiment 1: Direction Isolation ===
+  Full activations R²: 0.1770
+  Direction only (norm=1) R²: 0.1787
+  Norm only R²: 0.8812
+  Direction with random norm R²: 0.1784
+  Direction with mean norm R²: 0.1784
+
+=== Experiment 2: Cross-Decoding ===
+  Same-domain direction R²: 0.1787
+  Same-domain norm R²: 0.8812
+  Correlation of direction vs norm predictions: 0.4148
+
+=== Experiment 3: Orthogonalize Norm from Direction ===
+  Full activations after removing norm direction R²: 0.1012
+  Directions after removing norm direction R²: 0.1019
+  Fraction of variance removed: 0.0085
+
+=== Experiment 4: PCA Analysis ===
+  Top 5 PCs position correlations: [np.float64(-0.05504951152276888), np.float64(-0.00610330614961256), np.float64(-0.022330705965030947), np.float64(0.03692220927429578), np.float64(-0.027355440797991307)]
+  Top 5 PCs norm correlations: [np.float64(0.03669465327182897), np.float64(0.007860335292389749), np.float64(0.020878622099385683), np.float64(-0.020087073188689453), np.float64(0.02907083664912705)]
+  Best PC for position: PC8 (r=-0.0834)
+  Best PC for norm: PC13 (r=-0.0699)
+  -> Position and norm are encoded by DIFFERENT PCs
+  -> Correlation between best position/norm PCs: 0.0000
+  Position R² with top 1 PCs: 0.0006
+  Position R² with top 5 PCs: 0.0046
+  Position R² with top 10 PCs: 0.0207
+  Position R² with top 20 PCs: 0.0419
+
+=== Experiment 5: Position-Specific Analysis ===
+  Mean norm range: 15.9143 to 15.9968
+  Variance range: 0.960965 to 0.996509
+  Mean adjacent cosine similarity: 0.9452
+  Prototype-based classification accuracy: 0.0461
+
+=== Experiment 6: Layer-by-Layer Direction vs Norm ===
+  embed: dir R²=-0.0071, norm R²=0.0000, full R²=-0.0055
+  post_ln1: dir R²=-0.0140, norm R²=0.0001, full R²=-0.0143
+  post_attn: dir R²=0.3929, norm R²=0.5558, full R²=0.0403
+  post_attn_residual: dir R²=0.1892, norm R²=0.5261, full R²=0.0215
+  post_ln2: dir R²=0.1928, norm R²=0.8801, full R²=0.1910
+  post_mlp_residual: dir R²=0.3543, norm R²=0.3872, full R²=0.2161
+
+============================================================
+SUMMARY: Direction vs Norm Independence
+============================================================
+
+1. Direction Isolation (post_ln2 layer):
+   - Direction only R²: 0.1787
+   - Norm only R²: 0.8812
+   -> Direction carries 101.0% of position info
+   -> Norm carries 497.8% of position info
+
+2. After Orthogonalizing Norm Direction:
+   - R² dropped from 0.1770 to 0.1012
+   - Variance removed: 0.85%
+
+3. PCA Analysis:
+   - Best PC for position: PC8 (r=-0.0834)
+   - Best PC for norm: PC13 (r=-0.0699)
+
+============================================================
+CONCLUSIONS
+============================================================
+-> Norm is DOMINANT for position encoding
+-> Position and Norm are encoded in DIFFERENT principal components
+   (They provide partially independent information)
+
+Results saved to /home/nlp/matan_avitan/git/nopos_locating_new/results/direction_norm_independence

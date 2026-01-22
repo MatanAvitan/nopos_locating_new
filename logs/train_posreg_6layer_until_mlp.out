@@ -1,0 +1,637 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:269: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run nstilgwz
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260116_204206-nstilgwz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-6layer-until-first-mlp
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/position-regression
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/position-regression/runs/nstilgwz
+Overriding config with config/train_posreg_6layer_until_mlp.py:
+# Configuration for Position Regression - 6 Layer - Freeze Until First MLP
+# Freeze embeddings + first block's attention/norms, train from first MLP onwards
+# Uses regression loss (MSE) and computes LM perplexity
+
+# I/O
+out_dir = "out-posreg-6layer-until-mlp"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "position-regression"
+wandb_run_name = "nope-6layer-until-first-mlp"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 4
+batch_size = 64
+block_size = 128
+
+# Model - 6 layers
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+
+# Training mode
+freeze_transformer = False
+freeze_attention_only = False
+freeze_until_first_mlp = True  # Freeze embeddings + block0 attn/norms, train from first MLP
+use_regression = True          # MSE loss
+compute_lm_loss = True         # Also compute LM perplexity
+
+# AdamW optimizer
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = True
+seed = 42
+
+tokens per iteration will be: 32,768
+Initializing a new Position Classifier model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+*** FREEZE UNTIL FIRST MLP MODE ***
+Frozen: 40,994,304 params (embeddings + block0 attention/norms)
+Trainable: 40,117,249 params (block0 MLP + blocks 1+ + heads)
+Total: 81,111,553 params
+Decayed params: 23 tensors, 40,108,800 params
+Non-decayed params: 12 tensors, 8,449 params
+Using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 20000 iterations...
+  Model: Position Classifier
+  Positional Embedding: False
+  Frozen transformer: False
+  Freeze attention only: False
+  Freeze until first MLP: True
+  Use regression: True
+  Compute LM loss: True
+  Dataset: openwebtext
+  Batch size: 64 x 4 = 256
+  Block size: 128
+  Position classes: 128
+  Learning rate: 0.0003 -> 3e-05
+
+step 0: train loss 0.0974, val loss 0.0969, train acc 0.0132, val acc 0.0133, ppl 55586.9, lr 3.00e-07
+  Distinctive accuracy: 1t:0.016, 2t:0.016, 4t:0.000, 8t:0.023, 16t:0.008, 32t:0.000, 64t:0.000, 128t:0.008
+iter 0: loss 0.0989, time 42252.04ms
+iter 50: loss 0.0344, time 83.49ms
+iter 100: loss 0.0570, time 83.97ms
+iter 150: loss 0.0163, time 83.69ms
+iter 200: loss 0.0153, time 83.93ms
+iter 250: loss 0.0132, time 84.60ms
+iter 300: loss 0.0059, time 84.08ms
+iter 350: loss 0.0049, time 84.29ms
+iter 400: loss 0.0089, time 85.43ms
+iter 450: loss 0.0047, time 84.12ms
+step 500: train loss 0.0040, val loss 0.0037, train acc 0.1191, val acc 0.1204, ppl 60689.6, lr 1.50e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.016, 4t:0.023, 8t:0.094, 16t:0.117, 32t:0.234, 64t:0.266, 128t:0.273
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_00500.pt
+iter 500: loss 0.0037, time 20472.28ms
+iter 550: loss 0.0034, time 85.16ms
+iter 600: loss 0.0024, time 83.51ms
+iter 650: loss 0.0036, time 84.21ms
+iter 700: loss 0.0022, time 84.64ms
+iter 750: loss 0.0037, time 84.12ms
+iter 800: loss 0.0027, time 83.89ms
+iter 850: loss 0.0018, time 84.99ms
+iter 900: loss 0.0013, time 84.57ms
+iter 950: loss 0.0016, time 85.75ms
+step 1000: train loss 0.0072, val loss 0.0070, train acc 0.0591, val acc 0.0585, ppl 61722.5, lr 3.00e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.016, 4t:0.008, 8t:0.016, 16t:0.016, 32t:0.023, 64t:0.023, 128t:0.016
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_01000.pt
+iter 1000: loss 0.0065, time 20962.08ms
+iter 1050: loss 0.0019, time 84.73ms
+iter 1100: loss 0.0041, time 84.13ms
+iter 1150: loss 0.0015, time 85.25ms
+iter 1200: loss 0.0009, time 86.67ms
+iter 1250: loss 0.0013, time 85.37ms
+iter 1300: loss 0.0017, time 88.84ms
+iter 1350: loss 0.0025, time 86.31ms
+iter 1400: loss 0.0052, time 85.24ms
+iter 1450: loss 0.0013, time 86.11ms
+step 1500: train loss 0.0017, val loss 0.0016, train acc 0.1569, val acc 0.1581, ppl 61827.3, lr 3.00e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.023, 4t:0.047, 8t:0.094, 16t:0.266, 32t:0.406, 64t:0.094, 128t:0.094
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_01500.pt
+iter 1500: loss 0.0018, time 20359.83ms
+iter 1550: loss 0.0016, time 85.97ms
+iter 1600: loss 0.0016, time 86.28ms
+iter 1650: loss 0.0023, time 85.64ms
+iter 1700: loss 0.0006, time 85.10ms
+iter 1750: loss 0.0018, time 86.39ms
+iter 1800: loss 0.0015, time 85.02ms
+iter 1850: loss 0.0010, time 84.75ms
+iter 1900: loss 0.0006, time 85.41ms
+iter 1950: loss 0.0010, time 85.07ms
+step 2000: train loss 0.0012, val loss 0.0012, train acc 0.2403, val acc 0.2415, ppl 61574.4, lr 2.98e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.047, 4t:0.070, 8t:0.070, 16t:0.156, 32t:0.133, 64t:0.148, 128t:0.148
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_02000.pt
+iter 2000: loss 0.0013, time 18779.77ms
+iter 2050: loss 0.0004, time 85.32ms
+iter 2100: loss 0.0020, time 86.18ms
+iter 2150: loss 0.0011, time 85.37ms
+iter 2200: loss 0.0005, time 86.14ms
+iter 2250: loss 0.0008, time 85.14ms
+iter 2300: loss 0.0018, time 85.45ms
+iter 2350: loss 0.0003, time 84.38ms
+iter 2400: loss 0.0004, time 85.16ms
+iter 2450: loss 0.0005, time 86.16ms
+step 2500: train loss 0.0006, val loss 0.0005, train acc 0.3519, val acc 0.3532, ppl 61558.8, lr 2.96e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.070, 4t:0.344, 8t:0.367, 16t:0.156, 32t:0.297, 64t:0.320, 128t:0.320
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_02500.pt
+iter 2500: loss 0.0007, time 19719.39ms
+iter 2550: loss 0.0003, time 85.98ms
+iter 2600: loss 0.0005, time 85.21ms
+iter 2650: loss 0.0006, time 86.24ms
+iter 2700: loss 0.0009, time 86.40ms
+iter 2750: loss 0.0002, time 84.34ms
+iter 2800: loss 0.0010, time 86.55ms
+iter 2850: loss 0.0004, time 85.24ms
+iter 2900: loss 0.0002, time 85.29ms
+iter 2950: loss 0.0008, time 85.42ms
+step 3000: train loss 0.0005, val loss 0.0005, train acc 0.3359, val acc 0.3406, ppl 61385.4, lr 2.93e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.156, 4t:0.094, 8t:0.281, 16t:0.258, 32t:0.461, 64t:0.273, 128t:0.273
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_03000.pt
+iter 3000: loss 0.0004, time 17706.91ms
+iter 3050: loss 0.0007, time 84.30ms
+iter 3100: loss 0.0003, time 85.82ms
+iter 3150: loss 0.0003, time 87.06ms
+iter 3200: loss 0.0003, time 86.19ms
+iter 3250: loss 0.0003, time 85.29ms
+iter 3300: loss 0.0005, time 87.27ms
+iter 3350: loss 0.0002, time 85.30ms
+iter 3400: loss 0.0007, time 87.25ms
+iter 3450: loss 0.0002, time 85.71ms
+step 3500: train loss 0.0004, val loss 0.0004, train acc 0.2505, val acc 0.2476, ppl 61293.2, lr 2.89e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.133, 4t:0.070, 8t:0.133, 16t:0.164, 32t:0.195, 64t:0.242, 128t:0.242
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_03500.pt
+iter 3500: loss 0.0004, time 18065.27ms
+iter 3550: loss 0.0001, time 84.56ms
+iter 3600: loss 0.0003, time 85.07ms
+iter 3650: loss 0.0010, time 85.34ms
+iter 3700: loss 0.0003, time 84.28ms
+iter 3750: loss 0.0003, time 84.23ms
+iter 3800: loss 0.0002, time 86.10ms
+iter 3850: loss 0.0008, time 84.93ms
+iter 3900: loss 0.0002, time 86.16ms
+iter 3950: loss 0.0001, time 85.19ms
+step 4000: train loss 0.0002, val loss 0.0002, train acc 0.5408, val acc 0.5456, ppl 61130.5, lr 2.84e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.172, 4t:0.430, 8t:0.445, 16t:0.359, 32t:0.188, 64t:0.188, 128t:0.188
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_04000.pt
+iter 4000: loss 0.0001, time 18142.71ms
+iter 4050: loss 0.0001, time 85.42ms
+iter 4100: loss 0.0001, time 85.56ms
+iter 4150: loss 0.0011, time 84.58ms
+iter 4200: loss 0.0002, time 84.94ms
+iter 4250: loss 0.0002, time 84.84ms
+iter 4300: loss 0.0017, time 85.50ms
+iter 4350: loss 0.0001, time 84.84ms
+iter 4400: loss 0.0001, time 84.66ms
+iter 4450: loss 0.0003, time 84.81ms
+step 4500: train loss 0.0001, val loss 0.0001, train acc 0.6106, val acc 0.6139, ppl 60922.7, lr 2.78e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.352, 4t:0.102, 8t:0.109, 16t:0.219, 32t:0.688, 64t:0.398, 128t:0.398
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_04500.pt
+iter 4500: loss 0.0001, time 22427.41ms
+iter 4550: loss 0.0001, time 112.58ms
+iter 4600: loss 0.0003, time 106.56ms
+iter 4650: loss 0.0003, time 104.58ms
+iter 4700: loss 0.0001, time 113.59ms
+iter 4750: loss 0.0001, time 113.90ms
+iter 4800: loss 0.0001, time 112.21ms
+iter 4850: loss 0.0001, time 111.44ms
+iter 4900: loss 0.0000, time 108.26ms
+iter 4950: loss 0.0001, time 85.03ms
+step 5000: train loss 0.0001, val loss 0.0001, train acc 0.5662, val acc 0.5686, ppl 60753.4, lr 2.72e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.375, 4t:0.336, 8t:0.477, 16t:0.156, 32t:0.133, 64t:0.148, 128t:0.148
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_05000.pt
+iter 5000: loss 0.0001, time 22372.31ms
+iter 5050: loss 0.0001, time 191.30ms
+iter 5100: loss 0.0004, time 175.46ms
+iter 5150: loss 0.0002, time 195.54ms
+iter 5200: loss 0.0001, time 184.23ms
+iter 5250: loss 0.0000, time 117.83ms
+iter 5300: loss 0.0001, time 112.38ms
+iter 5350: loss 0.0001, time 119.61ms
+iter 5400: loss 0.0001, time 115.90ms
+iter 5450: loss 0.0001, time 110.73ms
+step 5500: train loss 0.0001, val loss 0.0001, train acc 0.7660, val acc 0.7633, ppl 60822.8, lr 2.64e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.242, 4t:0.211, 8t:0.180, 16t:0.273, 32t:0.633, 64t:0.406, 128t:0.406
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_05500.pt
+iter 5500: loss 0.0000, time 41590.86ms
+iter 5550: loss 0.0002, time 198.08ms
+iter 5600: loss 0.0000, time 268.45ms
+iter 5650: loss 0.0000, time 263.12ms
+iter 5700: loss 0.0001, time 260.97ms
+iter 5750: loss 0.0001, time 272.90ms
+iter 5800: loss 0.0000, time 193.62ms
+iter 5850: loss 0.0011, time 115.97ms
+iter 5900: loss 0.0003, time 119.73ms
+iter 5950: loss 0.0001, time 136.73ms
+step 6000: train loss 0.0001, val loss 0.0001, train acc 0.7825, val acc 0.7884, ppl 60677.7, lr 2.56e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.383, 4t:0.164, 8t:0.141, 16t:0.180, 32t:0.445, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_06000.pt
+iter 6000: loss 0.0000, time 43858.48ms
+iter 6050: loss 0.0001, time 83.90ms
+iter 6100: loss 0.0001, time 267.71ms
+iter 6150: loss 0.0001, time 269.40ms
+iter 6200: loss 0.0000, time 268.73ms
+iter 6250: loss 0.0000, time 280.99ms
+iter 6300: loss 0.0005, time 264.55ms
+iter 6350: loss 0.0001, time 127.16ms
+iter 6400: loss 0.0002, time 112.53ms
+iter 6450: loss 0.0000, time 118.13ms
+step 6500: train loss 0.0001, val loss 0.0001, train acc 0.7684, val acc 0.7697, ppl 60570.6, lr 2.48e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.367, 4t:0.516, 8t:0.656, 16t:0.164, 32t:0.133, 64t:0.109, 128t:0.109
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_06500.pt
+iter 6500: loss 0.0000, time 45726.01ms
+iter 6550: loss 0.0001, time 84.72ms
+iter 6600: loss 0.0001, time 259.31ms
+iter 6650: loss 0.0001, time 277.52ms
+iter 6700: loss 0.0003, time 278.99ms
+iter 6750: loss 0.0001, time 269.37ms
+iter 6800: loss 0.0000, time 261.83ms
+iter 6850: loss 0.0001, time 118.07ms
+iter 6900: loss 0.0001, time 124.36ms
+iter 6950: loss 0.0002, time 112.36ms
+step 7000: train loss 0.0001, val loss 0.0001, train acc 0.6744, val acc 0.6699, ppl 60277.8, lr 2.39e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.305, 4t:0.242, 8t:0.430, 16t:0.281, 32t:0.297, 64t:0.359, 128t:0.359
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_07000.pt
+iter 7000: loss 0.0001, time 43264.89ms
+iter 7050: loss 0.0017, time 85.65ms
+iter 7100: loss 0.0001, time 289.50ms
+iter 7150: loss 0.0001, time 251.11ms
+iter 7200: loss 0.0000, time 254.98ms
+iter 7250: loss 0.0002, time 257.25ms
+iter 7300: loss 0.0002, time 270.08ms
+iter 7350: loss 0.0002, time 117.72ms
+iter 7400: loss 0.0001, time 124.98ms
+iter 7450: loss 0.0000, time 125.11ms
+step 7500: train loss 0.0000, val loss 0.0000, train acc 0.7455, val acc 0.7481, ppl 60227.1, lr 2.29e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.445, 4t:0.414, 8t:0.328, 16t:0.266, 32t:0.383, 64t:0.312, 128t:0.312
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_07500.pt
+iter 7500: loss 0.0000, time 43856.25ms
+iter 7550: loss 0.0001, time 84.98ms
+iter 7600: loss 0.0001, time 269.58ms
+iter 7650: loss 0.0002, time 256.19ms
+iter 7700: loss 0.0000, time 276.44ms
+iter 7750: loss 0.0002, time 251.73ms
+iter 7800: loss 0.0000, time 260.20ms
+iter 7850: loss 0.0000, time 125.36ms
+iter 7900: loss 0.0000, time 118.16ms
+iter 7950: loss 0.0001, time 125.09ms
+step 8000: train loss 0.0002, val loss 0.0002, train acc 0.6158, val acc 0.6169, ppl 60208.6, lr 2.19e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.047, 4t:0.055, 8t:0.414, 16t:0.094, 32t:0.070, 64t:0.062, 128t:0.062
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_08000.pt
+iter 8000: loss 0.0005, time 43115.07ms
+iter 8050: loss 0.0000, time 84.61ms
+iter 8100: loss 0.0000, time 262.34ms
+iter 8150: loss 0.0000, time 268.44ms
+iter 8200: loss 0.0000, time 258.96ms
+iter 8250: loss 0.0001, time 263.68ms
+iter 8300: loss 0.0000, time 267.30ms
+iter 8350: loss 0.0000, time 117.99ms
+iter 8400: loss 0.0001, time 118.51ms
+iter 8450: loss 0.0000, time 119.79ms
+step 8500: train loss 0.0000, val loss 0.0001, train acc 0.7712, val acc 0.7726, ppl 60093.6, lr 2.09e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.344, 4t:0.398, 8t:0.297, 16t:0.172, 32t:0.406, 64t:0.359, 128t:0.359
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_08500.pt
+iter 8500: loss 0.0000, time 44702.44ms
+iter 8550: loss 0.0001, time 85.25ms
+iter 8600: loss 0.0004, time 263.14ms
+iter 8650: loss 0.0000, time 276.34ms
+iter 8700: loss 0.0001, time 271.63ms
+iter 8750: loss 0.0000, time 276.17ms
+iter 8800: loss 0.0000, time 254.68ms
+iter 8850: loss 0.0001, time 110.30ms
+iter 8900: loss 0.0002, time 129.55ms
+iter 8950: loss 0.0000, time 115.08ms
+step 9000: train loss 0.0001, val loss 0.0001, train acc 0.3447, val acc 0.3448, ppl 59974.4, lr 1.98e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.398, 4t:0.383, 8t:0.695, 16t:0.180, 32t:0.148, 64t:0.141, 128t:0.141
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_09000.pt
+iter 9000: loss 0.0002, time 44353.05ms
+iter 9050: loss 0.0000, time 85.04ms
+iter 9100: loss 0.0003, time 264.83ms
+iter 9150: loss 0.0000, time 261.76ms
+iter 9200: loss 0.0001, time 268.60ms
+iter 9250: loss 0.0000, time 252.88ms
+iter 9300: loss 0.0000, time 276.98ms
+iter 9350: loss 0.0000, time 130.45ms
+iter 9400: loss 0.0001, time 116.75ms
+iter 9450: loss 0.0000, time 118.80ms
+step 9500: train loss 0.0000, val loss 0.0000, train acc 0.8944, val acc 0.8922, ppl 60109.6, lr 1.87e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.141, 4t:0.586, 8t:0.320, 16t:0.359, 32t:0.461, 64t:0.422, 128t:0.422
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_09500.pt
+iter 9500: loss 0.0000, time 44957.13ms
+iter 9550: loss 0.0000, time 85.18ms
+iter 9600: loss 0.0001, time 266.86ms
+iter 9650: loss 0.0000, time 278.28ms
+iter 9700: loss 0.0002, time 283.18ms
+iter 9750: loss 0.0001, time 288.02ms
+iter 9800: loss 0.0000, time 262.07ms
+iter 9850: loss 0.0000, time 113.15ms
+iter 9900: loss 0.0000, time 121.65ms
+iter 9950: loss 0.0000, time 117.97ms
+step 10000: train loss 0.0001, val loss 0.0001, train acc 0.6781, val acc 0.6771, ppl 59900.8, lr 1.76e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.617, 4t:0.547, 8t:0.289, 16t:0.164, 32t:0.188, 64t:0.289, 128t:0.289
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_10000.pt
+iter 10000: loss 0.0001, time 44147.71ms
+iter 10050: loss 0.0000, time 83.63ms
+iter 10100: loss 0.0000, time 269.69ms
+iter 10150: loss 0.0000, time 182.87ms
+iter 10200: loss 0.0000, time 216.43ms
+iter 10250: loss 0.0001, time 187.23ms
+iter 10300: loss 0.0000, time 183.54ms
+iter 10350: loss 0.0000, time 109.50ms
+iter 10400: loss 0.0001, time 106.83ms
+iter 10450: loss 0.0000, time 131.38ms
+step 10500: train loss 0.0000, val loss 0.0000, train acc 0.8557, val acc 0.8631, ppl 59885.9, lr 1.65e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.500, 4t:0.477, 8t:0.734, 16t:0.883, 32t:0.977, 64t:0.430, 128t:0.430
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_10500.pt
+iter 10500: loss 0.0000, time 33957.69ms
+iter 10550: loss 0.0000, time 182.36ms
+iter 10600: loss 0.0000, time 189.93ms
+iter 10650: loss 0.0000, time 194.37ms
+iter 10700: loss 0.0000, time 190.33ms
+iter 10750: loss 0.0000, time 188.37ms
+iter 10800: loss 0.0001, time 119.31ms
+iter 10850: loss 0.0000, time 124.19ms
+iter 10900: loss 0.0000, time 109.69ms
+iter 10950: loss 0.0000, time 125.09ms
+step 11000: train loss 0.0001, val loss 0.0001, train acc 0.8080, val acc 0.8088, ppl 59687.2, lr 1.54e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.180, 4t:0.414, 8t:0.508, 16t:0.219, 32t:0.953, 64t:0.430, 128t:0.430
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_11000.pt
+iter 11000: loss 0.0002, time 34337.23ms
+iter 11050: loss 0.0000, time 189.31ms
+iter 11100: loss 0.0000, time 186.60ms
+iter 11150: loss 0.0001, time 225.46ms
+iter 11200: loss 0.0000, time 206.36ms
+iter 11250: loss 0.0000, time 183.53ms
+iter 11300: loss 0.0001, time 105.87ms
+iter 11350: loss 0.0004, time 118.87ms
+iter 11400: loss 0.0000, time 122.82ms
+iter 11450: loss 0.0000, time 110.56ms
+step 11500: train loss 0.0000, val loss 0.0000, train acc 0.9137, val acc 0.9145, ppl 59695.9, lr 1.43e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.578, 4t:0.672, 8t:0.906, 16t:0.906, 32t:0.867, 64t:0.430, 128t:0.430
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_11500.pt
+iter 11500: loss 0.0000, time 33851.54ms
+iter 11550: loss 0.0000, time 188.77ms
+iter 11600: loss 0.0000, time 195.04ms
+iter 11650: loss 0.0000, time 180.05ms
+iter 11700: loss 0.0000, time 180.10ms
+iter 11750: loss 0.0002, time 189.23ms
+iter 11800: loss 0.0001, time 112.22ms
+iter 11850: loss 0.0000, time 103.99ms
+iter 11900: loss 0.0000, time 123.36ms
+iter 11950: loss 0.0000, time 113.21ms
+step 12000: train loss 0.0001, val loss 0.0001, train acc 0.8588, val acc 0.8554, ppl 59551.9, lr 1.32e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.273, 4t:0.266, 8t:0.234, 16t:0.133, 32t:0.133, 64t:0.141, 128t:0.141
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_12000.pt
+iter 12000: loss 0.0000, time 55739.55ms
+iter 12050: loss 0.0000, time 204.98ms
+iter 12100: loss 0.0000, time 180.81ms
+iter 12150: loss 0.0000, time 197.42ms
+iter 12200: loss 0.0000, time 180.42ms
+iter 12250: loss 0.0000, time 178.51ms
+iter 12300: loss 0.0000, time 103.97ms
+iter 12350: loss 0.0000, time 106.69ms
+iter 12400: loss 0.0000, time 127.80ms
+iter 12450: loss 0.0000, time 120.28ms
+step 12500: train loss 0.0000, val loss 0.0000, train acc 0.8800, val acc 0.8843, ppl 59810.7, lr 1.21e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.297, 4t:0.531, 8t:0.664, 16t:0.828, 32t:0.273, 64t:0.336, 128t:0.336
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_12500.pt
+iter 12500: loss 0.0000, time 34321.86ms
+iter 12550: loss 0.0000, time 181.32ms
+iter 12600: loss 0.0000, time 178.80ms
+iter 12650: loss 0.0000, time 189.37ms
+iter 12700: loss 0.0000, time 189.92ms
+iter 12750: loss 0.0000, time 190.14ms
+iter 12800: loss 0.0000, time 107.31ms
+iter 12850: loss 0.0000, time 114.65ms
+iter 12900: loss 0.0000, time 122.90ms
+iter 12950: loss 0.0000, time 106.29ms
+step 13000: train loss 0.0000, val loss 0.0000, train acc 0.9588, val acc 0.9606, ppl 59799.2, lr 1.11e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.242, 4t:0.758, 8t:0.813, 16t:0.602, 32t:0.977, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_13000.pt
+iter 13000: loss 0.0000, time 34641.99ms
+iter 13050: loss 0.0000, time 193.14ms
+iter 13100: loss 0.0000, time 187.50ms
+iter 13150: loss 0.0000, time 186.47ms
+iter 13200: loss 0.0000, time 187.35ms
+iter 13250: loss 0.0000, time 202.48ms
+iter 13300: loss 0.0000, time 117.27ms
+iter 13350: loss 0.0000, time 109.09ms
+iter 13400: loss 0.0000, time 118.04ms
+iter 13450: loss 0.0000, time 123.20ms
+step 13500: train loss 0.0000, val loss 0.0000, train acc 0.9528, val acc 0.9546, ppl 59772.9, lr 1.01e-04
+  Distinctive accuracy: 1t:0.016, 2t:0.305, 4t:0.508, 8t:0.391, 16t:0.516, 32t:0.867, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_13500.pt
+iter 13500: loss 0.0000, time 34538.48ms
+iter 13550: loss 0.0000, time 185.27ms
+iter 13600: loss 0.0000, time 196.15ms
+iter 13650: loss 0.0000, time 187.71ms
+iter 13700: loss 0.0000, time 178.57ms
+iter 13750: loss 0.0000, time 194.05ms
+iter 13800: loss 0.0000, time 113.33ms
+iter 13850: loss 0.0000, time 108.18ms
+iter 13900: loss 0.0000, time 129.51ms
+iter 13950: loss 0.0000, time 118.93ms
+step 14000: train loss 0.0000, val loss 0.0000, train acc 0.9459, val acc 0.9491, ppl 59657.2, lr 9.12e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.250, 4t:0.414, 8t:0.852, 16t:0.438, 32t:0.781, 64t:0.445, 128t:0.445
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_14000.pt
+iter 14000: loss 0.0000, time 34158.09ms
+iter 14050: loss 0.0000, time 182.18ms
+iter 14100: loss 0.0000, time 187.25ms
+iter 14150: loss 0.0000, time 171.31ms
+iter 14200: loss 0.0000, time 181.43ms
+iter 14250: loss 0.0000, time 193.26ms
+iter 14300: loss 0.0000, time 134.26ms
+iter 14350: loss 0.0000, time 107.58ms
+iter 14400: loss 0.0000, time 109.10ms
+iter 14450: loss 0.0001, time 115.60ms
+step 14500: train loss 0.0000, val loss 0.0000, train acc 0.9460, val acc 0.9459, ppl 59842.0, lr 8.21e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.227, 4t:0.305, 8t:0.281, 16t:0.172, 32t:0.945, 64t:0.406, 128t:0.406
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_14500.pt
+iter 14500: loss 0.0000, time 34271.65ms
+iter 14550: loss 0.0000, time 192.51ms
+iter 14600: loss 0.0000, time 189.31ms
+iter 14650: loss 0.0000, time 191.30ms
+iter 14700: loss 0.0000, time 201.19ms
+iter 14750: loss 0.0000, time 189.59ms
+iter 14800: loss 0.0000, time 104.18ms
+iter 14850: loss 0.0000, time 114.22ms
+iter 14900: loss 0.0000, time 109.20ms
+iter 14950: loss 0.0000, time 110.30ms
+step 15000: train loss 0.0000, val loss 0.0000, train acc 0.9278, val acc 0.9258, ppl 59774.3, lr 7.36e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.398, 4t:0.391, 8t:0.273, 16t:0.219, 32t:0.562, 64t:0.289, 128t:0.289
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_15000.pt
+iter 15000: loss 0.0000, time 34673.02ms
+iter 15050: loss 0.0000, time 185.14ms
+iter 15100: loss 0.0000, time 187.35ms
+iter 15150: loss 0.0000, time 190.41ms
+iter 15200: loss 0.0000, time 186.22ms
+iter 15250: loss 0.0000, time 186.97ms
+iter 15300: loss 0.0000, time 121.73ms
+iter 15350: loss 0.0000, time 104.13ms
+iter 15400: loss 0.0000, time 107.91ms
+iter 15450: loss 0.0000, time 117.26ms
+step 15500: train loss 0.0000, val loss 0.0000, train acc 0.9702, val acc 0.9722, ppl 59890.1, lr 6.57e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.258, 4t:0.586, 8t:0.516, 16t:0.516, 32t:0.922, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_15500.pt
+iter 15500: loss 0.0000, time 32557.32ms
+iter 15550: loss 0.0001, time 85.72ms
+iter 15600: loss 0.0000, time 86.29ms
+iter 15650: loss 0.0000, time 85.19ms
+iter 15700: loss 0.0000, time 84.40ms
+iter 15750: loss 0.0000, time 85.12ms
+iter 15800: loss 0.0000, time 84.92ms
+iter 15850: loss 0.0000, time 85.98ms
+iter 15900: loss 0.0000, time 85.33ms
+iter 15950: loss 0.0000, time 86.05ms
+step 16000: train loss 0.0000, val loss 0.0000, train acc 0.9722, val acc 0.9713, ppl 59849.9, lr 5.85e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.203, 4t:0.258, 8t:0.250, 16t:0.352, 32t:0.773, 64t:0.297, 128t:0.297
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_16000.pt
+iter 16000: loss 0.0000, time 17749.78ms
+iter 16050: loss 0.0000, time 84.20ms
+iter 16100: loss 0.0000, time 85.04ms
+iter 16150: loss 0.0000, time 85.52ms
+iter 16200: loss 0.0000, time 85.12ms
+iter 16250: loss 0.0000, time 84.57ms
+iter 16300: loss 0.0000, time 84.20ms
+iter 16350: loss 0.0000, time 84.33ms
+iter 16400: loss 0.0000, time 83.84ms
+iter 16450: loss 0.0000, time 85.62ms
+step 16500: train loss 0.0000, val loss 0.0000, train acc 0.9780, val acc 0.9770, ppl 59809.5, lr 5.20e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.203, 4t:0.320, 8t:0.852, 16t:0.688, 32t:0.992, 64t:0.445, 128t:0.445
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_16500.pt
+iter 16500: loss 0.0000, time 17875.37ms
+iter 16550: loss 0.0000, time 85.20ms
+iter 16600: loss 0.0000, time 84.92ms
+iter 16650: loss 0.0000, time 86.02ms
+iter 16700: loss 0.0000, time 86.32ms
+iter 16750: loss 0.0000, time 85.99ms
+iter 16800: loss 0.0000, time 85.01ms
+iter 16850: loss 0.0000, time 85.25ms
+iter 16900: loss 0.0000, time 85.17ms
+iter 16950: loss 0.0000, time 86.14ms
+step 17000: train loss 0.0000, val loss 0.0000, train acc 0.9910, val acc 0.9921, ppl 59894.2, lr 4.63e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.242, 4t:0.438, 8t:0.781, 16t:0.906, 32t:0.906, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_17000.pt
+iter 17000: loss 0.0000, time 17937.59ms
+iter 17050: loss 0.0000, time 84.99ms
+iter 17100: loss 0.0000, time 85.19ms
+iter 17150: loss 0.0000, time 84.39ms
+iter 17200: loss 0.0000, time 85.26ms
+iter 17250: loss 0.0000, time 85.63ms
+iter 17300: loss 0.0000, time 85.08ms
+iter 17350: loss 0.0000, time 86.31ms
+iter 17400: loss 0.0000, time 86.16ms
+iter 17450: loss 0.0000, time 85.19ms
+step 17500: train loss 0.0000, val loss 0.0000, train acc 0.9922, val acc 0.9933, ppl 59915.7, lr 4.14e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.234, 4t:0.336, 8t:0.969, 16t:0.938, 32t:0.961, 64t:0.445, 128t:0.445
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_17500.pt
+iter 17500: loss 0.0000, time 17881.54ms
+iter 17550: loss 0.0000, time 86.14ms
+iter 17600: loss 0.0000, time 85.97ms
+iter 17650: loss 0.0000, time 85.96ms
+iter 17700: loss 0.0000, time 85.12ms
+iter 17750: loss 0.0000, time 86.27ms
+iter 17800: loss 0.0000, time 85.00ms
+iter 17850: loss 0.0000, time 85.47ms
+iter 17900: loss 0.0000, time 85.11ms
+iter 17950: loss 0.0000, time 85.11ms
+step 18000: train loss 0.0000, val loss 0.0000, train acc 0.9910, val acc 0.9916, ppl 59795.3, lr 3.73e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.234, 4t:0.352, 8t:0.969, 16t:0.828, 32t:0.891, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_18000.pt
+iter 18000: loss 0.0000, time 17573.98ms
+iter 18050: loss 0.0000, time 84.31ms
+iter 18100: loss 0.0000, time 85.68ms
+iter 18150: loss 0.0000, time 84.88ms
+iter 18200: loss 0.0000, time 85.07ms
+iter 18250: loss 0.0000, time 86.21ms
+iter 18300: loss 0.0000, time 85.14ms
+iter 18350: loss 0.0000, time 85.74ms
+iter 18400: loss 0.0000, time 85.18ms
+iter 18450: loss 0.0000, time 85.23ms
+step 18500: train loss 0.0000, val loss 0.0000, train acc 0.9895, val acc 0.9897, ppl 59895.6, lr 3.41e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.188, 4t:0.305, 8t:0.594, 16t:0.875, 32t:0.891, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_18500.pt
+iter 18500: loss 0.0000, time 17813.98ms
+iter 18550: loss 0.0000, time 85.15ms
+iter 18600: loss 0.0000, time 84.55ms
+iter 18650: loss 0.0000, time 85.99ms
+iter 18700: loss 0.0000, time 84.83ms
+iter 18750: loss 0.0000, time 84.54ms
+iter 18800: loss 0.0000, time 85.14ms
+iter 18850: loss 0.0000, time 86.92ms
+iter 18900: loss 0.0000, time 85.24ms
+iter 18950: loss 0.0000, time 85.21ms
+step 19000: train loss 0.0000, val loss 0.0000, train acc 0.9865, val acc 0.9875, ppl 59872.8, lr 3.18e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.148, 4t:0.281, 8t:0.641, 16t:0.578, 32t:0.945, 64t:0.438, 128t:0.438
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_19000.pt
+iter 19000: loss 0.0000, time 17766.56ms
+iter 19050: loss 0.0000, time 84.99ms
+iter 19100: loss 0.0000, time 85.58ms
+iter 19150: loss 0.0000, time 84.20ms
+iter 19200: loss 0.0000, time 85.79ms
+iter 19250: loss 0.0000, time 84.58ms
+iter 19300: loss 0.0000, time 85.13ms
+iter 19350: loss 0.0000, time 85.56ms
+iter 19400: loss 0.0000, time 85.38ms
+iter 19450: loss 0.0000, time 85.09ms
+step 19500: train loss 0.0000, val loss 0.0000, train acc 0.9877, val acc 0.9877, ppl 59801.8, lr 3.05e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.242, 4t:0.430, 8t:0.734, 16t:0.727, 32t:0.750, 64t:0.445, 128t:0.445
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_19500.pt
+iter 19500: loss 0.0000, time 17833.80ms
+iter 19550: loss 0.0000, time 86.30ms
+iter 19600: loss 0.0000, time 85.87ms
+iter 19650: loss 0.0000, time 85.24ms
+iter 19700: loss 0.0000, time 86.46ms
+iter 19750: loss 0.0000, time 85.18ms
+iter 19800: loss 0.0000, time 85.35ms
+iter 19850: loss 0.0000, time 84.51ms
+iter 19900: loss 0.0000, time 84.51ms
+iter 19950: loss 0.0000, time 84.74ms
+step 20000: train loss 0.0000, val loss 0.0000, train acc 0.9888, val acc 0.9886, ppl 59930.3, lr 3.00e-05
+  Distinctive accuracy: 1t:0.016, 2t:0.180, 4t:0.352, 8t:0.867, 16t:0.586, 32t:0.922, 64t:0.445, 128t:0.445
+saving checkpoint to out-posreg-6layer-until-mlp/ckpt_20000.pt
+iter 20000: loss 0.0000, time 17827.36ms
+
+Training complete!
+Best validation loss: 0.0000
+Checkpoints saved to: out-posreg-6layer-until-mlp/
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-6layer-until-first-mlp[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260116_204206-nstilgwz/logs[0m

@@ -1,0 +1,127 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            ubr9mk3uazcjdl94stqxs0dbtaahldb0:
+                args:
+                    - --checkpoint-dir
+                    - out-posreg-6layer-until-mlp
+                    - --experiment-name
+                    - nope-6layer-until-first-mlp
+                    - --n-samples
+                    - "24"
+                    - --mode
+                    - unique
+                codePath: analysis_scripts/position_regression_metrics.py
+                codePathLocal: analysis_scripts/position_regression_metrics.py
+                cpu_count: 40
+                cpu_count_logical: 80
+                cudaVersion: "12.2"
+                disk:
+                    /:
+                        total: "105089261568"
+                        used: "88309780480"
+                email: matan13av@gmail.com
+                executable: /home/nlp/matan_avitan/.conda/envs/py312/bin/python
+                git:
+                    commit: ba4fbcd15bc2c35e2ba5b36ae651f9955f09ba84
+                    remote: git@github.com:MatanAvitan/nopos_locating_new.git
+                gpu: Tesla V100-SXM2-32GB
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-ea560305-2a2b-70d1-c6ef-d5a333208ebf
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-e877a982-2caf-d8cd-4368-1f138495c9ce
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-ce4209b5-4d6b-e1b5-16aa-4e6b0ecc36a6
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-4964d97e-331c-1a8c-ed06-3414e1fc5719
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-4750dfd9-79b6-d14f-8f2d-76957e46e2b2
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-93eea5ba-b92a-6469-68e0-db5e55845efb
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-46cb1980-ead1-ef58-221c-284b9d32ac00
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-812f5ac5-4946-0977-a19c-cfc114c20cb5
+                host: dgx03
+                memory:
+                    total: "540915302400"
+                os: Linux-5.4.0-211-generic-x86_64-with-glibc2.31
+                program: /home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py
+                python: CPython 3.12.8
+                root: /home/nlp/matan_avitan/git/nopos_locating_new
+                startedAt: "2026-01-19T23:16:00.278143Z"
+                writerId: ubr9mk3uazcjdl94stqxs0dbtaahldb0
+        m: []
+        python_version: 3.12.8
+        t:
+            "1":
+                - 1
+                - 105
+            "2":
+                - 1
+                - 5
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.12.8
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": linux-x86_64
+checkpoint_steps:
+    value:
+        - 1000
+        - 2000
+        - 3000
+        - 4000
+        - 5000
+        - 6000
+        - 7000
+        - 8000
+        - 9000
+        - 10000
+        - 11000
+        - 12000
+        - 13000
+        - 14000
+        - 15000
+        - 16000
+        - 17000
+        - 18000
+        - 19000
+        - 20000
+experiment:
+    value: nope-6layer-until-first-mlp
+mode:
+    value: unique
+n_samples:
+    value: 24

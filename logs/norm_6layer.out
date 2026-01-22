@@ -1,0 +1,60 @@
+============================================================
+GENERATING NORM VISUALIZATION
+============================================================
+Loading checkpoint: nanoGPT/out-posreg-6layer-until-mlp/ckpt_20000.pt
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+Creating random model...
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+Collecting norm statistics (500 samples)...
+  Random model...
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 371, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 321, in main
+    random_norms = collect_norm_statistics(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 146, in collect_norm_statistics
+    norms = get_activations_with_norms(model, tokens)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 122, in get_activations_with_norms
+    model.transformer(tokens)  # Run transformer forward
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 399, in _forward_unimplemented
+    raise NotImplementedError(
+NotImplementedError: Module [ModuleDict] is missing the required "forward" function

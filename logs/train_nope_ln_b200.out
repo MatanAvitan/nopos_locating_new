@@ -1,0 +1,165 @@
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/cuda/__init__.py:283: UserWarning: 
+    Found GPU0 NVIDIA B200 which is of cuda capability 10.0.
+    Minimum and Maximum cuda capability supported by this version of PyTorch is
+    (5.0) - (9.0)
+    
+  warnings.warn(
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/cuda/__init__.py:304: UserWarning: 
+    Please install PyTorch with a following CUDA
+    configurations:  12.8 12.9 following instructions at
+    https://pytorch.org/get-started/locally/
+    
+  warnings.warn(matched_cuda_warn.format(matched_arches))
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/cuda/__init__.py:326: UserWarning: 
+NVIDIA B200 with CUDA capability sm_100 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_50 sm_60 sm_70 sm_75 sm_80 sm_86 sm_90.
+If you want to use the NVIDIA B200 GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py:262: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run eqoseebg
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260112_192225-eqoseebg
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-owt-ln
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-emergence
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-emergence/runs/eqoseebg
+Overriding config with config/train_nope_owt_ln.py:
+# Training config for NoPE transformer with LayerNorm on OpenWebText
+# Larger scale training for studying positional encoding on real data
+#
+# Key features:
+# - No positional embeddings (NoPE mode)
+# - LayerNorm normalization (standard centering + scaling)
+# - Xavier initialization for attention Q, K, V
+# - OpenWebText dataset (~9B tokens)
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_nope_owt_ln.py
+
+# I/O
+out_dir = "out-nope-owt-ln"
+eval_interval = 500  # Checkpoint every 500 iters for resumability
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-emergence"
+wandb_run_name = "nope-owt-ln"
+
+# Data
+dataset = "openwebtext"  # Full OpenWebText (~9B tokens)
+gradient_accumulation_steps = 4  # Accumulate to effective batch 256
+batch_size = 64  # Reduced batch for memory (64 * 4 * 512 = 131K tokens)
+block_size = 512  # Context length
+
+# Model architecture - same as Shakespeare experiments
+n_layer = 1
+n_head = 12
+n_embd = 768
+dropout = 0.0  # No dropout for clean analysis
+bias = False  # Modern practice
+
+# NoPE-specific settings
+use_positional_embedding = False  # KEY: No positional embeddings
+norm_type = "layernorm"  # Standard LayerNorm
+log_attention_stats = True  # Log attention entropy/uniformity during training
+skip_ln2 = False  # Standard NoPE with LN2
+
+# Optimizer
+learning_rate = 6e-4  # Slightly lower LR for larger dataset
+max_iters = 50000  # More iters for larger dataset
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = False  # Use torch.compile for speed
+dtype = "bfloat16"
+
+# Reproducibility
+seed = 42
+
+tokens per iteration will be: 131,072
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+num decayed parameter tensors: 5, with 45,711,360 parameters
+num non-decayed parameter tensors: 3, with 2,304 parameters
+using fused AdamW: True
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: False
+  Dataset: openwebtext
+  Batch size: 64 x 4 = 256
+  Block size: 512
+  Learning rate: 0.0006 -> 6e-05
+
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py", line 383, in <module>
+    losses = estimate_loss()
+             ^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py", line 296, in estimate_loss
+    logits, loss = model(X, Y)
+                   ^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 427, in forward
+    tok_emb = self.transformer.wte(idx)  # [b, t, n_embd]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/sparse.py", line 192, in forward
+    return F.embedding(
+           ^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/functional.py", line 2546, in embedding
+    return torch.embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: no kernel image is available for execution on the device
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-owt-ln[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260112_192225-eqoseebg/logs[0m

@@ -1,0 +1,20 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py:262: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] Graph break from `Tensor.item()`, consider setting:
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     torch._dynamo.config.capture_scalar_outputs = True
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] or:
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     env TORCHDYNAMO_CAPTURE_SCALAR_OUTPUTS=1
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] to include these operations in the captured graph.
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] 
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] Graph break: from user code at:
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 440, in forward
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     x = block(x)
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 268, in forward
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     x = x + self.attn(self.ln_1(x))
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 160, in forward
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     self._compute_attention_stats(att)
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 213, in _compute_attention_stats
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     uniformity_scores.append(corr.item())
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] 
+W0112 14:57:18.391000 2396000 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] 
+slurmstepd: error: *** JOB 1018435 ON hpc8h200-01 CANCELLED AT 2026-01-12T15:14:31 ***

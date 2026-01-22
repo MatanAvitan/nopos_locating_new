@@ -1,0 +1,446 @@
+{
+  "NoPE + LayerNorm": {
+    "trained": {
+      "model_name": "NoPE + LayerNorm (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.003314068617521292,
+        "direction_norm_ratio": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.001714996344424348,
+        "direction_norm_ratio": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.15057556272724082,
+        "direction_r2": 0.46290797333387024,
+        "norm_r2": 0.20472963121101861,
+        "norm_position_corr": -0.4593151436616123,
+        "direction_norm_ratio": 2.2610696262430436
+      },
+      "post_attn_residual": {
+        "full_r2": 0.07729758865947134,
+        "direction_r2": 0.39740624097886146,
+        "norm_r2": 0.21347633200974958,
+        "norm_position_corr": -0.4611028637174637,
+        "direction_norm_ratio": 1.8615938292624095
+      },
+      "post_ln2": {
+        "full_r2": 0.39768729123876057,
+        "direction_r2": 0.3827303624291224,
+        "norm_r2": 0.19509774067775698,
+        "norm_position_corr": 0.4404211301644984,
+        "direction_norm_ratio": 1.9617364172551546
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.39028394687423307,
+        "direction_r2": 0.4176756890242276,
+        "norm_r2": 0.08230617509273785,
+        "norm_position_corr": -0.29027128687242987,
+        "direction_norm_ratio": 5.074657372998333
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "random": {
+      "model_name": "NoPE + LayerNorm (random)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.0005325047749973626,
+        "direction_norm_ratio": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.0005281041467984307,
+        "direction_norm_ratio": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.10947054308815551,
+        "direction_r2": 0.28081230774629384,
+        "norm_r2": 0.38154063239715874,
+        "norm_position_corr": -0.6147508878584169,
+        "direction_norm_ratio": 0.7359957932187646
+      },
+      "post_attn_residual": {
+        "full_r2": 0.06990446708154852,
+        "direction_r2": 0.07362746740780346,
+        "norm_r2": 0.3196586747331246,
+        "norm_position_corr": -0.5662453127304913,
+        "direction_norm_ratio": 0.23033150958896448
+      },
+      "post_ln2": {
+        "full_r2": 0.07894647671845967,
+        "direction_r2": 0.07938221924235334,
+        "norm_r2": 0.8851245141568809,
+        "norm_position_corr": -0.9402526620728056,
+        "direction_norm_ratio": 0.08968480374890563
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.09913109402912856,
+        "direction_r2": 0.10618463567483438,
+        "norm_r2": 0.08127317280784163,
+        "norm_position_corr": -0.28164344251666107,
+        "direction_norm_ratio": 1.306515039848903
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": false
+    }
+  },
+  "NoPE + BatchNorm2": {
+    "trained": {
+      "model_name": "NoPE + BatchNorm2 (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": 0.0018094777128144714,
+        "direction_norm_ratio": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 4.791259090364264e-06,
+        "norm_position_corr": -0.0014019663051388523,
+        "direction_norm_ratio": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.14820496268991767,
+        "direction_r2": 0.3288383044842197,
+        "norm_r2": 0.13423137228948623,
+        "norm_position_corr": -0.3664689063350587,
+        "direction_norm_ratio": 2.4497870682359517
+      },
+      "post_attn_residual": {
+        "full_r2": 0.08175665379739872,
+        "direction_r2": 0.3001157920005274,
+        "norm_r2": 0.1340512034925896,
+        "norm_position_corr": -0.37014481544532535,
+        "direction_norm_ratio": 2.2388144365221874
+      },
+      "post_ln2": {
+        "full_r2": 0.07726670379430922,
+        "direction_r2": 0.4246685636548223,
+        "norm_r2": 0.22837755995813847,
+        "norm_position_corr": -0.4803730987189654,
+        "direction_norm_ratio": 1.859502068143837
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.3071832076897567,
+        "direction_r2": 0.41875642609881747,
+        "norm_r2": 0.17181249302703172,
+        "norm_position_corr": -0.41230484493905833,
+        "direction_norm_ratio": 2.437287267929118
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "random": {
+      "model_name": "NoPE + BatchNorm2 (random)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.00029464485239930716,
+        "direction_norm_ratio": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.00031658384607956936,
+        "direction_norm_ratio": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.11275484629117172,
+        "direction_r2": 0.2804327795926237,
+        "norm_r2": 0.3830303265686418,
+        "norm_position_corr": -0.614475809028879,
+        "direction_norm_ratio": 0.7321424775511695
+      },
+      "post_attn_residual": {
+        "full_r2": 0.06682735457190236,
+        "direction_r2": 0.08093479603491627,
+        "norm_r2": 0.3215700681058469,
+        "norm_position_corr": -0.5659756613804453,
+        "direction_norm_ratio": 0.2516863400713423
+      },
+      "post_ln2": {
+        "full_r2": 0.07091672587323317,
+        "direction_r2": 0.08454537127574913,
+        "norm_r2": 0.32000422127740213,
+        "norm_position_corr": -0.5659756609221456,
+        "direction_norm_ratio": 0.2642007917778414
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.08136522226172715,
+        "direction_r2": 0.08458800554799817,
+        "norm_r2": 0.32426744857589884,
+        "norm_position_corr": -0.5658381594000443,
+        "direction_norm_ratio": 0.26085875505204076
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": true,
+      "skip_ln2": false
+    }
+  },
+  "NoPE + No LN2": {
+    "trained": {
+      "model_name": "NoPE + No LN2 (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.0027737977891000997,
+        "direction_norm_ratio": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": -0.002785227328954712,
+        "direction_norm_ratio": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.12839239343138942,
+        "direction_r2": 0.4976525615820415,
+        "norm_r2": 0.23727893486475005,
+        "norm_position_corr": -0.49117571847497443,
+        "direction_norm_ratio": 2.0973313155354156
+      },
+      "post_attn_residual": {
+        "full_r2": 0.12036886069534891,
+        "direction_r2": 0.535307583497808,
+        "norm_r2": 0.24317271577874489,
+        "norm_position_corr": -0.4908422465273709,
+        "direction_norm_ratio": 2.2013471362115973
+      },
+      "post_ln2": {
+        "full_r2": 0.12166267276420717,
+        "direction_r2": 0.5306946754702109,
+        "norm_r2": 0.2385467626452138,
+        "norm_position_corr": -0.4908422465273709,
+        "direction_norm_ratio": 2.2246986181594806
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.3730886571672958,
+        "direction_r2": 0.48954643942450016,
+        "norm_r2": 0.2477237510062854,
+        "norm_position_corr": -0.4969076781933086,
+        "direction_norm_ratio": 1.97617877847446
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "random": {
+      "model_name": "NoPE + No LN2 (random)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0,
+        "norm_position_corr": 0.0027848633734024503,
+        "direction_norm_ratio": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 2.032884212443964e-05,
+        "norm_position_corr": 0.0027966229889013206,
+        "direction_norm_ratio": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.1314380136207952,
+        "direction_r2": 0.29534537170882746,
+        "norm_r2": 0.37709645059396935,
+        "norm_position_corr": -0.6126407819247939,
+        "direction_norm_ratio": 0.7832090792993
+      },
+      "post_attn_residual": {
+        "full_r2": 0.07755338794905142,
+        "direction_r2": 0.08795829461476445,
+        "norm_r2": 0.3207645582786698,
+        "norm_position_corr": -0.5644579774872989,
+        "direction_norm_ratio": 0.27421449659099867
+      },
+      "post_ln2": {
+        "full_r2": 0.08398537270332562,
+        "direction_r2": 0.09207831495124241,
+        "norm_r2": 0.3206687223831657,
+        "norm_position_corr": -0.5644579774872989,
+        "direction_norm_ratio": 0.2871446625523141
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.08996526116055648,
+        "direction_r2": 0.08973559502752837,
+        "norm_r2": 0.31986083159205214,
+        "norm_position_corr": -0.5642741497303287,
+        "direction_norm_ratio": 0.280545735391944
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": true
+    }
+  },
+  "Baseline + PE": {
+    "trained": {
+      "model_name": "Baseline + PE (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.994280798360189,
+        "direction_r2": 0.9881790298215066,
+        "norm_r2": 0.011051145976123888,
+        "norm_position_corr": -0.10539720817042506,
+        "direction_norm_ratio": 89.41861213039391
+      },
+      "post_ln1": {
+        "full_r2": 0.9882581837482577,
+        "direction_r2": 0.979909388859322,
+        "norm_r2": 0.020903961330450138,
+        "norm_position_corr": 0.1439733713257418,
+        "direction_norm_ratio": 46.87670937588398
+      },
+      "post_attn": {
+        "full_r2": 0.9817432730932255,
+        "direction_r2": 0.9731098553294704,
+        "norm_r2": 0.020899734365194544,
+        "norm_position_corr": -0.1471678814124738,
+        "direction_norm_ratio": 46.560849660440915
+      },
+      "post_attn_residual": {
+        "full_r2": 0.6508890219073926,
+        "direction_r2": 0.6524709719424652,
+        "norm_r2": 0.0025311693370039245,
+        "norm_position_corr": -0.0477133585347541,
+        "direction_norm_ratio": 257.77350597163695
+      },
+      "post_ln2": {
+        "full_r2": 0.6494102060230353,
+        "direction_r2": 0.6527126351135055,
+        "norm_r2": 0.07174780117353086,
+        "norm_position_corr": -0.26939578043732704,
+        "direction_norm_ratio": 9.097317736074766
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.48405275335779807,
+        "direction_r2": 0.489662218293372,
+        "norm_r2": 0.0255498921500511,
+        "norm_position_corr": -0.16337461165481487,
+        "direction_norm_ratio": 19.16493516952246
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "random": {
+      "model_name": "Baseline + PE (random)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.5158867021646403,
+        "direction_r2": 0.5159642671185078,
+        "norm_r2": 0.00013370540385626573,
+        "norm_position_corr": -0.0098424610123262,
+        "direction_norm_ratio": 3858.6748589798353
+      },
+      "post_ln1": {
+        "full_r2": 0.512345132947847,
+        "direction_r2": 0.5123840346608795,
+        "norm_r2": 4.001527876662525e-05,
+        "norm_position_corr": -0.009816399073597255,
+        "direction_norm_ratio": 12801.510706481991
+      },
+      "post_attn": {
+        "full_r2": 0.9597081624762918,
+        "direction_r2": 0.9778379045786747,
+        "norm_r2": 0.3848871786203011,
+        "norm_position_corr": -0.6219955736296903,
+        "direction_norm_ratio": 2.540583146152291
+      },
+      "post_attn_residual": {
+        "full_r2": 0.9315672231692164,
+        "direction_r2": 0.9345549407642699,
+        "norm_r2": 0.29741453801540607,
+        "norm_position_corr": -0.5457259670346022,
+        "direction_norm_ratio": 3.1422637090229357
+      },
+      "post_ln2": {
+        "full_r2": 0.9344137912150607,
+        "direction_r2": 0.9343353598032835,
+        "norm_r2": 0.8218999009688894,
+        "norm_position_corr": -0.9067197510564926,
+        "direction_norm_ratio": 1.1367994415546907
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.9121887595300657,
+        "direction_r2": 0.9106406687128102,
+        "norm_r2": 0.06998364253545741,
+        "norm_position_corr": -0.27245767687687833,
+        "direction_norm_ratio": 13.012191214961689
+      },
+      "attention_uniformity": {
+        "per_head_uniformity": [],
+        "mean_uniformity": 0.0,
+        "std_uniformity": 0.0
+      }
+    },
+    "config": {
+      "use_positional_embedding": true,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": false
+    }
+  }
+}

@@ -1,0 +1,49 @@
+
+WandB initialized. Project: nope-decoding-vector
+
+Loading OWT data...
+  Loaded 100 sequences of length 256
+
+======================================================================
+MODEL: NoPE + LayerNorm (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_random
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([2304, 0])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/decoding_vector_corrected.py", line 775, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/decoding_vector_corrected.py", line 692, in main
+    results = run_analysis("NoPE_LN_random", random_model, tokens, use_wandb)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/decoding_vector_corrected.py", line 550, in run_analysis
+    base_decoding_vector = compute_decoding_vector_base(W_v, W_o)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/decoding_vector_corrected.py", line 220, in compute_decoding_vector_base
+    combined_inv = W_o_inv @ W_v_inv
+                   ~~~~~~~~^~~~~~~~~
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (768x768 and 0x2304)

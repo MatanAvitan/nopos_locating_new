@@ -1,0 +1,69 @@
+
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 1000: Error - '_io.BytesIO' object has no attribute 'ndim'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 565, in main
+    metrics["plots/basis_heatmap"] = wandb.Image(fig_to_image(fig_heatmap))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 277, in __init__
+    self._initialize_from_data(data_or_path, mode, file_type, normalize)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 431, in _initialize_from_data
+    if data.ndim > 2:  # type: ignore [union-attr]
+       ^^^^^^^^^
+AttributeError: '_io.BytesIO' object has no attribute 'ndim'
+Analyzing:   5%|▌         | 1/20 [02:27<46:36, 147.18s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 2000: Error - '_io.BytesIO' object has no attribute 'ndim'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 565, in main
+    metrics["plots/basis_heatmap"] = wandb.Image(fig_to_image(fig_heatmap))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 277, in __init__
+    self._initialize_from_data(data_or_path, mode, file_type, normalize)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 431, in _initialize_from_data
+    if data.ndim > 2:  # type: ignore [union-attr]
+       ^^^^^^^^^
+AttributeError: '_io.BytesIO' object has no attribute 'ndim'
+Analyzing:  10%|█         | 2/20 [04:52<43:50, 146.14s/it]
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================

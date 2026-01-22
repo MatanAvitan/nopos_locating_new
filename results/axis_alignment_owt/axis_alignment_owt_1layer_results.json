@@ -1,0 +1,718 @@
+{
+  "config": {
+    "n_samples": 200,
+    "seq_len": 128,
+    "checkpoint_steps": [
+      500,
+      1000,
+      2000,
+      5000,
+      10000,
+      15000,
+      20000
+    ],
+    "layers": [
+      "post_attn",
+      "post_ln2"
+    ],
+    "k_bins": [
+      [
+        1,
+        10
+      ],
+      [
+        10,
+        25
+      ],
+      [
+        25,
+        50
+      ],
+      [
+        50,
+        75
+      ],
+      [
+        75,
+        100
+      ],
+      [
+        100,
+        128
+      ]
+    ],
+    "checkpoint_dir": "nanoGPT/out-posreg-1layer-until-mlp"
+  },
+  "k_distribution": {
+    "min": 62,
+    "max": 106,
+    "mean": 88.90999603271484
+  },
+  "results_by_step": {
+    "500": {
+      "step": 500,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 0.533357560634613,
+            "mean_other_projection_mean": 0.1322864592075348,
+            "ratio": 4.031837600849914
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 0.6989707946777344,
+              "mean_other_projection_mean": 0.1820429563522339,
+              "ratio": 3.8395924252590996,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 0.5675473213195801,
+              "mean_other_projection_mean": 0.14146378636360168,
+              "ratio": 4.011961617803782,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 0.5257622003555298,
+              "mean_other_projection_mean": 0.13009855151176453,
+              "ratio": 4.041260673800657,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 0.5091768503189087,
+              "mean_other_projection_mean": 0.12538272142410278,
+              "ratio": 4.06098068319022,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 0.4939066767692566,
+              "mean_other_projection_mean": 0.12055528163909912,
+              "ratio": 4.096930711659199,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 0.4821684956550598,
+              "mean_other_projection_mean": 0.11317639797925949,
+              "ratio": 4.260326902612258,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 6.994422435760498,
+            "mean_other_projection_mean": 1.2306371927261353,
+            "ratio": 5.683577922287979
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 5.258230686187744,
+              "mean_other_projection_mean": 1.0575597286224365,
+              "ratio": 4.9720412891635295,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 6.424433708190918,
+              "mean_other_projection_mean": 1.1690013408660889,
+              "ratio": 5.495659781257899,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 7.019693374633789,
+              "mean_other_projection_mean": 1.2318147420883179,
+              "ratio": 5.698659934647783,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 7.3310980796813965,
+              "mean_other_projection_mean": 1.2727411985397339,
+              "ratio": 5.760085420737382,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 7.501191139221191,
+              "mean_other_projection_mean": 1.2736656665802002,
+              "ratio": 5.8894506440355165,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 8.260207176208496,
+              "mean_other_projection_mean": 1.2510108947753906,
+              "ratio": 6.602825878397561,
+              "count": 46
+            }
+          }
+        }
+      }
+    },
+    "1000": {
+      "step": 1000,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 0.5227224826812744,
+            "mean_other_projection_mean": 0.14152562618255615,
+            "ratio": 3.69348265643552
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 0.7811630964279175,
+              "mean_other_projection_mean": 0.2077353596687317,
+              "ratio": 3.7603759902495706,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 0.5796903967857361,
+              "mean_other_projection_mean": 0.15541714429855347,
+              "ratio": 3.7298996973793614,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 0.5106464624404907,
+              "mean_other_projection_mean": 0.1387670934200287,
+              "ratio": 3.67988125323071,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 0.48248565196990967,
+              "mean_other_projection_mean": 0.13168717920780182,
+              "ratio": 3.663876910673136,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 0.46257537603378296,
+              "mean_other_projection_mean": 0.12548555433750153,
+              "ratio": 3.6862835854939986,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 0.4771377444267273,
+              "mean_other_projection_mean": 0.11888106912374496,
+              "ratio": 4.013571780670564,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 7.765305042266846,
+            "mean_other_projection_mean": 1.3890324831008911,
+            "ratio": 5.59044160653974
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 5.891960620880127,
+              "mean_other_projection_mean": 1.1606050729751587,
+              "ratio": 5.07662830992981,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 6.989166259765625,
+              "mean_other_projection_mean": 1.2844592332839966,
+              "ratio": 5.441329724013911,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 7.713143825531006,
+              "mean_other_projection_mean": 1.3821048736572266,
+              "ratio": 5.580722502854515,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 8.18445873260498,
+              "mean_other_projection_mean": 1.450307011604309,
+              "ratio": 5.643259400034793,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 8.455438613891602,
+              "mean_other_projection_mean": 1.46573805809021,
+              "ratio": 5.768724165640764,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 9.170372009277344,
+              "mean_other_projection_mean": 1.4525963068008423,
+              "ratio": 6.313090500927275,
+              "count": 46
+            }
+          }
+        }
+      }
+    },
+    "2000": {
+      "step": 2000,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 0.6661849021911621,
+            "mean_other_projection_mean": 0.16877786815166473,
+            "ratio": 3.9471103054899452
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 1.0397957563400269,
+              "mean_other_projection_mean": 0.24835747480392456,
+              "ratio": 4.1866898320416395,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 0.7535866498947144,
+              "mean_other_projection_mean": 0.1862267553806305,
+              "ratio": 4.046607631048373,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 0.6530675292015076,
+              "mean_other_projection_mean": 0.16711749136447906,
+              "ratio": 3.90783445102607,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 0.6049594283103943,
+              "mean_other_projection_mean": 0.15626972913742065,
+              "ratio": 3.8712512841555613,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 0.5746858716011047,
+              "mean_other_projection_mean": 0.1476905345916748,
+              "ratio": 3.8911487068448345,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 0.5474900603294373,
+              "mean_other_projection_mean": 0.13781754672527313,
+              "ratio": 3.9725712263264783,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 8.277673721313477,
+            "mean_other_projection_mean": 1.4533717632293701,
+            "ratio": 5.6954964130895505
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 6.494169235229492,
+              "mean_other_projection_mean": 1.1855223178863525,
+              "ratio": 5.477897026880831,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 7.505940914154053,
+              "mean_other_projection_mean": 1.3251572847366333,
+              "ratio": 5.664188654408616,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 8.191251754760742,
+              "mean_other_projection_mean": 1.4472521543502808,
+              "ratio": 5.659864919558138,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 8.686827659606934,
+              "mean_other_projection_mean": 1.5252670049667358,
+              "ratio": 5.695283235241525,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 8.998312950134277,
+              "mean_other_projection_mean": 1.544785499572754,
+              "ratio": 5.82495944865703,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 9.368673324584961,
+              "mean_other_projection_mean": 1.4974480867385864,
+              "ratio": 6.256426079134064,
+              "count": 46
+            }
+          }
+        }
+      }
+    },
+    "5000": {
+      "step": 5000,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 1.0731229782104492,
+            "mean_other_projection_mean": 0.2621234059333801,
+            "ratio": 4.093960756574256
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 1.6193944215774536,
+              "mean_other_projection_mean": 0.36685216426849365,
+              "ratio": 4.4142969162075705,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 1.1952961683273315,
+              "mean_other_projection_mean": 0.2871131896972656,
+              "ratio": 4.163152964014406,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 1.0554468631744385,
+              "mean_other_projection_mean": 0.26046890020370483,
+              "ratio": 4.052103041199833,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 0.9823601841926575,
+              "mean_other_projection_mean": 0.2447437047958374,
+              "ratio": 4.013832122357593,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 0.9434287548065186,
+              "mean_other_projection_mean": 0.2336297333240509,
+              "ratio": 4.038136332230425,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 0.8948253393173218,
+              "mean_other_projection_mean": 0.21812602877616882,
+              "ratio": 4.1023315892860985,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 7.560420036315918,
+            "mean_other_projection_mean": 1.3992223739624023,
+            "ratio": 5.40330123572342
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 6.26878547668457,
+              "mean_other_projection_mean": 1.1635808944702148,
+              "ratio": 5.387494288193725,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 6.991466999053955,
+              "mean_other_projection_mean": 1.3004159927368164,
+              "ratio": 5.376331100463178,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 7.512599468231201,
+              "mean_other_projection_mean": 1.3998737335205078,
+              "ratio": 5.3666264568531385,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 7.859371185302734,
+              "mean_other_projection_mean": 1.4568126201629639,
+              "ratio": 5.394908736083349,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 8.064275741577148,
+              "mean_other_projection_mean": 1.4699130058288574,
+              "ratio": 5.486226500980978,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 8.324161529541016,
+              "mean_other_projection_mean": 1.4200905561447144,
+              "ratio": 5.8617117302170305,
+              "count": 46
+            }
+          }
+        }
+      }
+    },
+    "10000": {
+      "step": 10000,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 1.2292299270629883,
+            "mean_other_projection_mean": 0.30685412883758545,
+            "ratio": 4.005909555984859
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 1.8004127740859985,
+              "mean_other_projection_mean": 0.4263472557067871,
+              "ratio": 4.222878669343222,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 1.353238821029663,
+              "mean_other_projection_mean": 0.33621668815612793,
+              "ratio": 4.024900691878378,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 1.211429238319397,
+              "mean_other_projection_mean": 0.30489957332611084,
+              "ratio": 3.973207260908884,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 1.1368881464004517,
+              "mean_other_projection_mean": 0.2865450978279114,
+              "ratio": 3.9675713014902545,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 1.0911667346954346,
+              "mean_other_projection_mean": 0.2745383679866791,
+              "ratio": 3.9745508176214956,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 1.047609567642212,
+              "mean_other_projection_mean": 0.2625854015350342,
+              "ratio": 3.989595467311175,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 6.613320350646973,
+            "mean_other_projection_mean": 1.293388843536377,
+            "ratio": 5.11317252546662
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 5.69807767868042,
+              "mean_other_projection_mean": 1.121119499206543,
+              "ratio": 5.082489094060237,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 6.207427978515625,
+              "mean_other_projection_mean": 1.2260184288024902,
+              "ratio": 5.06307881028177,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 6.588597297668457,
+              "mean_other_projection_mean": 1.2970417737960815,
+              "ratio": 5.07971090829893,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 6.827920436859131,
+              "mean_other_projection_mean": 1.3333194255828857,
+              "ratio": 5.120993705363769,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 6.953441619873047,
+              "mean_other_projection_mean": 1.3403149843215942,
+              "ratio": 5.187916011782409,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 7.270730018615723,
+              "mean_other_projection_mean": 1.3170742988586426,
+              "ratio": 5.520364317876971,
+              "count": 46
+            }
+          }
+        }
+      }
+    },
+    "15000": {
+      "step": 15000,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 1.0969175100326538,
+            "mean_other_projection_mean": 0.2786129117012024,
+            "ratio": 3.937066175304819
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 1.597045660018921,
+              "mean_other_projection_mean": 0.38999852538108826,
+              "ratio": 4.095004250357922,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 1.200029969215393,
+              "mean_other_projection_mean": 0.3052537143230438,
+              "ratio": 3.9312541456346843,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 1.0821144580841064,
+              "mean_other_projection_mean": 0.27646270394325256,
+              "ratio": 3.9141424991806453,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 1.0170851945877075,
+              "mean_other_projection_mean": 0.259799987077713,
+              "ratio": 3.9148776213552865,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 0.977481484413147,
+              "mean_other_projection_mean": 0.24932114779949188,
+              "ratio": 3.9205717358301917,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 0.91752690076828,
+              "mean_other_projection_mean": 0.23680606484413147,
+              "ratio": 3.8745919055168114,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 6.123870849609375,
+            "mean_other_projection_mean": 1.197629451751709,
+            "ratio": 5.113326822014144
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 5.411236763000488,
+              "mean_other_projection_mean": 1.0850435495376587,
+              "ratio": 4.987114771047752,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 5.787869453430176,
+              "mean_other_projection_mean": 1.1526858806610107,
+              "ratio": 5.021202654012801,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 6.112697124481201,
+              "mean_other_projection_mean": 1.2024396657943726,
+              "ratio": 5.083579033137729,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 6.298538684844971,
+              "mean_other_projection_mean": 1.224098563194275,
+              "ratio": 5.1454505566565505,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 6.378977298736572,
+              "mean_other_projection_mean": 1.2250455617904663,
+              "ratio": 5.207134694110501,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 6.6815385818481445,
+              "mean_other_projection_mean": 1.1921379566192627,
+              "ratio": 5.604668896500343,
+              "count": 46
+            }
+          }
+        }
+      }
+    },
+    "20000": {
+      "step": 20000,
+      "results": {
+        "post_attn": {
+          "overall": {
+            "max_projection_mean": 0.9890331029891968,
+            "mean_other_projection_mean": 0.25393015146255493,
+            "ratio": 3.8949020364209144
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 1.4462594985961914,
+              "mean_other_projection_mean": 0.3572722375392914,
+              "ratio": 4.048060011818124,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 1.0838147401809692,
+              "mean_other_projection_mean": 0.27867546677589417,
+              "ratio": 3.889164388341762,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 0.9755526185035706,
+              "mean_other_projection_mean": 0.25195327401161194,
+              "ratio": 3.8719583367629755,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 0.916185200214386,
+              "mean_other_projection_mean": 0.23644523322582245,
+              "ratio": 3.874830331601818,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 0.8791711330413818,
+              "mean_other_projection_mean": 0.2267666459083557,
+              "ratio": 3.876985924229907,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 0.8237586617469788,
+              "mean_other_projection_mean": 0.21406812965869904,
+              "ratio": 3.8481142642727866,
+              "count": 46
+            }
+          }
+        },
+        "post_ln2": {
+          "overall": {
+            "max_projection_mean": 5.924952983856201,
+            "mean_other_projection_mean": 1.1383445262908936,
+            "ratio": 5.204885511342353
+          },
+          "by_k_bin": {
+            "1-10": {
+              "max_projection_mean": 5.284216403961182,
+              "mean_other_projection_mean": 1.0539404153823853,
+              "ratio": 5.013771439731984,
+              "count": 1922
+            },
+            "10-25": {
+              "max_projection_mean": 5.615716934204102,
+              "mean_other_projection_mean": 1.10490083694458,
+              "ratio": 5.08255283696581,
+              "count": 3639
+            },
+            "25-50": {
+              "max_projection_mean": 5.914760589599609,
+              "mean_other_projection_mean": 1.1438769102096558,
+              "ratio": 5.170801582844701,
+              "count": 7093
+            },
+            "50-75": {
+              "max_projection_mean": 6.084222316741943,
+              "mean_other_projection_mean": 1.1582553386688232,
+              "ratio": 5.252919681082853,
+              "count": 8017
+            },
+            "75-100": {
+              "max_projection_mean": 6.156047344207764,
+              "mean_other_projection_mean": 1.1559746265411377,
+              "ratio": 5.325417314196139,
+              "count": 4883
+            },
+            "100-128": {
+              "max_projection_mean": 6.442310333251953,
+              "mean_other_projection_mean": 1.116048812866211,
+              "ratio": 5.772426977438998,
+              "count": 46
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,203 @@
+
+======================================================================
+AXIS ALIGNMENT EXPERIMENT - OpenWebText + Frozen Position Regression
+======================================================================
+Configuration:
+  n_samples: 200
+  seq_len: 128
+  Checkpoints: [500, 1000, 2000, 5000, 10000, 15000, 20000]
+  Device: cuda
+  Checkpoint dir: nanoGPT/out-posreg-6layer-until-mlp
+
+Loading OpenWebText validation sequences...
+Loaded OpenWebText val.bin: 4,434,606 tokens
+Counting unique tokens per position...
+Unique tokens at final position - min: 62, max: 106, mean: 88.9
+Analyzing checkpoints:   0%|          | 0/7 [00:00<?, ?it/s]Analyzing checkpoints:  14%|█▍        | 1/7 [00:52<05:12, 52.05s/it]Analyzing checkpoints:  29%|██▊       | 2/7 [01:35<03:54, 46.86s/it]Analyzing checkpoints:  43%|████▎     | 3/7 [02:27<03:16, 49.23s/it]Analyzing checkpoints:  57%|█████▋    | 4/7 [03:19<02:31, 50.43s/it]Analyzing checkpoints:  71%|███████▏  | 5/7 [04:16<01:45, 52.65s/it]Analyzing checkpoints:  86%|████████▌ | 6/7 [05:13<00:54, 54.27s/it]Analyzing checkpoints: 100%|██████████| 7/7 [06:11<00:00, 55.44s/it]Analyzing checkpoints: 100%|██████████| 7/7 [06:11<00:00, 53.07s/it]
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:485: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:491: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:566: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:572: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+Results saved to: results/axis_alignment_owt/axis_alignment_owt_6layer_results.json
+
+Creating plots...
+  Saved: axis_alignment_owt_6layer_training.png/pdf
+  Saved: axis_alignment_owt_6layer_by_k.png/pdf
+All plots saved!
+
+======================================================================
+RESULTS SUMMARY
+======================================================================
+
+K distribution in OpenWebText sequences:
+  Min: 62
+  Max: 106
+  Mean: 88.9
+
+Alignment across training steps (should be CONSTANT for frozen layers):
+
+  POST_ATTN:
+      Step |     Max Proj |   Mean Other |    Ratio
+  ---------+--------------+--------------+---------
+       500 |       0.0656 |       0.0190 |     3.46
+      1000 |       0.0656 |       0.0190 |     3.46
+      2000 |       0.0656 |       0.0190 |     3.46
+      5000 |       0.0656 |       0.0190 |     3.46
+     10000 |       0.0656 |       0.0190 |     3.46
+     15000 |       0.0656 |       0.0190 |     3.46
+     20000 |       0.0656 |       0.0190 |     3.46
+
+  POST_LN2:
+      Step |     Max Proj |   Mean Other |    Ratio
+  ---------+--------------+--------------+---------
+       500 |      18.1684 |       0.7948 |    22.86
+      1000 |      18.1684 |       0.7948 |    22.86
+      2000 |      18.1684 |       0.7948 |    22.86
+      5000 |      18.1684 |       0.7948 |    22.86
+     10000 |      18.1684 |       0.7948 |    22.86
+     15000 |      18.1684 |       0.7948 |    22.86
+     20000 |      18.1684 |       0.7948 |    22.86

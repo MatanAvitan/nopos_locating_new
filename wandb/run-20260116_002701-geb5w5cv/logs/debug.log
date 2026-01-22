@@ -1,0 +1,26 @@
+2026-01-16 00:27:01,488 INFO    MainThread:127201 [wandb_setup.py:_flush():80] Current SDK version is 0.23.1
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_setup.py:_flush():80] Configure stats pid to 127201
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/.config/wandb/settings
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/git/nopos_locating_new/wandb/settings
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_setup.py:_flush():80] Loading settings from environment variables
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_init.py:setup_run_log_directory():714] Logging user logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260116_002701-geb5w5cv/logs/debug.log
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_init.py:setup_run_log_directory():715] Logging internal logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260116_002701-geb5w5cv/logs/debug-internal.log
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_init.py:init():841] calling init triggers
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_init.py:init():846] wandb.init called with sweep_config: {}
+config: {'formula': 'W_o^-1 @ W_v^-1 * sqrt(d) * sigma_init + sum(e_i)', 'sigma_init': 0.02, 'sqrt_d': np.float64(27.712812921102035), 'n_sequences': 100, 'context_length': 256, 'wandb': True, 'quick': False, '_wandb': {}}
+2026-01-16 00:27:01,489 INFO    MainThread:127201 [wandb_init.py:init():889] starting backend
+2026-01-16 00:27:01,894 INFO    MainThread:127201 [wandb_init.py:init():892] sending inform_init request
+2026-01-16 00:27:01,902 INFO    MainThread:127201 [wandb_init.py:init():900] backend started and connected
+2026-01-16 00:27:01,927 INFO    MainThread:127201 [wandb_init.py:init():970] updated telemetry
+2026-01-16 00:27:01,946 INFO    MainThread:127201 [wandb_init.py:init():994] communicating run to backend with 90.0 second timeout
+2026-01-16 00:27:02,821 INFO    MainThread:127201 [wandb_init.py:init():1041] starting run threads in backend
+2026-01-16 00:27:03,146 INFO    MainThread:127201 [wandb_run.py:_console_start():2521] atexit reg
+2026-01-16 00:27:03,146 INFO    MainThread:127201 [wandb_run.py:_redirect():2369] redirect: wrap_raw
+2026-01-16 00:27:03,146 INFO    MainThread:127201 [wandb_run.py:_redirect():2438] Wrapping output streams.
+2026-01-16 00:27:03,146 INFO    MainThread:127201 [wandb_run.py:_redirect():2461] Redirects installed.
+2026-01-16 00:27:03,152 INFO    MainThread:127201 [wandb_init.py:init():1081] run started, returning control to user process
+2026-01-16 00:27:14,938 INFO    MainThread:127201 [wandb_run.py:_finish():2287] finishing run matan_avitan/nope-decoding-vector/geb5w5cv
+2026-01-16 00:27:14,938 INFO    MainThread:127201 [wandb_run.py:_atexit_cleanup():2486] got exitcode: 0
+2026-01-16 00:27:14,939 INFO    MainThread:127201 [wandb_run.py:_restore():2468] restore
+2026-01-16 00:27:14,939 INFO    MainThread:127201 [wandb_run.py:_restore():2474] restore done
+2026-01-16 00:27:16,287 INFO    MainThread:127201 [wandb_run.py:_footer_sync_info():3862] logging synced files

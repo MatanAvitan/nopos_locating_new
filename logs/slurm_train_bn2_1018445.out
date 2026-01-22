@@ -1,0 +1,117 @@
+Starting NoPE training (BatchNorm2) on OpenWebText at Mon Jan 12 03:11:44 PM IST 2026
+GPU: NVIDIA A100 80GB PCIe
+Python: /home/nlp/matan_avitan/.conda/envs/py312/bin/python
+Overriding config with config/train_nope_owt_bn2.py:
+# Training config for NoPE transformer with BatchNorm2 on OpenWebText
+# Tests hypothesis: Does BatchNorm preserve population positional statistics?
+#
+# Key features:
+# - No positional embeddings (NoPE mode)
+# - BatchNorm for second normalization (instead of LayerNorm)
+# - Xavier initialization for attention Q, K, V
+# - OpenWebText dataset (~9B tokens)
+# - Context length 2048 for testing long-range position encoding
+#
+# Hypothesis: LayerNorm normalizes per-sample, potentially destroying population
+# statistics that encode position. BatchNorm normalizes across the batch,
+# potentially preserving population-level mean/variance positional signals.
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_nope_owt_bn2.py
+
+# I/O
+out_dir = "out-nope-owt-bn2"
+eval_interval = 1000
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = False
+wandb_project = "nope-emergence"
+wandb_run_name = "nope-owt-bn2"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = (
+    1  # No accumulation - BatchNorm needs large batch per forward
+)
+batch_size = (
+    128  # Large batch for BatchNorm population statistics (128 * 2048 = 262K tokens)
+)
+# H200 has 140GB VRAM - should fit with 1-layer model
+block_size = 2048
+
+# Model architecture
+n_layer = 1
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE-specific settings
+use_positional_embedding = False
+norm_type = "layernorm"  # LN for first norm
+log_attention_stats = True
+skip_ln2 = False
+use_batchnorm_ln2 = True  # KEY: Use BatchNorm for ln_2
+
+# Optimizer
+learning_rate = 6e-4
+max_iters = 50000
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = True
+dtype = "bfloat16"
+seed = 42
+
+# Stability tracking
+track_stability = True
+stability_log_interval = 100
+
+tokens per iteration will be: 262,144
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           2048
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+num decayed parameter tensors: 5, with 45,711,360 parameters
+num non-decayed parameter tensors: 4, with 3,072 parameters
+using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: False
+  Dataset: openwebtext
+  Batch size: 128 x 1 = 128
+  Block size: 2048
+  Learning rate: 0.0006 -> 6e-05
+
+step 0: train loss 10.9104, val loss 10.9099, lr 3.00e-07
+Finished at Mon Jan 12 03:21:06 PM IST 2026
+Checkpoint saved to: out-nope-owt-bn2/

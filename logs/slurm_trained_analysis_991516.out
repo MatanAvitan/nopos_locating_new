@@ -1,0 +1,87 @@
+Starting Trained Model Direction vs Norm Analysis
+Job ID: 991516
+Node: hpc8h200-01
+GPU: 0
+Start time: Sun Jan 11 12:19:29 PM IST 2026
+======================================================================
+TRAINED MODEL DIRECTION VS NORM ANALYSIS
+======================================================================
+
+Device: cuda
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: LayerNorm (trained)
+Config: 1 layers, 12 heads, 768 dim
+Context: 256, Vocab: 50304
+============================================================
+
+1. NORM-POSITION CORRELATION
+Error loading LayerNorm (trained): all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 500 and the array at index 1 has size 128000
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: RMSNorm (trained)
+Config: 1 layers, 12 heads, 768 dim
+Context: 256, Vocab: 50304
+============================================================
+
+1. NORM-POSITION CORRELATION
+Error loading RMSNorm (trained): all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 500 and the array at index 1 has size 128000
+
+============================================================
+RANDOM MODEL (for comparison)
+============================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50257
+  Attention Stats:      False
+  Parameters:           45.69M
+============================================================
+
+
+============================================================
+Analyzing: Random Init
+Config: 1 layers, 12 heads, 768 dim
+Context: 256, Vocab: 50257
+============================================================
+
+1. NORM-POSITION CORRELATION
+Done!
+End time: Sun Jan 11 12:19:43 PM IST 2026

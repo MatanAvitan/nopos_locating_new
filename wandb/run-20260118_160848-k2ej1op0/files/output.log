@@ -1,0 +1,357 @@
+
+WandB initialized: nope-position-regression-metrics/metrics_nope-6layer-until-first-mlp
+Analyzing checkpoints:   0%|          | 0/20 [00:00<?, ?it/s]Traceback (most recent call last):
+
+--- Checkpoint 1000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:   5%|▌         | 1/20 [02:48<53:30, 168.95s/it]Traceback (most recent call last):
+
+--- Checkpoint 2000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  10%|█         | 2/20 [05:10<45:47, 152.65s/it]Traceback (most recent call last):
+
+--- Checkpoint 3000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  15%|█▌        | 3/20 [07:44<43:29, 153.49s/it]Traceback (most recent call last):
+
+--- Checkpoint 4000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  20%|██        | 4/20 [10:19<41:01, 153.82s/it]Traceback (most recent call last):
+
+--- Checkpoint 5000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  25%|██▌       | 5/20 [12:45<37:45, 151.03s/it]Traceback (most recent call last):
+
+--- Checkpoint 6000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  30%|███       | 6/20 [15:20<35:36, 152.64s/it]Traceback (most recent call last):
+
+--- Checkpoint 7000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  35%|███▌      | 7/20 [17:39<32:04, 148.02s/it]Traceback (most recent call last):
+
+--- Checkpoint 8000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  40%|████      | 8/20 [19:59<29:07, 145.63s/it]Traceback (most recent call last):
+
+--- Checkpoint 9000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  45%|████▌     | 9/20 [22:30<26:59, 147.23s/it]Traceback (most recent call last):
+
+--- Checkpoint 10000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  50%|█████     | 10/20 [25:14<25:22, 152.22s/it]Traceback (most recent call last):
+
+--- Checkpoint 11000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  55%|█████▌    | 11/20 [27:35<22:20, 148.98s/it]Traceback (most recent call last):
+
+--- Checkpoint 12000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  60%|██████    | 12/20 [29:57<19:35, 146.88s/it]Traceback (most recent call last):
+
+--- Checkpoint 13000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Error: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 603, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 358, in analyze_checkpoint
+    "basis_projections_post_attn": proj_attn.cpu().numpy(),
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+Analyzing checkpoints:  65%|██████▌   | 13/20 [32:21<17:00, 145.83s/it]
+
+--- Checkpoint 14000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================

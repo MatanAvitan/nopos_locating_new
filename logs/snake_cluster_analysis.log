@@ -1,0 +1,242 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 1kirsgry
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260115_192850-1kirsgry
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run snake_analysis_n100_c256
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-snake-clusters
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-snake-clusters/runs/1kirsgry
+======================================================================
+24-SNAKE CLUSTER ANALYSIS FOR NoPE TRANSFORMERS
+======================================================================
+  Sequences: 100
+  Context length: 256
+  Clusters: 24
+  WandB: True
+  Device: cuda
+
+WandB initialized. Project: nope-snake-clusters
+
+Loading OWT data...
+  Loaded 100 sequences of length 256
+
+======================================================================
+MODEL: NoPE + LayerNorm (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_random
+============================================================
+
+[1/4] Extracting activations...
+Extracting activations:   0%|          | 0/10 [00:00<?, ?it/s]Extracting activations:  10%|█         | 1/10 [00:00<00:01,  8.98it/s]Extracting activations: 100%|██████████| 10/10 [00:00<00:00, 48.98it/s]
+
+--- Layer: post_attn ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_random_post_attn.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_attn:
+      Clusters identified: 24
+      Coherence: 20.5 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: -1.198
+
+--- Layer: post_ln2 ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_random_post_ln2.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_ln2:
+      Clusters identified: 24
+      Coherence: 20.2 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: 0.198
+
+======================================================================
+MODEL: NoPE + LayerNorm (Trained)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_trained
+============================================================
+
+[1/4] Extracting activations...
+Extracting activations:   0%|          | 0/10 [00:00<?, ?it/s]Extracting activations: 100%|██████████| 10/10 [00:00<00:00, 117.28it/s]
+
+--- Layer: post_attn ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_trained_post_attn.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_attn:
+      Clusters identified: 24
+      Coherence: 20.5 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: -0.599
+
+--- Layer: post_ln2 ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_trained_post_ln2.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_ln2:
+      Clusters identified: 24
+      Coherence: 20.3 clusters/sequence
+      Dominant fraction: 0.12
+      Within-cluster probe R²: -0.112
+
+======================================================================
+MODEL: Baseline + PE (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: Baseline_PE_random
+============================================================
+
+[1/4] Extracting activations...
+Extracting activations:   0%|          | 0/10 [00:00<?, ?it/s]Extracting activations: 100%|██████████| 10/10 [00:00<00:00, 172.87it/s]
+wandb: updating run metadata
+wandb: uploading media/images/probes/Baseline_PE_random/post_ln2_23_4fb4b40858860e1c8f14.png; uploading wandb-summary.json
+wandb: uploading history steps 20-23, summary, console lines 168-214
+wandb: 🚀 View run snake_analysis_n100_c256 at: https://wandb.ai/matan_avitan/nope-snake-clusters/runs/1kirsgry
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-snake-clusters
+wandb: Synced 5 W&B file(s), 24 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260115_192850-1kirsgry/logs
+
+--- Layer: post_attn ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_Baseline_PE_random_post_attn.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_attn:
+      Clusters identified: 24
+      Coherence: 20.4 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: 0.897
+
+--- Layer: post_ln2 ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_Baseline_PE_random_post_ln2.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_ln2:
+      Clusters identified: 24
+      Coherence: 20.3 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: 0.895
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/snake_cluster_results.json
+
+======================================================================
+FINAL SUMMARY
+======================================================================
+
+NoPE_LN_random:
+  post_attn:
+    Clusters/sequence: 20.5
+    Dominant fraction: 0.11
+    Within-cluster R²: -1.198
+  post_ln2:
+    Clusters/sequence: 20.2
+    Dominant fraction: 0.11
+    Within-cluster R²: 0.198
+
+NoPE_LN_trained:
+  post_attn:
+    Clusters/sequence: 20.5
+    Dominant fraction: 0.11
+    Within-cluster R²: -0.599
+  post_ln2:
+    Clusters/sequence: 20.3
+    Dominant fraction: 0.12
+    Within-cluster R²: -0.112
+
+Baseline_PE_random:
+  post_attn:
+    Clusters/sequence: 20.4
+    Dominant fraction: 0.11
+    Within-cluster R²: 0.897
+  post_ln2:
+    Clusters/sequence: 20.3
+    Dominant fraction: 0.11
+    Within-cluster R²: 0.895
+
+WandB run finished.
+
+All plots saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots

@@ -1,0 +1,48 @@
+
+======================================================================
+AXIS ALIGNMENT EXPERIMENT - OpenWebText + Frozen Position Regression
+======================================================================
+Configuration:
+  n_samples: 500
+  seq_len: 128
+  Checkpoints: [500, 1000, 2000, 5000, 10000, 15000, 20000]
+  Device: cuda
+  Checkpoint dir: nanoGPT/out-posreg-6layer-until-mlp
+
+Loading OpenWebText validation sequences...
+Loaded OpenWebText val.bin: 4,434,606 tokens
+Counting unique tokens per position...
+Unique tokens at final position - min: 50, max: 106, mean: 88.4
+Analyzing checkpoints:   0%|          | 0/7 [00:05<?, ?it/s]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 745, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 703, in main
+    results = run_experiment(cfg)
+              ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 436, in run_experiment
+    step_results = analyze_checkpoint(model, tokens, unique_counts, cfg)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 358, in analyze_checkpoint
+    max_proj, mean_other = compute_projections(acts, tokens.cpu(), embedding_matrix)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 321, in compute_projections
+    dot_products = torch.matmul(acts, basis.T)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (128x3072 and 768x90)

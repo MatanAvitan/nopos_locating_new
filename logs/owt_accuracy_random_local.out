@@ -1,0 +1,225 @@
+======================================================================
+OWT SAMPLE-LEVEL POSITION PROBING - ACCURACY METRIC
+======================================================================
+
+Device: cuda
+Analyzing random init: True
+Analyzing trained: False
+
+######################################################################
+# Experiment: NoPE + LayerNorm
+######################################################################
+
+--- Random Initialization ---
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE + LayerNorm (random)
+Config: 1L, 12H, 768D, ctx=512
+============================================================
+  Processing sample 100/200...
+  Processing sample 200/200...
+
+Layer                  Full Acc    Dir Acc   Norm Acc     Random
+----------------------------------------------------------------
+  Training probes for embed...
+embed                    0.0297     0.0295     0.0310     0.0312
+  Training probes for post_ln1...
+post_ln1                 0.0289     0.0289     0.0299     0.0312
+  Training probes for post_attn...
+post_attn                0.1132     0.1107     0.3683     0.0312
+  Training probes for post_attn_residual...
+post_attn_residual       0.0769     0.0700     0.3106     0.0312
+  Training probes for post_ln2...
+post_ln2                 0.0709     0.0708     0.3066     0.0312
+  Training probes for post_mlp_residual...
+post_mlp_residual        0.0728     0.0777     0.0646     0.0312
+
+######################################################################
+# Experiment: NoPE + BatchNorm2
+######################################################################
+
+--- Random Initialization ---
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE + BatchNorm2 (random)
+Config: 1L, 12H, 768D, ctx=512
+============================================================
+  Processing sample 100/200...
+  Processing sample 200/200...
+
+Layer                  Full Acc    Dir Acc   Norm Acc     Random
+----------------------------------------------------------------
+  Training probes for embed...
+embed                    0.0303     0.0299     0.0294     0.0312
+  Training probes for post_ln1...
+post_ln1                 0.0306     0.0306     0.0310     0.0312
+  Training probes for post_attn...
+post_attn                0.1072     0.1120     0.3602     0.0312
+  Training probes for post_attn_residual...
+post_attn_residual       0.0750     0.0687     0.3059     0.0312
+  Training probes for post_ln2...
+post_ln2                 0.0747     0.0702     0.3079     0.0312
+  Training probes for post_mlp_residual...
+post_mlp_residual        0.0775     0.0706     0.3050     0.0312
+
+######################################################################
+# Experiment: NoPE + No LN2
+######################################################################
+
+--- Random Initialization ---
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE + No LN2 (random)
+Config: 1L, 12H, 768D, ctx=512
+============================================================
+  Processing sample 100/200...
+  Processing sample 200/200...
+
+Layer                  Full Acc    Dir Acc   Norm Acc     Random
+----------------------------------------------------------------
+  Training probes for embed...
+embed                    0.0306     0.0307     0.0312     0.0312
+  Training probes for post_ln1...
+post_ln1                 0.0322     0.0321     0.0309     0.0312
+  Training probes for post_attn...
+post_attn                0.1164     0.1126     0.3701     0.0312
+  Training probes for post_attn_residual...
+post_attn_residual       0.0755     0.0712     0.3076     0.0312
+  Training probes for post_ln2...
+post_ln2                 0.0753     0.0697     0.3107     0.0312
+  Training probes for post_mlp_residual...
+post_mlp_residual        0.0787     0.0711     0.3066     0.0312
+
+######################################################################
+# Experiment: Baseline + PE
+######################################################################
+
+--- Random Initialization ---
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: Baseline + PE (random)
+Config: 1L, 12H, 768D, ctx=512
+============================================================
+  Processing sample 100/200...
+  Processing sample 200/200...
+
+Layer                  Full Acc    Dir Acc   Norm Acc     Random
+----------------------------------------------------------------
+  Training probes for embed...
+embed                    0.9997     0.9998     0.0363     0.0312
+  Training probes for post_ln1...
+post_ln1                 0.9996     0.9996     0.0365     0.0312
+  Training probes for post_attn...
+post_attn                0.9759     0.9724     0.3851     0.0312
+  Training probes for post_attn_residual...
+post_attn_residual       0.9998     0.9999     0.2862     0.0312
+  Training probes for post_ln2...
+post_ln2                 0.9999     0.9999     0.2818     0.0312
+  Training probes for post_mlp_residual...
+post_mlp_residual        0.9905     0.9907     0.0675     0.0312
+
+======================================================================
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/owt_sample_level_probing/owt_sample_level_probing_accuracy_results.json
+======================================================================
+
+Generating figures...
+Saved figure: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_sample_level_accuracy_random.pdf
+Saved heatmap: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_sample_level_accuracy_heatmap_random.pdf
+
+==========================================================================================
+FINAL SUMMARY: Position Classification Accuracy by Layer
+(Positions binned into 32 groups)
+==========================================================================================
+Random baseline (chance): 0.0312 = 3.12%
+
+============================================================
+  RANDOM INITIALIZATION
+============================================================
+Architecture            Embedding     Post-LN1    Post-Attn Post-Attn+Res     Post-LN2 Post-MLP+Res
+--------------------------------------------------------------------------------------------------
+
+Full Accuracy:
+NoPE + LayerNorm            0.030        0.029        0.113        0.077        0.071        0.073
+NoPE + BatchNorm2           0.030        0.031        0.107        0.075        0.075        0.078
+NoPE + No LN2               0.031        0.032        0.116        0.076        0.075        0.079
+Baseline + PE               1.000        1.000        0.976        1.000        1.000        0.991
+
+Direction Accuracy:
+NoPE + LayerNorm            0.030        0.029        0.111        0.070        0.071        0.078
+NoPE + BatchNorm2           0.030        0.031        0.112        0.069        0.070        0.071
+NoPE + No LN2               0.031        0.032        0.113        0.071        0.070        0.071
+Baseline + PE               1.000        1.000        0.972        1.000        1.000        0.991
+
+Norm Accuracy:
+NoPE + LayerNorm            0.031        0.030        0.368        0.311        0.307        0.065
+NoPE + BatchNorm2           0.029        0.031        0.360        0.306        0.308        0.305
+NoPE + No LN2               0.031        0.031        0.370        0.308        0.311        0.307
+Baseline + PE               0.036        0.037        0.385        0.286        0.282        0.068

@@ -1,0 +1,51 @@
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 1057, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 995, in main
+    value_results = value_vector_corruption_experiment(model, tokens, cfg.batch_size)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 696, in value_vector_corruption_experiment
+    _ = model.run_with_hooks(
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/hook_points.py", line 455, in run_with_hooks
+    return hooked_model.forward(*model_args, **model_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/HookedTransformer.py", line 575, in forward
+    residual = block(
+               ^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/components/transformer_block.py", line 160, in forward
+    self.attn(
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/components/abstract_attention.py", line 196, in forward
+    q, k, v = self.calculate_qkv_matrices(query_input, key_input, value_input)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/components/abstract_attention.py", line 398, in calculate_qkv_matrices
+    v = self.hook_v(attn_fn(value_input, self.W_V, self.b_V))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1879, in _call_impl
+    return inner()
+           ^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1840, in inner
+    hook_result = hook(self, args, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/hook_points.py", line 109, in full_hook
+    return hook(module_output, hook=self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 665, in shuffle_values_hook
+    batch_size, seq_len, d_model = act.shape
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)

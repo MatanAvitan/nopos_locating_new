@@ -1,0 +1,46 @@
+/home/nlp/matan_avitan/.bashrc: line 9: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 10: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 11: bind: warning: line editing not enabled
+Extracting:   0%|          | 0/20 [00:00<?, ?it/s]Extracting:   5%|▌         | 1/20 [00:00<00:05,  3.27it/s]Extracting:  10%|█         | 2/20 [00:00<00:03,  4.75it/s]Extracting:  15%|█▌        | 3/20 [00:00<00:03,  5.50it/s]Extracting:  20%|██        | 4/20 [00:00<00:02,  5.97it/s]Extracting:  25%|██▌       | 5/20 [00:00<00:02,  6.24it/s]Extracting:  30%|███       | 6/20 [00:01<00:02,  6.41it/s]Extracting:  35%|███▌      | 7/20 [00:01<00:02,  6.46it/s]Extracting:  40%|████      | 8/20 [00:01<00:01,  6.56it/s]Extracting:  45%|████▌     | 9/20 [00:01<00:01,  6.65it/s]Extracting:  50%|█████     | 10/20 [00:01<00:01,  6.68it/s]Extracting:  55%|█████▌    | 11/20 [00:01<00:01,  6.70it/s]Extracting:  60%|██████    | 12/20 [00:01<00:01,  6.71it/s]Extracting:  65%|██████▌   | 13/20 [00:02<00:01,  6.71it/s]Extracting:  70%|███████   | 14/20 [00:02<00:00,  6.70it/s]Extracting:  75%|███████▌  | 15/20 [00:02<00:00,  6.70it/s]Extracting:  80%|████████  | 16/20 [00:02<00:00,  6.69it/s]Extracting:  85%|████████▌ | 17/20 [00:02<00:00,  6.59it/s]Extracting:  90%|█████████ | 18/20 [00:02<00:00,  6.43it/s]Extracting:  95%|█████████▌| 19/20 [00:02<00:00,  6.51it/s]Extracting: 100%|██████████| 20/20 [00:03<00:00,  6.50it/s]
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py:585: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py:586: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py:610: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py:611: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py:639: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py:640: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+

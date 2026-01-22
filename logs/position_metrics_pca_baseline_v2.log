@@ -1,0 +1,17 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run xdjbmzq3
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_182645-xdjbmzq3
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_k_nope-6layer-pca-baseline-v2
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/xdjbmzq3
+
+======================================================================
+Position Regression Metrics (Per-K) - nope-6layer-pca-baseline-v2
+======================================================================
+Checkpoint dir: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-posreg-6layer-until-mlp
+Found 20 checkpoints: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]
+
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Analyzing:   5%|▌         | 1/20 [00:15<04:47, 15.12s/it]Analyzing:  10%|█         | 2/20 [01:19<13:13, 44.11s/it]Analyzing:  15%|█▌        | 3/20 [02:28<15:39, 55.29s/it]Analyzing:  20%|██        | 4/20 [03:36<16:04, 60.27s/it]Analyzing:  25%|██▌       | 5/20 [04:21<13:43, 54.87s/it]Analyzing:  30%|███       | 6/20 [05:02<11:40, 50.07s/it]Analyzing:  35%|███▌      | 7/20 [05:44<10:16, 47.41s/it]

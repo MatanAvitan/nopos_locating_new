@@ -1,0 +1,12 @@
+{"time":"2026-01-15T17:45:41.009057827+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-15T17:45:41.55209544+02:00","level":"INFO","msg":"stream: created new stream","id":"mompotid"}
+{"time":"2026-01-15T17:45:41.552205726+02:00","level":"INFO","msg":"handler: started","stream_id":"mompotid"}
+{"time":"2026-01-15T17:45:41.553350764+02:00","level":"INFO","msg":"stream: started","id":"mompotid"}
+{"time":"2026-01-15T17:45:41.553380523+02:00","level":"INFO","msg":"writer: started","stream_id":"mompotid"}
+{"time":"2026-01-15T17:45:41.553387606+02:00","level":"INFO","msg":"sender: started","stream_id":"mompotid"}
+{"time":"2026-01-15T18:19:19.56053761+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-01-15T18:19:20.244701329+02:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-01-15T18:19:20.2505172+02:00","level":"INFO","msg":"stream: closing","id":"mompotid"}
+{"time":"2026-01-15T18:19:20.25054272+02:00","level":"INFO","msg":"handler: closed","stream_id":"mompotid"}
+{"time":"2026-01-15T18:19:20.25145266+02:00","level":"INFO","msg":"sender: closed","stream_id":"mompotid"}
+{"time":"2026-01-15T18:19:20.251480544+02:00","level":"INFO","msg":"stream: closed","id":"mompotid"}

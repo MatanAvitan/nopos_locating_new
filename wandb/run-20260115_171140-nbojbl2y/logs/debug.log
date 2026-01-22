@@ -1,0 +1,37 @@
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_setup.py:_flush():80] Current SDK version is 0.23.1
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_setup.py:_flush():80] Configure stats pid to 4126611
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/.config/wandb/settings
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/git/nopos_locating_new/wandb/settings
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_setup.py:_flush():80] Loading settings from environment variables
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_init.py:setup_run_log_directory():714] Logging user logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260115_171140-nbojbl2y/logs/debug.log
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_init.py:setup_run_log_directory():715] Logging internal logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260115_171140-nbojbl2y/logs/debug-internal.log
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_init.py:init():841] calling init triggers
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_init.py:init():846] wandb.init called with sweep_config: {}
+config: {'n_sequences': 1000, 'context_length': 512, 'n_clusters': 24, 'experiments': ['NoPE + LayerNorm', 'NoPE + BatchNorm2', 'NoPE + No LN2', 'Baseline + PE'], '_wandb': {}}
+2026-01-15 17:11:40,194 INFO    MainThread:4126611 [wandb_init.py:init():889] starting backend
+2026-01-15 17:11:41,036 INFO    MainThread:4126611 [wandb_init.py:init():892] sending inform_init request
+2026-01-15 17:11:41,085 INFO    MainThread:4126611 [wandb_init.py:init():900] backend started and connected
+2026-01-15 17:11:41,118 INFO    MainThread:4126611 [wandb_init.py:init():970] updated telemetry
+2026-01-15 17:11:41,133 INFO    MainThread:4126611 [wandb_init.py:init():994] communicating run to backend with 90.0 second timeout
+2026-01-15 17:11:42,120 INFO    MainThread:4126611 [wandb_init.py:init():1041] starting run threads in backend
+2026-01-15 17:11:42,527 INFO    MainThread:4126611 [wandb_run.py:_console_start():2521] atexit reg
+2026-01-15 17:11:42,527 INFO    MainThread:4126611 [wandb_run.py:_redirect():2369] redirect: wrap_raw
+2026-01-15 17:11:42,527 INFO    MainThread:4126611 [wandb_run.py:_redirect():2438] Wrapping output streams.
+2026-01-15 17:11:42,527 INFO    MainThread:4126611 [wandb_run.py:_redirect():2461] Redirects installed.
+2026-01-15 17:11:42,559 INFO    MainThread:4126611 [wandb_init.py:init():1081] run started, returning control to user process
+2026-01-15 17:15:33,373 ERROR   MainThread:4126611 [internal_api.py:execute():395] Error executing GraphQL.
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/internal/internal_api.py", line 391, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/lib/gql_request.py", line 71, in execute
+    request.raise_for_status()
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 502 Server Error: Bad Gateway for url: https://api.wandb.ai/graphql

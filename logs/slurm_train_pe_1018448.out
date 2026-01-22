@@ -1,0 +1,105 @@
+Starting BASELINE training (with PE) on OpenWebText at Mon Jan 12 03:14:48 PM IST 2026
+GPU: NVIDIA A100 80GB PCIe
+Python: /home/nlp/matan_avitan/.conda/envs/py312/bin/python
+Overriding config with config/train_baseline_owt_pe.py:
+# Training config for BASELINE transformer WITH positional embeddings on OpenWebText
+# Standard transformer baseline for comparison with NoPE variants
+#
+# Key features:
+# - WITH positional embeddings (standard transformer)
+# - WITH second LayerNorm (standard architecture)
+# - OpenWebText dataset (~9B tokens)
+# - Context length 2048 for fair comparison
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_baseline_owt_pe.py
+
+# I/O
+out_dir = "out-baseline-owt-pe"
+eval_interval = 1000  # Checkpoint every 1000 iters
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = False
+wandb_project = "nope-emergence"
+wandb_run_name = "baseline-owt-pe"
+
+# Data
+dataset = "openwebtext"  # Full OpenWebText (~9B tokens)
+gradient_accumulation_steps = 1  # No accumulation - use large batch directly
+batch_size = 128  # Large batch size for better gradient estimates
+block_size = 2048  # Long context for fair comparison
+
+# Model architecture
+n_layer = 1
+n_head = 12
+n_embd = 768
+dropout = 0.0  # No dropout for clean analysis
+bias = False  # Modern practice
+
+# BASELINE settings - WITH positional embeddings
+use_positional_embedding = True  # KEY: Standard positional embeddings
+norm_type = "layernorm"  # Standard LayerNorm
+log_attention_stats = True  # Log attention for comparison
+skip_ln2 = False  # Standard architecture with LN2
+
+# Optimizer
+learning_rate = 6e-4
+max_iters = 50000
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = True
+dtype = "bfloat16"
+
+# Reproducibility
+seed = 42
+
+tokens per iteration will be: 262,144
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           2048
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+num decayed parameter tensors: 6, with 47,284,224 parameters
+num non-decayed parameter tensors: 3, with 2,304 parameters
+using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: True
+  Dataset: openwebtext
+  Batch size: 128 x 1 = 128
+  Block size: 2048
+  Learning rate: 0.0006 -> 6e-05
+
+step 0: train loss 10.9511, val loss 10.9506, lr 3.00e-07
+Finished at Mon Jan 12 03:23:16 PM IST 2026
+Checkpoint saved to: out-baseline-owt-pe/

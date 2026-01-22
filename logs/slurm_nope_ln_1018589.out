@@ -1,0 +1,2008 @@
+Overriding config with config/train_nope_owt_ln.py:
+# Training config for NoPE transformer with LayerNorm on OpenWebText
+# Larger scale training for studying positional encoding on real data
+#
+# Key features:
+# - No positional embeddings (NoPE mode)
+# - LayerNorm normalization (standard centering + scaling)
+# - Xavier initialization for attention Q, K, V
+# - OpenWebText dataset (~9B tokens)
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_nope_owt_ln.py
+
+# I/O
+out_dir = "out-nope-owt-ln"
+eval_interval = 500  # Checkpoint every 500 iters for resumability
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-emergence"
+wandb_run_name = "nope-owt-ln"
+
+# Data
+dataset = "openwebtext"  # Full OpenWebText (~9B tokens)
+gradient_accumulation_steps = 4  # Accumulate to effective batch 256
+batch_size = 64  # Reduced batch for memory (64 * 4 * 512 = 131K tokens)
+block_size = 512  # Context length
+
+# Model architecture - same as Shakespeare experiments
+n_layer = 1
+n_head = 12
+n_embd = 768
+dropout = 0.0  # No dropout for clean analysis
+bias = False  # Modern practice
+
+# NoPE-specific settings
+use_positional_embedding = False  # KEY: No positional embeddings
+norm_type = "layernorm"  # Standard LayerNorm
+log_attention_stats = True  # Log attention entropy/uniformity during training
+skip_ln2 = False  # Standard NoPE with LN2
+
+# Optimizer
+learning_rate = 6e-4  # Slightly lower LR for larger dataset
+max_iters = 50000  # More iters for larger dataset
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = False  # Use torch.compile for speed
+dtype = "bfloat16"
+
+# Reproducibility
+seed = 42
+
+tokens per iteration will be: 131,072
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+num decayed parameter tensors: 5, with 45,711,360 parameters
+num non-decayed parameter tensors: 3, with 2,304 parameters
+using fused AdamW: True
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: False
+  Dataset: openwebtext
+  Batch size: 64 x 4 = 256
+  Block size: 512
+  Learning rate: 0.0006 -> 6e-05
+
+step 0: train loss 10.9598, val loss 10.9610, lr 3.00e-07
+  [Stability] grad_norm: 0.0000
+iter 0: loss 10.9665, time 8028.39ms, mfu -100.00%
+iter 50: loss 9.5833, time 153.77ms, mfu 76.22%
+  [Stability] grad_norm: 0.0000
+iter 100: loss 8.3451, time 154.95ms, mfu 76.17%
+iter 150: loss 7.4134, time 154.27ms, mfu 76.15%
+  [Stability] grad_norm: 0.0000
+iter 200: loss 6.7965, time 155.29ms, mfu 76.08%
+iter 250: loss 6.6674, time 156.18ms, mfu 75.98%
+  [Stability] grad_norm: 0.0000
+iter 300: loss 6.3393, time 155.50ms, mfu 75.92%
+iter 350: loss 6.3083, time 154.97ms, mfu 75.89%
+  [Stability] grad_norm: 0.0000
+iter 400: loss 6.1819, time 157.72ms, mfu 75.73%
+iter 450: loss 6.0732, time 156.76ms, mfu 75.63%
+step 500: train loss 5.9727, val loss 5.9847, lr 1.50e-04
+    layer_0_entropy: mean=4.8343
+    layer_0_uniformity: ['0.968', '0.965', '0.978', '0.969', '0.963', '0.971', '0.970', '0.968', '0.972', '0.975', '0.969', '0.956']
+saving checkpoint to out-nope-owt-ln/ckpt_00500.pt
+  [Stability] grad_norm: 0.0000
+iter 500: loss 6.0489, time 9023.23ms, mfu 68.20%
+iter 550: loss 5.9115, time 155.59ms, mfu 68.91%
+  [Stability] grad_norm: 0.0000
+iter 600: loss 5.8943, time 159.01ms, mfu 69.39%
+iter 650: loss 5.7592, time 155.43ms, mfu 69.99%
+  [Stability] grad_norm: 0.0000
+iter 700: loss 5.7011, time 155.31ms, mfu 70.54%
+iter 750: loss 5.6095, time 155.36ms, mfu 71.03%
+  [Stability] grad_norm: 0.0000
+iter 800: loss 5.7165, time 160.96ms, mfu 71.21%
+iter 850: loss 5.5248, time 156.82ms, mfu 71.56%
+  [Stability] grad_norm: 0.0000
+iter 900: loss 5.6461, time 162.24ms, mfu 71.63%
+iter 950: loss 5.4537, time 155.48ms, mfu 72.01%
+step 1000: train loss 5.4837, val loss 5.4853, lr 3.00e-04
+    layer_0_entropy: mean=4.8229
+    layer_0_uniformity: ['0.969', '0.957', '0.966', '0.960', '0.961', '0.973', '0.977', '0.967', '0.973', '0.979', '0.974', '0.951']
+saving checkpoint to out-nope-owt-ln/ckpt_01000.pt
+  [Stability] grad_norm: 0.0000
+iter 1000: loss 5.4671, time 8990.32ms, mfu 64.94%
+iter 1050: loss 5.4470, time 154.74ms, mfu 66.02%
+  [Stability] grad_norm: 0.0000
+iter 1100: loss 5.4670, time 164.96ms, mfu 66.52%
+iter 1150: loss 5.2790, time 156.17ms, mfu 67.37%
+  [Stability] grad_norm: 0.0000
+iter 1200: loss 5.3554, time 155.64ms, mfu 68.17%
+iter 1250: loss 5.1816, time 157.38ms, mfu 68.80%
+  [Stability] grad_norm: 0.0000
+iter 1300: loss 5.2524, time 155.66ms, mfu 69.45%
+iter 1350: loss 5.3382, time 154.88ms, mfu 70.07%
+  [Stability] grad_norm: 0.0000
+iter 1400: loss 5.3189, time 155.55ms, mfu 70.60%
+iter 1450: loss 5.4041, time 154.87ms, mfu 71.11%
+step 1500: train loss 5.2721, val loss 5.2627, lr 4.50e-04
+    layer_0_entropy: mean=4.8728
+    layer_0_uniformity: ['0.981', '0.966', '0.966', '0.965', '0.973', '0.978', '0.978', '0.974', '0.985', '0.984', '0.981', '0.958']
+saving checkpoint to out-nope-owt-ln/ckpt_01500.pt
+  [Stability] grad_norm: 0.0000
+iter 1500: loss 5.2969, time 10169.67ms, mfu 64.11%
+iter 1550: loss 5.2180, time 154.98ms, mfu 65.26%
+  [Stability] grad_norm: 0.0000
+iter 1600: loss 5.2143, time 156.27ms, mfu 66.24%
+iter 1650: loss 5.2088, time 155.40ms, mfu 67.16%
+  [Stability] grad_norm: 0.0000
+iter 1700: loss 5.1777, time 155.95ms, mfu 67.96%
+iter 1750: loss 5.2086, time 157.76ms, mfu 68.59%
+  [Stability] grad_norm: 0.0000
+iter 1800: loss 5.1759, time 155.45ms, mfu 69.27%
+iter 1850: loss 5.1153, time 154.87ms, mfu 69.91%
+  [Stability] grad_norm: 0.0000
+iter 1900: loss 5.0964, time 156.17ms, mfu 70.43%
+iter 1950: loss 5.0925, time 156.45ms, mfu 70.88%
+step 2000: train loss 5.1437, val loss 5.1436, lr 6.00e-04
+    layer_0_entropy: mean=4.9128
+    layer_0_uniformity: ['0.983', '0.977', '0.976', '0.972', '0.975', '0.982', '0.981', '0.973', '0.986', '0.982', '0.984', '0.972']
+saving checkpoint to out-nope-owt-ln/ckpt_02000.pt
+  [Stability] grad_norm: 0.0000
+iter 2000: loss 5.1231, time 9037.80ms, mfu 63.92%
+iter 2050: loss 5.0072, time 156.67ms, mfu 65.01%
+  [Stability] grad_norm: 0.0000
+iter 2100: loss 5.1906, time 156.31ms, mfu 66.00%
+iter 2150: loss 5.1584, time 159.41ms, mfu 66.76%
+  [Stability] grad_norm: 0.0000
+iter 2200: loss 5.1196, time 155.86ms, mfu 67.60%
+iter 2250: loss 5.0063, time 156.19ms, mfu 68.35%
+  [Stability] grad_norm: 0.0000
+iter 2300: loss 5.0736, time 158.20ms, mfu 68.92%
+iter 2350: loss 4.9784, time 157.33ms, mfu 69.48%
+  [Stability] grad_norm: 0.0000
+iter 2400: loss 5.0739, time 156.14ms, mfu 70.04%
+iter 2450: loss 5.0221, time 155.39ms, mfu 70.58%
+step 2500: train loss 5.0709, val loss 5.0716, lr 6.00e-04
+    layer_0_entropy: mean=4.9379
+    layer_0_uniformity: ['0.983', '0.973', '0.976', '0.973', '0.981', '0.982', '0.978', '0.970', '0.991', '0.985', '0.984', '0.978']
+saving checkpoint to out-nope-owt-ln/ckpt_02500.pt
+  [Stability] grad_norm: 0.0000
+iter 2500: loss 5.0025, time 9041.65ms, mfu 63.65%
+iter 2550: loss 5.0865, time 154.91ms, mfu 64.85%
+  [Stability] grad_norm: 0.0000
+iter 2600: loss 5.0582, time 156.14ms, mfu 65.87%
+iter 2650: loss 5.1017, time 157.86ms, mfu 66.71%
+  [Stability] grad_norm: 0.0000
+iter 2700: loss 5.0776, time 156.96ms, mfu 67.51%
+iter 2750: loss 5.0643, time 161.74ms, mfu 68.00%
+  [Stability] grad_norm: 0.0000
+iter 2800: loss 5.1149, time 155.75ms, mfu 68.73%
+iter 2850: loss 5.0518, time 156.85ms, mfu 69.33%
+  [Stability] grad_norm: 0.0000
+iter 2900: loss 5.0343, time 158.57ms, mfu 69.79%
+iter 2950: loss 5.0186, time 157.98ms, mfu 70.23%
+step 3000: train loss 5.0206, val loss 5.0211, lr 5.99e-04
+    layer_0_entropy: mean=4.9464
+    layer_0_uniformity: ['0.984', '0.978', '0.977', '0.981', '0.981', '0.981', '0.979', '0.969', '0.993', '0.978', '0.988', '0.982']
+saving checkpoint to out-nope-owt-ln/ckpt_03000.pt
+  [Stability] grad_norm: 0.0000
+iter 3000: loss 4.9534, time 8944.79ms, mfu 63.34%
+iter 3050: loss 5.0755, time 160.69ms, mfu 64.30%
+  [Stability] grad_norm: 0.0000
+iter 3100: loss 4.9730, time 155.39ms, mfu 65.41%
+iter 3150: loss 5.0300, time 157.73ms, mfu 66.30%
+  [Stability] grad_norm: 0.0000
+iter 3200: loss 5.0118, time 156.58ms, mfu 67.16%
+iter 3250: loss 5.0003, time 156.04ms, mfu 67.95%
+  [Stability] grad_norm: 0.0000
+iter 3300: loss 5.1326, time 158.83ms, mfu 68.54%
+iter 3350: loss 4.9909, time 154.81ms, mfu 69.25%
+  [Stability] grad_norm: 0.0000
+iter 3400: loss 5.0149, time 155.39ms, mfu 69.87%
+iter 3450: loss 5.0685, time 160.83ms, mfu 70.17%
+step 3500: train loss 4.9909, val loss 4.9881, lr 5.99e-04
+    layer_0_entropy: mean=4.9546
+    layer_0_uniformity: ['0.984', '0.975', '0.975', '0.983', '0.982', '0.983', '0.978', '0.963', '0.995', '0.978', '0.982', '0.982']
+saving checkpoint to out-nope-owt-ln/ckpt_03500.pt
+  [Stability] grad_norm: 0.0000
+iter 3500: loss 4.9861, time 9021.66ms, mfu 63.28%
+iter 3550: loss 4.9460, time 156.56ms, mfu 64.44%
+  [Stability] grad_norm: 0.0000
+iter 3600: loss 4.9288, time 158.96ms, mfu 65.37%
+iter 3650: loss 4.9789, time 159.51ms, mfu 66.18%
+  [Stability] grad_norm: 0.0000
+iter 3700: loss 4.9564, time 156.34ms, mfu 67.06%
+iter 3750: loss 5.0404, time 157.11ms, mfu 67.82%
+  [Stability] grad_norm: 0.0000
+iter 3800: loss 4.9260, time 155.60ms, mfu 68.57%
+iter 3850: loss 4.9634, time 155.21ms, mfu 69.26%
+  [Stability] grad_norm: 0.0000
+iter 3900: loss 4.9517, time 155.45ms, mfu 69.88%
+iter 3950: loss 4.9904, time 157.53ms, mfu 70.33%
+step 4000: train loss 4.9563, val loss 4.9582, lr 5.98e-04
+    layer_0_entropy: mean=4.9582
+    layer_0_uniformity: ['0.984', '0.981', '0.981', '0.985', '0.984', '0.982', '0.975', '0.969', '0.996', '0.973', '0.987', '0.982']
+saving checkpoint to out-nope-owt-ln/ckpt_04000.pt
+  [Stability] grad_norm: 0.0000
+iter 4000: loss 4.9540, time 8999.55ms, mfu 63.43%
+iter 4050: loss 4.9172, time 155.71ms, mfu 64.61%
+  [Stability] grad_norm: 0.0000
+iter 4100: loss 4.9719, time 155.29ms, mfu 65.70%
+iter 4150: loss 5.0058, time 158.82ms, mfu 66.51%
+  [Stability] grad_norm: 0.0000
+iter 4200: loss 5.0023, time 156.11ms, mfu 67.36%
+iter 4250: loss 4.8651, time 158.20ms, mfu 68.04%
+  [Stability] grad_norm: 0.0000
+iter 4300: loss 4.9606, time 157.10ms, mfu 68.69%
+iter 4350: loss 4.9314, time 159.63ms, mfu 69.17%
+  [Stability] grad_norm: 0.0000
+iter 4400: loss 4.9032, time 155.40ms, mfu 69.79%
+iter 4450: loss 4.9204, time 155.34ms, mfu 70.36%
+step 4500: train loss 4.9341, val loss 4.9336, lr 5.96e-04
+    layer_0_entropy: mean=4.9504
+    layer_0_uniformity: ['0.983', '0.982', '0.980', '0.984', '0.986', '0.983', '0.974', '0.965', '0.996', '0.971', '0.986', '0.978']
+saving checkpoint to out-nope-owt-ln/ckpt_04500.pt
+  [Stability] grad_norm: 0.0000
+iter 4500: loss 4.9893, time 8973.87ms, mfu 63.45%
+iter 4550: loss 5.0142, time 157.22ms, mfu 64.56%
+  [Stability] grad_norm: 0.0000
+iter 4600: loss 5.0687, time 157.16ms, mfu 65.56%
+iter 4650: loss 4.9826, time 155.99ms, mfu 66.52%
+  [Stability] grad_norm: 0.0000
+iter 4700: loss 5.0050, time 155.54ms, mfu 67.41%
+iter 4750: loss 4.8999, time 157.06ms, mfu 68.13%
+  [Stability] grad_norm: 0.0000
+iter 4800: loss 4.9531, time 156.30ms, mfu 68.81%
+iter 4850: loss 4.9111, time 157.11ms, mfu 69.39%
+  [Stability] grad_norm: 0.0000
+iter 4900: loss 4.9730, time 163.45ms, mfu 69.62%
+iter 4950: loss 4.8994, time 155.31ms, mfu 70.21%
+step 5000: train loss 4.9138, val loss 4.9233, lr 5.95e-04
+    layer_0_entropy: mean=4.9426
+    layer_0_uniformity: ['0.981', '0.980', '0.983', '0.985', '0.987', '0.981', '0.972', '0.963', '0.997', '0.967', '0.984', '0.980']
+saving checkpoint to out-nope-owt-ln/ckpt_05000.pt
+  [Stability] grad_norm: 0.0000
+iter 5000: loss 4.9081, time 9096.27ms, mfu 63.32%
+iter 5050: loss 4.8424, time 154.99ms, mfu 64.55%
+  [Stability] grad_norm: 0.0000
+iter 5100: loss 4.9556, time 155.34ms, mfu 65.64%
+iter 5150: loss 4.8495, time 163.53ms, mfu 66.24%
+  [Stability] grad_norm: 0.0000
+iter 5200: loss 4.9951, time 156.82ms, mfu 67.09%
+iter 5250: loss 4.8991, time 156.62ms, mfu 67.87%
+  [Stability] grad_norm: 0.0000
+iter 5300: loss 5.0498, time 156.09ms, mfu 68.59%
+iter 5350: loss 5.0088, time 158.22ms, mfu 69.14%
+  [Stability] grad_norm: 0.0000
+iter 5400: loss 4.9360, time 156.69ms, mfu 69.70%
+iter 5450: loss 4.9080, time 161.57ms, mfu 69.99%
+step 5500: train loss 4.9062, val loss 4.8971, lr 5.93e-04
+    layer_0_entropy: mean=4.9472
+    layer_0_uniformity: ['0.980', '0.980', '0.981', '0.988', '0.987', '0.982', '0.973', '0.958', '0.996', '0.966', '0.984', '0.978']
+saving checkpoint to out-nope-owt-ln/ckpt_05500.pt
+  [Stability] grad_norm: 0.0000
+iter 5500: loss 4.9292, time 9006.95ms, mfu 63.12%
+iter 5550: loss 4.9208, time 157.45ms, mfu 64.25%
+  [Stability] grad_norm: 0.0000
+iter 5600: loss 4.8985, time 155.34ms, mfu 65.37%
+iter 5650: loss 4.8238, time 159.26ms, mfu 66.19%
+  [Stability] grad_norm: 0.0000
+iter 5700: loss 4.8492, time 160.88ms, mfu 66.86%
+iter 5750: loss 4.8478, time 158.45ms, mfu 67.57%
+  [Stability] grad_norm: 0.0000
+iter 5800: loss 4.8613, time 156.94ms, mfu 68.28%
+iter 5850: loss 4.8382, time 151.64ms, mfu 69.18%
+  [Stability] grad_norm: 0.0000
+iter 5900: loss 4.8981, time 157.62ms, mfu 69.70%
+iter 5950: loss 4.9289, time 157.35ms, mfu 70.18%
+step 6000: train loss 4.8890, val loss 4.8877, lr 5.91e-04
+    layer_0_entropy: mean=4.9393
+    layer_0_uniformity: ['0.983', '0.981', '0.978', '0.984', '0.984', '0.982', '0.974', '0.950', '0.996', '0.963', '0.982', '0.977']
+saving checkpoint to out-nope-owt-ln/ckpt_06000.pt
+  [Stability] grad_norm: 0.0000
+iter 6000: loss 4.9244, time 9057.10ms, mfu 63.29%
+iter 6050: loss 4.8844, time 155.04ms, mfu 64.52%
+  [Stability] grad_norm: 0.0000
+iter 6100: loss 4.9874, time 155.46ms, mfu 65.61%
+iter 6150: loss 4.9588, time 155.95ms, mfu 66.56%
+  [Stability] grad_norm: 0.0000
+iter 6200: loss 4.8016, time 155.92ms, mfu 67.43%
+iter 6250: loss 4.9028, time 155.29ms, mfu 68.23%
+  [Stability] grad_norm: 0.0000
+iter 6300: loss 4.9148, time 155.62ms, mfu 68.94%
+iter 6350: loss 4.8691, time 157.62ms, mfu 69.48%
+  [Stability] grad_norm: 0.0000
+iter 6400: loss 4.8555, time 160.43ms, mfu 69.84%
+iter 6450: loss 4.8804, time 158.09ms, mfu 70.27%
+step 6500: train loss 4.8755, val loss 4.8671, lr 5.88e-04
+    layer_0_entropy: mean=4.9358
+    layer_0_uniformity: ['0.982', '0.978', '0.979', '0.985', '0.985', '0.984', '0.971', '0.957', '0.997', '0.960', '0.983', '0.977']
+saving checkpoint to out-nope-owt-ln/ckpt_06500.pt
+  [Stability] grad_norm: 0.0000
+iter 6500: loss 4.8212, time 9007.85ms, mfu 63.37%
+iter 6550: loss 4.8874, time 160.61ms, mfu 64.33%
+  [Stability] grad_norm: 0.0000
+iter 6600: loss 4.8147, time 158.89ms, mfu 65.28%
+iter 6650: loss 4.9518, time 159.61ms, mfu 66.09%
+  [Stability] grad_norm: 0.0000
+iter 6700: loss 4.9152, time 158.90ms, mfu 66.86%
+iter 6750: loss 4.8430, time 155.05ms, mfu 67.73%
+  [Stability] grad_norm: 0.0000
+iter 6800: loss 5.0185, time 160.35ms, mfu 68.27%
+iter 6850: loss 4.8648, time 157.44ms, mfu 68.89%
+  [Stability] grad_norm: 0.0000
+iter 6900: loss 4.9544, time 155.88ms, mfu 69.52%
+iter 6950: loss 4.8839, time 154.91ms, mfu 70.13%
+step 7000: train loss 4.8625, val loss 4.8642, lr 5.86e-04
+    layer_0_entropy: mean=4.9343
+    layer_0_uniformity: ['0.980', '0.981', '0.980', '0.989', '0.987', '0.984', '0.969', '0.949', '0.997', '0.961', '0.983', '0.978']
+saving checkpoint to out-nope-owt-ln/ckpt_07000.pt
+  [Stability] grad_norm: 0.0000
+iter 7000: loss 4.8348, time 8960.45ms, mfu 63.25%
+iter 7050: loss 4.8457, time 159.63ms, mfu 64.27%
+  [Stability] grad_norm: 0.0000
+iter 7100: loss 4.8968, time 160.42ms, mfu 65.15%
+iter 7150: loss 4.8583, time 154.64ms, mfu 66.21%
+  [Stability] grad_norm: 0.0000
+iter 7200: loss 4.9535, time 155.42ms, mfu 67.13%
+iter 7250: loss 4.9365, time 155.41ms, mfu 67.96%
+  [Stability] grad_norm: 0.0000
+iter 7300: loss 4.8385, time 156.53ms, mfu 68.65%
+iter 7350: loss 4.8322, time 154.78ms, mfu 69.36%
+  [Stability] grad_norm: 0.0000
+iter 7400: loss 4.9001, time 158.16ms, mfu 69.83%
+iter 7450: loss 4.8897, time 155.35ms, mfu 70.40%
+step 7500: train loss 4.8578, val loss 4.8569, lr 5.83e-04
+    layer_0_entropy: mean=4.9326
+    layer_0_uniformity: ['0.980', '0.978', '0.979', '0.985', '0.986', '0.982', '0.973', '0.954', '0.995', '0.955', '0.983', '0.975']
+saving checkpoint to out-nope-owt-ln/ckpt_07500.pt
+  [Stability] grad_norm: 0.0000
+iter 7500: loss 4.8433, time 8967.50ms, mfu 63.49%
+iter 7550: loss 4.8510, time 156.58ms, mfu 64.62%
+  [Stability] grad_norm: 0.0000
+iter 7600: loss 4.8084, time 156.48ms, mfu 65.65%
+iter 7650: loss 4.8279, time 157.28ms, mfu 66.54%
+  [Stability] grad_norm: 0.0000
+iter 7700: loss 4.8161, time 156.24ms, mfu 67.39%
+iter 7750: loss 4.8341, time 155.25ms, mfu 68.20%
+  [Stability] grad_norm: 0.0000
+iter 7800: loss 4.8083, time 157.79ms, mfu 68.81%
+iter 7850: loss 4.8662, time 154.73ms, mfu 69.50%
+  [Stability] grad_norm: 0.0000
+iter 7900: loss 4.7944, time 156.97ms, mfu 70.02%
+iter 7950: loss 4.8774, time 157.96ms, mfu 70.44%
+step 8000: train loss 4.8498, val loss 4.8487, lr 5.79e-04
+    layer_0_entropy: mean=4.9324
+    layer_0_uniformity: ['0.979', '0.980', '0.981', '0.986', '0.986', '0.981', '0.967', '0.950', '0.997', '0.953', '0.982', '0.976']
+saving checkpoint to out-nope-owt-ln/ckpt_08000.pt
+  [Stability] grad_norm: 0.0000
+iter 8000: loss 4.8600, time 8965.54ms, mfu 63.52%
+iter 8050: loss 4.8315, time 155.91ms, mfu 64.69%
+  [Stability] grad_norm: 0.0000
+iter 8100: loss 4.8662, time 156.19ms, mfu 65.72%
+iter 8150: loss 4.8646, time 157.46ms, mfu 66.60%
+  [Stability] grad_norm: 0.0000
+iter 8200: loss 4.7990, time 155.43ms, mfu 67.48%
+iter 8250: loss 4.8702, time 154.87ms, mfu 68.30%
+  [Stability] grad_norm: 0.0000
+iter 8300: loss 4.8099, time 156.20ms, mfu 68.97%
+iter 8350: loss 4.8362, time 156.51ms, mfu 69.56%
+  [Stability] grad_norm: 0.0000
+iter 8400: loss 4.7821, time 158.43ms, mfu 70.00%
+iter 8450: loss 4.8979, time 156.54ms, mfu 70.49%
+step 8500: train loss 4.8414, val loss 4.8476, lr 5.76e-04
+    layer_0_entropy: mean=4.9325
+    layer_0_uniformity: ['0.979', '0.976', '0.982', '0.989', '0.986', '0.984', '0.969', '0.957', '0.997', '0.950', '0.984', '0.972']
+saving checkpoint to out-nope-owt-ln/ckpt_08500.pt
+  [Stability] grad_norm: 0.0000
+iter 8500: loss 4.8454, time 8982.85ms, mfu 63.57%
+iter 8550: loss 4.8955, time 154.71ms, mfu 64.79%
+  [Stability] grad_norm: 0.0000
+iter 8600: loss 4.7944, time 161.84ms, mfu 65.56%
+iter 8650: loss 4.9272, time 155.07ms, mfu 66.56%
+  [Stability] grad_norm: 0.0000
+iter 8700: loss 4.7831, time 157.39ms, mfu 67.35%
+iter 8750: loss 4.7758, time 154.91ms, mfu 68.18%
+  [Stability] grad_norm: 0.0000
+iter 8800: loss 4.8798, time 155.38ms, mfu 68.91%
+iter 8850: loss 4.7452, time 155.02ms, mfu 69.58%
+  [Stability] grad_norm: 0.0000
+iter 8900: loss 4.7799, time 155.88ms, mfu 70.14%
+iter 8950: loss 4.7800, time 156.74ms, mfu 70.60%
+step 9000: train loss 4.8350, val loss 4.8326, lr 5.72e-04
+    layer_0_entropy: mean=4.9299
+    layer_0_uniformity: ['0.976', '0.979', '0.982', '0.987', '0.986', '0.983', '0.966', '0.951', '0.997', '0.954', '0.981', '0.975']
+saving checkpoint to out-nope-owt-ln/ckpt_09000.pt
+  [Stability] grad_norm: 0.0000
+iter 9000: loss 4.8013, time 9021.63ms, mfu 63.67%
+iter 9050: loss 4.8584, time 158.28ms, mfu 64.71%
+  [Stability] grad_norm: 0.0000
+iter 9100: loss 4.8100, time 156.28ms, mfu 65.74%
+iter 9150: loss 4.8680, time 156.75ms, mfu 66.64%
+  [Stability] grad_norm: 0.0000
+iter 9200: loss 4.8283, time 157.58ms, mfu 67.42%
+iter 9250: loss 4.7265, time 155.26ms, mfu 68.22%
+  [Stability] grad_norm: 0.0000
+iter 9300: loss 4.7603, time 156.47ms, mfu 68.89%
+iter 9350: loss 4.7604, time 159.68ms, mfu 69.34%
+  [Stability] grad_norm: 0.0000
+iter 9400: loss 4.8147, time 158.20ms, mfu 69.82%
+iter 9450: loss 4.8188, time 156.38ms, mfu 70.33%
+step 9500: train loss 4.8307, val loss 4.8304, lr 5.68e-04
+    layer_0_entropy: mean=4.9237
+    layer_0_uniformity: ['0.979', '0.977', '0.979', '0.988', '0.987', '0.984', '0.968', '0.953', '0.997', '0.951', '0.983', '0.975']
+saving checkpoint to out-nope-owt-ln/ckpt_09500.pt
+  [Stability] grad_norm: 0.0000
+iter 9500: loss 4.7736, time 9014.53ms, mfu 63.43%
+iter 9550: loss 4.7135, time 156.44ms, mfu 64.58%
+  [Stability] grad_norm: 0.0000
+iter 9600: loss 4.7553, time 159.01ms, mfu 65.49%
+iter 9650: loss 4.8533, time 155.87ms, mfu 66.46%
+  [Stability] grad_norm: 0.0000
+iter 9700: loss 4.8004, time 159.76ms, mfu 67.15%
+iter 9750: loss 4.7019, time 161.59ms, mfu 67.69%
+  [Stability] grad_norm: 0.0000
+iter 9800: loss 4.8616, time 155.30ms, mfu 68.47%
+iter 9850: loss 4.7789, time 157.73ms, mfu 69.05%
+  [Stability] grad_norm: 0.0000
+iter 9900: loss 4.6659, time 157.10ms, mfu 69.61%
+iter 9950: loss 4.7543, time 154.79ms, mfu 70.22%
+step 10000: train loss 4.8209, val loss 4.8251, lr 5.64e-04
+    layer_0_entropy: mean=4.9221
+    layer_0_uniformity: ['0.977', '0.977', '0.980', '0.987', '0.988', '0.983', '0.965', '0.945', '0.997', '0.946', '0.979', '0.974']
+saving checkpoint to out-nope-owt-ln/ckpt_10000.pt
+  [Stability] grad_norm: 0.0000
+iter 10000: loss 4.8268, time 8957.23ms, mfu 63.33%
+iter 10050: loss 4.8627, time 158.76ms, mfu 64.38%
+  [Stability] grad_norm: 0.0000
+iter 10100: loss 4.8270, time 155.58ms, mfu 65.47%
+iter 10150: loss 4.7652, time 154.79ms, mfu 66.50%
+  [Stability] grad_norm: 0.0000
+iter 10200: loss 4.8523, time 160.84ms, mfu 67.14%
+iter 10250: loss 4.7730, time 155.79ms, mfu 67.95%
+  [Stability] grad_norm: 0.0000
+iter 10300: loss 4.8260, time 155.03ms, mfu 68.71%
+iter 10350: loss 4.8638, time 154.91ms, mfu 69.41%
+  [Stability] grad_norm: 0.0000
+iter 10400: loss 4.7759, time 158.15ms, mfu 69.88%
+iter 10450: loss 4.8496, time 155.67ms, mfu 70.42%
+step 10500: train loss 4.8165, val loss 4.8234, lr 5.59e-04
+    layer_0_entropy: mean=4.9247
+    layer_0_uniformity: ['0.975', '0.981', '0.984', '0.987', '0.988', '0.985', '0.964', '0.953', '0.997', '0.951', '0.981', '0.975']
+saving checkpoint to out-nope-owt-ln/ckpt_10500.pt
+  [Stability] grad_norm: 0.0000
+iter 10500: loss 4.8342, time 9026.11ms, mfu 63.51%
+iter 10550: loss 4.8845, time 154.96ms, mfu 64.72%
+  [Stability] grad_norm: 0.0000
+iter 10600: loss 4.7653, time 156.88ms, mfu 65.72%
+iter 10650: loss 4.8228, time 154.90ms, mfu 66.71%
+  [Stability] grad_norm: 0.0000
+iter 10700: loss 4.8942, time 156.11ms, mfu 67.55%
+iter 10750: loss 4.7640, time 155.93ms, mfu 68.31%
+  [Stability] grad_norm: 0.0000
+iter 10800: loss 4.8586, time 156.74ms, mfu 68.96%
+iter 10850: loss 4.8273, time 155.82ms, mfu 69.59%
+  [Stability] grad_norm: 0.0000
+iter 10900: loss 4.7601, time 155.43ms, mfu 70.17%
+iter 10950: loss 4.7846, time 156.28ms, mfu 70.65%
+step 11000: train loss 4.8207, val loss 4.8171, lr 5.54e-04
+    layer_0_entropy: mean=4.9141
+    layer_0_uniformity: ['0.979', '0.978', '0.983', '0.988', '0.987', '0.985', '0.967', '0.948', '0.995', '0.943', '0.980', '0.971']
+saving checkpoint to out-nope-owt-ln/ckpt_11000.pt
+  [Stability] grad_norm: 0.0000
+iter 11000: loss 4.7854, time 8999.46ms, mfu 63.72%
+iter 11050: loss 4.8546, time 156.31ms, mfu 64.84%
+  [Stability] grad_norm: 0.0000
+iter 11100: loss 4.8252, time 155.36ms, mfu 65.90%
+iter 11150: loss 4.8368, time 154.99ms, mfu 66.87%
+  [Stability] grad_norm: 0.0000
+iter 11200: loss 4.8460, time 157.66ms, mfu 67.62%
+iter 11250: loss 4.8773, time 155.40ms, mfu 68.40%
+  [Stability] grad_norm: 0.0000
+iter 11300: loss 4.7076, time 156.81ms, mfu 69.04%
+iter 11350: loss 4.8601, time 160.96ms, mfu 69.41%
+  [Stability] grad_norm: 0.0000
+iter 11400: loss 4.7597, time 155.62ms, mfu 70.01%
+iter 11450: loss 4.7918, time 157.52ms, mfu 70.45%
+step 11500: train loss 4.8092, val loss 4.8136, lr 5.49e-04
+    layer_0_entropy: mean=4.9191
+    layer_0_uniformity: ['0.977', '0.980', '0.979', '0.988', '0.988', '0.986', '0.965', '0.953', '0.997', '0.944', '0.980', '0.971']
+saving checkpoint to out-nope-owt-ln/ckpt_11500.pt
+  [Stability] grad_norm: 0.0000
+iter 11500: loss 4.8400, time 9038.56ms, mfu 63.53%
+iter 11550: loss 4.8565, time 160.45ms, mfu 64.48%
+  [Stability] grad_norm: 0.0000
+iter 11600: loss 4.8226, time 156.06ms, mfu 65.54%
+iter 11650: loss 4.8077, time 157.55ms, mfu 66.43%
+  [Stability] grad_norm: 0.0000
+iter 11700: loss 4.8160, time 157.43ms, mfu 67.23%
+iter 11750: loss 4.7957, time 157.03ms, mfu 67.97%
+  [Stability] grad_norm: 0.0000
+iter 11800: loss 4.8222, time 155.65ms, mfu 68.71%
+iter 11850: loss 4.8329, time 155.41ms, mfu 69.38%
+  [Stability] grad_norm: 0.0000
+iter 11900: loss 4.8228, time 162.51ms, mfu 69.65%
+iter 11950: loss 4.8226, time 164.52ms, mfu 69.81%
+step 12000: train loss 4.8054, val loss 4.8041, lr 5.44e-04
+    layer_0_entropy: mean=4.9130
+    layer_0_uniformity: ['0.974', '0.980', '0.981', '0.987', '0.985', '0.984', '0.964', '0.944', '0.997', '0.941', '0.980', '0.971']
+saving checkpoint to out-nope-owt-ln/ckpt_12000.pt
+  [Stability] grad_norm: 0.0000
+iter 12000: loss 4.7469, time 8983.74ms, mfu 62.96%
+iter 12050: loss 4.8701, time 155.37ms, mfu 64.21%
+  [Stability] grad_norm: 0.0000
+iter 12100: loss 4.8423, time 158.15ms, mfu 65.20%
+iter 12150: loss 4.8254, time 164.12ms, mfu 65.82%
+  [Stability] grad_norm: 0.0000
+iter 12200: loss 4.7677, time 155.52ms, mfu 66.78%
+iter 12250: loss 4.7435, time 154.91ms, mfu 67.66%
+  [Stability] grad_norm: 0.0000
+iter 12300: loss 4.7507, time 156.07ms, mfu 68.41%
+iter 12350: loss 4.8339, time 154.99ms, mfu 69.13%
+  [Stability] grad_norm: 0.0000
+iter 12400: loss 4.7940, time 155.94ms, mfu 69.73%
+iter 12450: loss 4.8483, time 156.91ms, mfu 70.23%
+step 12500: train loss 4.7996, val loss 4.8038, lr 5.39e-04
+    layer_0_entropy: mean=4.9146
+    layer_0_uniformity: ['0.975', '0.981', '0.980', '0.988', '0.988', '0.983', '0.961', '0.947', '0.997', '0.938', '0.977', '0.969']
+saving checkpoint to out-nope-owt-ln/ckpt_12500.pt
+  [Stability] grad_norm: 0.0000
+iter 12500: loss 4.7914, time 9048.12ms, mfu 63.34%
+iter 12550: loss 4.7224, time 155.08ms, mfu 64.56%
+  [Stability] grad_norm: 0.0000
+iter 12600: loss 4.8654, time 155.56ms, mfu 65.64%
+iter 12650: loss 4.8186, time 156.76ms, mfu 66.55%
+  [Stability] grad_norm: 0.0000
+iter 12700: loss 4.8666, time 159.91ms, mfu 67.23%
+iter 12750: loss 4.7521, time 156.33ms, mfu 68.00%
+  [Stability] grad_norm: 0.0000
+iter 12800: loss 4.9128, time 155.52ms, mfu 68.74%
+iter 12850: loss 4.8041, time 154.99ms, mfu 69.43%
+  [Stability] grad_norm: 0.0000
+iter 12900: loss 4.7896, time 156.03ms, mfu 70.00%
+iter 12950: loss 4.8225, time 154.81ms, mfu 70.57%
+step 13000: train loss 4.7974, val loss 4.7957, lr 5.33e-04
+    layer_0_entropy: mean=4.9070
+    layer_0_uniformity: ['0.977', '0.981', '0.980', '0.987', '0.987', '0.985', '0.963', '0.944', '0.997', '0.934', '0.979', '0.969']
+saving checkpoint to out-nope-owt-ln/ckpt_13000.pt
+  [Stability] grad_norm: 0.0000
+iter 13000: loss 4.8037, time 8984.19ms, mfu 63.64%
+iter 13050: loss 4.7990, time 163.11ms, mfu 64.46%
+  [Stability] grad_norm: 0.0000
+iter 13100: loss 4.7914, time 155.29ms, mfu 65.56%
+iter 13150: loss 4.7696, time 155.73ms, mfu 66.53%
+  [Stability] grad_norm: 0.0000
+iter 13200: loss 4.7854, time 155.72ms, mfu 67.41%
+iter 13250: loss 4.8727, time 155.65ms, mfu 68.20%
+  [Stability] grad_norm: 0.0000
+iter 13300: loss 4.8118, time 156.62ms, mfu 68.86%
+iter 13350: loss 4.8329, time 155.34ms, mfu 69.52%
+  [Stability] grad_norm: 0.0000
+iter 13400: loss 4.8268, time 160.55ms, mfu 69.87%
+iter 13450: loss 4.8032, time 158.06ms, mfu 70.30%
+step 13500: train loss 4.7924, val loss 4.7983, lr 5.27e-04
+    layer_0_entropy: mean=4.9055
+    layer_0_uniformity: ['0.973', '0.981', '0.983', '0.984', '0.989', '0.983', '0.965', '0.944', '0.996', '0.941', '0.979', '0.967']
+saving checkpoint to out-nope-owt-ln/ckpt_13500.pt
+  [Stability] grad_norm: 0.0000
+iter 13500: loss 4.7941, time 8909.75ms, mfu 63.40%
+iter 13550: loss 4.8232, time 160.10ms, mfu 64.38%
+  [Stability] grad_norm: 0.0000
+iter 13600: loss 4.7315, time 155.86ms, mfu 65.46%
+iter 13650: loss 4.7529, time 155.61ms, mfu 66.45%
+  [Stability] grad_norm: 0.0000
+iter 13700: loss 4.7367, time 161.76ms, mfu 67.05%
+iter 13750: loss 4.7857, time 157.56ms, mfu 67.78%
+  [Stability] grad_norm: 0.0000
+iter 13800: loss 4.8050, time 157.00ms, mfu 68.47%
+iter 13850: loss 4.7679, time 156.57ms, mfu 69.11%
+  [Stability] grad_norm: 0.0000
+iter 13900: loss 4.7392, time 160.65ms, mfu 69.49%
+iter 13950: loss 4.7927, time 155.58ms, mfu 70.08%
+step 14000: train loss 4.7976, val loss 4.7934, lr 5.21e-04
+    layer_0_entropy: mean=4.9058
+    layer_0_uniformity: ['0.975', '0.981', '0.979', '0.988', '0.987', '0.986', '0.961', '0.942', '0.996', '0.936', '0.979', '0.969']
+saving checkpoint to out-nope-owt-ln/ckpt_14000.pt
+  [Stability] grad_norm: 0.0000
+iter 14000: loss 4.7617, time 8918.59ms, mfu 63.20%
+iter 14050: loss 4.7484, time 154.79ms, mfu 64.45%
+  [Stability] grad_norm: 0.0000
+iter 14100: loss 4.8500, time 157.59ms, mfu 65.45%
+iter 14150: loss 4.7242, time 159.21ms, mfu 66.26%
+  [Stability] grad_norm: 0.0000
+iter 14200: loss 4.7499, time 155.93ms, mfu 67.15%
+iter 14250: loss 4.7883, time 155.81ms, mfu 67.96%
+  [Stability] grad_norm: 0.0000
+iter 14300: loss 4.8282, time 155.75ms, mfu 68.69%
+iter 14350: loss 4.7751, time 156.58ms, mfu 69.31%
+  [Stability] grad_norm: 0.0000
+iter 14400: loss 4.7876, time 155.81ms, mfu 69.90%
+iter 14450: loss 4.7634, time 156.73ms, mfu 70.39%
+step 14500: train loss 4.7904, val loss 4.7935, lr 5.15e-04
+    layer_0_entropy: mean=4.9094
+    layer_0_uniformity: ['0.976', '0.981', '0.980', '0.990', '0.988', '0.987', '0.961', '0.951', '0.998', '0.939', '0.982', '0.970']
+saving checkpoint to out-nope-owt-ln/ckpt_14500.pt
+  [Stability] grad_norm: 0.0000
+iter 14500: loss 4.8231, time 9012.62ms, mfu 63.48%
+iter 14550: loss 4.8457, time 155.08ms, mfu 64.69%
+  [Stability] grad_norm: 0.0000
+iter 14600: loss 4.8473, time 156.96ms, mfu 65.69%
+iter 14650: loss 4.7887, time 160.74ms, mfu 66.41%
+  [Stability] grad_norm: 0.0000
+iter 14700: loss 4.7920, time 162.78ms, mfu 66.97%
+iter 14750: loss 4.7408, time 154.92ms, mfu 67.84%
+  [Stability] grad_norm: 0.0000
+iter 14800: loss 4.7835, time 158.22ms, mfu 68.46%
+iter 14850: loss 4.7730, time 157.84ms, mfu 69.04%
+  [Stability] grad_norm: 0.0000
+iter 14900: loss 4.8059, time 159.92ms, mfu 69.47%
+iter 14950: loss 4.7384, time 154.99ms, mfu 70.08%
+step 15000: train loss 4.7794, val loss 4.7856, lr 5.08e-04
+    layer_0_entropy: mean=4.9056
+    layer_0_uniformity: ['0.972', '0.978', '0.978', '0.983', '0.986', '0.984', '0.964', '0.939', '0.997', '0.929', '0.977', '0.971']
+saving checkpoint to out-nope-owt-ln/ckpt_15000.pt
+  [Stability] grad_norm: 0.0000
+iter 15000: loss 4.7974, time 9036.18ms, mfu 63.20%
+iter 15050: loss 4.7729, time 156.05ms, mfu 64.39%
+  [Stability] grad_norm: 0.0000
+iter 15100: loss 4.7721, time 161.63ms, mfu 65.21%
+iter 15150: loss 4.8613, time 154.74ms, mfu 66.26%
+  [Stability] grad_norm: 0.0000
+iter 15200: loss 4.7489, time 155.82ms, mfu 67.16%
+iter 15250: loss 4.7792, time 155.94ms, mfu 67.96%
+  [Stability] grad_norm: 0.0000
+iter 15300: loss 4.7727, time 155.47ms, mfu 68.70%
+iter 15350: loss 4.7781, time 155.57ms, mfu 69.36%
+  [Stability] grad_norm: 0.0000
+iter 15400: loss 4.8398, time 161.55ms, mfu 69.68%
+iter 15450: loss 4.7350, time 156.54ms, mfu 70.20%
+step 15500: train loss 4.7741, val loss 4.7839, lr 5.01e-04
+    layer_0_entropy: mean=4.9001
+    layer_0_uniformity: ['0.977', '0.980', '0.980', '0.986', '0.987', '0.985', '0.962', '0.940', '0.998', '0.938', '0.976', '0.973']
+saving checkpoint to out-nope-owt-ln/ckpt_15500.pt
+  [Stability] grad_norm: 0.0000
+iter 15500: loss 4.7138, time 9039.18ms, mfu 63.31%
+iter 15550: loss 4.7902, time 155.18ms, mfu 64.53%
+  [Stability] grad_norm: 0.0000
+iter 15600: loss 4.8369, time 155.61ms, mfu 65.61%
+iter 15650: loss 4.7782, time 164.78ms, mfu 66.16%
+  [Stability] grad_norm: 0.0000
+iter 15700: loss 4.7791, time 156.14ms, mfu 67.06%
+iter 15750: loss 4.8170, time 154.81ms, mfu 67.92%
+  [Stability] grad_norm: 0.0000
+iter 15800: loss 4.7255, time 155.41ms, mfu 68.67%
+iter 15850: loss 4.7108, time 159.09ms, mfu 69.17%
+  [Stability] grad_norm: 0.0000
+iter 15900: loss 4.7549, time 155.40ms, mfu 69.80%
+iter 15950: loss 4.7681, time 154.67ms, mfu 70.39%
+step 16000: train loss 4.7810, val loss 4.7743, lr 4.94e-04
+    layer_0_entropy: mean=4.8997
+    layer_0_uniformity: ['0.973', '0.983', '0.980', '0.986', '0.989', '0.986', '0.961', '0.940', '0.997', '0.925', '0.979', '0.965']
+saving checkpoint to out-nope-owt-ln/ckpt_16000.pt
+  [Stability] grad_norm: 0.0000
+iter 16000: loss 4.8017, time 9006.46ms, mfu 63.49%
+iter 16050: loss 4.7852, time 159.88ms, mfu 64.47%
+  [Stability] grad_norm: 0.0000
+iter 16100: loss 4.7488, time 156.85ms, mfu 65.49%
+iter 16150: loss 4.8340, time 154.56ms, mfu 66.53%
+  [Stability] grad_norm: 0.0000
+iter 16200: loss 4.7649, time 156.17ms, mfu 67.38%
+iter 16250: loss 4.7729, time 155.19ms, mfu 68.19%
+  [Stability] grad_norm: 0.0000
+iter 16300: loss 4.7340, time 155.99ms, mfu 68.89%
+iter 16350: loss 4.7421, time 155.52ms, mfu 69.54%
+  [Stability] grad_norm: 0.0000
+iter 16400: loss 4.7606, time 159.74ms, mfu 69.92%
+iter 16450: loss 4.8727, time 157.38ms, mfu 70.38%
+step 16500: train loss 4.7799, val loss 4.7729, lr 4.87e-04
+    layer_0_entropy: mean=4.8934
+    layer_0_uniformity: ['0.971', '0.981', '0.980', '0.986', '0.986', '0.987', '0.960', '0.948', '0.997', '0.929', '0.975', '0.970']
+saving checkpoint to out-nope-owt-ln/ckpt_16500.pt
+  [Stability] grad_norm: 0.0000
+iter 16500: loss 4.8323, time 9015.60ms, mfu 63.47%
+iter 16550: loss 4.8204, time 155.20ms, mfu 64.67%
+  [Stability] grad_norm: 0.0000
+iter 16600: loss 4.7410, time 156.68ms, mfu 65.69%
+iter 16650: loss 4.7029, time 157.16ms, mfu 66.58%
+  [Stability] grad_norm: 0.0000
+iter 16700: loss 4.7196, time 158.21ms, mfu 67.33%
+iter 16750: loss 4.6995, time 160.63ms, mfu 67.89%
+  [Stability] grad_norm: 0.0000
+iter 16800: loss 4.8298, time 155.95ms, mfu 68.62%
+iter 16850: loss 4.7974, time 158.14ms, mfu 69.17%
+  [Stability] grad_norm: 0.0000
+iter 16900: loss 4.7103, time 157.84ms, mfu 69.68%
+iter 16950: loss 4.7743, time 154.95ms, mfu 70.27%
+step 17000: train loss 4.7749, val loss 4.7761, lr 4.80e-04
+    layer_0_entropy: mean=4.8954
+    layer_0_uniformity: ['0.973', '0.980', '0.979', '0.985', '0.988', '0.983', '0.960', '0.946', '0.996', '0.930', '0.976', '0.966']
+saving checkpoint to out-nope-owt-ln/ckpt_17000.pt
+  [Stability] grad_norm: 0.0000
+iter 17000: loss 4.7830, time 9443.61ms, mfu 63.37%
+iter 17050: loss 4.7920, time 165.79ms, mfu 64.10%
+  [Stability] grad_norm: 0.0000
+iter 17100: loss 4.7866, time 156.39ms, mfu 65.19%
+iter 17150: loss 4.7928, time 158.84ms, mfu 66.05%
+  [Stability] grad_norm: 0.0000
+iter 17200: loss 4.8102, time 158.55ms, mfu 66.84%
+iter 17250: loss 4.8460, time 159.18ms, mfu 67.52%
+  [Stability] grad_norm: 0.0000
+iter 17300: loss 4.7091, time 156.30ms, mfu 68.26%
+iter 17350: loss 4.7603, time 155.43ms, mfu 68.98%
+  [Stability] grad_norm: 0.0000
+iter 17400: loss 4.7175, time 157.86ms, mfu 69.50%
+iter 17450: loss 4.8009, time 158.24ms, mfu 69.96%
+step 17500: train loss 4.7690, val loss 4.7674, lr 4.73e-04
+    layer_0_entropy: mean=4.8937
+    layer_0_uniformity: ['0.973', '0.981', '0.982', '0.986', '0.986', '0.986', '0.960', '0.945', '0.996', '0.928', '0.976', '0.964']
+saving checkpoint to out-nope-owt-ln/ckpt_17500.pt
+  [Stability] grad_norm: 0.0000
+iter 17500: loss 4.7236, time 9772.15ms, mfu 63.09%
+iter 17550: loss 4.8371, time 155.07ms, mfu 64.34%
+  [Stability] grad_norm: 0.0000
+iter 17600: loss 4.7427, time 155.44ms, mfu 65.44%
+iter 17650: loss 4.8498, time 154.73ms, mfu 66.47%
+  [Stability] grad_norm: 0.0000
+iter 17700: loss 4.7500, time 159.33ms, mfu 67.18%
+iter 17750: loss 4.8374, time 156.90ms, mfu 67.93%
+  [Stability] grad_norm: 0.0000
+iter 17800: loss 4.7207, time 155.47ms, mfu 68.68%
+iter 17850: loss 4.8018, time 154.58ms, mfu 69.39%
+  [Stability] grad_norm: 0.0000
+iter 17900: loss 4.7001, time 155.37ms, mfu 70.00%
+iter 17950: loss 4.7518, time 155.01ms, mfu 70.56%
+step 18000: train loss 4.7650, val loss 4.7730, lr 4.65e-04
+    layer_0_entropy: mean=4.8875
+    layer_0_uniformity: ['0.976', '0.983', '0.984', '0.987', '0.988', '0.988', '0.956', '0.947', '0.995', '0.928', '0.977', '0.966']
+saving checkpoint to out-nope-owt-ln/ckpt_18000.pt
+  [Stability] grad_norm: 0.0000
+iter 18000: loss 4.8222, time 9091.29ms, mfu 63.63%
+iter 18050: loss 4.8055, time 159.84ms, mfu 64.60%
+  [Stability] grad_norm: 0.0000
+iter 18100: loss 4.7277, time 157.20ms, mfu 65.60%
+iter 18150: loss 4.7587, time 156.83ms, mfu 66.51%
+  [Stability] grad_norm: 0.0000
+iter 18200: loss 4.6887, time 157.75ms, mfu 67.29%
+iter 18250: loss 4.8593, time 156.32ms, mfu 68.06%
+  [Stability] grad_norm: 0.0000
+iter 18300: loss 4.7885, time 156.89ms, mfu 68.72%
+iter 18350: loss 4.7340, time 154.93ms, mfu 69.42%
+  [Stability] grad_norm: 0.0000
+iter 18400: loss 4.7917, time 155.73ms, mfu 70.00%
+iter 18450: loss 4.7263, time 155.68ms, mfu 70.53%
+step 18500: train loss 4.7631, val loss 4.7661, lr 4.57e-04
+    layer_0_entropy: mean=4.8933
+    layer_0_uniformity: ['0.973', '0.979', '0.978', '0.986', '0.987', '0.986', '0.960', '0.942', '0.997', '0.934', '0.975', '0.967']
+saving checkpoint to out-nope-owt-ln/ckpt_18500.pt
+  [Stability] grad_norm: 0.0000
+iter 18500: loss 4.8150, time 9024.72ms, mfu 63.61%
+iter 18550: loss 4.7120, time 156.80ms, mfu 64.72%
+  [Stability] grad_norm: 0.0000
+iter 18600: loss 4.6067, time 158.62ms, mfu 65.64%
+iter 18650: loss 4.8022, time 153.92ms, mfu 66.69%
+  [Stability] grad_norm: 0.0000
+iter 18700: loss 4.6723, time 156.69ms, mfu 67.50%
+iter 18750: loss 4.7157, time 155.48ms, mfu 68.29%
+  [Stability] grad_norm: 0.0000
+iter 18800: loss 4.8058, time 156.62ms, mfu 68.94%
+iter 18850: loss 4.7664, time 158.33ms, mfu 69.45%
+  [Stability] grad_norm: 0.0000
+iter 18900: loss 4.7524, time 155.43ms, mfu 70.05%
+iter 18950: loss 4.6843, time 154.82ms, mfu 70.61%
+step 19000: train loss 4.7582, val loss 4.7641, lr 4.49e-04
+    layer_0_entropy: mean=4.8874
+    layer_0_uniformity: ['0.973', '0.981', '0.980', '0.986', '0.986', '0.984', '0.961', '0.941', '0.995', '0.927', '0.976', '0.963']
+saving checkpoint to out-nope-owt-ln/ckpt_19000.pt
+  [Stability] grad_norm: 0.0000
+iter 19000: loss 4.6927, time 9088.11ms, mfu 63.68%
+iter 19050: loss 4.7811, time 154.71ms, mfu 64.89%
+  [Stability] grad_norm: 0.0000
+iter 19100: loss 4.6684, time 156.38ms, mfu 65.90%
+iter 19150: loss 4.8231, time 156.69ms, mfu 66.79%
+  [Stability] grad_norm: 0.0000
+iter 19200: loss 4.7485, time 155.30ms, mfu 67.66%
+iter 19250: loss 4.7036, time 154.97ms, mfu 68.45%
+  [Stability] grad_norm: 0.0000
+iter 19300: loss 4.6893, time 157.04ms, mfu 69.07%
+iter 19350: loss 4.6718, time 156.30ms, mfu 69.66%
+  [Stability] grad_norm: 0.0000
+iter 19400: loss 4.7045, time 155.49ms, mfu 70.23%
+iter 19450: loss 4.8000, time 156.03ms, mfu 70.72%
+step 19500: train loss 4.7608, val loss 4.7580, lr 4.41e-04
+    layer_0_entropy: mean=4.8876
+    layer_0_uniformity: ['0.973', '0.979', '0.983', '0.987', '0.985', '0.986', '0.960', '0.936', '0.994', '0.927', '0.976', '0.968']
+saving checkpoint to out-nope-owt-ln/ckpt_19500.pt
+  [Stability] grad_norm: 0.0000
+iter 19500: loss 4.6839, time 8983.13ms, mfu 63.78%
+iter 19550: loss 4.8356, time 164.68ms, mfu 64.52%
+  [Stability] grad_norm: 0.0000
+iter 19600: loss 4.8045, time 156.04ms, mfu 65.58%
+iter 19650: loss 4.6405, time 154.87ms, mfu 66.59%
+  [Stability] grad_norm: 0.0000
+iter 19700: loss 4.7212, time 157.96ms, mfu 67.35%
+iter 19750: loss 4.6930, time 155.97ms, mfu 68.13%
+  [Stability] grad_norm: 0.0000
+iter 19800: loss 4.8435, time 155.76ms, mfu 68.84%
+iter 19850: loss 4.6997, time 155.39ms, mfu 69.50%
+  [Stability] grad_norm: 0.0000
+iter 19900: loss 4.7257, time 157.57ms, mfu 69.99%
+iter 19950: loss 4.7238, time 154.87ms, mfu 70.56%
+step 20000: train loss 4.7562, val loss 4.7519, lr 4.33e-04
+    layer_0_entropy: mean=4.8855
+    layer_0_uniformity: ['0.974', '0.980', '0.981', '0.985', '0.988', '0.987', '0.962', '0.944', '0.998', '0.929', '0.976', '0.964']
+saving checkpoint to out-nope-owt-ln/ckpt_20000.pt
+  [Stability] grad_norm: 0.0000
+iter 20000: loss 4.8127, time 8989.99ms, mfu 63.63%
+iter 20050: loss 4.7537, time 155.76ms, mfu 64.80%
+  [Stability] grad_norm: 0.0000
+iter 20100: loss 4.7819, time 156.82ms, mfu 65.79%
+iter 20150: loss 4.7847, time 155.77ms, mfu 66.74%
+  [Stability] grad_norm: 0.0000
+iter 20200: loss 4.7061, time 155.47ms, mfu 67.60%
+iter 20250: loss 4.7643, time 155.52ms, mfu 68.38%
+  [Stability] grad_norm: 0.0000
+iter 20300: loss 4.7699, time 162.30ms, mfu 68.76%
+iter 20350: loss 4.7262, time 154.86ms, mfu 69.45%
+  [Stability] grad_norm: 0.0000
+iter 20400: loss 4.8507, time 156.08ms, mfu 70.02%
+iter 20450: loss 4.7266, time 154.92ms, mfu 70.58%
+step 20500: train loss 4.7547, val loss 4.7586, lr 4.25e-04
+    layer_0_entropy: mean=4.8793
+    layer_0_uniformity: ['0.968', '0.981', '0.980', '0.985', '0.987', '0.984', '0.961', '0.941', '0.987', '0.920', '0.975', '0.965']
+saving checkpoint to out-nope-owt-ln/ckpt_20500.pt
+  [Stability] grad_norm: 0.0000
+iter 20500: loss 4.7460, time 9103.81ms, mfu 63.65%
+iter 20550: loss 4.7391, time 156.09ms, mfu 64.80%
+  [Stability] grad_norm: 0.0000
+iter 20600: loss 4.7554, time 158.53ms, mfu 65.71%
+iter 20650: loss 4.8153, time 156.42ms, mfu 66.63%
+  [Stability] grad_norm: 0.0000
+iter 20700: loss 4.8044, time 155.65ms, mfu 67.50%
+iter 20750: loss 4.7843, time 153.63ms, mfu 68.38%
+  [Stability] grad_norm: 0.0000
+iter 20800: loss 4.7912, time 156.03ms, mfu 69.05%
+iter 20850: loss 4.8258, time 158.57ms, mfu 69.54%
+  [Stability] grad_norm: 0.0000
+iter 20900: loss 4.7630, time 155.77ms, mfu 70.11%
+iter 20950: loss 4.7318, time 157.74ms, mfu 70.53%
+step 21000: train loss 4.7481, val loss 4.7539, lr 4.17e-04
+    layer_0_entropy: mean=4.8781
+    layer_0_uniformity: ['0.972', '0.980', '0.980', '0.988', '0.986', '0.985', '0.957', '0.935', '0.994', '0.925', '0.973', '0.963']
+saving checkpoint to out-nope-owt-ln/ckpt_21000.pt
+  [Stability] grad_norm: 0.0000
+iter 21000: loss 4.7920, time 9047.56ms, mfu 63.61%
+iter 21050: loss 4.6741, time 154.89ms, mfu 64.81%
+  [Stability] grad_norm: 0.0000
+iter 21100: loss 4.6982, time 156.02ms, mfu 65.84%
+iter 21150: loss 4.8664, time 155.45ms, mfu 66.80%
+  [Stability] grad_norm: 0.0000
+iter 21200: loss 4.7135, time 156.63ms, mfu 67.60%
+iter 21250: loss 4.7539, time 157.53ms, mfu 68.28%
+  [Stability] grad_norm: 0.0000
+iter 21300: loss 4.7672, time 156.80ms, mfu 68.93%
+iter 21350: loss 4.7060, time 157.89ms, mfu 69.46%
+  [Stability] grad_norm: 0.0000
+iter 21400: loss 4.8284, time 157.50ms, mfu 69.96%
+iter 21450: loss 4.7605, time 161.07ms, mfu 70.24%
+step 21500: train loss 4.7573, val loss 4.7540, lr 4.08e-04
+    layer_0_entropy: mean=4.8714
+    layer_0_uniformity: ['0.972', '0.979', '0.979', '0.987', '0.986', '0.985', '0.959', '0.933', '0.997', '0.928', '0.974', '0.970']
+saving checkpoint to out-nope-owt-ln/ckpt_21500.pt
+  [Stability] grad_norm: 0.0000
+iter 21500: loss 4.6303, time 8989.70ms, mfu 63.34%
+iter 21550: loss 4.8098, time 156.48ms, mfu 64.50%
+  [Stability] grad_norm: 0.0000
+iter 21600: loss 4.7838, time 156.80ms, mfu 65.53%
+iter 21650: loss 4.7316, time 155.24ms, mfu 66.52%
+  [Stability] grad_norm: 0.0000
+iter 21700: loss 4.7167, time 156.66ms, mfu 67.35%
+iter 21750: loss 4.7371, time 155.59ms, mfu 68.15%
+  [Stability] grad_norm: 0.0000
+iter 21800: loss 4.7579, time 161.07ms, mfu 68.61%
+iter 21850: loss 4.7885, time 157.72ms, mfu 69.18%
+  [Stability] grad_norm: 0.0000
+iter 21900: loss 4.7141, time 155.80ms, mfu 69.79%
+iter 21950: loss 4.8258, time 159.52ms, mfu 70.16%
+step 22000: train loss 4.7458, val loss 4.7457, lr 4.00e-04
+    layer_0_entropy: mean=4.8724
+    layer_0_uniformity: ['0.969', '0.981', '0.982', '0.986', '0.987', '0.985', '0.957', '0.934', '0.996', '0.919', '0.976', '0.968']
+saving checkpoint to out-nope-owt-ln/ckpt_22000.pt
+  [Stability] grad_norm: 0.0000
+iter 22000: loss 4.6812, time 9003.67ms, mfu 63.27%
+iter 22050: loss 4.7549, time 159.45ms, mfu 64.29%
+  [Stability] grad_norm: 0.0000
+iter 22100: loss 4.7292, time 155.41ms, mfu 65.41%
+iter 22150: loss 4.7358, time 154.89ms, mfu 66.43%
+  [Stability] grad_norm: 0.0000
+iter 22200: loss 4.6650, time 159.94ms, mfu 67.12%
+iter 22250: loss 4.8169, time 155.65ms, mfu 67.94%
+  [Stability] grad_norm: 0.0000
+iter 22300: loss 4.6695, time 162.85ms, mfu 68.34%
+iter 22350: loss 4.7177, time 157.82ms, mfu 68.93%
+  [Stability] grad_norm: 0.0000
+iter 22400: loss 4.8007, time 155.64ms, mfu 69.57%
+iter 22450: loss 4.8258, time 156.18ms, mfu 70.12%
+step 22500: train loss 4.7398, val loss 4.7410, lr 3.91e-04
+    layer_0_entropy: mean=4.8641
+    layer_0_uniformity: ['0.971', '0.977', '0.979', '0.984', '0.986', '0.985', '0.958', '0.932', '0.997', '0.919', '0.976', '0.963']
+saving checkpoint to out-nope-owt-ln/ckpt_22500.pt
+  [Stability] grad_norm: 0.0000
+iter 22500: loss 4.6980, time 9006.77ms, mfu 63.24%
+iter 22550: loss 4.8401, time 155.37ms, mfu 64.46%
+  [Stability] grad_norm: 0.0000
+iter 22600: loss 4.7132, time 156.45ms, mfu 65.50%
+iter 22650: loss 4.7369, time 154.80ms, mfu 66.52%
+  [Stability] grad_norm: 0.0000
+iter 22700: loss 4.7584, time 156.07ms, mfu 67.38%
+iter 22750: loss 4.7572, time 158.65ms, mfu 68.03%
+  [Stability] grad_norm: 0.0000
+iter 22800: loss 4.8166, time 155.89ms, mfu 68.75%
+iter 22850: loss 4.7465, time 155.33ms, mfu 69.42%
+  [Stability] grad_norm: 0.0000
+iter 22900: loss 4.7180, time 158.47ms, mfu 69.87%
+iter 22950: loss 4.7865, time 155.37ms, mfu 70.43%
+step 23000: train loss 4.7450, val loss 4.7441, lr 3.83e-04
+    layer_0_entropy: mean=4.8765
+    layer_0_uniformity: ['0.971', '0.982', '0.983', '0.988', '0.988', '0.986', '0.958', '0.937', '0.997', '0.921', '0.973', '0.968']
+saving checkpoint to out-nope-owt-ln/ckpt_23000.pt
+  [Stability] grad_norm: 0.0000
+iter 23000: loss 4.7124, time 9023.24ms, mfu 63.52%
+iter 23050: loss 4.7835, time 157.36ms, mfu 64.61%
+  [Stability] grad_norm: 0.0000
+iter 23100: loss 4.7516, time 156.86ms, mfu 65.62%
+iter 23150: loss 4.7011, time 157.80ms, mfu 66.49%
+  [Stability] grad_norm: 0.0000
+iter 23200: loss 4.8892, time 156.36ms, mfu 67.34%
+iter 23250: loss 4.7557, time 155.71ms, mfu 68.13%
+  [Stability] grad_norm: 0.0000
+iter 23300: loss 4.8227, time 156.14ms, mfu 68.82%
+iter 23350: loss 4.7017, time 157.94ms, mfu 69.36%
+  [Stability] grad_norm: 0.0000
+iter 23400: loss 4.7421, time 156.54ms, mfu 69.91%
+iter 23450: loss 4.8187, time 156.45ms, mfu 70.41%
+step 23500: train loss 4.7437, val loss 4.7451, lr 3.74e-04
+    layer_0_entropy: mean=4.8559
+    layer_0_uniformity: ['0.972', '0.976', '0.977', '0.986', '0.984', '0.983', '0.959', '0.932', '0.997', '0.918', '0.974', '0.968']
+saving checkpoint to out-nope-owt-ln/ckpt_23500.pt
+  [Stability] grad_norm: 0.0000
+iter 23500: loss 4.7031, time 8975.05ms, mfu 63.50%
+iter 23550: loss 4.7851, time 156.17ms, mfu 64.66%
+  [Stability] grad_norm: 0.0000
+iter 23600: loss 4.7625, time 156.12ms, mfu 65.70%
+iter 23650: loss 4.7527, time 155.81ms, mfu 66.65%
+  [Stability] grad_norm: 0.0000
+iter 23700: loss 4.6510, time 155.39ms, mfu 67.53%
+iter 23750: loss 4.7746, time 154.80ms, mfu 68.35%
+  [Stability] grad_norm: 0.0000
+iter 23800: loss 4.7768, time 158.49ms, mfu 68.91%
+iter 23850: loss 4.7568, time 156.78ms, mfu 69.49%
+  [Stability] grad_norm: 0.0000
+iter 23900: loss 4.7369, time 155.87ms, mfu 70.06%
+iter 23950: loss 4.7471, time 156.74ms, mfu 70.54%
+step 24000: train loss 4.7398, val loss 4.7404, lr 3.65e-04
+    layer_0_entropy: mean=4.8760
+    layer_0_uniformity: ['0.973', '0.981', '0.981', '0.987', '0.984', '0.984', '0.960', '0.943', '0.997', '0.922', '0.974', '0.966']
+saving checkpoint to out-nope-owt-ln/ckpt_24000.pt
+  [Stability] grad_norm: 0.0000
+iter 24000: loss 4.6644, time 8979.37ms, mfu 63.61%
+iter 24050: loss 4.7467, time 154.69ms, mfu 64.83%
+  [Stability] grad_norm: 0.0000
+iter 24100: loss 4.7865, time 160.12ms, mfu 65.67%
+iter 24150: loss 4.7230, time 156.90ms, mfu 66.57%
+  [Stability] grad_norm: 0.0000
+iter 24200: loss 4.8284, time 155.86ms, mfu 67.43%
+iter 24250: loss 4.6940, time 155.85ms, mfu 68.21%
+  [Stability] grad_norm: 0.0000
+iter 24300: loss 4.7651, time 156.09ms, mfu 68.90%
+iter 24350: loss 4.7325, time 160.69ms, mfu 69.30%
+  [Stability] grad_norm: 0.0000
+iter 24400: loss 4.7678, time 158.18ms, mfu 69.78%
+iter 24450: loss 4.7052, time 161.96ms, mfu 70.04%
+step 24500: train loss 4.7372, val loss 4.7324, lr 3.56e-04
+    layer_0_entropy: mean=4.8709
+    layer_0_uniformity: ['0.967', '0.976', '0.979', '0.982', '0.986', '0.984', '0.959', '0.924', '0.994', '0.918', '0.976', '0.962']
+saving checkpoint to out-nope-owt-ln/ckpt_24500.pt
+  [Stability] grad_norm: 0.0000
+iter 24500: loss 4.7117, time 9140.23ms, mfu 63.16%
+iter 24550: loss 4.7180, time 156.22ms, mfu 64.35%
+  [Stability] grad_norm: 0.0000
+iter 24600: loss 4.7913, time 156.06ms, mfu 65.43%
+iter 24650: loss 4.7565, time 159.49ms, mfu 66.23%
+  [Stability] grad_norm: 0.0000
+iter 24700: loss 4.7406, time 155.29ms, mfu 67.16%
+iter 24750: loss 4.7346, time 155.41ms, mfu 67.98%
+  [Stability] grad_norm: 0.0000
+iter 24800: loss 4.7684, time 161.24ms, mfu 68.45%
+iter 24850: loss 4.7365, time 154.90ms, mfu 69.18%
+  [Stability] grad_norm: 0.0000
+iter 24900: loss 4.6597, time 155.86ms, mfu 69.78%
+iter 24950: loss 4.7718, time 162.41ms, mfu 70.02%
+step 25000: train loss 4.7362, val loss 4.7354, lr 3.48e-04
+    layer_0_entropy: mean=4.8606
+    layer_0_uniformity: ['0.968', '0.981', '0.980', '0.985', '0.986', '0.985', '0.959', '0.936', '0.998', '0.917', '0.973', '0.968']
+saving checkpoint to out-nope-owt-ln/ckpt_25000.pt
+  [Stability] grad_norm: 0.0000
+iter 25000: loss 4.6838, time 9057.94ms, mfu 63.14%
+iter 25050: loss 4.6298, time 156.60ms, mfu 64.31%
+  [Stability] grad_norm: 0.0000
+iter 25100: loss 4.7375, time 160.33ms, mfu 65.19%
+iter 25150: loss 4.7167, time 154.80ms, mfu 66.25%
+  [Stability] grad_norm: 0.0000
+iter 25200: loss 4.7529, time 157.87ms, mfu 67.05%
+iter 25250: loss 4.7376, time 160.83ms, mfu 67.63%
+  [Stability] grad_norm: 0.0000
+iter 25300: loss 4.8625, time 156.76ms, mfu 68.34%
+iter 25350: loss 4.6754, time 154.82ms, mfu 69.08%
+  [Stability] grad_norm: 0.0000
+iter 25400: loss 4.7501, time 155.44ms, mfu 69.71%
+iter 25450: loss 4.7247, time 154.82ms, mfu 70.31%
+step 25500: train loss 4.7237, val loss 4.7341, lr 3.39e-04
+    layer_0_entropy: mean=4.8613
+    layer_0_uniformity: ['0.968', '0.976', '0.978', '0.983', '0.986', '0.985', '0.958', '0.933', '0.995', '0.914', '0.972', '0.965']
+saving checkpoint to out-nope-owt-ln/ckpt_25500.pt
+  [Stability] grad_norm: 0.0000
+iter 25500: loss 4.7234, time 9032.60ms, mfu 63.41%
+iter 25550: loss 4.6724, time 154.72ms, mfu 64.64%
+  [Stability] grad_norm: 0.0000
+iter 25600: loss 4.6882, time 160.95ms, mfu 65.46%
+iter 25650: loss 4.6910, time 163.51ms, mfu 66.08%
+  [Stability] grad_norm: 0.0000
+iter 25700: loss 4.7346, time 156.89ms, mfu 66.95%
+iter 25750: loss 4.8048, time 156.65ms, mfu 67.73%
+  [Stability] grad_norm: 0.0000
+iter 25800: loss 4.6929, time 155.36ms, mfu 68.51%
+iter 25850: loss 4.7355, time 161.58ms, mfu 68.91%
+  [Stability] grad_norm: 0.0000
+iter 25900: loss 4.8404, time 155.46ms, mfu 69.56%
+iter 25950: loss 4.8025, time 162.86ms, mfu 69.80%
+step 26000: train loss 4.7250, val loss 4.7281, lr 3.30e-04
+    layer_0_entropy: mean=4.8669
+    layer_0_uniformity: ['0.964', '0.983', '0.982', '0.987', '0.986', '0.986', '0.953', '0.932', '0.997', '0.911', '0.972', '0.966']
+saving checkpoint to out-nope-owt-ln/ckpt_26000.pt
+  [Stability] grad_norm: 0.0000
+iter 26000: loss 4.7490, time 9606.92ms, mfu 62.94%
+iter 26050: loss 4.7153, time 160.87ms, mfu 63.93%
+  [Stability] grad_norm: 0.0000
+iter 26100: loss 4.7681, time 155.85ms, mfu 65.06%
+iter 26150: loss 4.7263, time 157.57ms, mfu 65.99%
+  [Stability] grad_norm: 0.0000
+iter 26200: loss 4.7653, time 155.38ms, mfu 66.94%
+iter 26250: loss 4.7050, time 156.12ms, mfu 67.75%
+  [Stability] grad_norm: 0.0000
+iter 26300: loss 4.7431, time 155.55ms, mfu 68.51%
+iter 26350: loss 4.8091, time 156.34ms, mfu 69.16%
+  [Stability] grad_norm: 0.0000
+iter 26400: loss 4.7359, time 155.86ms, mfu 69.76%
+iter 26450: loss 4.6931, time 154.81ms, mfu 70.36%
+step 26500: train loss 4.7304, val loss 4.7250, lr 3.21e-04
+    layer_0_entropy: mean=4.8488
+    layer_0_uniformity: ['0.967', '0.976', '0.979', '0.986', '0.984', '0.984', '0.957', '0.924', '0.997', '0.912', '0.973', '0.959']
+saving checkpoint to out-nope-owt-ln/ckpt_26500.pt
+  [Stability] grad_norm: 0.0000
+iter 26500: loss 4.7172, time 9252.42ms, mfu 63.45%
+iter 26550: loss 4.7940, time 157.95ms, mfu 64.52%
+  [Stability] grad_norm: 0.0000
+iter 26600: loss 4.7523, time 158.35ms, mfu 65.47%
+iter 26650: loss 4.7566, time 154.81ms, mfu 66.50%
+  [Stability] grad_norm: 0.0000
+iter 26700: loss 4.6521, time 155.32ms, mfu 67.39%
+iter 26750: loss 4.6677, time 154.74ms, mfu 68.23%
+  [Stability] grad_norm: 0.0000
+iter 26800: loss 4.7385, time 158.82ms, mfu 68.79%
+iter 26850: loss 4.6978, time 159.19ms, mfu 69.27%
+  [Stability] grad_norm: 0.0000
+iter 26900: loss 4.7362, time 155.74ms, mfu 69.87%
+iter 26950: loss 4.7221, time 154.91ms, mfu 70.45%
+step 27000: train loss 4.7196, val loss 4.7224, lr 3.12e-04
+    layer_0_entropy: mean=4.8493
+    layer_0_uniformity: ['0.967', '0.978', '0.980', '0.983', '0.982', '0.984', '0.952', '0.925', '0.998', '0.914', '0.970', '0.962']
+saving checkpoint to out-nope-owt-ln/ckpt_27000.pt
+  [Stability] grad_norm: 0.0000
+iter 27000: loss 4.6793, time 10240.66ms, mfu 63.52%
+iter 27050: loss 4.7152, time 156.21ms, mfu 64.67%
+  [Stability] grad_norm: 0.0000
+iter 27100: loss 4.7880, time 161.24ms, mfu 65.47%
+iter 27150: loss 4.7610, time 154.67ms, mfu 66.50%
+  [Stability] grad_norm: 0.0000
+iter 27200: loss 4.6842, time 161.62ms, mfu 67.10%
+iter 27250: loss 4.7750, time 156.84ms, mfu 67.87%
+  [Stability] grad_norm: 0.0000
+iter 27300: loss 4.7049, time 155.56ms, mfu 68.61%
+iter 27350: loss 4.7525, time 156.81ms, mfu 69.23%
+  [Stability] grad_norm: 0.0000
+iter 27400: loss 4.7032, time 155.96ms, mfu 69.82%
+iter 27450: loss 4.6584, time 157.39ms, mfu 70.29%
+step 27500: train loss 4.7200, val loss 4.7194, lr 3.04e-04
+    layer_0_entropy: mean=4.8450
+    layer_0_uniformity: ['0.969', '0.977', '0.981', '0.983', '0.984', '0.984', '0.957', '0.924', '0.997', '0.914', '0.973', '0.964']
+saving checkpoint to out-nope-owt-ln/ckpt_27500.pt
+  [Stability] grad_norm: 0.0000
+iter 27500: loss 4.7580, time 8996.88ms, mfu 63.39%
+iter 27550: loss 4.7715, time 155.48ms, mfu 64.59%
+  [Stability] grad_norm: 0.0000
+iter 27600: loss 4.6338, time 155.14ms, mfu 65.68%
+iter 27650: loss 4.7669, time 159.68ms, mfu 66.46%
+  [Stability] grad_norm: 0.0000
+iter 27700: loss 4.7635, time 157.16ms, mfu 67.27%
+iter 27750: loss 4.6322, time 158.27ms, mfu 67.95%
+  [Stability] grad_norm: 0.0000
+iter 27800: loss 4.7492, time 156.20ms, mfu 68.66%
+iter 27850: loss 4.7263, time 161.59ms, mfu 69.04%
+  [Stability] grad_norm: 0.0000
+iter 27900: loss 4.6975, time 155.70ms, mfu 69.67%
+iter 27950: loss 4.6793, time 155.11ms, mfu 70.26%
+step 28000: train loss 4.7166, val loss 4.7156, lr 2.95e-04
+    layer_0_entropy: mean=4.8435
+    layer_0_uniformity: ['0.967', '0.977', '0.974', '0.986', '0.984', '0.983', '0.948', '0.920', '0.996', '0.907', '0.965', '0.959']
+saving checkpoint to out-nope-owt-ln/ckpt_28000.pt
+  [Stability] grad_norm: 0.0000
+iter 28000: loss 4.7627, time 9051.01ms, mfu 63.36%
+iter 28050: loss 4.6932, time 160.49ms, mfu 64.33%
+  [Stability] grad_norm: 0.0000
+iter 28100: loss 4.7149, time 155.47ms, mfu 65.43%
+iter 28150: loss 4.6917, time 157.40ms, mfu 66.34%
+  [Stability] grad_norm: 0.0000
+iter 28200: loss 4.7265, time 156.11ms, mfu 67.21%
+iter 28250: loss 4.7211, time 165.07ms, mfu 67.59%
+  [Stability] grad_norm: 0.0000
+iter 28300: loss 4.6800, time 163.86ms, mfu 67.98%
+iter 28350: loss 4.7340, time 158.75ms, mfu 68.57%
+  [Stability] grad_norm: 0.0000
+iter 28400: loss 4.6981, time 159.74ms, mfu 69.05%
+iter 28450: loss 4.7931, time 155.50ms, mfu 69.68%
+step 28500: train loss 4.7145, val loss 4.7171, lr 2.86e-04
+    layer_0_entropy: mean=4.8409
+    layer_0_uniformity: ['0.965', '0.973', '0.981', '0.986', '0.982', '0.982', '0.951', '0.914', '0.997', '0.911', '0.969', '0.962']
+saving checkpoint to out-nope-owt-ln/ckpt_28500.pt
+  [Stability] grad_norm: 0.0000
+iter 28500: loss 4.7364, time 8936.87ms, mfu 62.85%
+iter 28550: loss 4.7029, time 157.56ms, mfu 64.00%
+  [Stability] grad_norm: 0.0000
+iter 28600: loss 4.7447, time 161.55ms, mfu 64.86%
+iter 28650: loss 4.7591, time 156.57ms, mfu 65.86%
+  [Stability] grad_norm: 0.0000
+iter 28700: loss 4.6840, time 163.66ms, mfu 66.43%
+iter 28750: loss 4.6263, time 154.75ms, mfu 67.36%
+  [Stability] grad_norm: 0.0000
+iter 28800: loss 4.7105, time 157.27ms, mfu 68.08%
+iter 28850: loss 4.7353, time 158.84ms, mfu 68.65%
+  [Stability] grad_norm: 0.0000
+iter 28900: loss 4.7348, time 156.39ms, mfu 69.28%
+iter 28950: loss 4.7032, time 154.78ms, mfu 69.92%
+step 29000: train loss 4.7100, val loss 4.7162, lr 2.77e-04
+    layer_0_entropy: mean=4.8348
+    layer_0_uniformity: ['0.963', '0.975', '0.978', '0.985', '0.981', '0.982', '0.955', '0.919', '0.996', '0.904', '0.970', '0.960']
+saving checkpoint to out-nope-owt-ln/ckpt_29000.pt
+  [Stability] grad_norm: 0.0000
+iter 29000: loss 4.6750, time 8952.35ms, mfu 63.06%
+iter 29050: loss 4.7271, time 156.55ms, mfu 64.24%
+  [Stability] grad_norm: 0.0000
+iter 29100: loss 4.6233, time 155.42ms, mfu 65.36%
+iter 29150: loss 4.7289, time 155.92ms, mfu 66.34%
+  [Stability] grad_norm: 0.0000
+iter 29200: loss 4.6101, time 156.66ms, mfu 67.19%
+iter 29250: loss 4.7214, time 154.80ms, mfu 68.04%
+  [Stability] grad_norm: 0.0000
+iter 29300: loss 4.7971, time 155.43ms, mfu 68.78%
+iter 29350: loss 4.7416, time 156.16ms, mfu 69.41%
+  [Stability] grad_norm: 0.0000
+iter 29400: loss 4.8229, time 164.52ms, mfu 69.59%
+iter 29450: loss 4.6819, time 156.58ms, mfu 70.12%
+step 29500: train loss 4.7147, val loss 4.7135, lr 2.69e-04
+    layer_0_entropy: mean=4.8276
+    layer_0_uniformity: ['0.966', '0.975', '0.977', '0.983', '0.983', '0.982', '0.959', '0.927', '0.992', '0.907', '0.966', '0.958']
+saving checkpoint to out-nope-owt-ln/ckpt_29500.pt
+  [Stability] grad_norm: 0.0000
+iter 29500: loss 4.7082, time 9035.72ms, mfu 63.24%
+iter 29550: loss 4.6135, time 154.86ms, mfu 64.48%
+  [Stability] grad_norm: 0.0000
+iter 29600: loss 4.6727, time 155.51ms, mfu 65.57%
+iter 29650: loss 4.6766, time 158.50ms, mfu 66.41%
+  [Stability] grad_norm: 0.0000
+iter 29700: loss 4.7419, time 161.26ms, mfu 67.03%
+iter 29750: loss 4.6225, time 155.70ms, mfu 67.86%
+  [Stability] grad_norm: 0.0000
+iter 29800: loss 4.7259, time 155.87ms, mfu 68.59%
+iter 29850: loss 4.6640, time 159.29ms, mfu 69.09%
+  [Stability] grad_norm: 0.0000
+iter 29900: loss 4.6045, time 160.29ms, mfu 69.49%
+iter 29950: loss 4.6613, time 155.13ms, mfu 70.10%
+step 30000: train loss 4.7090, val loss 4.7180, lr 2.60e-04
+    layer_0_entropy: mean=4.8362
+    layer_0_uniformity: ['0.962', '0.977', '0.979', '0.984', '0.981', '0.983', '0.951', '0.927', '0.996', '0.899', '0.972', '0.962']
+saving checkpoint to out-nope-owt-ln/ckpt_30000.pt
+  [Stability] grad_norm: 0.0000
+iter 30000: loss 4.6649, time 8993.71ms, mfu 63.22%
+iter 30050: loss 4.7445, time 154.83ms, mfu 64.47%
+  [Stability] grad_norm: 0.0000
+iter 30100: loss 4.7197, time 159.67ms, mfu 65.36%
+iter 30150: loss 4.6659, time 155.92ms, mfu 66.34%
+  [Stability] grad_norm: 0.0000
+iter 30200: loss 4.7239, time 156.40ms, mfu 67.20%
+iter 30250: loss 4.7398, time 155.09ms, mfu 68.04%
+  [Stability] grad_norm: 0.0000
+iter 30300: loss 4.7283, time 155.63ms, mfu 68.77%
+iter 30350: loss 4.6769, time 154.89ms, mfu 69.46%
+  [Stability] grad_norm: 0.0000
+iter 30400: loss 4.6495, time 161.64ms, mfu 69.76%
+iter 30450: loss 4.7669, time 155.01ms, mfu 70.35%
+step 30500: train loss 4.7096, val loss 4.7141, lr 2.52e-04
+    layer_0_entropy: mean=4.8257
+    layer_0_uniformity: ['0.965', '0.979', '0.979', '0.984', '0.982', '0.984', '0.954', '0.930', '0.998', '0.907', '0.971', '0.958']
+saving checkpoint to out-nope-owt-ln/ckpt_30500.pt
+  [Stability] grad_norm: 0.0000
+iter 30500: loss 4.6794, time 8983.76ms, mfu 63.44%
+iter 30550: loss 4.8021, time 156.68ms, mfu 64.58%
+  [Stability] grad_norm: 0.0000
+iter 30600: loss 4.7591, time 155.77ms, mfu 65.65%
+iter 30650: loss 4.6587, time 156.12ms, mfu 66.59%
+  [Stability] grad_norm: 0.0000
+iter 30700: loss 4.8013, time 156.20ms, mfu 67.43%
+iter 30750: loss 4.6925, time 158.03ms, mfu 68.11%
+  [Stability] grad_norm: 0.0000
+iter 30800: loss 4.7503, time 159.55ms, mfu 68.64%
+iter 30850: loss 4.6576, time 155.21ms, mfu 69.33%
+  [Stability] grad_norm: 0.0000
+iter 30900: loss 4.7375, time 155.86ms, mfu 69.92%
+iter 30950: loss 4.6413, time 154.93ms, mfu 70.49%
+step 31000: train loss 4.7004, val loss 4.7081, lr 2.43e-04
+    layer_0_entropy: mean=4.8444
+    layer_0_uniformity: ['0.964', '0.977', '0.974', '0.984', '0.982', '0.983', '0.957', '0.925', '0.998', '0.902', '0.968', '0.962']
+saving checkpoint to out-nope-owt-ln/ckpt_31000.pt
+  [Stability] grad_norm: 0.0000
+iter 31000: loss 4.7017, time 8948.17ms, mfu 63.57%
+iter 31050: loss 4.7062, time 155.07ms, mfu 64.77%
+  [Stability] grad_norm: 0.0000
+iter 31100: loss 4.6373, time 160.67ms, mfu 65.59%
+iter 31150: loss 4.7232, time 161.26ms, mfu 66.30%
+  [Stability] grad_norm: 0.0000
+iter 31200: loss 4.6857, time 156.58ms, mfu 67.16%
+iter 31250: loss 4.6760, time 155.03ms, mfu 68.00%
+  [Stability] grad_norm: 0.0000
+iter 31300: loss 4.7282, time 156.66ms, mfu 68.68%
+iter 31350: loss 4.7100, time 155.10ms, mfu 69.37%
+  [Stability] grad_norm: 0.0000
+iter 31400: loss 4.6732, time 156.51ms, mfu 69.92%
+iter 31450: loss 4.7328, time 154.84ms, mfu 70.50%
+step 31500: train loss 4.6982, val loss 4.7064, lr 2.35e-04
+    layer_0_entropy: mean=4.8282
+    layer_0_uniformity: ['0.967', '0.977', '0.977', '0.986', '0.984', '0.982', '0.953', '0.922', '0.997', '0.906', '0.972', '0.961']
+saving checkpoint to out-nope-owt-ln/ckpt_31500.pt
+  [Stability] grad_norm: 0.0000
+iter 31500: loss 4.6888, time 9000.62ms, mfu 63.58%
+iter 31550: loss 4.7340, time 155.21ms, mfu 64.77%
+  [Stability] grad_norm: 0.0000
+iter 31600: loss 4.7157, time 157.14ms, mfu 65.76%
+iter 31650: loss 4.7523, time 156.95ms, mfu 66.65%
+  [Stability] grad_norm: 0.0000
+iter 31700: loss 4.7195, time 163.28ms, mfu 67.16%
+iter 31750: loss 4.7749, time 156.18ms, mfu 67.95%
+  [Stability] grad_norm: 0.0000
+iter 31800: loss 4.7878, time 157.35ms, mfu 68.60%
+iter 31850: loss 4.6824, time 155.01ms, mfu 69.30%
+  [Stability] grad_norm: 0.0000
+iter 31900: loss 4.7233, time 155.47ms, mfu 69.91%
+iter 31950: loss 4.7524, time 155.17ms, mfu 70.48%
+step 32000: train loss 4.6985, val loss 4.7018, lr 2.27e-04
+    layer_0_entropy: mean=4.8159
+    layer_0_uniformity: ['0.963', '0.974', '0.982', '0.981', '0.983', '0.983', '0.953', '0.923', '0.998', '0.910', '0.973', '0.960']
+saving checkpoint to out-nope-owt-ln/ckpt_32000.pt
+  [Stability] grad_norm: 0.0000
+iter 32000: loss 4.6686, time 8967.98ms, mfu 63.56%
+iter 32050: loss 4.7418, time 155.21ms, mfu 64.75%
+  [Stability] grad_norm: 0.0000
+iter 32100: loss 4.7361, time 156.44ms, mfu 65.77%
+iter 32150: loss 4.7296, time 155.93ms, mfu 66.71%
+  [Stability] grad_norm: 0.0000
+iter 32200: loss 4.6835, time 155.59ms, mfu 67.57%
+iter 32250: loss 4.7202, time 156.68ms, mfu 68.30%
+  [Stability] grad_norm: 0.0000
+iter 32300: loss 4.7879, time 158.60ms, mfu 68.86%
+iter 32350: loss 4.7174, time 155.61ms, mfu 69.50%
+  [Stability] grad_norm: 0.0000
+iter 32400: loss 4.6804, time 160.05ms, mfu 69.88%
+iter 32450: loss 4.6618, time 156.73ms, mfu 70.37%
+step 32500: train loss 4.7040, val loss 4.7058, lr 2.19e-04
+    layer_0_entropy: mean=4.8082
+    layer_0_uniformity: ['0.960', '0.974', '0.971', '0.985', '0.976', '0.978', '0.952', '0.918', '0.995', '0.902', '0.964', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_32500.pt
+  [Stability] grad_norm: 0.0000
+iter 32500: loss 4.6883, time 9041.55ms, mfu 63.46%
+iter 32550: loss 4.6838, time 162.63ms, mfu 64.32%
+  [Stability] grad_norm: 0.0000
+iter 32600: loss 4.7122, time 162.61ms, mfu 65.10%
+iter 32650: loss 4.7082, time 154.82ms, mfu 66.16%
+  [Stability] grad_norm: 0.0000
+iter 32700: loss 4.7127, time 155.39ms, mfu 67.09%
+iter 32750: loss 4.5773, time 158.08ms, mfu 67.79%
+  [Stability] grad_norm: 0.0000
+iter 32800: loss 4.6818, time 163.36ms, mfu 68.19%
+iter 32850: loss 4.7307, time 160.62ms, mfu 68.67%
+  [Stability] grad_norm: 0.0000
+iter 32900: loss 4.7821, time 157.32ms, mfu 69.25%
+iter 32950: loss 4.6752, time 155.57ms, mfu 69.86%
+step 33000: train loss 4.6995, val loss 4.6962, lr 2.11e-04
+    layer_0_entropy: mean=4.8204
+    layer_0_uniformity: ['0.964', '0.975', '0.980', '0.986', '0.980', '0.983', '0.951', '0.915', '0.996', '0.896', '0.969', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_33000.pt
+  [Stability] grad_norm: 0.0000
+iter 33000: loss 4.8156, time 9019.66ms, mfu 63.00%
+iter 33050: loss 4.7348, time 156.13ms, mfu 64.21%
+  [Stability] grad_norm: 0.0000
+iter 33100: loss 4.8086, time 155.74ms, mfu 65.31%
+iter 33150: loss 4.7264, time 155.76ms, mfu 66.31%
+  [Stability] grad_norm: 0.0000
+iter 33200: loss 4.6655, time 157.82ms, mfu 67.10%
+iter 33250: loss 4.7169, time 155.67ms, mfu 67.92%
+  [Stability] grad_norm: 0.0000
+iter 33300: loss 4.7119, time 155.82ms, mfu 68.65%
+iter 33350: loss 4.7269, time 156.24ms, mfu 69.29%
+  [Stability] grad_norm: 0.0000
+iter 33400: loss 4.6085, time 156.55ms, mfu 69.85%
+iter 33450: loss 4.6035, time 157.07ms, mfu 70.33%
+step 33500: train loss 4.6924, val loss 4.6958, lr 2.03e-04
+    layer_0_entropy: mean=4.8134
+    layer_0_uniformity: ['0.962', '0.974', '0.975', '0.985', '0.981', '0.979', '0.954', '0.921', '0.997', '0.905', '0.968', '0.957']
+saving checkpoint to out-nope-owt-ln/ckpt_33500.pt
+  [Stability] grad_norm: 0.0000
+iter 33500: loss 4.7055, time 8997.68ms, mfu 63.42%
+iter 33550: loss 4.7470, time 153.94ms, mfu 64.69%
+  [Stability] grad_norm: 0.0000
+iter 33600: loss 4.7422, time 157.81ms, mfu 65.65%
+iter 33650: loss 4.6815, time 155.30ms, mfu 66.63%
+  [Stability] grad_norm: 0.0000
+iter 33700: loss 4.7908, time 156.23ms, mfu 67.47%
+iter 33750: loss 4.7682, time 157.28ms, mfu 68.18%
+  [Stability] grad_norm: 0.0000
+iter 33800: loss 4.6843, time 155.64ms, mfu 68.89%
+iter 33850: loss 4.7156, time 156.77ms, mfu 69.48%
+  [Stability] grad_norm: 0.0000
+iter 33900: loss 4.7347, time 155.63ms, mfu 70.06%
+iter 33950: loss 4.6318, time 156.52ms, mfu 70.54%
+step 34000: train loss 4.6924, val loss 4.6866, lr 1.95e-04
+    layer_0_entropy: mean=4.8124
+    layer_0_uniformity: ['0.962', '0.975', '0.976', '0.985', '0.980', '0.981', '0.955', '0.915', '0.997', '0.897', '0.968', '0.954']
+saving checkpoint to out-nope-owt-ln/ckpt_34000.pt
+  [Stability] grad_norm: 0.0000
+iter 34000: loss 4.6960, time 9002.58ms, mfu 63.62%
+iter 34050: loss 4.6247, time 155.00ms, mfu 64.82%
+  [Stability] grad_norm: 0.0000
+iter 34100: loss 4.6888, time 155.65ms, mfu 65.87%
+iter 34150: loss 4.7283, time 155.13ms, mfu 66.84%
+  [Stability] grad_norm: 0.0000
+iter 34200: loss 4.6948, time 156.54ms, mfu 67.64%
+iter 34250: loss 4.6604, time 159.69ms, mfu 68.22%
+  [Stability] grad_norm: 0.0000
+iter 34300: loss 4.6855, time 156.27ms, mfu 68.90%
+iter 34350: loss 4.7413, time 162.40ms, mfu 69.22%
+  [Stability] grad_norm: 0.0000
+iter 34400: loss 4.8323, time 159.05ms, mfu 69.67%
+iter 34450: loss 4.6464, time 157.07ms, mfu 70.16%
+step 34500: train loss 4.6844, val loss 4.6911, lr 1.87e-04
+    layer_0_entropy: mean=4.8029
+    layer_0_uniformity: ['0.961', '0.978', '0.976', '0.983', '0.983', '0.983', '0.954', '0.919', '0.996', '0.907', '0.969', '0.957']
+saving checkpoint to out-nope-owt-ln/ckpt_34500.pt
+  [Stability] grad_norm: 0.0000
+iter 34500: loss 4.7289, time 9026.17ms, mfu 63.28%
+iter 34550: loss 4.7703, time 156.37ms, mfu 64.45%
+  [Stability] grad_norm: 0.0000
+iter 34600: loss 4.6708, time 156.09ms, mfu 65.51%
+iter 34650: loss 4.6786, time 162.51ms, mfu 66.17%
+  [Stability] grad_norm: 0.0000
+iter 34700: loss 4.6437, time 156.92ms, mfu 67.02%
+iter 34750: loss 4.7044, time 156.24ms, mfu 67.82%
+  [Stability] grad_norm: 0.0000
+iter 34800: loss 4.6854, time 157.29ms, mfu 68.49%
+iter 34850: loss 4.7165, time 156.05ms, mfu 69.15%
+  [Stability] grad_norm: 0.0000
+iter 34900: loss 4.6444, time 157.44ms, mfu 69.68%
+iter 34950: loss 4.6157, time 156.75ms, mfu 70.19%
+step 35000: train loss 4.6856, val loss 4.6982, lr 1.80e-04
+    layer_0_entropy: mean=4.8082
+    layer_0_uniformity: ['0.963', '0.975', '0.978', '0.983', '0.980', '0.981', '0.956', '0.913', '0.996', '0.896', '0.970', '0.955']
+saving checkpoint to out-nope-owt-ln/ckpt_35000.pt
+  [Stability] grad_norm: 0.0000
+iter 35000: loss 4.6341, time 9571.69ms, mfu 63.30%
+iter 35050: loss 4.7247, time 160.57ms, mfu 64.27%
+  [Stability] grad_norm: 0.0000
+iter 35100: loss 4.6770, time 156.09ms, mfu 65.35%
+iter 35150: loss 4.6969, time 158.20ms, mfu 66.22%
+  [Stability] grad_norm: 0.0000
+iter 35200: loss 4.6409, time 156.95ms, mfu 67.07%
+iter 35250: loss 4.7018, time 156.30ms, mfu 67.86%
+  [Stability] grad_norm: 0.0000
+iter 35300: loss 4.5672, time 158.18ms, mfu 68.48%
+iter 35350: loss 4.7120, time 155.68ms, mfu 69.17%
+  [Stability] grad_norm: 0.0000
+iter 35400: loss 4.5963, time 156.80ms, mfu 69.72%
+iter 35450: loss 4.6866, time 155.12ms, mfu 70.31%
+step 35500: train loss 4.6869, val loss 4.6818, lr 1.73e-04
+    layer_0_entropy: mean=4.8053
+    layer_0_uniformity: ['0.959', '0.973', '0.977', '0.980', '0.981', '0.981', '0.952', '0.918', '0.995', '0.897', '0.967', '0.948']
+saving checkpoint to out-nope-owt-ln/ckpt_35500.pt
+  [Stability] grad_norm: 0.0000
+iter 35500: loss 4.6620, time 8888.21ms, mfu 63.41%
+iter 35550: loss 4.6797, time 155.78ms, mfu 64.59%
+  [Stability] grad_norm: 0.0000
+iter 35600: loss 4.6921, time 156.38ms, mfu 65.63%
+iter 35650: loss 4.7603, time 154.47ms, mfu 66.65%
+  [Stability] grad_norm: 0.0000
+iter 35700: loss 4.6777, time 156.32ms, mfu 67.48%
+iter 35750: loss 4.5752, time 155.81ms, mfu 68.26%
+  [Stability] grad_norm: 0.0000
+iter 35800: loss 4.6264, time 158.39ms, mfu 68.83%
+iter 35850: loss 4.6884, time 155.18ms, mfu 69.50%
+  [Stability] grad_norm: 0.0000
+iter 35900: loss 4.6544, time 156.17ms, mfu 70.06%
+iter 35950: loss 4.6640, time 157.71ms, mfu 70.48%
+step 36000: train loss 4.6831, val loss 4.6877, lr 1.66e-04
+    layer_0_entropy: mean=4.8056
+    layer_0_uniformity: ['0.957', '0.972', '0.976', '0.982', '0.980', '0.979', '0.953', '0.914', '0.995', '0.891', '0.968', '0.956']
+saving checkpoint to out-nope-owt-ln/ckpt_36000.pt
+  [Stability] grad_norm: 0.0000
+iter 36000: loss 4.7070, time 8910.80ms, mfu 63.57%
+iter 36050: loss 4.6474, time 155.10ms, mfu 64.77%
+  [Stability] grad_norm: 0.0000
+iter 36100: loss 4.6452, time 156.98ms, mfu 65.76%
+iter 36150: loss 4.6857, time 156.48ms, mfu 66.67%
+  [Stability] grad_norm: 0.0000
+iter 36200: loss 4.7510, time 156.10ms, mfu 67.51%
+iter 36250: loss 4.7456, time 157.93ms, mfu 68.18%
+  [Stability] grad_norm: 0.0000
+iter 36300: loss 4.6697, time 155.79ms, mfu 68.89%
+iter 36350: loss 4.8087, time 155.64ms, mfu 69.53%
+  [Stability] grad_norm: 0.0000
+iter 36400: loss 4.6214, time 156.41ms, mfu 70.07%
+iter 36450: loss 4.7355, time 155.38ms, mfu 70.61%
+step 36500: train loss 4.6793, val loss 4.6857, lr 1.59e-04
+    layer_0_entropy: mean=4.8064
+    layer_0_uniformity: ['0.962', '0.975', '0.975', '0.986', '0.982', '0.980', '0.951', '0.914', '0.998', '0.893', '0.969', '0.959']
+saving checkpoint to out-nope-owt-ln/ckpt_36500.pt
+  [Stability] grad_norm: 0.0000
+iter 36500: loss 4.6849, time 9147.91ms, mfu 63.67%
+iter 36550: loss 4.7120, time 155.94ms, mfu 64.82%
+  [Stability] grad_norm: 0.0000
+iter 36600: loss 4.6501, time 159.09ms, mfu 65.71%
+iter 36650: loss 4.7574, time 155.18ms, mfu 66.69%
+  [Stability] grad_norm: 0.0000
+iter 36700: loss 4.7510, time 160.70ms, mfu 67.32%
+iter 36750: loss 4.5516, time 155.05ms, mfu 68.14%
+  [Stability] grad_norm: 0.0000
+iter 36800: loss 4.6852, time 156.71ms, mfu 68.81%
+iter 36850: loss 4.7045, time 160.30ms, mfu 69.24%
+  [Stability] grad_norm: 0.0000
+iter 36900: loss 4.7250, time 161.65ms, mfu 69.57%
+iter 36950: loss 4.7040, time 155.08ms, mfu 70.17%
+step 37000: train loss 4.6817, val loss 4.6845, lr 1.52e-04
+    layer_0_entropy: mean=4.7980
+    layer_0_uniformity: ['0.958', '0.977', '0.976', '0.979', '0.980', '0.980', '0.951', '0.919', '0.994', '0.893', '0.967', '0.957']
+saving checkpoint to out-nope-owt-ln/ckpt_37000.pt
+  [Stability] grad_norm: 0.0000
+iter 37000: loss 4.6796, time 9038.82ms, mfu 63.28%
+iter 37050: loss 4.6363, time 155.26ms, mfu 64.50%
+  [Stability] grad_norm: 0.0000
+iter 37100: loss 4.6437, time 159.90ms, mfu 65.38%
+iter 37150: loss 4.5899, time 155.46ms, mfu 66.38%
+  [Stability] grad_norm: 0.0000
+iter 37200: loss 4.6496, time 156.44ms, mfu 67.24%
+iter 37250: loss 4.6742, time 155.12ms, mfu 68.07%
+  [Stability] grad_norm: 0.0000
+iter 37300: loss 4.6590, time 156.63ms, mfu 68.75%
+iter 37350: loss 4.7666, time 155.06ms, mfu 69.43%
+  [Stability] grad_norm: 0.0000
+iter 37400: loss 4.6617, time 161.50ms, mfu 69.74%
+iter 37450: loss 4.6212, time 160.55ms, mfu 70.07%
+step 37500: train loss 4.6816, val loss 4.6842, lr 1.45e-04
+    layer_0_entropy: mean=4.7872
+    layer_0_uniformity: ['0.956', '0.971', '0.974', '0.979', '0.978', '0.981', '0.949', '0.915', '0.997', '0.891', '0.966', '0.946']
+saving checkpoint to out-nope-owt-ln/ckpt_37500.pt
+  [Stability] grad_norm: 0.0000
+iter 37500: loss 4.7063, time 9060.55ms, mfu 63.19%
+iter 37550: loss 4.7029, time 156.19ms, mfu 64.38%
+  [Stability] grad_norm: 0.0000
+iter 37600: loss 4.7425, time 156.33ms, mfu 65.44%
+iter 37650: loss 4.6818, time 161.35ms, mfu 66.16%
+  [Stability] grad_norm: 0.0000
+iter 37700: loss 4.6683, time 155.49ms, mfu 67.08%
+iter 37750: loss 4.7613, time 158.39ms, mfu 67.77%
+  [Stability] grad_norm: 0.0000
+iter 37800: loss 4.7095, time 155.68ms, mfu 68.52%
+iter 37850: loss 4.6801, time 155.98ms, mfu 69.19%
+  [Stability] grad_norm: 0.0000
+iter 37900: loss 4.6372, time 156.10ms, mfu 69.78%
+iter 37950: loss 4.6345, time 156.85ms, mfu 70.27%
+step 38000: train loss 4.6756, val loss 4.6787, lr 1.39e-04
+    layer_0_entropy: mean=4.7927
+    layer_0_uniformity: ['0.958', '0.973', '0.974', '0.983', '0.980', '0.981', '0.951', '0.913', '0.995', '0.897', '0.967', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_38000.pt
+  [Stability] grad_norm: 0.0000
+iter 38000: loss 4.6472, time 8993.09ms, mfu 63.37%
+iter 38050: loss 4.6649, time 156.52ms, mfu 64.52%
+  [Stability] grad_norm: 0.0000
+iter 38100: loss 4.7408, time 158.49ms, mfu 65.47%
+iter 38150: loss 4.5421, time 160.18ms, mfu 66.24%
+  [Stability] grad_norm: 0.0000
+iter 38200: loss 4.7042, time 162.39ms, mfu 66.83%
+iter 38250: loss 4.6781, time 158.52ms, mfu 67.54%
+  [Stability] grad_norm: 0.0000
+iter 38300: loss 4.7216, time 162.03ms, mfu 68.02%
+iter 38350: loss 4.6926, time 155.99ms, mfu 68.73%
+  [Stability] grad_norm: 0.0000
+iter 38400: loss 4.6221, time 157.94ms, mfu 69.28%
+iter 38450: loss 4.6756, time 156.49ms, mfu 69.84%
+step 38500: train loss 4.6773, val loss 4.6664, lr 1.33e-04
+    layer_0_entropy: mean=4.7832
+    layer_0_uniformity: ['0.955', '0.973', '0.975', '0.982', '0.977', '0.981', '0.951', '0.917', '0.996', '0.892', '0.962', '0.948']
+saving checkpoint to out-nope-owt-ln/ckpt_38500.pt
+  [Stability] grad_norm: 0.0000
+iter 38500: loss 4.6287, time 9036.08ms, mfu 62.99%
+iter 38550: loss 4.7201, time 156.42ms, mfu 64.18%
+  [Stability] grad_norm: 0.0000
+iter 38600: loss 4.7018, time 160.16ms, mfu 65.08%
+iter 38650: loss 4.5997, time 157.62ms, mfu 66.01%
+  [Stability] grad_norm: 0.0000
+iter 38700: loss 4.6712, time 155.54ms, mfu 66.95%
+iter 38750: loss 4.5716, time 160.01ms, mfu 67.58%
+  [Stability] grad_norm: 0.0000
+iter 38800: loss 4.6472, time 159.67ms, mfu 68.16%
+iter 38850: loss 4.6975, time 156.18ms, mfu 68.85%
+  [Stability] grad_norm: 0.0000
+iter 38900: loss 4.6494, time 158.72ms, mfu 69.35%
+iter 38950: loss 4.7102, time 165.27ms, mfu 69.51%
+step 39000: train loss 4.6757, val loss 4.6858, lr 1.27e-04
+    layer_0_entropy: mean=4.7810
+    layer_0_uniformity: ['0.957', '0.974', '0.976', '0.980', '0.979', '0.981', '0.948', '0.899', '0.996', '0.884', '0.964', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_39000.pt
+  [Stability] grad_norm: 0.0000
+iter 39000: loss 4.7035, time 8998.41ms, mfu 62.69%
+iter 39050: loss 4.7345, time 159.44ms, mfu 63.77%
+  [Stability] grad_norm: 0.0000
+iter 39100: loss 4.6565, time 155.24ms, mfu 64.94%
+iter 39150: loss 4.6722, time 157.92ms, mfu 65.87%
+  [Stability] grad_norm: 0.0000
+iter 39200: loss 4.6047, time 155.47ms, mfu 66.82%
+iter 39250: loss 4.6682, time 155.29ms, mfu 67.69%
+  [Stability] grad_norm: 0.0000
+iter 39300: loss 4.6294, time 156.01ms, mfu 68.43%
+iter 39350: loss 4.6846, time 155.06ms, mfu 69.15%
+  [Stability] grad_norm: 0.0000
+iter 39400: loss 4.6983, time 158.37ms, mfu 69.63%
+iter 39450: loss 4.6754, time 159.41ms, mfu 70.02%
+step 39500: train loss 4.6734, val loss 4.6708, lr 1.21e-04
+    layer_0_entropy: mean=4.7943
+    layer_0_uniformity: ['0.955', '0.973', '0.977', '0.980', '0.977', '0.978', '0.952', '0.918', '0.997', '0.888', '0.965', '0.955']
+saving checkpoint to out-nope-owt-ln/ckpt_39500.pt
+  [Stability] grad_norm: 0.0000
+iter 39500: loss 4.6966, time 9015.22ms, mfu 63.15%
+iter 39550: loss 4.6596, time 154.94ms, mfu 64.40%
+  [Stability] grad_norm: 0.0000
+iter 39600: loss 4.7483, time 157.11ms, mfu 65.42%
+iter 39650: loss 4.6942, time 157.48ms, mfu 66.32%
+  [Stability] grad_norm: 0.0000
+iter 39700: loss 4.6401, time 160.20ms, mfu 67.01%
+iter 39750: loss 4.6640, time 156.41ms, mfu 67.80%
+  [Stability] grad_norm: 0.0000
+iter 39800: loss 4.6590, time 157.42ms, mfu 68.46%
+iter 39850: loss 4.6516, time 154.90ms, mfu 69.18%
+  [Stability] grad_norm: 0.0000
+iter 39900: loss 4.6250, time 156.75ms, mfu 69.74%
+iter 39950: loss 4.7402, time 154.90ms, mfu 70.34%
+step 40000: train loss 4.6675, val loss 4.6714, lr 1.16e-04
+    layer_0_entropy: mean=4.7918
+    layer_0_uniformity: ['0.955', '0.975', '0.975', '0.981', '0.980', '0.982', '0.949', '0.917', '0.997', '0.889', '0.966', '0.953']
+saving checkpoint to out-nope-owt-ln/ckpt_40000.pt
+  [Stability] grad_norm: 0.0000
+iter 40000: loss 4.7064, time 8981.95ms, mfu 63.43%
+iter 40050: loss 4.6637, time 156.45ms, mfu 64.58%
+  [Stability] grad_norm: 0.0000
+iter 40100: loss 4.7931, time 157.04ms, mfu 65.59%
+iter 40150: loss 4.7617, time 156.79ms, mfu 66.50%
+  [Stability] grad_norm: 0.0000
+iter 40200: loss 4.6005, time 155.90ms, mfu 67.37%
+iter 40250: loss 4.7239, time 156.19ms, mfu 68.14%
+  [Stability] grad_norm: 0.0000
+iter 40300: loss 4.7411, time 161.49ms, mfu 68.58%
+iter 40350: loss 4.5810, time 155.09ms, mfu 69.28%
+  [Stability] grad_norm: 0.0000
+iter 40400: loss 4.5861, time 161.59ms, mfu 69.61%
+iter 40450: loss 4.7277, time 157.15ms, mfu 70.10%
+step 40500: train loss 4.6644, val loss 4.6716, lr 1.11e-04
+    layer_0_entropy: mean=4.7747
+    layer_0_uniformity: ['0.953', '0.969', '0.970', '0.976', '0.977', '0.977', '0.954', '0.911', '0.993', '0.890', '0.960', '0.956']
+saving checkpoint to out-nope-owt-ln/ckpt_40500.pt
+  [Stability] grad_norm: 0.0000
+iter 40500: loss 4.6495, time 8944.07ms, mfu 63.23%
+iter 40550: loss 4.7152, time 156.73ms, mfu 64.38%
+  [Stability] grad_norm: 0.0000
+iter 40600: loss 4.7292, time 162.71ms, mfu 65.15%
+iter 40650: loss 4.5970, time 155.08ms, mfu 66.19%
+  [Stability] grad_norm: 0.0000
+iter 40700: loss 4.6211, time 155.68ms, mfu 67.10%
+iter 40750: loss 4.5757, time 159.22ms, mfu 67.75%
+  [Stability] grad_norm: 0.0000
+iter 40800: loss 4.6633, time 158.84ms, mfu 68.35%
+iter 40850: loss 4.6405, time 155.81ms, mfu 69.04%
+  [Stability] grad_norm: 0.0000
+iter 40900: loss 4.6545, time 156.29ms, mfu 69.64%
+iter 40950: loss 4.6996, time 154.98ms, mfu 70.24%
+step 41000: train loss 4.6672, val loss 4.6663, lr 1.06e-04
+    layer_0_entropy: mean=4.7617
+    layer_0_uniformity: ['0.956', '0.969', '0.972', '0.977', '0.973', '0.976', '0.946', '0.907', '0.990', '0.883', '0.962', '0.950']
+saving checkpoint to out-nope-owt-ln/ckpt_41000.pt
+  [Stability] grad_norm: 0.0000
+iter 41000: loss 4.7455, time 9043.12ms, mfu 63.34%
+iter 41050: loss 4.5450, time 155.04ms, mfu 64.57%
+  [Stability] grad_norm: 0.0000
+iter 41100: loss 4.7361, time 156.08ms, mfu 65.62%
+iter 41150: loss 4.6744, time 155.00ms, mfu 66.62%
+  [Stability] grad_norm: 0.0000
+iter 41200: loss 4.6373, time 155.57ms, mfu 67.49%
+iter 41250: loss 4.6459, time 155.52ms, mfu 68.28%
+  [Stability] grad_norm: 0.0000
+iter 41300: loss 4.7725, time 156.28ms, mfu 68.95%
+iter 41350: loss 4.6818, time 156.58ms, mfu 69.54%
+  [Stability] grad_norm: 0.0000
+iter 41400: loss 4.5919, time 156.82ms, mfu 70.06%
+iter 41450: loss 4.6584, time 156.65ms, mfu 70.54%
+step 41500: train loss 4.6576, val loss 4.6689, lr 1.01e-04
+    layer_0_entropy: mean=4.7808
+    layer_0_uniformity: ['0.958', '0.973', '0.975', '0.986', '0.975', '0.981', '0.951', '0.912', '0.998', '0.890', '0.970', '0.954']
+saving checkpoint to out-nope-owt-ln/ckpt_41500.pt
+  [Stability] grad_norm: 0.0000
+iter 41500: loss 4.6836, time 9037.80ms, mfu 63.61%
+iter 41550: loss 4.7659, time 156.25ms, mfu 64.75%
+  [Stability] grad_norm: 0.0000
+iter 41600: loss 4.6180, time 155.75ms, mfu 65.80%
+iter 41650: loss 4.7208, time 157.79ms, mfu 66.65%
+  [Stability] grad_norm: 0.0000
+iter 41700: loss 4.6082, time 155.78ms, mfu 67.51%
+iter 41750: loss 4.6748, time 160.77ms, mfu 68.05%
+  [Stability] grad_norm: 0.0000
+iter 41800: loss 4.6973, time 155.84ms, mfu 68.77%
+iter 41850: loss 4.6864, time 156.14ms, mfu 69.40%
+  [Stability] grad_norm: 0.0000
+iter 41900: loss 4.6158, time 156.38ms, mfu 69.95%
+iter 41950: loss 4.6720, time 158.09ms, mfu 70.37%
+step 42000: train loss 4.6645, val loss 4.6626, lr 9.62e-05
+    layer_0_entropy: mean=4.7686
+    layer_0_uniformity: ['0.956', '0.967', '0.975', '0.978', '0.977', '0.978', '0.950', '0.906', '0.995', '0.890', '0.959', '0.948']
+saving checkpoint to out-nope-owt-ln/ckpt_42000.pt
+  [Stability] grad_norm: 0.0000
+iter 42000: loss 4.6252, time 9024.91ms, mfu 63.46%
+iter 42050: loss 4.6379, time 157.01ms, mfu 64.58%
+  [Stability] grad_norm: 0.0000
+iter 42100: loss 4.6717, time 157.55ms, mfu 65.56%
+iter 42150: loss 4.6309, time 155.94ms, mfu 66.52%
+  [Stability] grad_norm: 0.0000
+iter 42200: loss 4.6390, time 156.11ms, mfu 67.38%
+iter 42250: loss 4.7405, time 154.97ms, mfu 68.21%
+  [Stability] grad_norm: 0.0000
+iter 42300: loss 4.7712, time 156.24ms, mfu 68.89%
+iter 42350: loss 4.6059, time 155.90ms, mfu 69.52%
+  [Stability] grad_norm: 0.0000
+iter 42400: loss 4.6061, time 154.24ms, mfu 70.16%
+iter 42450: loss 4.5459, time 156.35ms, mfu 70.64%
+step 42500: train loss 4.6639, val loss 4.6634, lr 9.19e-05
+    layer_0_entropy: mean=4.7694
+    layer_0_uniformity: ['0.957', '0.970', '0.974', '0.975', '0.976', '0.977', '0.948', '0.916', '0.991', '0.888', '0.963', '0.942']
+saving checkpoint to out-nope-owt-ln/ckpt_42500.pt
+  [Stability] grad_norm: 0.0000
+iter 42500: loss 4.6693, time 8923.31ms, mfu 63.71%
+iter 42550: loss 4.7148, time 155.02ms, mfu 64.90%
+  [Stability] grad_norm: 0.0000
+iter 42600: loss 4.6290, time 158.88ms, mfu 65.79%
+iter 42650: loss 4.7180, time 155.21ms, mfu 66.76%
+  [Stability] grad_norm: 0.0000
+iter 42700: loss 4.6657, time 157.05ms, mfu 67.55%
+iter 42750: loss 4.6960, time 155.17ms, mfu 68.35%
+  [Stability] grad_norm: 0.0000
+iter 42800: loss 4.6416, time 155.54ms, mfu 69.05%
+iter 42850: loss 4.6374, time 156.52ms, mfu 69.63%
+  [Stability] grad_norm: 0.0000
+iter 42900: loss 4.7028, time 160.43ms, mfu 69.97%
+iter 42950: loss 4.5269, time 155.64ms, mfu 70.51%
+step 43000: train loss 4.6609, val loss 4.6639, lr 8.78e-05
+    layer_0_entropy: mean=4.7643
+    layer_0_uniformity: ['0.957', '0.973', '0.976', '0.981', '0.977', '0.980', '0.954', '0.912', '0.997', '0.888', '0.966', '0.948']
+saving checkpoint to out-nope-owt-ln/ckpt_43000.pt
+  [Stability] grad_norm: 0.0000
+iter 43000: loss 4.7090, time 9017.29ms, mfu 63.59%
+iter 43050: loss 4.7253, time 154.94ms, mfu 64.79%
+  [Stability] grad_norm: 0.0000
+iter 43100: loss 4.7067, time 160.72ms, mfu 65.61%
+iter 43150: loss 4.6486, time 155.17ms, mfu 66.60%
+  [Stability] grad_norm: 0.0000
+iter 43200: loss 4.7053, time 155.72ms, mfu 67.47%
+iter 43250: loss 4.5672, time 155.21ms, mfu 68.27%
+  [Stability] grad_norm: 0.0000
+iter 43300: loss 4.7073, time 157.55ms, mfu 68.88%
+iter 43350: loss 4.7082, time 155.27ms, mfu 69.54%
+  [Stability] grad_norm: 0.0000
+iter 43400: loss 4.6197, time 157.18ms, mfu 70.05%
+iter 43450: loss 4.5245, time 156.61ms, mfu 70.53%
+step 43500: train loss 4.6553, val loss 4.6644, lr 8.41e-05
+    layer_0_entropy: mean=4.7620
+    layer_0_uniformity: ['0.951', '0.974', '0.975', '0.984', '0.975', '0.980', '0.947', '0.918', '0.996', '0.880', '0.963', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_43500.pt
+  [Stability] grad_norm: 0.0000
+iter 43500: loss 4.6699, time 8973.96ms, mfu 63.60%
+iter 43550: loss 4.7204, time 155.84ms, mfu 64.76%
+  [Stability] grad_norm: 0.0000
+iter 43600: loss 4.6298, time 158.28ms, mfu 65.69%
+iter 43650: loss 4.5297, time 155.20ms, mfu 66.68%
+  [Stability] grad_norm: 0.0000
+iter 43700: loss 4.6390, time 156.34ms, mfu 67.50%
+iter 43750: loss 4.7253, time 155.68ms, mfu 68.28%
+  [Stability] grad_norm: 0.0000
+iter 43800: loss 4.6827, time 155.86ms, mfu 68.97%
+iter 43850: loss 4.6303, time 161.03ms, mfu 69.36%
+  [Stability] grad_norm: 0.0000
+iter 43900: loss 4.6973, time 155.97ms, mfu 69.94%
+iter 43950: loss 4.7034, time 154.95ms, mfu 70.51%
+step 44000: train loss 4.6526, val loss 4.6651, lr 8.06e-05
+    layer_0_entropy: mean=4.7687
+    layer_0_uniformity: ['0.956', '0.971', '0.974', '0.982', '0.977', '0.980', '0.950', '0.917', '0.996', '0.884', '0.964', '0.951']
+saving checkpoint to out-nope-owt-ln/ckpt_44000.pt
+  [Stability] grad_norm: 0.0000
+iter 44000: loss 4.6117, time 9015.27ms, mfu 63.59%
+iter 44050: loss 4.5875, time 156.61ms, mfu 64.71%
+  [Stability] grad_norm: 0.0000
+iter 44100: loss 4.6804, time 158.82ms, mfu 65.62%
+iter 44150: loss 4.6679, time 155.12ms, mfu 66.61%
+  [Stability] grad_norm: 0.0000
+iter 44200: loss 4.6983, time 162.17ms, mfu 67.18%
+iter 44250: loss 4.7027, time 156.05ms, mfu 67.97%
+  [Stability] grad_norm: 0.0000
+iter 44300: loss 4.6791, time 159.47ms, mfu 68.53%
+iter 44350: loss 4.6678, time 154.93ms, mfu 69.24%
+  [Stability] grad_norm: 0.0000
+iter 44400: loss 4.6830, time 160.44ms, mfu 69.62%
+iter 44450: loss 4.7045, time 156.20ms, mfu 70.16%
+step 44500: train loss 4.6558, val loss 4.6618, lr 7.73e-05
+    layer_0_entropy: mean=4.7623
+    layer_0_uniformity: ['0.953', '0.969', '0.975', '0.982', '0.975', '0.978', '0.951', '0.911', '0.998', '0.875', '0.966', '0.953']
+saving checkpoint to out-nope-owt-ln/ckpt_44500.pt
+  [Stability] grad_norm: 0.0000
+iter 44500: loss 4.6901, time 8995.16ms, mfu 63.28%
+iter 44550: loss 4.6908, time 157.55ms, mfu 64.39%
+  [Stability] grad_norm: 0.0000
+iter 44600: loss 4.7192, time 155.70ms, mfu 65.48%
+iter 44650: loss 4.6705, time 156.34ms, mfu 66.43%
+  [Stability] grad_norm: 0.0000
+iter 44700: loss 4.6476, time 161.61ms, mfu 67.04%
+iter 44750: loss 4.6686, time 157.93ms, mfu 67.75%
+  [Stability] grad_norm: 0.0000
+iter 44800: loss 4.6710, time 157.30ms, mfu 68.43%
+iter 44850: loss 4.6580, time 155.11ms, mfu 69.14%
+  [Stability] grad_norm: 0.0000
+iter 44900: loss 4.6851, time 156.07ms, mfu 69.74%
+iter 44950: loss 4.6555, time 155.17ms, mfu 70.32%
+step 45000: train loss 4.6542, val loss 4.6550, lr 7.43e-05
+    layer_0_entropy: mean=4.7385
+    layer_0_uniformity: ['0.955', '0.969', '0.973', '0.978', '0.972', '0.977', '0.949', '0.901', '0.992', '0.880', '0.964', '0.946']
+saving checkpoint to out-nope-owt-ln/ckpt_45000.pt
+  [Stability] grad_norm: 0.0000
+iter 45000: loss 4.5882, time 9037.83ms, mfu 63.42%
+iter 45050: loss 4.7176, time 163.42ms, mfu 64.25%
+  [Stability] grad_norm: 0.0000
+iter 45100: loss 4.6124, time 156.76ms, mfu 65.30%
+iter 45150: loss 4.6261, time 160.40ms, mfu 66.08%
+  [Stability] grad_norm: 0.0000
+iter 45200: loss 4.5863, time 161.37ms, mfu 66.73%
+iter 45250: loss 4.7266, time 159.19ms, mfu 67.42%
+  [Stability] grad_norm: 0.0000
+iter 45300: loss 4.6736, time 156.76ms, mfu 68.16%
+iter 45350: loss 4.6497, time 155.45ms, mfu 68.88%
+  [Stability] grad_norm: 0.0000
+iter 45400: loss 4.6984, time 156.66ms, mfu 69.47%
+iter 45450: loss 4.6213, time 154.87ms, mfu 70.10%
+step 45500: train loss 4.6536, val loss 4.6539, lr 7.16e-05
+    layer_0_entropy: mean=4.7543
+    layer_0_uniformity: ['0.953', '0.968', '0.974', '0.982', '0.971', '0.980', '0.950', '0.903', '0.998', '0.879', '0.965', '0.950']
+saving checkpoint to out-nope-owt-ln/ckpt_45500.pt
+  [Stability] grad_norm: 0.0000
+iter 45500: loss 4.6530, time 9013.48ms, mfu 63.22%
+iter 45550: loss 4.6811, time 155.44ms, mfu 64.43%
+  [Stability] grad_norm: 0.0000
+iter 45600: loss 4.6695, time 155.75ms, mfu 65.52%
+iter 45650: loss 4.6206, time 155.73ms, mfu 66.49%
+  [Stability] grad_norm: 0.0000
+iter 45700: loss 4.6869, time 159.05ms, mfu 67.21%
+iter 45750: loss 4.6565, time 158.84ms, mfu 67.87%
+  [Stability] grad_norm: 0.0000
+iter 45800: loss 4.5735, time 158.14ms, mfu 68.49%
+iter 45850: loss 4.6836, time 155.12ms, mfu 69.20%
+  [Stability] grad_norm: 0.0000
+iter 45900: loss 4.6798, time 156.10ms, mfu 69.79%
+iter 45950: loss 4.6520, time 155.52ms, mfu 70.35%
+step 46000: train loss 4.6486, val loss 4.6600, lr 6.92e-05
+    layer_0_entropy: mean=4.7459
+    layer_0_uniformity: ['0.953', '0.969', '0.977', '0.978', '0.975', '0.975', '0.950', '0.912', '0.992', '0.884', '0.963', '0.947']
+saving checkpoint to out-nope-owt-ln/ckpt_46000.pt
+  [Stability] grad_norm: 0.0000
+iter 46000: loss 4.6544, time 9023.81ms, mfu 63.44%
+iter 46050: loss 4.6643, time 154.81ms, mfu 64.67%
+  [Stability] grad_norm: 0.0000
+iter 46100: loss 4.6152, time 154.51ms, mfu 65.79%
+iter 46150: loss 4.7357, time 155.88ms, mfu 66.73%
+  [Stability] grad_norm: 0.0000
+iter 46200: loss 4.6310, time 155.65ms, mfu 67.59%
+iter 46250: loss 4.6797, time 157.69ms, mfu 68.26%
+  [Stability] grad_norm: 0.0000
+iter 46300: loss 4.6806, time 161.21ms, mfu 68.70%
+iter 46350: loss 4.5721, time 155.23ms, mfu 69.39%
+  [Stability] grad_norm: 0.0000
+iter 46400: loss 4.6908, time 161.10ms, mfu 69.72%
+iter 46450: loss 4.7003, time 161.76ms, mfu 70.00%
+step 46500: train loss 4.6535, val loss 4.6545, lr 6.71e-05
+    layer_0_entropy: mean=4.7457
+    layer_0_uniformity: ['0.951', '0.970', '0.975', '0.979', '0.975', '0.976', '0.946', '0.905', '0.990', '0.879', '0.961', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_46500.pt
+  [Stability] grad_norm: 0.0000
+iter 46500: loss 4.6677, time 9016.99ms, mfu 63.13%
+iter 46550: loss 4.6504, time 155.65ms, mfu 64.34%
+  [Stability] grad_norm: 0.0000
+iter 46600: loss 4.7331, time 160.27ms, mfu 65.22%
+iter 46650: loss 4.6765, time 155.37ms, mfu 66.24%
+  [Stability] grad_norm: 0.0000
+iter 46700: loss 4.5368, time 156.00ms, mfu 67.13%
+iter 46750: loss 4.6976, time 160.51ms, mfu 67.72%
+  [Stability] grad_norm: 0.0000
+iter 46800: loss 4.6099, time 156.41ms, mfu 68.44%
+iter 46850: loss 4.6765, time 160.62ms, mfu 68.90%
+  [Stability] grad_norm: 0.0000
+iter 46900: loss 4.5287, time 157.31ms, mfu 69.46%
+iter 46950: loss 4.6036, time 157.75ms, mfu 69.94%
+step 47000: train loss 4.6472, val loss 4.6533, lr 6.52e-05
+    layer_0_entropy: mean=4.7371
+    layer_0_uniformity: ['0.952', '0.968', '0.977', '0.983', '0.973', '0.977', '0.949', '0.905', '0.995', '0.879', '0.965', '0.950']
+saving checkpoint to out-nope-owt-ln/ckpt_47000.pt
+  [Stability] grad_norm: 0.0000
+iter 47000: loss 4.6603, time 8979.09ms, mfu 63.08%
+iter 47050: loss 4.6728, time 154.93ms, mfu 64.34%
+  [Stability] grad_norm: 0.0000
+iter 47100: loss 4.6747, time 159.51ms, mfu 65.25%
+iter 47150: loss 4.6774, time 160.66ms, mfu 66.02%
+  [Stability] grad_norm: 0.0000
+iter 47200: loss 4.6512, time 156.31ms, mfu 66.92%
+iter 47250: loss 4.6267, time 155.96ms, mfu 67.74%
+  [Stability] grad_norm: 0.0000
+iter 47300: loss 4.6549, time 157.63ms, mfu 68.40%
+iter 47350: loss 4.7071, time 155.25ms, mfu 69.11%
+  [Stability] grad_norm: 0.0000
+iter 47400: loss 4.5991, time 156.61ms, mfu 69.68%
+iter 47450: loss 4.6662, time 154.98ms, mfu 70.28%
+step 47500: train loss 4.6465, val loss 4.6575, lr 6.36e-05
+    layer_0_entropy: mean=4.7498
+    layer_0_uniformity: ['0.951', '0.969', '0.975', '0.980', '0.975', '0.977', '0.948', '0.904', '0.994', '0.875', '0.961', '0.947']
+saving checkpoint to out-nope-owt-ln/ckpt_47500.pt
+  [Stability] grad_norm: 0.0000
+iter 47500: loss 4.6392, time 9050.08ms, mfu 63.38%
+iter 47550: loss 4.6162, time 154.95ms, mfu 64.61%
+  [Stability] grad_norm: 0.0000
+iter 47600: loss 4.7182, time 157.85ms, mfu 65.57%
+iter 47650: loss 4.7426, time 155.06ms, mfu 66.57%
+  [Stability] grad_norm: 0.0000
+iter 47700: loss 4.6054, time 157.63ms, mfu 67.35%
+iter 47750: loss 4.7130, time 154.92ms, mfu 68.18%
+  [Stability] grad_norm: 0.0000
+iter 47800: loss 4.5921, time 158.85ms, mfu 68.74%
+iter 47850: loss 4.6882, time 155.16ms, mfu 69.42%
+  [Stability] grad_norm: 0.0000
+iter 47900: loss 4.6451, time 157.41ms, mfu 69.93%
+iter 47950: loss 4.6897, time 156.37ms, mfu 70.43%
+step 48000: train loss 4.6436, val loss 4.6555, lr 6.23e-05
+    layer_0_entropy: mean=4.7381
+    layer_0_uniformity: ['0.948', '0.969', '0.972', '0.975', '0.972', '0.975', '0.944', '0.896', '0.995', '0.875', '0.961', '0.948']
+saving checkpoint to out-nope-owt-ln/ckpt_48000.pt
+  [Stability] grad_norm: 0.0000
+iter 48000: loss 4.6791, time 9092.03ms, mfu 63.52%
+iter 48050: loss 4.6927, time 156.48ms, mfu 64.65%
+  [Stability] grad_norm: 0.0000
+iter 48100: loss 4.5825, time 156.32ms, mfu 65.69%
+iter 48150: loss 4.5852, time 156.24ms, mfu 66.62%
+  [Stability] grad_norm: 0.0000
+iter 48200: loss 4.5652, time 158.89ms, mfu 67.33%
+iter 48250: loss 4.6224, time 155.89ms, mfu 68.12%
+  [Stability] grad_norm: 0.0000
+iter 48300: loss 4.6904, time 157.03ms, mfu 68.77%
+iter 48350: loss 4.6957, time 156.13ms, mfu 69.40%
+  [Stability] grad_norm: 0.0000
+iter 48400: loss 4.5689, time 155.70ms, mfu 69.99%
+iter 48450: loss 4.6733, time 156.89ms, mfu 70.46%
+step 48500: train loss 4.6520, val loss 4.6542, lr 6.13e-05
+    layer_0_entropy: mean=4.7483
+    layer_0_uniformity: ['0.958', '0.966', '0.976', '0.981', '0.971', '0.977', '0.951', '0.908', '0.995', '0.890', '0.959', '0.952']
+saving checkpoint to out-nope-owt-ln/ckpt_48500.pt
+  [Stability] grad_norm: 0.0000
+iter 48500: loss 4.7430, time 9001.78ms, mfu 63.55%
+iter 48550: loss 4.6296, time 154.94ms, mfu 64.76%
+  [Stability] grad_norm: 0.0000
+iter 48600: loss 4.6235, time 155.87ms, mfu 65.80%
+iter 48650: loss 4.5817, time 156.30ms, mfu 66.72%
+  [Stability] grad_norm: 0.0000
+iter 48700: loss 4.6294, time 155.47ms, mfu 67.59%
+iter 48750: loss 4.6431, time 155.88ms, mfu 68.35%
+  [Stability] grad_norm: 0.0000
+iter 48800: loss 4.7023, time 156.02ms, mfu 69.02%
+iter 48850: loss 4.6256, time 156.21ms, mfu 69.63%
+  [Stability] grad_norm: 0.0000
+iter 48900: loss 4.5613, time 159.49ms, mfu 70.01%
+iter 48950: loss 4.6019, time 155.15ms, mfu 70.57%
+step 49000: train loss 4.6505, val loss 4.6604, lr 6.06e-05
+    layer_0_entropy: mean=4.7358
+    layer_0_uniformity: ['0.951', '0.961', '0.972', '0.980', '0.972', '0.976', '0.950', '0.905', '0.997', '0.871', '0.966', '0.953']
+saving checkpoint to out-nope-owt-ln/ckpt_49000.pt
+  [Stability] grad_norm: 0.0000
+iter 49000: loss 4.5991, time 9062.91ms, mfu 63.64%
+iter 49050: loss 4.7140, time 157.53ms, mfu 64.71%
+  [Stability] grad_norm: 0.0000
+iter 49100: loss 4.6758, time 156.18ms, mfu 65.75%
+iter 49150: loss 4.7128, time 157.99ms, mfu 66.59%
+  [Stability] grad_norm: 0.0000
+iter 49200: loss 4.6425, time 159.38ms, mfu 67.29%
+iter 49250: loss 4.6242, time 156.24ms, mfu 68.06%
+  [Stability] grad_norm: 0.0000
+iter 49300: loss 4.5526, time 150.19ms, mfu 69.06%
+iter 49350: loss 4.6770, time 156.75ms, mfu 69.63%
+  [Stability] grad_norm: 0.0000
+iter 49400: loss 4.6973, time 158.60ms, mfu 70.06%
+iter 49450: loss 4.6860, time 157.17ms, mfu 70.51%
+step 49500: train loss 4.6455, val loss 4.6596, lr 6.01e-05
+    layer_0_entropy: mean=4.7425
+    layer_0_uniformity: ['0.950', '0.964', '0.973', '0.981', '0.971', '0.978', '0.942', '0.903', '0.994', '0.883', '0.963', '0.947']
+saving checkpoint to out-nope-owt-ln/ckpt_49500.pt
+  [Stability] grad_norm: 0.0000
+iter 49500: loss 4.5556, time 9068.17ms, mfu 63.59%
+iter 49550: loss 4.6781, time 157.11ms, mfu 64.69%
+  [Stability] grad_norm: 0.0000
+iter 49600: loss 4.6037, time 156.02ms, mfu 65.73%
+iter 49650: loss 4.7065, time 164.35ms, mfu 66.29%
+  [Stability] grad_norm: 0.0000
+iter 49700: loss 4.6201, time 165.94ms, mfu 66.72%
+iter 49750: loss 4.6416, time 159.17ms, mfu 67.42%
+  [Stability] grad_norm: 0.0000
+iter 49800: loss 4.6832, time 156.86ms, mfu 68.15%
+iter 49850: loss 4.6201, time 159.61ms, mfu 68.68%
+  [Stability] grad_norm: 0.0000
+iter 49900: loss 4.5888, time 155.46ms, mfu 69.35%
+iter 49950: loss 4.6760, time 155.05ms, mfu 69.97%
+step 50000: train loss 4.6472, val loss 4.6496, lr 6.00e-05
+    layer_0_entropy: mean=4.7333
+    layer_0_uniformity: ['0.949', '0.967', '0.968', '0.979', '0.969', '0.975', '0.940', '0.902', '0.992', '0.876', '0.961', '0.943']
+saving checkpoint to out-nope-owt-ln/ckpt_50000.pt
+  [Stability] grad_norm: 0.0000
+iter 50000: loss 4.6508, time 9024.29ms, mfu 63.10%
+
+Training complete!
+Best validation loss: 4.6496
+Checkpoints saved to: out-nope-owt-ln/
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-owt-ln[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260112_192851-do3iheo8/logs[0m

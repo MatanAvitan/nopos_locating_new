@@ -1,0 +1,278 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run khbtkd6h
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_183645-khbtkd6h
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_k_nope-pca-cumvar-curves
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/khbtkd6h
+
+======================================================================
+Position Regression Metrics (Per-K) - nope-pca-cumvar-curves
+======================================================================
+Checkpoint dir: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-posreg-6layer-until-mlp
+Found 20 checkpoints: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]
+
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Analyzing:   5%|▌         | 1/20 [00:41<13:10, 41.62s/it]Analyzing:  10%|█         | 2/20 [02:10<20:52, 69.59s/it]Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Image.__del__ at 0x7fa0a13db2e0>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 4117, in __del__
+    self.tk.call('image', 'delete', self.name)
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Exception ignored in: <function Variable.__del__ at 0x7fa0a1378a40>
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/tkinter/__init__.py", line 414, in __del__
+    if self._tk.getboolean(self._tk.call("info", "exists", self._name)):
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: main thread is not in main loop
+Tcl_AsyncDelete: async handler deleted by the wrong thread

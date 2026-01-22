@@ -1,0 +1,539 @@
+
+WandB initialized. Project: nope-decoding-ablation
+
+Loading 1000 sequences from OWT...
+Loaded tokens: torch.Size([1000, 512])
+
+################################################################################
+# NoPE + LayerNorm
+################################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: NoPE + LayerNorm (random)
+       Embedding: overall_r=-0.002, per_sample_r=-0.002
+        Post-LN1: overall_r=-0.002, per_sample_r=-0.002
+       Post-Attn: overall_r=-0.009, per_sample_r=-0.011
+        Attn+Res: overall_r=-0.009, per_sample_r=-0.010
+        Post-LN2: overall_r=0.173, per_sample_r=0.203
+         MLP+Res: overall_r=-0.007, per_sample_r=-0.007
+
+  [Exp2] Ablation accuracy drop: NoPE + LayerNorm (random)
+       Embedding: R²_orig=-0.002, R²_ablated=-0.002, drop=-1.0%
+        Post-LN1: R²_orig=-0.002, R²_ablated=-0.002, drop=0.0%
+       Post-Attn: R²_orig=0.059, R²_ablated=0.060, drop=-0.4%
+        Attn+Res: R²_orig=0.036, R²_ablated=0.036, drop=0.3%
+        Post-LN2: R²_orig=0.061, R²_ablated=0.061, drop=-0.0%
+         MLP+Res: R²_orig=0.074, R²_ablated=0.071, drop=4.3%
+
+  [Exp3] 24-Cluster Snake Analysis: NoPE + LayerNorm (random)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=1.3 clusters/sequence
+    76.1% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=-0.852, avg corr=0.502
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_NoPE_LN_random.png
+
+  [Exp4] Sample-level kurtosis: NoPE + LayerNorm (random)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=0.0002
+    Mean kurtosis-position corr: r=0.0066
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_NoPE_LN_random.png
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: NoPE + LayerNorm (trained)
+       Embedding: overall_r=0.002, per_sample_r=0.002
+        Post-LN1: overall_r=0.001, per_sample_r=0.002
+       Post-Attn: overall_r=0.021, per_sample_r=0.023
+        Attn+Res: overall_r=0.026, per_sample_r=0.030
+        Post-LN2: overall_r=0.376, per_sample_r=0.419
+         MLP+Res: overall_r=-0.006, per_sample_r=-0.006
+
+  [Exp2] Ablation accuracy drop: NoPE + LayerNorm (trained)
+       Embedding: R²_orig=-0.001, R²_ablated=-0.001, drop=-0.2%
+        Post-LN1: R²_orig=-0.001, R²_ablated=-0.001, drop=-0.8%
+       Post-Attn: R²_orig=0.214, R²_ablated=0.214, drop=0.1%
+        Attn+Res: R²_orig=0.206, R²_ablated=0.203, drop=1.2%
+        Post-LN2: R²_orig=0.457, R²_ablated=0.457, drop=0.1%
+         MLP+Res: R²_orig=0.304, R²_ablated=0.301, drop=1.1%
+
+  [Exp3] 24-Cluster Snake Analysis: NoPE + LayerNorm (trained)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=2.3 clusters/sequence
+    30.3% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=-1.273, avg corr=0.350
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_NoPE_LN_trained.png
+
+  [Exp4] Sample-level kurtosis: NoPE + LayerNorm (trained)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=0.4177
+    Mean kurtosis-position corr: r=0.8861
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_NoPE_LN_trained.png
+
+################################################################################
+# NoPE + BatchNorm2
+################################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: NoPE + BatchNorm2 (random)
+       Embedding: overall_r=-0.000, per_sample_r=-0.000
+        Post-LN1: overall_r=-0.000, per_sample_r=-0.000
+       Post-Attn: overall_r=-0.011, per_sample_r=-0.009
+        Attn+Res: overall_r=-0.011, per_sample_r=-0.010
+        Post-LN2: overall_r=-0.011, per_sample_r=-0.010
+         MLP+Res: overall_r=-0.014, per_sample_r=-0.013
+
+  [Exp2] Ablation accuracy drop: NoPE + BatchNorm2 (random)
+       Embedding: R²_orig=-0.002, R²_ablated=-0.002, drop=-0.0%
+        Post-LN1: R²_orig=-0.002, R²_ablated=-0.002, drop=-0.1%
+       Post-Attn: R²_orig=0.060, R²_ablated=0.060, drop=0.3%
+        Attn+Res: R²_orig=0.033, R²_ablated=0.033, drop=0.3%
+        Post-LN2: R²_orig=0.036, R²_ablated=0.036, drop=-0.1%
+         MLP+Res: R²_orig=0.046, R²_ablated=0.046, drop=0.3%
+
+  [Exp3] 24-Cluster Snake Analysis: NoPE + BatchNorm2 (random)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=1.3 clusters/sequence
+    75.3% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=-1.034, avg corr=0.464
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_NoPE_BN2_random.png
+
+  [Exp4] Sample-level kurtosis: NoPE + BatchNorm2 (random)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=-0.1403
+    Mean kurtosis-position corr: r=-0.9696
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_NoPE_BN2_random.png
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: NoPE + BatchNorm2 (trained)
+       Embedding: overall_r=0.001, per_sample_r=0.002
+        Post-LN1: overall_r=0.001, per_sample_r=0.001
+       Post-Attn: overall_r=-0.036, per_sample_r=-0.037
+        Attn+Res: overall_r=-0.052, per_sample_r=-0.056
+        Post-LN2: overall_r=-0.052, per_sample_r=-0.055
+         MLP+Res: overall_r=0.031, per_sample_r=0.031
+
+  [Exp2] Ablation accuracy drop: NoPE + BatchNorm2 (trained)
+       Embedding: R²_orig=-0.001, R²_ablated=-0.001, drop=0.1%
+        Post-LN1: R²_orig=-0.001, R²_ablated=-0.001, drop=3.2%
+       Post-Attn: R²_orig=0.258, R²_ablated=0.258, drop=-0.0%
+        Attn+Res: R²_orig=0.261, R²_ablated=0.260, drop=0.2%
+        Post-LN2: R²_orig=0.266, R²_ablated=0.265, drop=0.2%
+         MLP+Res: R²_orig=0.327, R²_ablated=0.311, drop=4.9%
+
+  [Exp3] 24-Cluster Snake Analysis: NoPE + BatchNorm2 (trained)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=2.5 clusters/sequence
+    20.6% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=-1.190, avg corr=0.347
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_NoPE_BN2_trained.png
+
+  [Exp4] Sample-level kurtosis: NoPE + BatchNorm2 (trained)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=0.1556
+    Mean kurtosis-position corr: r=0.9321
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_NoPE_BN2_trained.png
+
+################################################################################
+# NoPE + No LN2
+################################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: NoPE + No LN2 (random)
+       Embedding: overall_r=0.001, per_sample_r=0.001
+        Post-LN1: overall_r=0.001, per_sample_r=0.001
+       Post-Attn: overall_r=-0.002, per_sample_r=-0.000
+        Attn+Res: overall_r=-0.002, per_sample_r=-0.001
+        Post-LN2: overall_r=-0.002, per_sample_r=-0.001
+         MLP+Res: overall_r=-0.004, per_sample_r=-0.004
+
+  [Exp2] Ablation accuracy drop: NoPE + No LN2 (random)
+       Embedding: R²_orig=-0.002, R²_ablated=-0.002, drop=0.2%
+        Post-LN1: R²_orig=-0.002, R²_ablated=-0.002, drop=-0.0%
+       Post-Attn: R²_orig=0.059, R²_ablated=0.059, drop=0.2%
+        Attn+Res: R²_orig=0.033, R²_ablated=0.033, drop=0.3%
+        Post-LN2: R²_orig=0.029, R²_ablated=0.029, drop=0.2%
+         MLP+Res: R²_orig=0.046, R²_ablated=0.046, drop=-0.1%
+
+  [Exp3] 24-Cluster Snake Analysis: NoPE + No LN2 (random)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=1.3 clusters/sequence
+    73.5% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=-0.993, avg corr=0.479
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_NoPE_NoLN2_random.png
+
+  [Exp4] Sample-level kurtosis: NoPE + No LN2 (random)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=-0.1421
+    Mean kurtosis-position corr: r=-0.9704
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_NoPE_NoLN2_random.png
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: NoPE + No LN2 (trained)
+       Embedding: overall_r=0.001, per_sample_r=0.001
+        Post-LN1: overall_r=0.001, per_sample_r=0.001
+       Post-Attn: overall_r=-0.083, per_sample_r=-0.085
+        Attn+Res: overall_r=-0.086, per_sample_r=-0.089
+        Post-LN2: overall_r=-0.086, per_sample_r=-0.089
+         MLP+Res: overall_r=-0.012, per_sample_r=-0.017
+
+  [Exp2] Ablation accuracy drop: NoPE + No LN2 (trained)
+       Embedding: R²_orig=-0.001, R²_ablated=-0.001, drop=-1.9%
+        Post-LN1: R²_orig=-0.001, R²_ablated=-0.001, drop=1.9%
+       Post-Attn: R²_orig=0.250, R²_ablated=0.249, drop=0.2%
+        Attn+Res: R²_orig=0.253, R²_ablated=0.252, drop=0.1%
+        Post-LN2: R²_orig=0.250, R²_ablated=0.249, drop=0.1%
+         MLP+Res: R²_orig=0.370, R²_ablated=0.364, drop=1.8%
+
+  [Exp3] 24-Cluster Snake Analysis: NoPE + No LN2 (trained)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=7.0 clusters/sequence
+    1.0% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=-1.623, avg corr=0.269
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_NoPE_NoLN2_trained.png
+
+  [Exp4] Sample-level kurtosis: NoPE + No LN2 (trained)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=0.2020
+    Mean kurtosis-position corr: r=0.9121
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_NoPE_NoLN2_trained.png
+
+################################################################################
+# Baseline + PE
+################################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: Baseline + PE (random)
+       Embedding: overall_r=0.030, per_sample_r=0.030
+        Post-LN1: overall_r=0.029, per_sample_r=0.029
+       Post-Attn: overall_r=-0.032, per_sample_r=-0.017
+        Attn+Res: overall_r=-0.037, per_sample_r=-0.029
+        Post-LN2: overall_r=0.104, per_sample_r=0.113
+         MLP+Res: overall_r=-0.074, per_sample_r=-0.075
+
+  [Exp2] Ablation accuracy drop: Baseline + PE (random)
+       Embedding: R²_orig=0.501, R²_ablated=0.501, drop=0.0%
+        Post-LN1: R²_orig=0.500, R²_ablated=0.500, drop=0.0%
+       Post-Attn: R²_orig=0.958, R²_ablated=0.958, drop=0.0%
+        Attn+Res: R²_orig=0.919, R²_ablated=0.919, drop=-0.0%
+        Post-LN2: R²_orig=0.933, R²_ablated=0.933, drop=-0.0%
+         MLP+Res: R²_orig=0.912, R²_ablated=0.912, drop=-0.0%
+
+  [Exp3] 24-Cluster Snake Analysis: Baseline + PE (random)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=1.8 clusters/sequence
+    31.4% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=0.819, avg corr=0.934
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_Baseline_PE_random.png
+
+  [Exp4] Sample-level kurtosis: Baseline + PE (random)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=0.0219
+    Mean kurtosis-position corr: r=0.1017
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_Baseline_PE_random.png
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+  [Exp1] Decoding vector correlation: Baseline + PE (trained)
+       Embedding: overall_r=0.010, per_sample_r=0.011
+        Post-LN1: overall_r=0.017, per_sample_r=0.017
+       Post-Attn: overall_r=-0.139, per_sample_r=-0.158
+        Attn+Res: overall_r=0.002, per_sample_r=0.000
+        Post-LN2: overall_r=-0.002, per_sample_r=-0.006
+         MLP+Res: overall_r=-0.014, per_sample_r=-0.014
+
+  [Exp2] Ablation accuracy drop: Baseline + PE (trained)
+       Embedding: R²_orig=0.998, R²_ablated=0.998, drop=0.0%
+        Post-LN1: R²_orig=0.996, R²_ablated=0.996, drop=0.0%
+       Post-Attn: R²_orig=0.980, R²_ablated=0.980, drop=0.0%
+        Attn+Res: R²_orig=0.561, R²_ablated=0.561, drop=0.0%
+        Post-LN2: R²_orig=0.501, R²_ablated=0.501, drop=-0.0%
+         MLP+Res: R²_orig=0.284, R²_ablated=0.284, drop=-0.0%
+
+  [Exp3] 24-Cluster Snake Analysis: Baseline + PE (trained)
+    Running t-SNE on 10000 points...
+    Clustering into 24 clusters...
+    Analyzing sequence coherence...
+    Sequence coherence: mean=5.8 clusters/sequence
+    2.3% of sequences stay in a single cluster
+    Analyzing cluster membership by first token...
+    Training per-cluster linear probes...
+    Per-cluster probe: avg R²=0.782, avg corr=0.894
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/cluster_analysis_Baseline_PE_trained.png
+
+  [Exp4] Sample-level kurtosis: Baseline + PE (trained)
+    Computing sample-level kurtosis (vectorized)...
+    Overall kurtosis-position corr: r=0.0001
+    Mean kurtosis-position corr: r=0.0008
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/plots/kurtosis_Baseline_PE_trained.png
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_ablation_comprehensive/comprehensive_results.json
+
+================================================================================
+EXPERIMENT 1: Decoding Vector Correlation by Layer
+================================================================================
+Model                        Embedding     Post-LN1    Post-Attn     Attn+Res     Post-LN2      MLP+Res
+----------------------------------------------------------------------------------------------------
+
+--- RANDOM ---
+NoPE + LayerNorm                -0.002       -0.002       -0.009       -0.009        0.173       -0.007
+NoPE + BatchNorm2               -0.000       -0.000       -0.011       -0.011       -0.011       -0.014
+NoPE + No LN2                    0.001        0.001       -0.002       -0.002       -0.002       -0.004
+Baseline + PE                    0.030        0.029       -0.032       -0.037        0.104       -0.074
+
+--- TRAINED ---
+NoPE + LayerNorm                 0.002        0.001        0.021        0.026        0.376       -0.006
+NoPE + BatchNorm2                0.001        0.001       -0.036       -0.052       -0.052        0.031
+NoPE + No LN2                    0.001        0.001       -0.083       -0.086       -0.086       -0.012
+Baseline + PE                    0.010        0.017       -0.139        0.002       -0.002       -0.014
+
+================================================================================
+EXPERIMENT 2: Ablation Accuracy Drop (R² change when projecting out decoding vector)
+================================================================================
+Model                        Embedding     Post-LN1    Post-Attn     Attn+Res     Post-LN2      MLP+Res
+----------------------------------------------------------------------------------------------------
+
+--- RANDOM ---
+NoPE + LayerNorm                -0.000        0.000       -0.000        0.000       -0.000        0.003
+NoPE + BatchNorm2               -0.000       -0.000        0.000        0.000       -0.000        0.000
+NoPE + No LN2                    0.000       -0.000        0.000        0.000        0.000       -0.000
+Baseline + PE                    0.000        0.000        0.000       -0.000       -0.000       -0.000
+
+--- TRAINED ---
+NoPE + LayerNorm                -0.000       -0.000        0.000        0.002        0.000        0.003
+NoPE + BatchNorm2                0.000        0.000       -0.000        0.001        0.001        0.016
+NoPE + No LN2                   -0.000        0.000        0.000        0.000        0.000        0.007
+Baseline + PE                    0.000        0.000        0.000        0.000       -0.000       -0.000
+
+================================================================================
+EXPERIMENT 3: Cluster Snake Analysis Summary
+================================================================================
+
+NoPE + LayerNorm_random:
+  Avg clusters per sequence: 1.3
+  % single-cluster sequences: 76.1%
+  Avg per-cluster R²: -0.852
+
+NoPE + LayerNorm_trained:
+  Avg clusters per sequence: 2.3
+  % single-cluster sequences: 30.3%
+  Avg per-cluster R²: -1.273
+
+NoPE + BatchNorm2_random:
+  Avg clusters per sequence: 1.3
+  % single-cluster sequences: 75.3%
+  Avg per-cluster R²: -1.034
+
+NoPE + BatchNorm2_trained:
+  Avg clusters per sequence: 2.5
+  % single-cluster sequences: 20.6%
+  Avg per-cluster R²: -1.190
+
+NoPE + No LN2_random:
+  Avg clusters per sequence: 1.3
+  % single-cluster sequences: 73.5%
+  Avg per-cluster R²: -0.993
+
+NoPE + No LN2_trained:
+  Avg clusters per sequence: 7.0
+  % single-cluster sequences: 1.0%
+  Avg per-cluster R²: -1.623
+
+Baseline + PE_random:
+  Avg clusters per sequence: 1.8
+  % single-cluster sequences: 31.4%
+  Avg per-cluster R²: 0.819
+
+Baseline + PE_trained:
+  Avg clusters per sequence: 5.8
+  % single-cluster sequences: 2.3%
+  Avg per-cluster R²: 0.782
+
+================================================================================
+EXPERIMENT 4: Sample-Level Kurtosis Summary
+================================================================================
+
+NoPE + LayerNorm_random:
+  Overall kurtosis-position corr: r=0.0002
+  Mean kurtosis: -0.01
+
+NoPE + LayerNorm_trained:
+  Overall kurtosis-position corr: r=0.4177
+  Mean kurtosis: 85.66
+
+NoPE + BatchNorm2_random:
+  Overall kurtosis-position corr: r=-0.1403
+  Mean kurtosis: -0.05
+
+NoPE + BatchNorm2_trained:
+  Overall kurtosis-position corr: r=0.1556
+  Mean kurtosis: 0.61
+
+NoPE + No LN2_random:
+  Overall kurtosis-position corr: r=-0.1421
+  Mean kurtosis: -0.05
+
+NoPE + No LN2_trained:
+  Overall kurtosis-position corr: r=0.2020
+  Mean kurtosis: 3.06
+
+Baseline + PE_random:
+  Overall kurtosis-position corr: r=0.0219
+  Mean kurtosis: -0.01
+
+Baseline + PE_trained:
+  Overall kurtosis-position corr: r=0.0001
+  Mean kurtosis: 45.05

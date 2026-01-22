@@ -1,0 +1,29 @@
+/home/nlp/matan_avitan/.bashrc: line 9: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 10: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 11: bind: warning: line editing not enabled
+Extracting attention:   0%|          | 0/20 [00:00<?, ?it/s]Extracting attention:   5%|▌         | 1/20 [00:00<00:08,  2.16it/s]Extracting attention:  10%|█         | 2/20 [00:00<00:06,  2.59it/s]Extracting attention:  15%|█▌        | 3/20 [00:01<00:06,  2.68it/s]Extracting attention:  20%|██        | 4/20 [00:01<00:05,  2.73it/s]Extracting attention:  25%|██▌       | 5/20 [00:01<00:05,  2.77it/s]Extracting attention:  30%|███       | 6/20 [00:02<00:05,  2.79it/s]Extracting attention:  35%|███▌      | 7/20 [00:02<00:04,  2.78it/s]Extracting attention:  40%|████      | 8/20 [00:02<00:04,  2.77it/s]Extracting attention:  45%|████▌     | 9/20 [00:03<00:03,  2.78it/s]Extracting attention:  50%|█████     | 10/20 [00:03<00:03,  2.78it/s]Extracting attention:  55%|█████▌    | 11/20 [00:04<00:03,  2.79it/s]Extracting attention:  60%|██████    | 12/20 [00:04<00:02,  2.79it/s]Extracting attention:  65%|██████▌   | 13/20 [00:04<00:02,  2.80it/s]Extracting attention:  70%|███████   | 14/20 [00:05<00:02,  2.79it/s]Extracting attention:  75%|███████▌  | 15/20 [00:05<00:01,  2.78it/s]Extracting attention:  80%|████████  | 16/20 [00:05<00:01,  2.78it/s]Extracting attention:  85%|████████▌ | 17/20 [00:06<00:01,  2.78it/s]Extracting attention:  90%|█████████ | 18/20 [00:06<00:00,  2.78it/s]Extracting attention:  95%|█████████▌| 19/20 [00:06<00:00,  2.79it/s]Extracting attention: 100%|██████████| 20/20 [00:07<00:00,  3.22it/s]Extracting attention: 100%|██████████| 20/20 [00:07<00:00,  2.82it/s]
+Extracting attention:   0%|          | 0/20 [00:00<?, ?it/s]Extracting attention:   5%|▌         | 1/20 [00:00<00:05,  3.24it/s]Extracting attention:  10%|█         | 2/20 [00:00<00:05,  3.11it/s]Extracting attention:  15%|█▌        | 3/20 [00:00<00:05,  2.96it/s]Extracting attention:  20%|██        | 4/20 [00:01<00:05,  2.88it/s]Extracting attention:  25%|██▌       | 5/20 [00:01<00:05,  2.85it/s]Extracting attention:  30%|███       | 6/20 [00:02<00:04,  2.81it/s]Extracting attention:  35%|███▌      | 7/20 [00:02<00:04,  2.80it/s]Extracting attention:  40%|████      | 8/20 [00:02<00:04,  2.79it/s]Extracting attention:  45%|████▌     | 9/20 [00:03<00:03,  2.79it/s]Extracting attention:  50%|█████     | 10/20 [00:03<00:03,  2.79it/s]Extracting attention:  55%|█████▌    | 11/20 [00:03<00:03,  2.79it/s]Extracting attention:  60%|██████    | 12/20 [00:04<00:02,  2.77it/s]Extracting attention:  65%|██████▌   | 13/20 [00:04<00:02,  2.76it/s]Extracting attention:  70%|███████   | 14/20 [00:04<00:02,  2.76it/s]Extracting attention:  75%|███████▌  | 15/20 [00:05<00:01,  2.76it/s]Extracting attention:  80%|████████  | 16/20 [00:05<00:01,  2.77it/s]Extracting attention:  85%|████████▌ | 17/20 [00:06<00:01,  2.77it/s]Extracting attention:  90%|█████████ | 18/20 [00:06<00:00,  2.77it/s]Extracting attention:  95%|█████████▌| 19/20 [00:06<00:00,  2.77it/s]Extracting attention: 100%|██████████| 20/20 [00:06<00:00,  3.21it/s]Extracting attention: 100%|██████████| 20/20 [00:06<00:00,  2.87it/s]
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/attention_pattern_analysis.py", line 422, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/attention_pattern_analysis.py", line 410, in main
+    json.dump(all_results, f, indent=2)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type float32 is not JSON serializable

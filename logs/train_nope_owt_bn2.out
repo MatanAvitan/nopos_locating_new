@@ -1,0 +1,27 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py:262: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 7d8xdfxm
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260112_160113-7d8xdfxm
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-owt-bn2
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-emergence
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-emergence/runs/7d8xdfxm
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] Graph break from `Tensor.item()`, consider setting:
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     torch._dynamo.config.capture_scalar_outputs = True
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] or:
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     env TORCHDYNAMO_CAPTURE_SCALAR_OUTPUTS=1
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] to include these operations in the captured graph.
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] 
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] Graph break: from user code at:
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 440, in forward
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     x = block(x)
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 268, in forward
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     x = x + self.attn(self.ln_1(x))
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 160, in forward
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     self._compute_attention_stats(att)
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]   File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 213, in _compute_attention_stats
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1]     uniformity_scores.append(corr.item())
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] 
+W0112 16:08:20.800000 790915 site-packages/torch/_dynamo/variables/tensor.py:1047] [0/1] 

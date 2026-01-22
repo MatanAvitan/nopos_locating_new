@@ -1,0 +1,10 @@
+==========================================
+NoPE Analysis - Sequential Batch Runner
+==========================================
+Start time: Sat Jan 10 10:11:09 PM IST 2026
+Using GPUs 0 and 1 only
+
+=== BATCH 1/3 ===
+[GPU 0] Starting Token-Position Correlation...
+[GPU 1] Starting Comprehensive Probe Analysis...
+[DONE] Token-Position Correlation

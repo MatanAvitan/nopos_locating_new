@@ -1,0 +1,147 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run s91tvp0d
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260120_170309-s91tvp0d
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run decoding-vector-mlp-6layer-posreg
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/s91tvp0d
+wandb: updating run metadata
+wandb: uploading media/images/plots/wv_alignment_7_0dec929f548a703a1a87.png; uploading media/images/plots/wv_wo_alignment_8_6ef7b8662d5579be5647.png; uploading output.log; uploading wandb-summary.json
+wandb: uploading history steps 7-8, summary
+wandb: 
+wandb: Run history:
+wandb:                  eval/ckpt_step ▁▁▂▃▄▆█
+wandb:               w_v/c_fc_rows/max █▇▄▁▁▄▄
+wandb:          w_v/c_fc_rows/mean_abs ██▇▄▁▄▅
+wandb:    w_v/c_fc_rows/top_k_mean_abs ███▃▁▄▃
+wandb:             w_v/c_proj_cols/max ▇█▇▄▁▁▂
+wandb:        w_v/c_proj_cols/mean_abs █▇▅▁▂▂▃
+wandb:  w_v/c_proj_cols/top_k_mean_abs ██▅▃▂▁▁
+wandb:            w_v_wo/c_fc_rows/max ▁▁▂█▂▃█
+wandb:       w_v_wo/c_fc_rows/mean_abs ▁▁▂▄▇▇█
+wandb: w_v_wo/c_fc_rows/top_k_mean_abs ▁▁▃▄█▇█
+wandb:                              +3 ...
+wandb: 
+wandb: Run summary:
+wandb:                  eval/ckpt_step 20000
+wandb:               w_v/c_fc_rows/max 0.12483
+wandb:          w_v/c_fc_rows/mean_abs 0.0284
+wandb:    w_v/c_fc_rows/top_k_mean_abs 0.11056
+wandb:             w_v/c_proj_cols/max 0.10201
+wandb:        w_v/c_proj_cols/mean_abs 0.02783
+wandb:  w_v/c_proj_cols/top_k_mean_abs 0.09733
+wandb:            w_v_wo/c_fc_rows/max 0.15013
+wandb:       w_v_wo/c_fc_rows/mean_abs 0.03484
+wandb: w_v_wo/c_fc_rows/top_k_mean_abs 0.14143
+wandb:                              +3 ...
+wandb: 
+wandb: 🚀 View run decoding-vector-mlp-6layer-posreg at: https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/s91tvp0d
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: Synced 5 W&B file(s), 2 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260120_170309-s91tvp0d/logs
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+

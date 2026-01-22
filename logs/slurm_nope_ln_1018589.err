@@ -1,0 +1,10 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py:262: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run do3iheo8
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260112_192851-do3iheo8
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-owt-ln
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-emergence
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-emergence/runs/do3iheo8

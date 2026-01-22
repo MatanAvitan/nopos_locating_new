@@ -1,0 +1,168 @@
+
+======================================================================
+AXIS ALIGNMENT EXPERIMENT - OpenWebText + Frozen Position Regression
+======================================================================
+Configuration:
+  n_samples: 500
+  seq_len: 128
+  Checkpoints: [500, 1000, 2000, 5000, 10000, 15000, 20000]
+  Device: cuda
+  Checkpoint dir: nanoGPT/out-posreg-6layer-until-mlp
+
+Loading OpenWebText validation sequences...
+Loaded OpenWebText val.bin: 4,434,606 tokens
+Counting unique tokens per position...
+Unique tokens at final position - min: 50, max: 106, mean: 88.4
+Analyzing checkpoints:  14%|█▍        | 1/7 [00:13<01:23, 13.88s/it]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           81.11M
+============================================================
+
+
+Results saved to: results/axis_alignment_owt/axis_alignment_owt_6layer_mlp_cos_results.json
+
+Creating plots...
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:563: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:564: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+  Saved: axis_alignment_owt_6layer_mlp_cos_training.png/pdf
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:653: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py:654: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+  Saved: axis_alignment_owt_6layer_mlp_cos_by_k.png/pdf
+All plots saved!

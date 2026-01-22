@@ -1,0 +1,159 @@
+
+WandB initialized: nope-position-regression-tsne/comparison_nope-1layer-tsne
+Analyzing checkpoints:   0%|          | 0/6 [00:00<?, ?it/s]Traceback (most recent call last):
+
+--- Checkpoint 500 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 500: name 'state_dict' is not defined
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 467, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 96, in load_checkpoint
+    for k, v in list(state_dict.items()):
+                     ^^^^^^^^^^
+NameError: name 'state_dict' is not defined
+Analyzing checkpoints:  17%|█▋        | 1/6 [00:01<00:08,  1.66s/it]Traceback (most recent call last):
+
+--- Checkpoint 2000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 2000: name 'state_dict' is not defined
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 467, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 96, in load_checkpoint
+    for k, v in list(state_dict.items()):
+                     ^^^^^^^^^^
+NameError: name 'state_dict' is not defined
+Analyzing checkpoints:  33%|███▎      | 2/6 [00:02<00:05,  1.28s/it]Traceback (most recent call last):
+
+--- Checkpoint 5000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 5000: name 'state_dict' is not defined
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 467, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 96, in load_checkpoint
+    for k, v in list(state_dict.items()):
+                     ^^^^^^^^^^
+NameError: name 'state_dict' is not defined
+Analyzing checkpoints:  50%|█████     | 3/6 [00:03<00:03,  1.12s/it]Traceback (most recent call last):
+
+--- Checkpoint 10000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 10000: name 'state_dict' is not defined
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 467, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 96, in load_checkpoint
+    for k, v in list(state_dict.items()):
+                     ^^^^^^^^^^
+NameError: name 'state_dict' is not defined
+Analyzing checkpoints:  67%|██████▋   | 4/6 [00:04<00:02,  1.19s/it]Traceback (most recent call last):
+
+--- Checkpoint 15000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 15000: name 'state_dict' is not defined
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 467, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 96, in load_checkpoint
+    for k, v in list(state_dict.items()):
+                     ^^^^^^^^^^
+NameError: name 'state_dict' is not defined
+Analyzing checkpoints:  83%|████████▎ | 5/6 [00:05<00:01,  1.15s/it]Traceback (most recent call last):
+
+--- Checkpoint 20000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 20000: name 'state_dict' is not defined
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 467, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 96, in load_checkpoint
+    for k, v in list(state_dict.items()):
+                     ^^^^^^^^^^
+NameError: name 'state_dict' is not defined
+Analyzing checkpoints: 100%|██████████| 6/6 [00:07<00:00,  1.20s/it]

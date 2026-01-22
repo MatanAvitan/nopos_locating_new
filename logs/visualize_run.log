@@ -1,0 +1,14 @@
+======================================================================
+OWT ANALYSIS VISUALIZATION
+======================================================================
+
+Loaded results: ['comprehensive', 'linearization', 'batchnorm']
+Saved: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_direction_norm_comparison.pdf
+Saved: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_trained_vs_random_summary.pdf
+Saved: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_linearization_effect.pdf
+Saved: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_batchnorm_population.pdf
+Saved: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots/owt_comprehensive_summary.pdf
+
+======================================================================
+All figures saved to: /home/nlp/matan_avitan/git/nopos_locating_new/overleaf/nopos---claude-version/plots
+======================================================================

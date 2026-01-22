@@ -1,0 +1,189 @@
+
+WandB initialized: nope-position-regression-tsne/comparison_nope-1layer-tsne
+Analyzing checkpoints:   0%|          | 0/6 [00:00<?, ?it/s]Traceback (most recent call last):
+
+--- Checkpoint 500 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 500: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 468, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 101, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+Analyzing checkpoints:  17%|█▋        | 1/6 [00:01<00:07,  1.52s/it]Traceback (most recent call last):
+
+--- Checkpoint 2000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 2000: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 468, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 101, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+Analyzing checkpoints:  33%|███▎      | 2/6 [00:02<00:04,  1.16s/it]Traceback (most recent call last):
+
+--- Checkpoint 5000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 5000: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 468, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 101, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+Analyzing checkpoints:  50%|█████     | 3/6 [00:03<00:03,  1.05s/it]Traceback (most recent call last):
+
+--- Checkpoint 10000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 10000: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 468, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 101, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+Analyzing checkpoints:  67%|██████▋   | 4/6 [00:04<00:01,  1.01it/s]Traceback (most recent call last):
+
+--- Checkpoint 15000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 15000: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 468, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 101, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+Analyzing checkpoints:  83%|████████▎ | 5/6 [00:05<00:00,  1.04it/s]Traceback (most recent call last):
+
+--- Checkpoint 20000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Error processing checkpoint 20000: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 468, in analyze_checkpoints
+    model, meta = load_checkpoint(str(ckpt_path), DEVICE)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 101, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias".
+	Unexpected key(s) in state_dict: "lm_head.weight".
+Analyzing checkpoints: 100%|██████████| 6/6 [00:06<00:00,  1.01s/it]

@@ -1,0 +1,110 @@
+{
+  "NoPE + LayerNorm": {
+    "model_name": "NoPE + LayerNorm",
+    "embed": {
+      "full_r2": 0,
+      "direction_r2": 0,
+      "norm_r2": 0
+    },
+    "post_ln1": {
+      "full_r2": 0,
+      "direction_r2": 0,
+      "norm_r2": 0
+    },
+    "post_attn": {
+      "full_r2": 0.19489522512263513,
+      "direction_r2": 0.4901492690208845,
+      "norm_r2": 0.20654895817604246
+    },
+    "post_attn_residual": {
+      "full_r2": 0.10185763021539784,
+      "direction_r2": 0.4066270386159163,
+      "norm_r2": 0.2092170754199837
+    },
+    "post_ln2": {
+      "full_r2": 0.40658193031104606,
+      "direction_r2": 0.39190710434798337,
+      "norm_r2": 0.20066705437378063
+    },
+    "post_mlp_residual": {
+      "full_r2": 0.3935289338441065,
+      "direction_r2": 0.4175597158560921,
+      "norm_r2": 0.0752780263083419
+    },
+    "decoding_vector": {
+      "decoding_vector_corr": -0.03893675479200306
+    }
+  },
+  "NoPE + BatchNorm2": {
+    "model_name": "NoPE + BatchNorm2",
+    "embed": {
+      "full_r2": 0,
+      "direction_r2": 0,
+      "norm_r2": 0
+    },
+    "post_ln1": {
+      "full_r2": 0,
+      "direction_r2": 0,
+      "norm_r2": 0
+    },
+    "post_attn": {
+      "full_r2": 0.1878343617879935,
+      "direction_r2": 0.35441455886869777,
+      "norm_r2": 0.14186982956165872
+    },
+    "post_attn_residual": {
+      "full_r2": 0.09445253824339717,
+      "direction_r2": 0.3202664530938252,
+      "norm_r2": 0.1438815328298917
+    },
+    "post_ln2": {
+      "full_r2": 0.09433109377804472,
+      "direction_r2": 0.44084261033290895,
+      "norm_r2": 0.2345483466626478
+    },
+    "post_mlp_residual": {
+      "full_r2": 0.31414087169604366,
+      "direction_r2": 0.4259392480910509,
+      "norm_r2": 0.17402240004882052
+    },
+    "decoding_vector": {
+      "decoding_vector_corr": 0.02324986544966106
+    }
+  },
+  "Baseline + PE": {
+    "model_name": "Baseline + PE",
+    "embed": {
+      "full_r2": 0,
+      "direction_r2": 0,
+      "norm_r2": 0
+    },
+    "post_ln1": {
+      "full_r2": 0,
+      "direction_r2": 0,
+      "norm_r2": 0
+    },
+    "post_attn": {
+      "full_r2": 0.16161183034605098,
+      "direction_r2": 0.5545888172066906,
+      "norm_r2": 0.23067769874458055
+    },
+    "post_attn_residual": {
+      "full_r2": 0.08254597929084873,
+      "direction_r2": 0.4349487258158248,
+      "norm_r2": 0.20473467716510863
+    },
+    "post_ln2": {
+      "full_r2": 0.4343329708496859,
+      "direction_r2": 0.43622854852518467,
+      "norm_r2": 0.05667061690349828
+    },
+    "post_mlp_residual": {
+      "full_r2": 0.4977505983923184,
+      "direction_r2": 0.492528041593554,
+      "norm_r2": 0.0034768450034528
+    },
+    "decoding_vector": {
+      "decoding_vector_corr": 0.08513254735211878
+    }
+  }
+}

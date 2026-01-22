@@ -1,0 +1,12 @@
+{
+  "NoPE_LN_random": {
+    "model": "NoPE_LN_random",
+    "n_sequences": 100,
+    "context_length": 256,
+    "pearson_r": 0.8697217524833798,
+    "pearson_p": 0.0,
+    "spearman_r": 0.9327876193074409,
+    "spearman_p": 0.0,
+    "r2_score": 0.759312629699707
+  }
+}

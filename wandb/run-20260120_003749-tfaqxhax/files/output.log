@@ -1,0 +1,29 @@
+
+======================================================================
+AXIS ALIGNMENT EXPERIMENT - OpenWebText + Frozen Position Regression
+======================================================================
+Configuration:
+  n_samples: 500
+  seq_len: 128
+  Checkpoints: [500, 1000, 2000, 5000, 10000, 15000, 20000]
+  Device: cuda
+  Checkpoint dir: nanoGPT/out-posreg-6layer-until-mlp
+
+Loading OpenWebText validation sequences...
+Loaded OpenWebText val.bin: 4,434,606 tokens
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 745, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 703, in main
+    results = run_experiment(cfg)
+              ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 400, in run_experiment
+    tokens = load_owt_sequences(cfg.n_samples, cfg.seq_len, cfg.seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py", line 194, in load_owt_sequences
+    tokens = torch.tensor(np.array(sequences), dtype=torch.long, device=device)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.

@@ -1,0 +1,6 @@
+{"time":"2026-01-18T22:24:28.579234197+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-18T22:24:30.089896095+02:00","level":"INFO","msg":"stream: created new stream","id":"xryszyuk"}
+{"time":"2026-01-18T22:24:30.09003688+02:00","level":"INFO","msg":"handler: started","stream_id":"xryszyuk"}
+{"time":"2026-01-18T22:24:30.090886544+02:00","level":"INFO","msg":"stream: started","id":"xryszyuk"}
+{"time":"2026-01-18T22:24:30.092111393+02:00","level":"INFO","msg":"writer: started","stream_id":"xryszyuk"}
+{"time":"2026-01-18T22:24:30.092202502+02:00","level":"INFO","msg":"sender: started","stream_id":"xryszyuk"}

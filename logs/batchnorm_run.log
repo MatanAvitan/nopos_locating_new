@@ -1,0 +1,105 @@
+======================================================================
+OWT BATCHNORM POPULATION STATISTICS ANALYSIS
+======================================================================
+
+Device: cuda
+
+######################################################################
+# NoPE + LayerNorm
+######################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing population statistics: NoPE + LayerNorm
+============================================================
+Collecting activations (inference mode)...
+Training baseline probe...
+  Baseline: R²=0.3993, r=0.6320
+Training population mean probe...
+  Population Mean: R²=0.9446, r=0.9763
+Training mean-subtracted probe...
+  Residual (h - μ): R²=0.0000, r=-0.1110
+Collecting activations (training mode)...
+
+  [Training Mode]
+  Baseline: R²=0.4046, r=0.6363
+  Population Mean: R²=0.9313, r=0.9703
+  Residual (h - μ): R²=0.0000, r=-0.1117
+
+  Population Mean Norm vs Position: r=0.6709
+
+######################################################################
+# NoPE + BatchNorm2
+######################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing population statistics: NoPE + BatchNorm2
+============================================================
+Collecting activations (inference mode)...
+Training baseline probe...
+  Baseline: R²=0.0817, r=0.2860
+Training population mean probe...
+  Population Mean: R²=0.9209, r=0.9665
+Training mean-subtracted probe...
+  Residual (h - μ): R²=0.0000, r=-0.1119
+Collecting activations (training mode)...
+
+  [Training Mode]
+  Baseline: R²=0.0861, r=0.2939
+  Population Mean: R²=0.9648, r=0.9841
+  Residual (h - μ): R²=0.0000, r=-0.1221
+
+  BatchNorm Running Stats:
+    Mean: 0.0073 ± 0.0996
+    Var:  0.0013 ± 0.0004
+
+  Population Mean Norm vs Position: r=-0.5349
+
+======================================================================
+SUMMARY: BatchNorm vs LayerNorm Population Statistics
+======================================================================
+
+Experiment                 Baseline R²  Pop Mean R²  Residual R²
+---------------------------------------------------------------
+NoPE + LayerNorm                0.3993       0.9446       0.0000
+NoPE + BatchNorm2               0.0817       0.9209       0.0000
+
+Experiment                Mode Diff (Baseline) Mode Diff (Pop Mean)
+-------------------------------------------------------------------
+NoPE + LayerNorm                       +0.0053              -0.0132
+NoPE + BatchNorm2                      +0.0044              +0.0440
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/owt_comprehensive/owt_batchnorm_population_results.json

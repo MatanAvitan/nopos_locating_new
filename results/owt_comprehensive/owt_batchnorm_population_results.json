@@ -1,0 +1,90 @@
+{
+  "NoPE + LayerNorm": {
+    "experiment": "NoPE + LayerNorm",
+    "n_samples": 500,
+    "context": 512,
+    "baseline_probe": {
+      "r2": 0.3993356195510407,
+      "corr": 0.6320056383920267
+    },
+    "population_mean_probe": {
+      "r2": 0.9445696813639887,
+      "corr": 0.9763280549094334
+    },
+    "residual_probe": {
+      "r2": 0.0,
+      "corr": -0.11100496184106962
+    },
+    "training_mode": {
+      "baseline_probe": {
+        "r2": 0.40458667321780173,
+        "corr": 0.6362596419986094
+      },
+      "population_mean_probe": {
+        "r2": 0.9313201985781951,
+        "corr": 0.9703049338767283
+      },
+      "residual_probe": {
+        "r2": 0.0,
+        "corr": -0.11167087510559959
+      }
+    },
+    "mode_difference": {
+      "baseline_r2_diff": 0.005251053666761041,
+      "pop_mean_r2_diff": -0.01324948278579352,
+      "residual_r2_diff": 0.0
+    },
+    "population_mean_norm_position_corr": 0.6709313815694731
+  },
+  "NoPE + BatchNorm2": {
+    "experiment": "NoPE + BatchNorm2",
+    "n_samples": 500,
+    "context": 512,
+    "baseline_probe": {
+      "r2": 0.08170980634647962,
+      "corr": 0.28597283137075014
+    },
+    "population_mean_probe": {
+      "r2": 0.9208744805761448,
+      "corr": 0.9665164700337159
+    },
+    "residual_probe": {
+      "r2": 0.0,
+      "corr": -0.11186681957868748
+    },
+    "training_mode": {
+      "baseline_probe": {
+        "r2": 0.0860981976764632,
+        "corr": 0.29386373445316893
+      },
+      "population_mean_probe": {
+        "r2": 0.9648403469379834,
+        "corr": 0.9840907501008176
+      },
+      "residual_probe": {
+        "r2": 0.0,
+        "corr": -0.12211776626638038
+      }
+    },
+    "mode_difference": {
+      "baseline_r2_diff": 0.0043883913299835875,
+      "pop_mean_r2_diff": 0.043965866361838524,
+      "residual_r2_diff": 0.0
+    },
+    "batchnorm_running_stats": {
+      "running_mean_mean": 0.007264322135597467,
+      "running_mean_std": 0.09959208220243454,
+      "running_var_mean": 0.0013245103182271123,
+      "running_var_std": 0.0004076106706634164,
+      "running_mean_range": [
+        -0.7385469675064087,
+        0.3449065089225769
+      ],
+      "running_var_range": [
+        0.00086050177924335,
+        0.010407865978777409
+      ]
+    },
+    "population_mean_norm_position_corr": -0.5349027529841089
+  }
+}

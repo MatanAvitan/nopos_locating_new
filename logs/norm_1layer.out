@@ -1,0 +1,32 @@
+============================================================
+GENERATING NORM VISUALIZATION
+============================================================
+Loading checkpoint: nanoGPT/out-posreg-1layer-until-mlp/ckpt_20000.pt
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 371, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 312, in main
+    trained_model, config = load_trained_model(str(ckpt_path))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/visualize_norm_over_positions_flexible.py", line 85, in load_trained_model
+    model.load_state_dict(new_state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 

@@ -1,0 +1,26 @@
+/home/nlp/matan_avitan/.bashrc: line 9: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 10: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 11: bind: warning: line editing not enabled
+Extracting:   0%|          | 0/20 [00:00<?, ?it/s]Extracting:   5%|▌         | 1/20 [00:00<00:07,  2.54it/s]Extracting:  10%|█         | 2/20 [00:00<00:05,  3.52it/s]Extracting:  15%|█▌        | 3/20 [00:00<00:04,  3.98it/s]Extracting:  20%|██        | 4/20 [00:01<00:03,  4.28it/s]Extracting:  25%|██▌       | 5/20 [00:01<00:03,  4.46it/s]Extracting:  30%|███       | 6/20 [00:01<00:03,  4.58it/s]Extracting:  35%|███▌      | 7/20 [00:01<00:02,  4.66it/s]Extracting:  40%|████      | 8/20 [00:01<00:02,  4.71it/s]Extracting:  45%|████▌     | 9/20 [00:02<00:02,  4.71it/s]Extracting:  50%|█████     | 10/20 [00:02<00:02,  4.70it/s]Extracting:  55%|█████▌    | 11/20 [00:02<00:02,  4.46it/s]Extracting:  60%|██████    | 12/20 [00:02<00:01,  4.55it/s]Extracting:  65%|██████▌   | 13/20 [00:02<00:01,  4.62it/s]Extracting:  70%|███████   | 14/20 [00:03<00:01,  4.68it/s]Extracting:  75%|███████▌  | 15/20 [00:03<00:01,  4.72it/s]Extracting:  80%|████████  | 16/20 [00:03<00:00,  4.36it/s]Extracting:  85%|████████▌ | 17/20 [00:03<00:00,  4.45it/s]Extracting:  90%|█████████ | 18/20 [00:04<00:00,  4.55it/s]Extracting:  95%|█████████▌| 19/20 [00:04<00:00,  4.62it/s]Extracting: 100%|██████████| 20/20 [00:04<00:00,  5.37it/s]Extracting: 100%|██████████| 20/20 [00:04<00:00,  4.57it/s]
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py", line 769, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py", line 690, in main
+    results_direction = analyze_learned_direction(activations, cfg)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/single_sample_position_analysis.py", line 210, in analyze_learned_direction
+    probe.fit(X_train, y_train)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/linear_model/_ridge.py", line 1239, in fit
+    X, y = validate_data(
+           ^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/utils/validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/utils/validation.py", line 1389, in check_X_y
+    check_consistent_length(X, y)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/utils/validation.py", line 475, in check_consistent_length
+    raise ValueError(
+ValueError: Found input variables with inconsistent numbers of samples: [1024000, 256000]

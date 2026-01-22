@@ -1,0 +1,318 @@
+
+======================================================================
+AXIS ALIGNMENT EXPERIMENT (OPTIMIZED)
+======================================================================
+Configuration:
+  n_samples: 200
+  seq_len: 64
+  K values: [1, 2, 4, 8, 16, 32]
+  Checkpoints: [250, 500, 1000, 2000, 3000, 4000, 5000]
+  Device: cuda
+Analyzing checkpoints:   0%|          | 0/7 [00:00<?, ?it/s]Analyzing checkpoints:  14%|█▍        | 1/7 [00:16<01:40, 16.82s/it]Analyzing checkpoints:  29%|██▊       | 2/7 [00:32<01:20, 16.12s/it]Analyzing checkpoints:  43%|████▎     | 3/7 [00:47<01:02, 15.54s/it]Analyzing checkpoints:  57%|█████▋    | 4/7 [01:01<00:44, 14.92s/it]Analyzing checkpoints:  71%|███████▏  | 5/7 [01:14<00:28, 14.40s/it]Analyzing checkpoints:  86%|████████▌ | 6/7 [01:28<00:14, 14.25s/it]Analyzing checkpoints: 100%|██████████| 7/7 [01:44<00:00, 14.77s/it]Analyzing checkpoints: 100%|██████████| 7/7 [01:44<00:00, 14.94s/it]
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:449: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:455: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:449: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:455: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:449: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:455: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:449: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:455: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:543: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:549: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:615: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_experiment_optimized.py:621: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+    K=1 unique tokens
+    K=2 unique tokens
+    K=4 unique tokens
+    K=8 unique tokens
+    K=16 unique tokens
+    K=32 unique tokens
+
+Results saved to: results/axis_alignment/axis_alignment_results.json
+
+Creating paper-ready plots...
+  Saved: axis_alignment_main_post_attn.png/pdf
+  Saved: axis_alignment_main_post_ln2.png/pdf
+  Saved: axis_alignment_main_mlp_hidden.png/pdf
+  Saved: axis_alignment_main_post_mlp.png/pdf
+  Saved: axis_alignment_combined.png/pdf
+  Saved: axis_alignment_ratio.png/pdf
+  Skipping by-position plot for post_attn (no per-position data)
+  Skipping by-position plot for post_ln2 (no per-position data)
+  Skipping by-position plot for mlp_hidden (no per-position data)
+  Skipping by-position plot for post_mlp (no per-position data)
+
+All plots saved!
+
+======================================================================
+RESULTS SUMMARY
+======================================================================
+
+Comparing step 250 to step 5000:
+
+  POST_ATTN:
+     K |   Max(first) |   Max(final) |  Others(final) | Ratio(final)
+  -----+--------------+--------------+----------------+-------------
+     1 |       0.0282 |       0.0525 |         0.0000 |   5249139.67
+     2 |       0.0360 |       0.0452 |         0.0253 |         1.78
+     4 |       0.0422 |       0.0422 |         0.0226 |         1.86
+     8 |       0.0538 |       0.0464 |         0.0196 |         2.37
+    16 |       0.0639 |       0.0545 |         0.0187 |         2.92
+    32 |       0.0755 |       0.0661 |         0.0235 |         2.82
+
+  POST_LN2:
+     K |   Max(first) |   Max(final) |  Others(final) | Ratio(final)
+  -----+--------------+--------------+----------------+-------------
+     1 |       0.1360 |       0.1133 |         0.0000 |  11334518.34
+     2 |       0.1570 |       0.1079 |         0.0275 |         3.92
+     4 |       0.1774 |       0.1001 |         0.0254 |         3.94
+     8 |       0.1978 |       0.0891 |         0.0219 |         4.08
+    16 |       0.2133 |       0.0762 |         0.0187 |         4.08
+    32 |       0.2144 |       0.0698 |         0.0200 |         3.49
+
+  MLP_HIDDEN:
+     K |   Max(first) |   Max(final) |  Others(final) | Ratio(final)
+  -----+--------------+--------------+----------------+-------------
+     1 |       0.1527 |       0.2666 |         0.0000 |  26657855.51
+     2 |       0.2259 |       0.3794 |         0.2498 |         1.52
+     4 |       0.2419 |       0.3914 |         0.3061 |         1.28
+     8 |       0.2476 |       0.3707 |         0.3098 |         1.20
+    16 |       0.2541 |       0.3354 |         0.2875 |         1.17
+    32 |       0.2693 |       0.2910 |         0.2503 |         1.16
+
+  POST_MLP:
+     K |   Max(first) |   Max(final) |  Others(final) | Ratio(final)
+  -----+--------------+--------------+----------------+-------------
+     1 |       0.0197 |       0.1062 |         0.0000 |  10617328.44
+     2 |       0.1978 |       0.1617 |         0.0899 |         1.80
+     4 |       0.2401 |       0.1856 |         0.1219 |         1.52
+     8 |       0.2557 |       0.1937 |         0.1367 |         1.42
+    16 |       0.2679 |       0.1937 |         0.1415 |         1.37
+    32 |       0.2857 |       0.1816 |         0.1338 |         1.36

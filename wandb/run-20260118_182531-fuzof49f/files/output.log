@@ -1,0 +1,646 @@
+
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 1000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:   5%|▌         | 1/20 [00:01<00:35,  1.85s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 2000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  10%|█         | 2/20 [00:03<00:28,  1.57s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 3000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  15%|█▌        | 3/20 [00:04<00:25,  1.48s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 4000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  20%|██        | 4/20 [00:05<00:22,  1.43s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 5000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  25%|██▌       | 5/20 [00:07<00:20,  1.38s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 6000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  30%|███       | 6/20 [00:08<00:19,  1.38s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 7000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  35%|███▌      | 7/20 [00:09<00:17,  1.37s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 8000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  40%|████      | 8/20 [00:11<00:16,  1.36s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 9000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  45%|████▌     | 9/20 [00:12<00:14,  1.36s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 10000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  50%|█████     | 10/20 [00:14<00:13,  1.35s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 11000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  55%|█████▌    | 11/20 [00:15<00:12,  1.35s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 12000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  60%|██████    | 12/20 [00:16<00:10,  1.35s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 13000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  65%|██████▌   | 13/20 [00:18<00:09,  1.35s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 14000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  70%|███████   | 14/20 [00:19<00:08,  1.34s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 15000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  75%|███████▌  | 15/20 [00:20<00:06,  1.38s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 16000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  80%|████████  | 16/20 [00:22<00:05,  1.38s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 17000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  85%|████████▌ | 17/20 [00:23<00:04,  1.39s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 18000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  90%|█████████ | 18/20 [00:29<00:05,  2.70s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 19000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing:  95%|█████████▌| 19/20 [00:35<00:03,  3.74s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 20000: Error - 'MLP' object has no attribute 'act'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 612, in main
+    result = analyze_checkpoint(ckpt_path, args.n_samples, DEVICE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 532, in analyze_checkpoint
+    per_k = compute_per_k_metrics(model, tokens, basis, n_samples, seq_len)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 201, in compute_per_k_metrics
+    acts = get_activations(model, tokens[k:k+1])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 157, in get_activations
+    mlp_hidden = block.mlp.act(mlp_hidden)  # GELU or NewGELU
+                 ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'MLP' object has no attribute 'act'
+Analyzing: 100%|██████████| 20/20 [00:37<00:00,  1.85s/it]
+
+======================================================================
+Analysis complete! 0 checkpoints analyzed.

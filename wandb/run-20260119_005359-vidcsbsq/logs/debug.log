@@ -1,0 +1,26 @@
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_setup.py:_flush():80] Current SDK version is 0.23.1
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_setup.py:_flush():80] Configure stats pid to 1573071
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/.config/wandb/settings
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/git/nopos_locating_new/wandb/settings
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_setup.py:_flush():80] Loading settings from environment variables
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_init.py:setup_run_log_directory():714] Logging user logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260119_005359-vidcsbsq/logs/debug.log
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_init.py:setup_run_log_directory():715] Logging internal logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260119_005359-vidcsbsq/logs/debug-internal.log
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_init.py:init():841] calling init triggers
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_init.py:init():846] wandb.init called with sweep_config: {}
+config: {'n_samples': 24, 'intervention_token': 2000, 'checkpoint_steps': [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500, 14000, 14500, 15000, 15500, 16000, 16500, 17000, 17500, 18000, 18500, 19000, 19500, 20000], '_wandb': {}}
+2026-01-19 00:53:59,191 INFO    MainThread:1573071 [wandb_init.py:init():889] starting backend
+2026-01-19 00:53:59,742 INFO    MainThread:1573071 [wandb_init.py:init():892] sending inform_init request
+2026-01-19 00:53:59,753 INFO    MainThread:1573071 [wandb_init.py:init():900] backend started and connected
+2026-01-19 00:53:59,882 INFO    MainThread:1573071 [wandb_init.py:init():970] updated telemetry
+2026-01-19 00:53:59,893 INFO    MainThread:1573071 [wandb_init.py:init():994] communicating run to backend with 90.0 second timeout
+2026-01-19 00:54:00,765 INFO    MainThread:1573071 [wandb_init.py:init():1041] starting run threads in backend
+2026-01-19 00:54:01,572 INFO    MainThread:1573071 [wandb_run.py:_console_start():2521] atexit reg
+2026-01-19 00:54:01,572 INFO    MainThread:1573071 [wandb_run.py:_redirect():2369] redirect: wrap_raw
+2026-01-19 00:54:01,572 INFO    MainThread:1573071 [wandb_run.py:_redirect():2438] Wrapping output streams.
+2026-01-19 00:54:01,572 INFO    MainThread:1573071 [wandb_run.py:_redirect():2461] Redirects installed.
+2026-01-19 00:54:01,593 INFO    MainThread:1573071 [wandb_init.py:init():1081] run started, returning control to user process
+2026-01-19 00:56:28,476 INFO    MainThread:1573071 [wandb_run.py:_finish():2287] finishing run matan_avitan/nope-position-regression-metrics/vidcsbsq
+2026-01-19 00:56:28,477 INFO    MainThread:1573071 [wandb_run.py:_atexit_cleanup():2486] got exitcode: 0
+2026-01-19 00:56:28,481 INFO    MainThread:1573071 [wandb_run.py:_restore():2468] restore
+2026-01-19 00:56:28,481 INFO    MainThread:1573071 [wandb_run.py:_restore():2474] restore done
+2026-01-19 00:56:29,834 INFO    MainThread:1573071 [wandb_run.py:_footer_sync_info():3862] logging synced files

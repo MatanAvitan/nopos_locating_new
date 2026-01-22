@@ -1,0 +1,170 @@
+{
+  "NoPE + LayerNorm": {
+    "trained": {
+      "model_name": "NoPE + LayerNorm (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.15057556272724082,
+        "direction_r2": 0.46290797333387024,
+        "norm_r2": 0.20472963121101861
+      },
+      "post_attn_residual": {
+        "full_r2": 0.07729758865947134,
+        "direction_r2": 0.39740624097886146,
+        "norm_r2": 0.21347633200974958
+      },
+      "post_ln2": {
+        "full_r2": 0.39768729123876057,
+        "direction_r2": 0.3827303624291224,
+        "norm_r2": 0.19509774067775698
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.39028394687423307,
+        "direction_r2": 0.4176756890242276,
+        "norm_r2": 0.08230617509273785
+      }
+    },
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": false
+    }
+  },
+  "NoPE + BatchNorm2": {
+    "trained": {
+      "model_name": "NoPE + BatchNorm2 (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0
+      },
+      "post_attn": {
+        "full_r2": 0.1536578411650772,
+        "direction_r2": 0.33565038491271704,
+        "norm_r2": 0.14885734071443912
+      },
+      "post_attn_residual": {
+        "full_r2": 0.07141729479933112,
+        "direction_r2": 0.31233782406967414,
+        "norm_r2": 0.1470615385086247
+      },
+      "post_ln2": {
+        "full_r2": 0.07859861594365747,
+        "direction_r2": 0.436379107642078,
+        "norm_r2": 0.24408429939795573
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.31125767292455164,
+        "direction_r2": 0.41998688790546923,
+        "norm_r2": 0.16482803259642886
+      }
+    },
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": true,
+      "skip_ln2": false
+    }
+  },
+  "NoPE + No LN2": {
+    "trained": {
+      "model_name": "NoPE + No LN2 (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 0.0
+      },
+      "post_ln1": {
+        "full_r2": 0.0,
+        "direction_r2": 0.0,
+        "norm_r2": 9.639416522766453e-07
+      },
+      "post_attn": {
+        "full_r2": 0.11720841704507512,
+        "direction_r2": 0.4960455718972546,
+        "norm_r2": 0.2387491843039069
+      },
+      "post_attn_residual": {
+        "full_r2": 0.11127786347700619,
+        "direction_r2": 0.527126235855691,
+        "norm_r2": 0.2383244864853079
+      },
+      "post_ln2": {
+        "full_r2": 0.11643399155014811,
+        "direction_r2": 0.5317387246560195,
+        "norm_r2": 0.2358153403558736
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.38502562091782433,
+        "direction_r2": 0.49894539438131613,
+        "norm_r2": 0.24294630242511805
+      }
+    },
+    "config": {
+      "use_positional_embedding": false,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": true
+    }
+  },
+  "Baseline + PE": {
+    "trained": {
+      "model_name": "Baseline + PE (trained)",
+      "n_samples": 500,
+      "context": 512,
+      "embed": {
+        "full_r2": 0.9942288585125458,
+        "direction_r2": 0.9881542350220011,
+        "norm_r2": 0.011652636826261942
+      },
+      "post_ln1": {
+        "full_r2": 0.9879833284317745,
+        "direction_r2": 0.9796523466709091,
+        "norm_r2": 0.020205947933624513
+      },
+      "post_attn": {
+        "full_r2": 0.9815337276656574,
+        "direction_r2": 0.9728325972418326,
+        "norm_r2": 0.016604975339723604
+      },
+      "post_attn_residual": {
+        "full_r2": 0.6541404268532183,
+        "direction_r2": 0.6557655822387105,
+        "norm_r2": 0.0015407423396105457
+      },
+      "post_ln2": {
+        "full_r2": 0.6472013350088567,
+        "direction_r2": 0.6505949531110071,
+        "norm_r2": 0.08035088283656888
+      },
+      "post_mlp_residual": {
+        "full_r2": 0.4874106171619629,
+        "direction_r2": 0.4940966645496523,
+        "norm_r2": 0.026939106893414166
+      }
+    },
+    "config": {
+      "use_positional_embedding": true,
+      "use_batchnorm_ln2": false,
+      "skip_ln2": false
+    }
+  }
+}

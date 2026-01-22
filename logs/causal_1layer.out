@@ -1,0 +1,682 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run swjg95j9
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260119_191723-swjg95j9
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-1layer-causal
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/swjg95j9
+
+======================================================================
+Causal Intervention V3 - Value Vector Replacement
+======================================================================
+Experiment: nope-1layer-causal
+Checkpoint dir: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-posreg-1layer-until-mlp
+Analyzing 40 checkpoints
+N samples: 24 (K=0 to K=23)
+Intervention: Replace V[K] = W_V @ emb[2000] in layer 0
+Note: Effect measured only for positions >= K (causal masking)
+Device: cuda
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing checkpoints:   0%|          | 0/40 [00:00<?, ?it/s]Analyzing checkpoints:   2%|▎         | 1/40 [00:07<04:37,  7.11s/it]Analyzing checkpoints:   5%|▌         | 2/40 [00:12<03:44,  5.90s/it]Analyzing checkpoints:   8%|▊         | 3/40 [00:17<03:23,  5.49s/it]Analyzing checkpoints:  10%|█         | 4/40 [00:22<03:09,  5.28s/it]Analyzing checkpoints:  12%|█▎        | 5/40 [00:26<02:58,  5.11s/it]Analyzing checkpoints:  15%|█▌        | 6/40 [00:31<02:51,  5.03s/it]Analyzing checkpoints:  18%|█▊        | 7/40 [00:36<02:43,  4.94s/it]Analyzing checkpoints:  20%|██        | 8/40 [00:41<02:37,  4.93s/it]Analyzing checkpoints:  22%|██▎       | 9/40 [00:46<02:31,  4.89s/it]Analyzing checkpoints:  25%|██▌       | 10/40 [00:51<02:26,  4.89s/it]Analyzing checkpoints:  28%|██▊       | 11/40 [00:56<02:23,  4.95s/it]Analyzing checkpoints:  30%|███       | 12/40 [01:01<02:17,  4.90s/it]Analyzing checkpoints:  32%|███▎      | 13/40 [01:05<02:10,  4.82s/it]Analyzing checkpoints:  35%|███▌      | 14/40 [01:10<02:05,  4.82s/it]Analyzing checkpoints:  38%|███▊      | 15/40 [01:15<02:01,  4.87s/it]Analyzing checkpoints:  40%|████      | 16/40 [01:20<01:57,  4.89s/it]Analyzing checkpoints:  42%|████▎     | 17/40 [01:25<01:53,  4.92s/it]Analyzing checkpoints:  45%|████▌     | 18/40 [01:30<01:47,  4.89s/it]Analyzing checkpoints:  48%|████▊     | 19/40 [01:35<01:42,  4.89s/it]Analyzing checkpoints:  50%|█████     | 20/40 [01:39<01:36,  4.83s/it]Analyzing checkpoints:  52%|█████▎    | 21/40 [01:44<01:31,  4.82s/it]Analyzing checkpoints:  55%|█████▌    | 22/40 [01:49<01:25,  4.74s/it]Analyzing checkpoints:  57%|█████▊    | 23/40 [01:53<01:20,  4.75s/it]Analyzing checkpoints:  60%|██████    | 24/40 [01:58<01:15,  4.73s/it]Analyzing checkpoints:  62%|██████▎   | 25/40 [02:03<01:11,  4.75s/it]Analyzing checkpoints:  65%|██████▌   | 26/40 [02:08<01:06,  4.74s/it]Analyzing checkpoints:  68%|██████▊   | 27/40 [02:12<01:02,  4.77s/it]Analyzing checkpoints:  70%|███████   | 28/40 [02:17<00:57,  4.77s/it]Analyzing checkpoints:  72%|███████▎  | 29/40 [02:22<00:52,  4.81s/it]Analyzing checkpoints:  75%|███████▌  | 30/40 [02:27<00:47,  4.79s/it]Analyzing checkpoints:  78%|███████▊  | 31/40 [02:32<00:43,  4.85s/it]Analyzing checkpoints:  80%|████████  | 32/40 [02:36<00:38,  4.76s/it]Analyzing checkpoints:  82%|████████▎ | 33/40 [02:41<00:33,  4.75s/it]Analyzing checkpoints:  85%|████████▌ | 34/40 [02:46<00:28,  4.76s/it]Analyzing checkpoints:  88%|████████▊ | 35/40 [02:51<00:23,  4.74s/it]Analyzing checkpoints:  90%|█████████ | 36/40 [02:55<00:18,  4.74s/it]Analyzing checkpoints:  92%|█████████▎| 37/40 [03:00<00:14,  4.74s/it]Analyzing checkpoints:  95%|█████████▌| 38/40 [03:05<00:09,  4.75s/it]Analyzing checkpoints:  98%|█████████▊| 39/40 [03:10<00:04,  4.77s/it]Analyzing checkpoints: 100%|██████████| 40/40 [03:14<00:00,  4.69s/it]Analyzing checkpoints: 100%|██████████| 40/40 [03:14<00:00,  4.87s/it]
+wandb: updating run metadata
+wandb: uploading media/images/plots/grid_39_f1b8e809cd70c1e4f456.png; uploading media/images/plots/summary_39_2906712265cbc6e04094.png; uploading output.log; uploading wandb-summary.json; uploading history steps 36-39, summary, console lines 592-646
+wandb: uploading data
+wandb: 
+wandb: Run history:
+wandb: checkpoint/step ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb: 
+wandb: Run summary:
+wandb: checkpoint/step 20000
+wandb: 
+wandb: 🚀 View run nope-1layer-causal at: https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/swjg95j9
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: Synced 5 W&B file(s), 80 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260119_191723-swjg95j9/logs
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 1000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 1500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 2000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 2500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 3000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 3500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 4000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 4500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 5000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 5500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 6000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 6500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 7000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 7500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 8000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 8500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 9000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 9500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 10000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 10500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 11000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 11500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 12000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 12500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 13000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 13500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 14000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 14500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 15000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 15500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 16000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 16500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 17000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 17500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 18000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 18500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 19000: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 19500: Done
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+  Step 20000: Done
+
+======================================================================
+Analysis complete! Plots saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/nope-1layer-causal
+  - grid_stepXXXXX.png/pdf: 24 subplots, one per K
+  - summary_stepXXXXX.png/pdf: Improvement metrics per K
+WandB run finished.
+======================================================================

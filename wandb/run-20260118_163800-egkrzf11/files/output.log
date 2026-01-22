@@ -1,0 +1,169 @@
+
+WandB initialized: nope-position-regression-tsne/comparison_nope-6layer-until-first-mlp
+Analyzing checkpoints:   0%|          | 0/6 [00:00<?, ?it/s]Traceback (most recent call last):
+
+--- Checkpoint 500 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Error processing checkpoint 500: too many values to unpack (expected 2)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 498, in analyze_checkpoints
+    unique_acts, positions = collect_activations(model, unique_tokens)
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+Analyzing checkpoints:  17%|█▋        | 1/6 [00:02<00:14,  2.81s/it]Traceback (most recent call last):
+
+--- Checkpoint 2000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Error processing checkpoint 2000: too many values to unpack (expected 2)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 498, in analyze_checkpoints
+    unique_acts, positions = collect_activations(model, unique_tokens)
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+Analyzing checkpoints:  33%|███▎      | 2/6 [00:04<00:09,  2.31s/it]Traceback (most recent call last):
+
+--- Checkpoint 5000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Error processing checkpoint 5000: too many values to unpack (expected 2)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 498, in analyze_checkpoints
+    unique_acts, positions = collect_activations(model, unique_tokens)
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+Analyzing checkpoints:  50%|█████     | 3/6 [00:06<00:06,  2.15s/it]Traceback (most recent call last):
+
+--- Checkpoint 10000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Error processing checkpoint 10000: too many values to unpack (expected 2)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 498, in analyze_checkpoints
+    unique_acts, positions = collect_activations(model, unique_tokens)
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+Analyzing checkpoints:  67%|██████▋   | 4/6 [00:10<00:05,  2.90s/it]Traceback (most recent call last):
+
+--- Checkpoint 15000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Error processing checkpoint 15000: too many values to unpack (expected 2)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 498, in analyze_checkpoints
+    unique_acts, positions = collect_activations(model, unique_tokens)
+    ^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+Analyzing checkpoints:  83%|████████▎ | 5/6 [00:17<00:04,  4.18s/it]Traceback (most recent call last):
+
+--- Checkpoint 20000 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Loaded model (n_embd=768, seq_len=128)
+  Total t-SNE points: 24 × 128 = 3072
+  Generating unique prefix sequences...
+  Generating random sequences...
+  Collecting activations (unique prefix)...
+  Error processing checkpoint 20000: too many values to unpack (expected 2)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/tsne_unique_vs_random.py", line 498, in analyze_checkpoints
+ValueError: too many values to unpack (expected 2)
+Analyzing checkpoints: 100%|██████████| 6/6 [00:24<00:00,  4.17s/it]

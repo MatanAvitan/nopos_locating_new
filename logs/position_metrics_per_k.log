@@ -1,0 +1,37 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 6hgkxwfr
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_174844-6hgkxwfr
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_k_nope-6layer-per-k-v3
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/6hgkxwfr
+
+======================================================================
+Position Regression Metrics (Per-K) - nope-6layer-per-k-v3
+======================================================================
+Checkpoint dir: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-posreg-6layer-until-mlp
+Found 20 checkpoints: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000]
+
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 565, in main
+    metrics["plots/basis_heatmap"] = wandb.Image(fig_to_image(fig_heatmap))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 277, in __init__
+    self._initialize_from_data(data_or_path, mode, file_type, normalize)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 431, in _initialize_from_data
+    if data.ndim > 2:  # type: ignore [union-attr]
+       ^^^^^^^^^
+AttributeError: '_io.BytesIO' object has no attribute 'ndim'
+Analyzing:   5%|▌         | 1/20 [02:27<46:36, 147.18s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 565, in main
+    metrics["plots/basis_heatmap"] = wandb.Image(fig_to_image(fig_heatmap))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 277, in __init__
+    self._initialize_from_data(data_or_path, mode, file_type, normalize)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/wandb/sdk/data_types/image.py", line 431, in _initialize_from_data
+    if data.ndim > 2:  # type: ignore [union-attr]
+       ^^^^^^^^^
+AttributeError: '_io.BytesIO' object has no attribute 'ndim'
+Analyzing:  10%|█         | 2/20 [04:52<43:50, 146.14s/it]

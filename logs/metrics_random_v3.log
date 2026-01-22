@@ -1,0 +1,9 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 99cf5c4p
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_220434-99cf5c4p
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_k_nope-6layer-random-v3
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/99cf5c4p
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Analyzing:   5%|▌         | 1/20 [01:32<29:09, 92.10s/it]Analyzing:  10%|█         | 2/20 [03:18<30:06, 100.36s/it]Analyzing:  15%|█▌        | 3/20 [04:57<28:16, 99.78s/it] Analyzing:  20%|██        | 4/20 [06:44<27:23, 102.73s/it]Analyzing:  25%|██▌       | 5/20 [08:29<25:52, 103.49s/it]Analyzing:  30%|███       | 6/20 [10:16<24:26, 104.71s/it]Analyzing:  35%|███▌      | 7/20 [12:04<22:55, 105.81s/it]Analyzing:  40%|████      | 8/20 [13:52<21:16, 106.35s/it]Analyzing:  45%|████▌     | 9/20 [15:37<19:25, 105.98s/it]Analyzing:  50%|█████     | 10/20 [17:21<17:33, 105.36s/it]Analyzing:  55%|█████▌    | 11/20 [19:04<15:43, 104.84s/it]Analyzing:  60%|██████    | 12/20 [22:02<16:56, 127.07s/it]

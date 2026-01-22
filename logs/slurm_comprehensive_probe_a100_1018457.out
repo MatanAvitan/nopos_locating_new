@@ -1,0 +1,19 @@
+Starting Comprehensive Probe Analysis...
+Job ID: 1018457
+Running on node: hpc2a100-01
+GPU: NVIDIA A100 80GB PCIe
+Start time: Wed Jan 14 12:09:09 AM IST 2026
+
+============================================================
+COMPREHENSIVE PROBE ANALYSIS
+============================================================
+Samples: 30000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+============================================================
+EXPERIMENT: LayerNorm Model
+============================================================
+Extracting activations (LayerNorm)...

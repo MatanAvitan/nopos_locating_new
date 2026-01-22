@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/direction_norm_independence.py", line 658, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/direction_norm_independence.py", line 582, in main
+    results_6 = experiment_6_layer_comparison(model)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/direction_norm_independence.py", line 487, in experiment_6_layer_comparison
+    norms = np.concatenate(all_norms)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: zero-dimensional arrays cannot be concatenated

@@ -1,0 +1,731 @@
+W0119 23:39:15.490000 2258152 site-packages/torch/distributed/run.py:774] 
+W0119 23:39:15.490000 2258152 site-packages/torch/distributed/run.py:774] *****************************************
+W0119 23:39:15.490000 2258152 site-packages/torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0119 23:39:15.490000 2258152 site-packages/torch/distributed/run.py:774] *****************************************
+Overriding config with config/train_lm_6layer_fulltrain_ddp.py:
+# Configuration for LM Training - 6 Layer - Full Training (DDP, 3 GPUs)
+# Same architecture as 6-layer LM, but tuned for high-throughput training
+
+# I/O
+out_dir = "out-lm-6layer-fulltrain-ddp"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-lm"
+wandb_run_name = "nope-6layer-fulltrain-lm-ddp"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 2  # divided by world_size (2) => 1
+batch_size = 512
+block_size = 128
+
+# Model - 6 layers
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+
+# Training mode - all weights trainable
+freeze_transformer = False
+freeze_attention_only = False
+freeze_until_first_mlp = False
+use_regression = False
+compute_lm_loss = True
+train_lm_only = True
+
+# AdamW optimizer
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = False
+seed = 42
+
+Overriding config with config/train_lm_6layer_fulltrain_ddp.py:
+# Configuration for LM Training - 6 Layer - Full Training (DDP, 3 GPUs)
+# Same architecture as 6-layer LM, but tuned for high-throughput training
+
+# I/O
+out_dir = "out-lm-6layer-fulltrain-ddp"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-lm"
+wandb_run_name = "nope-6layer-fulltrain-lm-ddp"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 2  # divided by world_size (2) => 1
+batch_size = 512
+block_size = 128
+
+# Model - 6 layers
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+
+# Training mode - all weights trainable
+freeze_transformer = False
+freeze_attention_only = False
+freeze_until_first_mlp = False
+use_regression = False
+compute_lm_loss = True
+train_lm_only = True
+
+# AdamW optimizer
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = False
+seed = 42
+
+Initializing a new Position Classifier model from scratch
+defaulting to vocab_size of GPT-2: 50304
+tokens per iteration will be: 131,072
+Initializing a new Position Classifier model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.21M
+============================================================
+
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.21M
+============================================================
+
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:280: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+Decayed params: 26 tensors, 81,199,104 params
+Non-decayed params: 13 tensors, 9,984 params
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:280: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+Decayed params: 26 tensors, 81,199,104 params
+Non-decayed params: 13 tensors, 9,984 params
+Using fused AdamW: True
+Using fused AdamW: True
+
+Starting training for 20000 iterations...
+  Model: Position Classifier
+  Positional Embedding: False
+  Frozen transformer: False
+  Freeze attention only: False
+  Freeze until first MLP: False
+  Use regression: False
+  Compute LM loss: True
+  Train LM only: True
+  Dataset: openwebtext
+  Batch size: 512 x 1 = 512
+  Block size: 128
+  Position classes: 128
+  Learning rate: 0.0003 -> 3e-05
+
+[rank1]:[W119 23:39:22.844165519 reducer.cpp:1457] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run wlwdmlo8
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260119_233923-wlwdmlo8
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-6layer-fulltrain-lm-ddp
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-lm
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-lm/runs/wlwdmlo8
+
+Starting training for 20000 iterations...
+  Model: Position Classifier
+  Positional Embedding: False
+  Frozen transformer: False
+  Freeze attention only: False
+  Freeze until first MLP: False
+  Use regression: False
+  Compute LM loss: True
+  Train LM only: True
+  Dataset: openwebtext
+  Batch size: 512 x 1 = 512
+  Block size: 128
+  Position classes: 128
+  Learning rate: 0.0003 -> 3e-05
+
+step 0: train loss 4.9963, val loss 4.9966, train acc 0.0080, val acc 0.0080, ppl 58949.9, lr 3.00e-07
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.008, 8t:0.008, 16t:0.000, 32t:0.008, 64t:0.016, 128t:0.000
+[rank0]:[W119 23:40:12.935634447 reducer.cpp:1457] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+iter 0: loss 10.9827, time 48010.64ms
+iter 50: loss 9.2077, time 244.18ms
+iter 100: loss 8.0130, time 245.45ms
+iter 150: loss 7.0842, time 245.57ms
+iter 200: loss 6.7449, time 246.71ms
+iter 250: loss 6.3941, time 246.45ms
+iter 300: loss 6.2022, time 245.90ms
+iter 350: loss 6.0255, time 246.44ms
+iter 400: loss 5.9485, time 245.02ms
+iter 450: loss 5.7381, time 247.28ms
+step 500: train loss 5.0092, val loss 5.0092, train acc 0.0079, val acc 0.0079, ppl 290.1, lr 1.50e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.008, 8t:0.008, 16t:0.008, 32t:0.000, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_00500.pt
+iter 500: loss 5.6360, time 53062.54ms
+iter 550: loss 5.5871, time 302.64ms
+iter 600: loss 5.4682, time 247.05ms
+iter 650: loss 5.3543, time 349.98ms
+iter 700: loss 5.2844, time 349.57ms
+iter 750: loss 5.1578, time 246.59ms
+iter 800: loss 5.1267, time 247.07ms
+iter 850: loss 5.0646, time 247.89ms
+iter 900: loss 4.9997, time 247.53ms
+iter 950: loss 4.8868, time 248.04ms
+step 1000: train loss 5.0374, val loss 5.0375, train acc 0.0079, val acc 0.0079, ppl 129.0, lr 3.00e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.008, 8t:0.008, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_01000.pt
+iter 1000: loss 4.8684, time 60109.81ms
+iter 1050: loss 4.8103, time 250.09ms
+iter 1100: loss 4.7126, time 299.84ms
+iter 1150: loss 4.6953, time 246.21ms
+iter 1200: loss 4.6621, time 245.72ms
+iter 1250: loss 4.6677, time 246.30ms
+iter 1300: loss 4.5805, time 247.07ms
+iter 1350: loss 4.5211, time 246.35ms
+iter 1400: loss 4.5393, time 246.83ms
+iter 1450: loss 4.4639, time 247.25ms
+step 1500: train loss 5.0796, val loss 5.0799, train acc 0.0075, val acc 0.0075, ppl 86.0, lr 3.00e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.000, 8t:0.000, 16t:0.016, 32t:0.008, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_01500.pt
+iter 1500: loss 4.4339, time 58818.74ms
+iter 1550: loss 4.4172, time 245.81ms
+iter 1600: loss 4.4066, time 246.46ms
+iter 1650: loss 4.3994, time 247.20ms
+iter 1700: loss 4.3493, time 248.48ms
+iter 1750: loss 4.3541, time 248.86ms
+iter 1800: loss 4.3301, time 246.90ms
+iter 1850: loss 4.3397, time 247.34ms
+iter 1900: loss 4.2934, time 248.31ms
+iter 1950: loss 4.3287, time 248.34ms
+step 2000: train loss 5.1085, val loss 5.1089, train acc 0.0076, val acc 0.0076, ppl 72.1, lr 2.98e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.000, 8t:0.008, 16t:0.023, 32t:0.000, 64t:0.000, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_02000.pt
+iter 2000: loss 4.2946, time 58834.37ms
+iter 2050: loss 4.2580, time 245.09ms
+iter 2100: loss 4.2506, time 245.74ms
+iter 2150: loss 4.2086, time 298.62ms
+iter 2200: loss 4.2348, time 330.32ms
+iter 2250: loss 4.2006, time 299.88ms
+iter 2300: loss 4.2301, time 299.62ms
+iter 2350: loss 4.1777, time 300.30ms
+iter 2400: loss 4.1650, time 298.25ms
+iter 2450: loss 4.1660, time 247.19ms
+step 2500: train loss 5.1359, val loss 5.1361, train acc 0.0076, val acc 0.0076, ppl 64.8, lr 2.96e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.000, 8t:0.000, 16t:0.000, 32t:0.008, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_02500.pt
+iter 2500: loss 4.1652, time 52634.85ms
+iter 2550: loss 4.1429, time 246.59ms
+iter 2600: loss 4.1292, time 246.18ms
+iter 2650: loss 4.1382, time 247.39ms
+iter 2700: loss 4.1825, time 248.20ms
+iter 2750: loss 4.1306, time 248.15ms
+iter 2800: loss 4.1393, time 248.66ms
+iter 2850: loss 4.0880, time 248.45ms
+iter 2900: loss 4.1525, time 247.75ms
+iter 2950: loss 4.0905, time 248.27ms
+step 3000: train loss 5.1573, val loss 5.1579, train acc 0.0076, val acc 0.0076, ppl 60.2, lr 2.93e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.000, 8t:0.000, 16t:0.000, 32t:0.000, 64t:0.000, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_03000.pt
+iter 3000: loss 4.1014, time 52184.79ms
+iter 3050: loss 4.0749, time 315.53ms
+iter 3100: loss 4.0712, time 313.58ms
+iter 3150: loss 4.1092, time 315.37ms
+iter 3200: loss 4.0624, time 314.82ms
+iter 3250: loss 4.0328, time 316.67ms
+iter 3300: loss 4.0959, time 316.06ms
+iter 3350: loss 4.0619, time 315.37ms
+iter 3400: loss 4.0231, time 315.17ms
+iter 3450: loss 4.0502, time 315.02ms
+step 3500: train loss 5.1737, val loss 5.1741, train acc 0.0077, val acc 0.0076, ppl 56.7, lr 2.89e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.008, 8t:0.000, 16t:0.000, 32t:0.000, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_03500.pt
+iter 3500: loss 4.0445, time 58794.47ms
+iter 3550: loss 4.0473, time 246.45ms
+iter 3600: loss 3.9911, time 246.18ms
+iter 3650: loss 3.9977, time 247.80ms
+iter 3700: loss 4.0808, time 245.40ms
+iter 3750: loss 4.0211, time 245.96ms
+iter 3800: loss 4.0235, time 248.13ms
+iter 3850: loss 3.9531, time 247.99ms
+iter 3900: loss 3.9849, time 250.07ms
+iter 3950: loss 4.0312, time 250.52ms
+step 4000: train loss 5.1883, val loss 5.1888, train acc 0.0077, val acc 0.0077, ppl 54.3, lr 2.84e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.000, 8t:0.000, 16t:0.000, 32t:0.000, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_04000.pt
+iter 4000: loss 3.9519, time 56352.45ms
+iter 4050: loss 3.9948, time 246.05ms
+iter 4100: loss 3.9920, time 247.14ms
+iter 4150: loss 3.9928, time 252.45ms
+iter 4200: loss 3.9815, time 262.65ms
+iter 4250: loss 3.9817, time 268.14ms
+iter 4300: loss 3.9705, time 251.99ms
+iter 4350: loss 3.9739, time 252.20ms
+iter 4400: loss 3.9819, time 269.78ms
+iter 4450: loss 3.9734, time 245.87ms
+step 4500: train loss 5.1962, val loss 5.1971, train acc 0.0078, val acc 0.0078, ppl 52.5, lr 2.78e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.000, 16t:0.008, 32t:0.000, 64t:0.008, 128t:0.016
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_04500.pt
+iter 4500: loss 3.9889, time 55908.38ms
+iter 4550: loss 3.9920, time 248.40ms
+iter 4600: loss 3.9304, time 247.84ms
+iter 4650: loss 3.8889, time 250.60ms
+iter 4700: loss 3.9223, time 252.13ms
+iter 4750: loss 3.8979, time 254.07ms
+iter 4800: loss 3.9293, time 247.60ms
+iter 4850: loss 3.9204, time 246.78ms
+iter 4900: loss 3.9588, time 247.88ms
+iter 4950: loss 3.9181, time 247.14ms
+step 5000: train loss 5.2104, val loss 5.2103, train acc 0.0078, val acc 0.0079, ppl 50.7, lr 2.72e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.008, 16t:0.008, 32t:0.000, 64t:0.016, 128t:0.016
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_05000.pt
+iter 5000: loss 3.9150, time 51513.59ms
+iter 5050: loss 3.9300, time 247.38ms
+iter 5100: loss 3.9132, time 245.80ms
+iter 5150: loss 3.8779, time 246.54ms
+iter 5200: loss 3.8979, time 247.39ms
+iter 5250: loss 3.8977, time 247.35ms
+iter 5300: loss 3.8930, time 247.46ms
+iter 5350: loss 3.9369, time 246.39ms
+iter 5400: loss 3.8695, time 247.63ms
+iter 5450: loss 3.8974, time 247.77ms
+step 5500: train loss 5.2141, val loss 5.2142, train acc 0.0078, val acc 0.0078, ppl 49.3, lr 2.64e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.023, 32t:0.008, 64t:0.008, 128t:0.016
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_05500.pt
+iter 5500: loss 3.8967, time 57399.88ms
+iter 5550: loss 3.9238, time 246.53ms
+iter 5600: loss 3.9159, time 246.12ms
+iter 5650: loss 3.8268, time 246.32ms
+iter 5700: loss 3.9005, time 247.06ms
+iter 5750: loss 3.8865, time 247.74ms
+iter 5800: loss 3.8847, time 247.37ms
+iter 5850: loss 3.8709, time 247.47ms
+iter 5900: loss 3.8967, time 247.43ms
+iter 5950: loss 3.8948, time 248.10ms
+step 6000: train loss 5.2260, val loss 5.2272, train acc 0.0077, val acc 0.0077, ppl 48.2, lr 2.56e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.000, 8t:0.000, 16t:0.016, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_06000.pt
+iter 6000: loss 3.8920, time 51669.65ms
+iter 6050: loss 3.8444, time 245.11ms
+iter 6100: loss 3.8097, time 250.98ms
+iter 6150: loss 3.8734, time 247.41ms
+iter 6200: loss 3.8645, time 247.22ms
+iter 6250: loss 3.8619, time 246.79ms
+iter 6300: loss 3.8770, time 247.33ms
+iter 6350: loss 3.8638, time 247.61ms
+iter 6400: loss 3.8684, time 246.51ms
+iter 6450: loss 3.8379, time 247.49ms
+step 6500: train loss 5.2303, val loss 5.2307, train acc 0.0079, val acc 0.0078, ppl 47.2, lr 2.48e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.008, 8t:0.008, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_06500.pt
+iter 6500: loss 3.8840, time 51327.99ms
+iter 6550: loss 3.8180, time 245.15ms
+iter 6600: loss 3.8264, time 245.89ms
+iter 6650: loss 3.8384, time 246.47ms
+iter 6700: loss 3.8482, time 246.38ms
+iter 6750: loss 3.8547, time 246.98ms
+iter 6800: loss 3.8894, time 247.59ms
+iter 6850: loss 3.8377, time 247.58ms
+iter 6900: loss 3.8563, time 247.99ms
+iter 6950: loss 3.8226, time 246.03ms
+step 7000: train loss 5.2440, val loss 5.2447, train acc 0.0079, val acc 0.0078, ppl 46.3, lr 2.39e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.000, 16t:0.000, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_07000.pt
+iter 7000: loss 3.8623, time 51398.85ms
+iter 7050: loss 3.8280, time 246.59ms
+iter 7100: loss 3.8435, time 246.43ms
+iter 7150: loss 3.8132, time 248.00ms
+iter 7200: loss 3.8475, time 247.90ms
+iter 7250: loss 3.8273, time 246.85ms
+iter 7300: loss 3.8862, time 247.51ms
+iter 7350: loss 3.7606, time 247.04ms
+iter 7400: loss 3.8133, time 247.69ms
+iter 7450: loss 3.8371, time 248.01ms
+step 7500: train loss 5.2470, val loss 5.2481, train acc 0.0079, val acc 0.0079, ppl 45.6, lr 2.29e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.008, 8t:0.000, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_07500.pt
+iter 7500: loss 3.8086, time 51885.23ms
+iter 7550: loss 3.8333, time 246.25ms
+iter 7600: loss 3.8507, time 246.55ms
+iter 7650: loss 3.8227, time 247.08ms
+iter 7700: loss 3.8370, time 247.62ms
+iter 7750: loss 3.8321, time 247.06ms
+iter 7800: loss 3.8127, time 248.01ms
+iter 7850: loss 3.8049, time 247.34ms
+iter 7900: loss 3.8300, time 247.53ms
+iter 7950: loss 3.7938, time 247.51ms
+step 8000: train loss 5.2512, val loss 5.2523, train acc 0.0078, val acc 0.0078, ppl 44.9, lr 2.19e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.008, 8t:0.000, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_08000.pt
+iter 8000: loss 3.8002, time 51975.81ms
+iter 8050: loss 3.8199, time 246.52ms
+iter 8100: loss 3.8162, time 246.88ms
+iter 8150: loss 3.8030, time 246.47ms
+iter 8200: loss 3.7797, time 246.78ms
+iter 8250: loss 3.7879, time 248.13ms
+iter 8300: loss 3.7728, time 246.97ms
+iter 8350: loss 3.8181, time 246.63ms
+iter 8400: loss 3.8019, time 247.89ms
+iter 8450: loss 3.7423, time 247.55ms
+step 8500: train loss 5.2581, val loss 5.2594, train acc 0.0080, val acc 0.0080, ppl 44.2, lr 2.09e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.008, 8t:0.000, 16t:0.008, 32t:0.000, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_08500.pt
+iter 8500: loss 3.7774, time 51612.49ms
+iter 8550: loss 3.7784, time 244.62ms
+iter 8600: loss 3.7271, time 245.47ms
+iter 8650: loss 3.7891, time 247.21ms
+iter 8700: loss 3.7940, time 245.75ms
+iter 8750: loss 3.7985, time 248.89ms
+iter 8800: loss 3.8177, time 247.87ms
+iter 8850: loss 3.7905, time 246.12ms
+iter 8900: loss 3.7618, time 247.57ms
+iter 8950: loss 3.7841, time 248.38ms
+step 9000: train loss 5.2683, val loss 5.2693, train acc 0.0079, val acc 0.0079, ppl 43.5, lr 1.98e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.008, 8t:0.008, 16t:0.023, 32t:0.023, 64t:0.000, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_09000.pt
+iter 9000: loss 3.7394, time 51714.72ms
+iter 9050: loss 3.7586, time 246.67ms
+iter 9100: loss 3.7722, time 247.21ms
+iter 9150: loss 3.7604, time 247.37ms
+iter 9200: loss 3.7596, time 247.52ms
+iter 9250: loss 3.7522, time 248.24ms
+iter 9300: loss 3.6813, time 247.40ms
+iter 9350: loss 3.7944, time 247.61ms
+iter 9400: loss 3.7341, time 246.78ms
+iter 9450: loss 3.7418, time 246.66ms
+step 9500: train loss 5.2768, val loss 5.2777, train acc 0.0078, val acc 0.0079, ppl 42.9, lr 1.87e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.016, 16t:0.016, 32t:0.000, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_09500.pt
+iter 9500: loss 3.7764, time 51463.08ms
+iter 9550: loss 3.7261, time 255.80ms
+iter 9600: loss 3.7914, time 252.35ms
+iter 9650: loss 3.7955, time 242.95ms
+iter 9700: loss 3.7655, time 254.34ms
+iter 9750: loss 3.7228, time 247.68ms
+iter 9800: loss 3.7772, time 250.03ms
+iter 9850: loss 3.7168, time 251.57ms
+iter 9900: loss 3.7279, time 247.81ms
+iter 9950: loss 3.7364, time 258.55ms
+step 10000: train loss 5.2804, val loss 5.2817, train acc 0.0080, val acc 0.0080, ppl 42.4, lr 1.76e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.008, 8t:0.016, 16t:0.016, 32t:0.008, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_10000.pt
+iter 10000: loss 3.7583, time 54240.14ms
+iter 10050: loss 3.7269, time 251.42ms
+iter 10100: loss 3.7391, time 246.83ms
+iter 10150: loss 3.7632, time 263.91ms
+iter 10200: loss 3.7315, time 247.72ms
+iter 10250: loss 3.7692, time 249.05ms
+iter 10300: loss 3.7813, time 251.26ms
+iter 10350: loss 3.7651, time 248.22ms
+iter 10400: loss 3.7209, time 251.01ms
+iter 10450: loss 3.7294, time 371.81ms
+step 10500: train loss 5.2930, val loss 5.2943, train acc 0.0079, val acc 0.0079, ppl 41.9, lr 1.65e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.008, 8t:0.008, 16t:0.008, 32t:0.000, 64t:0.023, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_10500.pt
+iter 10500: loss 3.7763, time 59695.79ms
+iter 10550: loss 3.7204, time 253.96ms
+iter 10600: loss 3.7217, time 269.00ms
+iter 10650: loss 3.7336, time 249.81ms
+iter 10700: loss 3.7093, time 256.17ms
+iter 10750: loss 3.7660, time 273.56ms
+iter 10800: loss 3.7331, time 246.58ms
+iter 10850: loss 3.7597, time 254.47ms
+iter 10900: loss 3.7244, time 244.63ms
+iter 10950: loss 3.7770, time 253.14ms
+step 11000: train loss 5.3044, val loss 5.3054, train acc 0.0080, val acc 0.0080, ppl 41.5, lr 1.54e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.000, 8t:0.016, 16t:0.039, 32t:0.023, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_11000.pt
+iter 11000: loss 3.7225, time 60704.46ms
+iter 11050: loss 3.7627, time 270.62ms
+iter 11100: loss 3.7189, time 248.11ms
+iter 11150: loss 3.7320, time 251.23ms
+iter 11200: loss 3.7172, time 256.59ms
+iter 11250: loss 3.7244, time 247.06ms
+iter 11300: loss 3.6913, time 254.20ms
+iter 11350: loss 3.6957, time 262.18ms
+iter 11400: loss 3.7101, time 257.72ms
+iter 11450: loss 3.7463, time 254.49ms
+step 11500: train loss 5.3143, val loss 5.3149, train acc 0.0080, val acc 0.0080, ppl 41.2, lr 1.43e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.023, 8t:0.016, 16t:0.016, 32t:0.000, 64t:0.000, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_11500.pt
+iter 11500: loss 3.7102, time 60427.07ms
+iter 11550: loss 3.6712, time 259.28ms
+iter 11600: loss 3.6939, time 251.67ms
+iter 11650: loss 3.7223, time 485.08ms
+iter 11700: loss 3.6652, time 253.08ms
+iter 11750: loss 3.6903, time 265.53ms
+iter 11800: loss 3.7281, time 258.20ms
+iter 11850: loss 3.7126, time 250.18ms
+iter 11900: loss 3.6856, time 286.61ms
+iter 11950: loss 3.7142, time 255.90ms
+step 12000: train loss 5.3212, val loss 5.3224, train acc 0.0079, val acc 0.0079, ppl 40.6, lr 1.32e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.008, 16t:0.008, 32t:0.000, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_12000.pt
+iter 12000: loss 3.7428, time 62797.82ms
+iter 12050: loss 3.7235, time 247.11ms
+iter 12100: loss 3.7000, time 252.23ms
+iter 12150: loss 3.7440, time 256.49ms
+iter 12200: loss 3.7205, time 255.80ms
+iter 12250: loss 3.6685, time 247.47ms
+iter 12300: loss 3.6996, time 244.24ms
+iter 12350: loss 3.6921, time 269.01ms
+iter 12400: loss 3.6742, time 266.74ms
+iter 12450: loss 3.6978, time 269.72ms
+step 12500: train loss 5.3304, val loss 5.3313, train acc 0.0080, val acc 0.0080, ppl 40.3, lr 1.21e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.016, 16t:0.008, 32t:0.000, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_12500.pt
+iter 12500: loss 3.6856, time 65501.20ms
+iter 12550: loss 3.6489, time 251.86ms
+iter 12600: loss 3.6961, time 275.19ms
+iter 12650: loss 3.7074, time 246.59ms
+iter 12700: loss 3.6915, time 253.96ms
+iter 12750: loss 3.6795, time 244.03ms
+iter 12800: loss 3.6669, time 271.82ms
+iter 12850: loss 3.6723, time 279.84ms
+iter 12900: loss 3.6783, time 260.86ms
+iter 12950: loss 3.6892, time 262.66ms
+step 13000: train loss 5.3390, val loss 5.3404, train acc 0.0079, val acc 0.0079, ppl 39.9, lr 1.11e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.023, 8t:0.023, 16t:0.008, 32t:0.000, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_13000.pt
+iter 13000: loss 3.7008, time 63663.85ms
+iter 13050: loss 3.6692, time 243.95ms
+iter 13100: loss 3.7054, time 295.05ms
+iter 13150: loss 3.7225, time 287.13ms
+iter 13200: loss 3.6432, time 246.95ms
+iter 13250: loss 3.6569, time 246.89ms
+iter 13300: loss 3.6960, time 246.70ms
+iter 13350: loss 3.7057, time 258.09ms
+iter 13400: loss 3.6698, time 247.58ms
+iter 13450: loss 3.6346, time 262.59ms
+step 13500: train loss 5.3445, val loss 5.3452, train acc 0.0080, val acc 0.0080, ppl 39.6, lr 1.01e-04
+  Distinctive accuracy: 1t:0.008, 2t:0.016, 4t:0.008, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_13500.pt
+iter 13500: loss 3.6907, time 66134.45ms
+iter 13550: loss 3.6569, time 243.51ms
+iter 13600: loss 3.6213, time 253.44ms
+iter 13650: loss 3.6260, time 269.78ms
+iter 13700: loss 3.6721, time 246.38ms
+iter 13750: loss 3.6924, time 251.95ms
+iter 13800: loss 3.7028, time 251.02ms
+iter 13850: loss 3.6461, time 244.34ms
+iter 13900: loss 3.6900, time 272.64ms
+iter 13950: loss 3.6695, time 288.24ms
+step 14000: train loss 5.3575, val loss 5.3580, train acc 0.0079, val acc 0.0079, ppl 39.4, lr 9.12e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.016, 32t:0.008, 64t:0.008, 128t:0.000
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_14000.pt
+iter 14000: loss 3.6748, time 64249.58ms
+iter 14050: loss 3.6527, time 242.49ms
+iter 14100: loss 3.6117, time 245.10ms
+iter 14150: loss 3.6505, time 260.11ms
+iter 14200: loss 3.6382, time 253.71ms
+iter 14250: loss 3.6568, time 247.59ms
+iter 14300: loss 3.6407, time 254.31ms
+iter 14350: loss 3.6674, time 248.75ms
+iter 14400: loss 3.6841, time 247.26ms
+iter 14450: loss 3.6747, time 274.05ms
+step 14500: train loss 5.3651, val loss 5.3656, train acc 0.0079, val acc 0.0079, ppl 39.1, lr 8.21e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.008, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_14500.pt
+iter 14500: loss 3.6439, time 62250.61ms
+iter 14550: loss 3.6396, time 245.13ms
+iter 14600: loss 3.7198, time 262.42ms
+iter 14650: loss 3.7000, time 242.93ms
+iter 14700: loss 3.6382, time 258.55ms
+iter 14750: loss 3.6490, time 248.08ms
+iter 14800: loss 3.6745, time 258.00ms
+iter 14850: loss 3.6637, time 259.61ms
+iter 14900: loss 3.6543, time 264.43ms
+iter 14950: loss 3.6707, time 276.27ms
+step 15000: train loss 5.3702, val loss 5.3705, train acc 0.0080, val acc 0.0080, ppl 38.7, lr 7.36e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.023, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_15000.pt
+iter 15000: loss 3.6567, time 62556.10ms
+iter 15050: loss 3.6235, time 246.93ms
+iter 15100: loss 3.6699, time 249.18ms
+iter 15150: loss 3.6973, time 259.99ms
+iter 15200: loss 3.6478, time 264.64ms
+iter 15250: loss 3.6512, time 248.79ms
+iter 15300: loss 3.6598, time 245.09ms
+iter 15350: loss 3.6237, time 255.36ms
+iter 15400: loss 3.6761, time 249.37ms
+iter 15450: loss 3.6697, time 257.23ms
+step 15500: train loss 5.3765, val loss 5.3780, train acc 0.0079, val acc 0.0079, ppl 38.5, lr 6.57e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.000, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_15500.pt
+iter 15500: loss 3.6261, time 64313.66ms
+iter 15550: loss 3.6392, time 244.53ms
+iter 15600: loss 3.6338, time 244.31ms
+iter 15650: loss 3.5906, time 257.37ms
+iter 15700: loss 3.6507, time 244.54ms
+iter 15750: loss 3.6178, time 247.54ms
+iter 15800: loss 3.6297, time 248.99ms
+iter 15850: loss 3.6153, time 251.34ms
+iter 15900: loss 3.6630, time 253.77ms
+iter 15950: loss 3.6069, time 267.68ms
+step 16000: train loss 5.3793, val loss 5.3806, train acc 0.0080, val acc 0.0080, ppl 38.3, lr 5.85e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.023, 16t:0.000, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_16000.pt
+iter 16000: loss 3.6406, time 61213.37ms
+iter 16050: loss 3.6464, time 261.07ms
+iter 16100: loss 3.6369, time 251.20ms
+iter 16150: loss 3.6218, time 257.31ms
+iter 16200: loss 3.6375, time 247.30ms
+iter 16250: loss 3.6312, time 248.04ms
+iter 16300: loss 3.6160, time 250.83ms
+iter 16350: loss 3.6081, time 266.36ms
+iter 16400: loss 3.6685, time 349.74ms
+iter 16450: loss 3.6555, time 250.25ms
+step 16500: train loss 5.3909, val loss 5.3914, train acc 0.0079, val acc 0.0079, ppl 38.1, lr 5.20e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.000, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_16500.pt
+iter 16500: loss 3.6973, time 57489.46ms
+iter 16550: loss 3.6466, time 244.95ms
+iter 16600: loss 3.7020, time 246.89ms
+iter 16650: loss 3.6170, time 247.68ms
+iter 16700: loss 3.6716, time 285.08ms
+iter 16750: loss 3.6083, time 246.73ms
+iter 16800: loss 3.6595, time 251.00ms
+iter 16850: loss 3.6113, time 248.15ms
+iter 16900: loss 3.6604, time 247.24ms
+iter 16950: loss 3.6820, time 248.21ms
+step 17000: train loss 5.3933, val loss 5.3945, train acc 0.0079, val acc 0.0079, ppl 37.9, lr 4.63e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.008, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.016, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_17000.pt
+iter 17000: loss 3.6493, time 53905.93ms
+iter 17050: loss 3.6243, time 244.99ms
+iter 17100: loss 3.6104, time 250.27ms
+iter 17150: loss 3.6474, time 261.08ms
+iter 17200: loss 3.6051, time 246.81ms
+iter 17250: loss 3.6092, time 249.43ms
+iter 17300: loss 3.6587, time 257.55ms
+iter 17350: loss 3.6172, time 265.85ms
+iter 17400: loss 3.6418, time 247.38ms
+iter 17450: loss 3.5546, time 247.32ms
+step 17500: train loss 5.3949, val loss 5.3959, train acc 0.0079, val acc 0.0079, ppl 37.6, lr 4.14e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.008, 8t:0.023, 16t:0.000, 32t:0.000, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_17500.pt
+iter 17500: loss 3.6133, time 55427.20ms
+iter 17550: loss 3.6373, time 243.43ms
+iter 17600: loss 3.6064, time 247.92ms
+iter 17650: loss 3.6441, time 247.26ms
+iter 17700: loss 3.6252, time 248.24ms
+iter 17750: loss 3.6009, time 248.62ms
+iter 17800: loss 3.6276, time 248.15ms
+iter 17850: loss 3.6116, time 250.08ms
+iter 17900: loss 3.6784, time 252.40ms
+iter 17950: loss 3.6131, time 247.89ms
+step 18000: train loss 5.4023, val loss 5.4034, train acc 0.0080, val acc 0.0079, ppl 37.6, lr 3.73e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.008, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_18000.pt
+iter 18000: loss 3.6326, time 52231.81ms
+iter 18050: loss 3.6257, time 245.39ms
+iter 18100: loss 3.5439, time 245.41ms
+iter 18150: loss 3.6037, time 247.69ms
+iter 18200: loss 3.6075, time 246.33ms
+iter 18250: loss 3.6096, time 247.12ms
+iter 18300: loss 3.6372, time 250.11ms
+iter 18350: loss 3.6063, time 247.45ms
+iter 18400: loss 3.6085, time 246.92ms
+iter 18450: loss 3.6522, time 247.70ms
+step 18500: train loss 5.4077, val loss 5.4081, train acc 0.0079, val acc 0.0080, ppl 37.4, lr 3.41e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_18500.pt
+iter 18500: loss 3.6673, time 53942.57ms
+iter 18550: loss 3.6055, time 247.04ms
+iter 18600: loss 3.5903, time 272.29ms
+iter 18650: loss 3.6333, time 247.31ms
+iter 18700: loss 3.5631, time 252.53ms
+iter 18750: loss 3.6022, time 249.04ms
+iter 18800: loss 3.5776, time 249.00ms
+iter 18850: loss 3.5701, time 245.54ms
+iter 18900: loss 3.5919, time 255.82ms
+iter 18950: loss 3.6224, time 248.54ms
+step 19000: train loss 5.4092, val loss 5.4102, train acc 0.0079, val acc 0.0079, ppl 37.3, lr 3.18e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.008, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_19000.pt
+iter 19000: loss 3.6370, time 51186.92ms
+iter 19050: loss 3.6262, time 244.87ms
+iter 19100: loss 3.6015, time 246.00ms
+iter 19150: loss 3.6598, time 246.97ms
+iter 19200: loss 3.6264, time 247.01ms
+iter 19250: loss 3.5987, time 247.22ms
+iter 19300: loss 3.6240, time 248.57ms
+iter 19350: loss 3.6477, time 247.76ms
+iter 19400: loss 3.6140, time 247.42ms
+iter 19450: loss 3.5874, time 248.29ms
+step 19500: train loss 5.4152, val loss 5.4163, train acc 0.0080, val acc 0.0079, ppl 37.3, lr 3.05e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_19500.pt
+iter 19500: loss 3.6067, time 51311.61ms
+iter 19550: loss 3.6437, time 247.15ms
+iter 19600: loss 3.6170, time 247.08ms
+iter 19650: loss 3.6346, time 247.74ms
+iter 19700: loss 3.6153, time 248.49ms
+iter 19750: loss 3.5916, time 247.12ms
+iter 19800: loss 3.6453, time 247.83ms
+iter 19850: loss 3.6236, time 248.29ms
+iter 19900: loss 3.6037, time 248.18ms
+iter 19950: loss 3.5836, time 248.14ms
+step 20000: train loss 5.4190, val loss 5.4201, train acc 0.0080, val acc 0.0080, ppl 37.3, lr 3.00e-05
+  Distinctive accuracy: 1t:0.008, 2t:0.000, 4t:0.016, 8t:0.023, 16t:0.008, 32t:0.008, 64t:0.008, 128t:0.008
+saving checkpoint to out-lm-6layer-fulltrain-ddp/ckpt_20000.pt
+iter 20000: loss 3.6259, time 51557.21ms
+
+Training complete!
+Best validation loss: 4.9966
+Checkpoints saved to: out-lm-6layer-fulltrain-ddp/
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-6layer-fulltrain-lm-ddp[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260119_233923-wlwdmlo8/logs[0m

@@ -1,0 +1,163 @@
+
+WandB initialized. Project: nope-decoding-vector
+
+Loading OWT data...
+  Loaded 100 sequences of length 256
+
+======================================================================
+MODEL: NoPE + LayerNorm (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_random
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([768, 768])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+    Base vector norm: 160232.1719
+
+[3/4] Extracting activations...
+Processing batches: 100%|██████████| 10/10 [00:00<00:00, 211.57it/s]
+
+[4/4] Analyzing correlations...
+
+--- Layer: post_attn ---
+    Pearson r: -0.0103
+    Spearman r: -0.0115
+    R² score: -0.0006
+
+--- Layer: post_ln2 ---
+    Pearson r: 0.0142
+    Spearman r: 0.0383
+    R² score: 0.0001
+
+======================================================================
+MODEL: NoPE + LayerNorm (Trained)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_trained
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([768, 768])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+    Base vector norm: 148558.7188
+
+[3/4] Extracting activations...
+Processing batches: 100%|██████████| 10/10 [00:00<00:00, 670.98it/s]
+
+[4/4] Analyzing correlations...
+
+--- Layer: post_attn ---
+    Pearson r: 0.0168
+    Spearman r: 0.0269
+    R² score: 0.0000
+
+--- Layer: post_ln2 ---
+    Pearson r: 0.0120
+    Spearman r: 0.0284
+    R² score: -0.0001
+
+======================================================================
+MODEL: Baseline + PE (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: Baseline_PE_random
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([768, 768])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+    Base vector norm: 21492.1914
+
+[3/4] Extracting activations...
+Processing batches: 100%|██████████| 10/10 [00:00<00:00, 732.13it/s]
+
+[4/4] Analyzing correlations...
+
+--- Layer: post_attn ---
+    Pearson r: 0.0094
+    Spearman r: 0.0017
+    R² score: 0.0001
+
+--- Layer: post_ln2 ---
+    Pearson r: -0.0022
+    Spearman r: -0.0037
+    R² score: -0.0004
+
+[Creating summary plots...]
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_vector_corrected/decoding_vector_results.json
+
+======================================================================
+FINAL SUMMARY
+======================================================================
+
+Model                     Layer           Pearson r    R²
+-----------------------------------------------------------------
+NoPE_LN_random            post_attn          -0.0103    -0.0006
+NoPE_LN_random            post_ln2            0.0142     0.0001
+NoPE_LN_trained           post_attn           0.0168     0.0000
+NoPE_LN_trained           post_ln2            0.0120    -0.0001
+Baseline_PE_random        post_attn           0.0094     0.0001
+Baseline_PE_random        post_ln2           -0.0022    -0.0004

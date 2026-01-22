@@ -1,0 +1,146 @@
+{
+  "NoPE + LayerNorm": {
+    "trained": {
+      "pre_ln2": {
+        "full_r2": 0.07584813340751251,
+        "direction_r2": 0.39891733106628924,
+        "norm_r2": 0.21164964183235357,
+        "norm_position_corr": -0.4611028637174637
+      },
+      "post_ln2": {
+        "full_r2": 0.3993356195510407,
+        "direction_r2": 0.3842809989868434,
+        "norm_r2": 0.19825380314329488,
+        "norm_position_corr": 0.4404211301644984
+      },
+      "linearization": {
+        "norm_r2_change": -0.013395838689058692,
+        "direction_r2_change": -0.014636332079445813,
+        "normalized_effect": -0.06329251763945556,
+        "norm_corr_change": 0.9015239938819621
+      },
+      "model_name": "NoPE + LayerNorm (trained)",
+      "n_samples": 500,
+      "context": 512
+    },
+    "random": {
+      "pre_ln2": {
+        "full_r2": 0.07640469655194937,
+        "direction_r2": 0.08057499833130166,
+        "norm_r2": 0.320687492452266,
+        "norm_position_corr": -0.5661186669964611
+      },
+      "post_ln2": {
+        "full_r2": 0.08022373729470389,
+        "direction_r2": 0.08059666660861031,
+        "norm_r2": 0.8831805420014412,
+        "norm_position_corr": -0.9400318926196356
+      },
+      "linearization": {
+        "norm_r2_change": 0.5624930495491752,
+        "direction_r2_change": 2.166827730865073e-05,
+        "normalized_effect": 1.7540224136833205,
+        "norm_corr_change": -0.3739132256231745
+      },
+      "model_name": "NoPE + LayerNorm (random)",
+      "n_samples": 500,
+      "context": 512
+    }
+  },
+  "NoPE + BatchNorm2": {
+    "trained": {
+      "pre_ln2": {
+        "full_r2": 0.0766814845449042,
+        "direction_r2": 0.30130209705747546,
+        "norm_r2": 0.13995895337707331,
+        "norm_position_corr": -0.36984588548101316
+      },
+      "post_ln2": {
+        "full_r2": 0.0766335270076216,
+        "direction_r2": 0.42644947705839786,
+        "norm_r2": 0.23254986858774063,
+        "norm_position_corr": -0.4809609103144559
+      },
+      "linearization": {
+        "norm_r2_change": 0.09259091521066731,
+        "direction_r2_change": 0.1251473800009224,
+        "normalized_effect": 0.6615576422696702,
+        "norm_corr_change": -0.11111502483344277
+      },
+      "model_name": "NoPE + BatchNorm2 (trained)",
+      "n_samples": 500,
+      "context": 512
+    },
+    "random": {
+      "pre_ln2": {
+        "full_r2": 0.061321551484472825,
+        "direction_r2": 0.08537052214616347,
+        "norm_r2": 0.31630238770966546,
+        "norm_position_corr": -0.5661901600594262
+      },
+      "post_ln2": {
+        "full_r2": 0.06132156046707471,
+        "direction_r2": 0.08537052339128781,
+        "norm_r2": 0.31630239046615083,
+        "norm_position_corr": -0.5661901586735458
+      },
+      "linearization": {
+        "norm_r2_change": 2.756485373289763e-09,
+        "direction_r2_change": 1.2451243369682174e-09,
+        "normalized_effect": 8.714715665756992e-09,
+        "norm_corr_change": 1.3858804104316391e-09
+      },
+      "model_name": "NoPE + BatchNorm2 (random)",
+      "n_samples": 500,
+      "context": 512
+    }
+  },
+  "NoPE + No LN2": {
+    "trained": {
+      "pre_ln2": {
+        "full_r2": 0.13150865859191507,
+        "direction_r2": 0.5275521915104509,
+        "norm_r2": 0.23126745445650798,
+        "norm_position_corr": -0.48070656282754554
+      },
+      "post_ln2": {
+        "full_r2": 0.13150865859191507,
+        "direction_r2": 0.5275521915104509,
+        "norm_r2": 0.23126745445650798,
+        "norm_position_corr": -0.48070656282754554
+      },
+      "linearization": {
+        "norm_r2_change": 0.0,
+        "direction_r2_change": 0.0,
+        "normalized_effect": 0.0,
+        "norm_corr_change": 0.0
+      },
+      "model_name": "NoPE + No LN2 (trained)",
+      "n_samples": 500,
+      "context": 512
+    },
+    "random": {
+      "pre_ln2": {
+        "full_r2": 0.06997038792393095,
+        "direction_r2": 0.08959691921840418,
+        "norm_r2": 0.32081725343931944,
+        "norm_position_corr": -0.5646064939964909
+      },
+      "post_ln2": {
+        "full_r2": 0.06997038792393095,
+        "direction_r2": 0.08959691921840418,
+        "norm_r2": 0.32081725343931944,
+        "norm_position_corr": -0.5646064939964909
+      },
+      "linearization": {
+        "norm_r2_change": 0.0,
+        "direction_r2_change": 0.0,
+        "normalized_effect": 0.0,
+        "norm_corr_change": 0.0
+      },
+      "model_name": "NoPE + No LN2 (random)",
+      "n_samples": 500,
+      "context": 512
+    }
+  }
+}

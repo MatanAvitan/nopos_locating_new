@@ -1,0 +1,12 @@
+{"time":"2026-01-20T00:42:30.667475438+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-20T00:42:33.254269855+02:00","level":"INFO","msg":"stream: created new stream","id":"vewukpey"}
+{"time":"2026-01-20T00:42:33.254477771+02:00","level":"INFO","msg":"handler: started","stream_id":"vewukpey"}
+{"time":"2026-01-20T00:42:33.25558694+02:00","level":"INFO","msg":"stream: started","id":"vewukpey"}
+{"time":"2026-01-20T00:42:33.255604404+02:00","level":"INFO","msg":"writer: started","stream_id":"vewukpey"}
+{"time":"2026-01-20T00:42:33.255646316+02:00","level":"INFO","msg":"sender: started","stream_id":"vewukpey"}
+{"time":"2026-01-20T01:21:37.060247678+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-01-20T01:21:37.43893407+02:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-01-20T01:21:37.444379369+02:00","level":"INFO","msg":"stream: closing","id":"vewukpey"}
+{"time":"2026-01-20T01:21:37.444402314+02:00","level":"INFO","msg":"handler: closed","stream_id":"vewukpey"}
+{"time":"2026-01-20T01:21:37.445562393+02:00","level":"INFO","msg":"sender: closed","stream_id":"vewukpey"}
+{"time":"2026-01-20T01:21:37.445609505+02:00","level":"INFO","msg":"stream: closed","id":"vewukpey"}

@@ -1,0 +1,52 @@
+
+============================================================
+HIGHER-ORDER STATISTICS ANALYSIS
+============================================================
+Samples: 30000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+Extracting activations from: blocks.0.ln2.hook_normalized
+Extracting blocks.0.ln2.hook_normalized:   0%|          | 0/118 [00:00<?, ?it/s]Extracting blocks.0.ln2.hook_normalized:   0%|          | 0/118 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/higher_order_statistics_analysis.py", line 798, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/higher_order_statistics_analysis.py", line 660, in main
+    activations = extract_activations(model, tokens, hook_name, cfg.batch_size)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/higher_order_statistics_analysis.py", line 111, in extract_activations
+    _, cache = model.run_with_cache(batch_tokens, names_filter=[hook_name])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/HookedTransformer.py", line 657, in run_with_cache
+    out, cache_dict = super().run_with_cache(
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/hook_points.py", line 568, in run_with_cache
+    model_out = self(*model_args, **model_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/HookedTransformer.py", line 593, in forward
+    logits = self.unembed(residual)  # [batch, pos, d_vocab]
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/components/unembed.py", line 31, in forward
+    return batch_addmm(self.b_U, self.W_U, residual)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/utilities/addmm.py", line 33, in batch_addmm
+    x = vanilla_addmm(bias, x.view(-1, x.size(-1)), weight)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/transformer_lens/utilities/addmm.py", line 18, in vanilla_addmm
+    return torch.addmm(input, mat1, mat2)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.07 GiB. GPU 0 has a total capacity of 79.25 GiB of which 2.64 GiB is free. Process 1691559 has 75.47 GiB memory in use. Including non-PyTorch memory, this process has 1.13 GiB memory in use. Of the allocated memory 591.91 MiB is allocated by PyTorch, and 66.09 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

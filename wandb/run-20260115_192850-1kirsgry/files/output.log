@@ -1,0 +1,215 @@
+
+WandB initialized. Project: nope-snake-clusters
+
+Loading OWT data...
+  Loaded 100 sequences of length 256
+
+======================================================================
+MODEL: NoPE + LayerNorm (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_random
+============================================================
+
+[1/4] Extracting activations...
+Extracting activations: 100%|██████████| 10/10 [00:00<00:00, 48.98it/s]
+
+--- Layer: post_attn ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_random_post_attn.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_attn:
+      Clusters identified: 24
+      Coherence: 20.5 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: -1.198
+
+--- Layer: post_ln2 ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_random_post_ln2.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_ln2:
+      Clusters identified: 24
+      Coherence: 20.2 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: 0.198
+
+======================================================================
+MODEL: NoPE + LayerNorm (Trained)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_trained
+============================================================
+
+[1/4] Extracting activations...
+Extracting activations: 100%|██████████| 10/10 [00:00<00:00, 117.28it/s]
+
+--- Layer: post_attn ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_trained_post_attn.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_attn:
+      Clusters identified: 24
+      Coherence: 20.5 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: -0.599
+
+--- Layer: post_ln2 ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_NoPE_LN_trained_post_ln2.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_ln2:
+      Clusters identified: 24
+      Coherence: 20.3 clusters/sequence
+      Dominant fraction: 0.12
+      Within-cluster probe R²: -0.112
+
+======================================================================
+MODEL: Baseline + PE (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: Baseline_PE_random
+============================================================
+
+[1/4] Extracting activations...
+Extracting activations: 100%|██████████| 10/10 [00:00<00:00, 172.87it/s]
+
+--- Layer: post_attn ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_Baseline_PE_random_post_attn.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_attn:
+      Clusters identified: 24
+      Coherence: 20.4 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: 0.897
+
+--- Layer: post_ln2 ---
+[2/4] Creating t-SNE visualization...
+    Running t-SNE on 5000 samples...
+    Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/plots/tsne_Baseline_PE_random_post_ln2.png
+[3/4] Identifying 24 clusters...
+    Computing cluster statistics...
+    Analyzing sequence coherence...
+    Training within-cluster linear probes...
+
+    Summary for post_ln2:
+      Clusters identified: 24
+      Coherence: 20.3 clusters/sequence
+      Dominant fraction: 0.11
+      Within-cluster probe R²: 0.895
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/snake_cluster_analysis/snake_cluster_results.json
+
+======================================================================
+FINAL SUMMARY
+======================================================================
+
+NoPE_LN_random:
+  post_attn:
+    Clusters/sequence: 20.5
+    Dominant fraction: 0.11
+    Within-cluster R²: -1.198
+  post_ln2:
+    Clusters/sequence: 20.2
+    Dominant fraction: 0.11
+    Within-cluster R²: 0.198
+
+NoPE_LN_trained:
+  post_attn:
+    Clusters/sequence: 20.5
+    Dominant fraction: 0.11
+    Within-cluster R²: -0.599
+  post_ln2:
+    Clusters/sequence: 20.3
+    Dominant fraction: 0.12
+    Within-cluster R²: -0.112
+
+Baseline_PE_random:
+  post_attn:
+    Clusters/sequence: 20.4
+    Dominant fraction: 0.11
+    Within-cluster R²: 0.897
+  post_ln2:
+    Clusters/sequence: 20.3
+    Dominant fraction: 0.11
+    Within-cluster R²: 0.895

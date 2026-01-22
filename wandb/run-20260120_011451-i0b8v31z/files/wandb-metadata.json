@@ -1,0 +1,102 @@
+{
+  "os":  "Linux-5.4.0-122-generic-x86_64-with-glibc2.31",
+  "python":  "CPython 3.12.8",
+  "startedAt":  "2026-01-19T23:14:51.861404Z",
+  "args":  [
+    "--n_samples",
+    "500",
+    "--checkpoint_dir",
+    "nanoGPT/out-posreg-6layer-until-mlp",
+    "--output_suffix",
+    "_6layer_frozen_cos",
+    "--layers",
+    "post_attn,post_ln2",
+    "--wandb",
+    "--wandb_run_name",
+    "axis-alignment-owt-6layer-frozen-cos"
+  ],
+  "program":  "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py",
+  "codePath":  "analysis_scripts/axis_alignment_owt.py",
+  "codePathLocal":  "analysis_scripts/axis_alignment_owt.py",
+  "git":  {
+    "remote":  "git@github.com:MatanAvitan/nopos_locating_new.git",
+    "commit":  "ba4fbcd15bc2c35e2ba5b36ae651f9955f09ba84"
+  },
+  "email":  "matan13av@gmail.com",
+  "root":  "/home/nlp/matan_avitan/git/nopos_locating_new",
+  "host":  "dgx02",
+  "executable":  "/home/nlp/matan_avitan/.conda/envs/py312/bin/python",
+  "cpu_count":  40,
+  "cpu_count_logical":  80,
+  "gpu":  "Tesla V100-SXM2-32GB",
+  "gpu_count":  8,
+  "disk":  {
+    "/":  {
+      "total":  "469166645248",
+      "used":  "379291193344"
+    }
+  },
+  "memory":  {
+    "total":  "540917411840"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-322bdf20-2bda-ba04-ce00-4f01b294b000"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-6a4d83e5-94fb-6473-36da-044ad53d1dab"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-3f1be713-069c-6d24-7823-2b185781c0b1"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-f3b59ae6-d7a3-36a4-9faf-1199bd99ba24"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-a92f2aae-810b-4d0f-c2d6-12ab9eb9cdfd"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-421e456f-057d-8090-3d49-f5ec5396e716"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-b9946419-4738-5294-7574-0c3679386556"
+    },
+    {
+      "name":  "Tesla V100-SXM2-32GB",
+      "memoryTotal":  "34359738368",
+      "cudaCores":  5120,
+      "architecture":  "Volta",
+      "uuid":  "GPU-c2d47e5f-483f-df00-4d92-a1f919d53ca3"
+    }
+  ],
+  "cudaVersion":  "12.0",
+  "writerId":  "ky8loxkvbnou6a3k1k4gb48jv9m79cm4"
+}

@@ -1,0 +1,147 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py:262: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 1hj8lvzd
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260112_192524-1hj8lvzd
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-owt-bn2
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-emergence
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-emergence/runs/1hj8lvzd
+Overriding config with config/train_nope_owt_bn2.py:
+# Training config for NoPE transformer with BatchNorm2 on OpenWebText
+# Tests hypothesis: Does BatchNorm preserve population positional statistics?
+#
+# Key features:
+# - No positional embeddings (NoPE mode)
+# - BatchNorm for second normalization (instead of LayerNorm)
+# - Xavier initialization for attention Q, K, V
+# - OpenWebText dataset (~9B tokens)
+# - Context length 2048 for testing long-range position encoding
+#
+# Hypothesis: LayerNorm normalizes per-sample, potentially destroying population
+# statistics that encode position. BatchNorm normalizes across the batch,
+# potentially preserving population-level mean/variance positional signals.
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_nope_owt_bn2.py
+
+# I/O
+out_dir = "out-nope-owt-bn2"
+eval_interval = 500  # Checkpoint every 500 iters for resumability
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-emergence"
+wandb_run_name = "nope-owt-bn2"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 4  # Accumulate to effective batch 256
+batch_size = 64  # Reduced batch for memory (64 * 4 * 512 = 131K tokens)
+block_size = 512  # Context length
+
+# Model architecture
+n_layer = 1
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE-specific settings
+use_positional_embedding = False
+norm_type = "layernorm"  # LN for first norm
+log_attention_stats = True
+skip_ln2 = False
+use_batchnorm_ln2 = True  # KEY: Use BatchNorm for ln_2
+
+# Optimizer
+learning_rate = 6e-4
+max_iters = 50000
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = False
+dtype = "bfloat16"
+seed = 42
+
+# Stability tracking
+track_stability = True
+stability_log_interval = 100
+
+tokens per iteration will be: 131,072
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+num decayed parameter tensors: 5, with 45,711,360 parameters
+num non-decayed parameter tensors: 4, with 3,072 parameters
+using fused AdamW: True
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: False
+  Dataset: openwebtext
+  Batch size: 64 x 4 = 256
+  Block size: 512
+  Learning rate: 0.0006 -> 6e-05
+
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py", line 383, in <module>
+    losses = estimate_loss()
+             ^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py", line 296, in estimate_loss
+    logits, loss = model(X, Y)
+                   ^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 447, in forward
+    logits = self.lm_head(x)
+             ^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.07 GiB. GPU 0 has a total capacity of 79.25 GiB of which 2.75 GiB is free. Process 1691560 has 75.47 GiB memory in use. Including non-PyTorch memory, this process has 1.03 GiB memory in use. Of the allocated memory 510.71 MiB is allocated by PyTorch, and 31.29 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-owt-bn2[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260112_192524-1hj8lvzd/logs[0m

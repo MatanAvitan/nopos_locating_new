@@ -1,0 +1,23 @@
+{
+  "NoPE_LN_random": {
+    "model": "NoPE_LN_random",
+    "n_sequences": 100,
+    "context_length": 256,
+    "layers": {
+      "post_attn": {
+        "pearson_r": -0.025009974567934596,
+        "pearson_p": 6.280227109673348e-05,
+        "spearman_r": -0.03726715325733134,
+        "spearman_p": 2.453464717935348e-09,
+        "r2_score": 0.001636207103729248
+      },
+      "post_ln2": {
+        "pearson_r": -0.07381006997994724,
+        "pearson_p": 2.8933048295992e-32,
+        "spearman_r": -0.07428555401340413,
+        "spearman_p": 1.161635497011254e-32,
+        "r2_score": 0.006979465484619141
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{"time":"2026-01-18T22:24:35.212488952+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-18T22:24:37.4215346+02:00","level":"INFO","msg":"stream: created new stream","id":"lpzwafb5"}
+{"time":"2026-01-18T22:24:37.421689574+02:00","level":"INFO","msg":"handler: started","stream_id":"lpzwafb5"}
+{"time":"2026-01-18T22:24:37.423124875+02:00","level":"INFO","msg":"stream: started","id":"lpzwafb5"}
+{"time":"2026-01-18T22:24:37.423149974+02:00","level":"INFO","msg":"sender: started","stream_id":"lpzwafb5"}
+{"time":"2026-01-18T22:24:37.423156146+02:00","level":"INFO","msg":"writer: started","stream_id":"lpzwafb5"}
+{"time":"2026-01-18T22:26:06.760322595+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-01-18T22:26:07.138774391+02:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-01-18T22:26:07.143008923+02:00","level":"INFO","msg":"stream: closing","id":"lpzwafb5"}
+{"time":"2026-01-18T22:26:07.143023191+02:00","level":"INFO","msg":"handler: closed","stream_id":"lpzwafb5"}
+{"time":"2026-01-18T22:26:07.144065179+02:00","level":"INFO","msg":"sender: closed","stream_id":"lpzwafb5"}
+{"time":"2026-01-18T22:26:07.144075268+02:00","level":"INFO","msg":"stream: closed","id":"lpzwafb5"}

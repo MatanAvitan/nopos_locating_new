@@ -1,0 +1,108 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run zu2307x1
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260116_023325-zu2307x1
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run eval-frozen
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/position-classifier
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/position-classifier/runs/zu2307x1
+wandb: uploading artifact run-zu2307x1-accuracy_table; updating run metadata
+wandb: uploading artifact run-zu2307x1-accuracy_table; uploading media/table/accuracy_table_3_a68ea74be6a5da39d473.table.json; uploading wandb-summary.json; uploading history steps 1-4, summary
+wandb: uploading artifact run-zu2307x1-accuracy_table
+wandb: uploading data
+wandb: uploading media/images/accuracy_heatmap_1_25c63bceefcc11170ee9.png
+wandb: uploading data
+wandb: 
+wandb: Run history:
+wandb:  summary/max_acc_128_tokens ▁
+wandb:   summary/max_acc_16_tokens ▁
+wandb:    summary/max_acc_1_tokens ▁
+wandb:    summary/max_acc_2_tokens ▁
+wandb:   summary/max_acc_32_tokens ▁
+wandb:    summary/max_acc_4_tokens ▁
+wandb:   summary/max_acc_64_tokens ▁
+wandb:    summary/max_acc_8_tokens ▁
+wandb: summary/mean_acc_128_tokens ▁
+wandb:  summary/mean_acc_16_tokens ▁
+wandb:                         +15 ...
+wandb: 
+wandb: Run summary:
+wandb:  summary/max_acc_128_tokens 0.38
+wandb:   summary/max_acc_16_tokens 0.365
+wandb:    summary/max_acc_1_tokens 0.358
+wandb:    summary/max_acc_2_tokens 0.373
+wandb:   summary/max_acc_32_tokens 0.384
+wandb:    summary/max_acc_4_tokens 0.378
+wandb:   summary/max_acc_64_tokens 0.343
+wandb:    summary/max_acc_8_tokens 0.374
+wandb: summary/mean_acc_128_tokens 0.00843
+wandb:  summary/mean_acc_16_tokens 0.0083
+wandb:                         +15 ...
+wandb: 
+wandb: 🚀 View run eval-frozen at: https://wandb.ai/matan_avitan/position-classifier/runs/zu2307x1
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/position-classifier
+wandb: Synced 4 W&B file(s), 4 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260116_023325-zu2307x1/logs
+======================================================================
+POSITION CLASSIFIER EVALUATION
+======================================================================
+Checkpoint: nanoGPT/out-position-classifier-frozen/ckpt.pt
+Device: cuda:0
+Samples per condition: 1000
+
+Loading model...
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.81M
+============================================================
+
+Model loaded: 1 layers, 12 heads
+Sequence length: 128
+Training val accuracy: 0.0365
+
+Running evaluation...
+  Evaluating with 1 distinctive tokens...
+    Mean accuracy: 0.0078, Min: 0.0000, Max: 0.3580
+  Evaluating with 2 distinctive tokens...
+    Mean accuracy: 0.0080, Min: 0.0000, Max: 0.3730
+  Evaluating with 4 distinctive tokens...
+    Mean accuracy: 0.0077, Min: 0.0000, Max: 0.3780
+  Evaluating with 8 distinctive tokens...
+    Mean accuracy: 0.0077, Min: 0.0000, Max: 0.3740
+  Evaluating with 16 distinctive tokens...
+    Mean accuracy: 0.0083, Min: 0.0000, Max: 0.3650
+  Evaluating with 32 distinctive tokens...
+    Mean accuracy: 0.0082, Min: 0.0000, Max: 0.3840
+  Evaluating with 64 distinctive tokens...
+    Mean accuracy: 0.0079, Min: 0.0000, Max: 0.3430
+  Evaluating with 128 distinctive tokens...
+    Mean accuracy: 0.0084, Min: 0.0000, Max: 0.3800
+
+======================================================================
+SUMMARY TABLE
+======================================================================
+Distinctive Tokens       Mean Acc      Min Acc      Max Acc
+------------------------------------------------------------
+1                          0.0078       0.0000       0.3580
+2                          0.0080       0.0000       0.3730
+4                          0.0077       0.0000       0.3780
+8                          0.0077       0.0000       0.3740
+16                         0.0083       0.0000       0.3650
+32                         0.0082       0.0000       0.3840
+64                         0.0079       0.0000       0.3430
+128                        0.0084       0.0000       0.3800
+Plots saved to results/position_classifier
+
+Wandb logs uploaded to project: position-classifier
+
+Results saved to results/position_classifier/results_eval-frozen.json

@@ -1,0 +1,592 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:243: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run qrzf7gtq
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260116_024410-qrzf7gtq
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-6layer-posclf-frozen
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/position-classifier
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/position-classifier/runs/qrzf7gtq
+Overriding config with config/train_position_classifier_large_frozen.py:
+# Configuration for Position Classifier - LARGE Model FROZEN
+# More layers, but only train the position head
+
+# I/O
+out_dir = "out-position-classifier-large-frozen"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "position-classifier"
+wandb_run_name = "nope-6layer-posclf-frozen"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 4
+batch_size = 64
+block_size = 128  # Sequence length = position classes
+
+# Model - LARGER
+n_layer = 6        # 6 layers instead of 1
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE - no positional embeddings
+use_positional_embedding = False
+norm_type = "layernorm"
+
+# Training mode
+freeze_transformer = True  # FROZEN - only train position head
+
+# Optimizer - higher LR for probing
+learning_rate = 1e-3
+max_iters = 20000
+weight_decay = 0.0
+beta1 = 0.9
+beta2 = 0.99
+grad_clip = 1.0
+
+# Learning rate schedule
+decay_lr = True
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 1e-4
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = True
+seed = 42
+
+tokens per iteration will be: 32,768
+Initializing a new Position Classifier model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.21M
+============================================================
+
+
+*** FROZEN MODE: Only training position head ***
+Frozen transformer. Trainable: 98,304 / 81,209,088 params
+Only pos_head is trainable: torch.Size([128, 768])
+Decayed params: 1 tensors, 98,304 params
+Non-decayed params: 0 tensors, 0 params
+Using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 20000 iterations...
+  Model: Position Classifier
+  Positional Embedding: False
+  Frozen transformer: True
+  Dataset: openwebtext
+  Batch size: 64 x 4 = 256
+  Block size: 128
+  Position classes: 128
+  Learning rate: 0.001 -> 0.0001
+
+step 0: train loss 4.9993, val loss 4.9994, train acc 0.0078, val acc 0.0079, lr 9.99e-07
+iter 0: loss 4.9980, time 15067.49ms
+iter 50: loss 4.9368, time 22.74ms
+iter 100: loss 4.8635, time 22.21ms
+iter 150: loss 4.7964, time 22.06ms
+iter 200: loss 4.7414, time 22.16ms
+iter 250: loss 4.6895, time 22.13ms
+iter 300: loss 4.6195, time 22.09ms
+iter 350: loss 4.5802, time 22.26ms
+iter 400: loss 4.5502, time 22.71ms
+iter 450: loss 4.5215, time 22.27ms
+step 500: train loss 4.4921, val loss 4.4874, train acc 0.0246, val acc 0.0247, lr 5.00e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_00500.pt
+iter 500: loss 4.5238, time 7213.55ms
+iter 550: loss 4.4855, time 22.07ms
+iter 600: loss 4.4264, time 22.07ms
+iter 650: loss 4.4333, time 22.07ms
+iter 700: loss 4.4171, time 22.09ms
+iter 750: loss 4.4352, time 22.09ms
+iter 800: loss 4.3998, time 22.09ms
+iter 850: loss 4.4135, time 22.51ms
+iter 900: loss 4.3971, time 22.08ms
+iter 950: loss 4.4629, time 22.06ms
+step 1000: train loss 4.3746, val loss 4.3733, train acc 0.0309, val acc 0.0305, lr 1.00e-03
+saving checkpoint to out-position-classifier-large-frozen/ckpt_01000.pt
+iter 1000: loss 4.3510, time 7461.30ms
+iter 1050: loss 4.3692, time 22.16ms
+iter 1100: loss 4.3590, time 22.07ms
+iter 1150: loss 4.3930, time 22.08ms
+iter 1200: loss 4.4256, time 22.16ms
+iter 1250: loss 4.3857, time 22.21ms
+iter 1300: loss 4.3433, time 22.06ms
+iter 1350: loss 4.3485, time 22.27ms
+iter 1400: loss 4.3431, time 22.05ms
+iter 1450: loss 4.3463, time 22.04ms
+step 1500: train loss 4.3464, val loss 4.3419, train acc 0.0321, val acc 0.0321, lr 9.98e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_01500.pt
+iter 1500: loss 4.3237, time 7123.86ms
+iter 1550: loss 4.5019, time 22.23ms
+iter 1600: loss 4.2859, time 22.25ms
+iter 1650: loss 4.3009, time 22.59ms
+iter 1700: loss 4.3220, time 22.09ms
+iter 1750: loss 4.3231, time 22.07ms
+iter 1800: loss 4.3205, time 22.62ms
+iter 1850: loss 4.2925, time 22.22ms
+iter 1900: loss 4.3203, time 22.07ms
+iter 1950: loss 4.4488, time 22.07ms
+step 2000: train loss 4.3276, val loss 4.3251, train acc 0.0332, val acc 0.0331, lr 9.94e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_02000.pt
+iter 2000: loss 4.3692, time 7260.42ms
+iter 2050: loss 4.3040, time 22.05ms
+iter 2100: loss 4.3182, time 22.05ms
+iter 2150: loss 4.3398, time 22.05ms
+iter 2200: loss 4.2775, time 22.53ms
+iter 2250: loss 4.2851, time 22.04ms
+iter 2300: loss 4.2633, time 22.34ms
+iter 2350: loss 4.2507, time 22.18ms
+iter 2400: loss 4.3282, time 22.07ms
+iter 2450: loss 4.3151, time 22.03ms
+step 2500: train loss 4.3241, val loss 4.3152, train acc 0.0336, val acc 0.0337, lr 9.86e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_02500.pt
+iter 2500: loss 4.3066, time 7049.27ms
+iter 2550: loss 4.3731, time 22.06ms
+iter 2600: loss 4.3001, time 22.02ms
+iter 2650: loss 4.2485, time 22.14ms
+iter 2700: loss 4.3808, time 22.17ms
+iter 2750: loss 4.2529, time 22.21ms
+iter 2800: loss 4.2938, time 22.13ms
+iter 2850: loss 4.2821, time 22.22ms
+iter 2900: loss 4.2986, time 22.04ms
+iter 2950: loss 4.2569, time 22.22ms
+step 3000: train loss 4.3175, val loss 4.3117, train acc 0.0338, val acc 0.0341, lr 9.76e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_03000.pt
+iter 3000: loss 4.3099, time 7099.09ms
+iter 3050: loss 4.3546, time 22.04ms
+iter 3100: loss 4.2625, time 22.15ms
+iter 3150: loss 4.3444, time 22.05ms
+iter 3200: loss 4.2338, time 22.08ms
+iter 3250: loss 4.2818, time 22.04ms
+iter 3300: loss 4.3415, time 22.19ms
+iter 3350: loss 4.2957, time 22.12ms
+iter 3400: loss 4.3701, time 22.16ms
+iter 3450: loss 4.3494, time 22.05ms
+step 3500: train loss 4.3147, val loss 4.3097, train acc 0.0342, val acc 0.0341, lr 9.62e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_03500.pt
+iter 3500: loss 4.3588, time 7143.30ms
+iter 3550: loss 4.2977, time 22.23ms
+iter 3600: loss 4.3178, time 22.05ms
+iter 3650: loss 4.2769, time 22.13ms
+iter 3700: loss 4.2587, time 22.05ms
+iter 3750: loss 4.3223, time 22.22ms
+iter 3800: loss 4.2813, time 22.05ms
+iter 3850: loss 4.2808, time 22.22ms
+iter 3900: loss 4.3025, time 22.21ms
+iter 3950: loss 4.3503, time 22.22ms
+step 4000: train loss 4.3081, val loss 4.3031, train acc 0.0344, val acc 0.0345, lr 9.46e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_04000.pt
+iter 4000: loss 4.3314, time 7088.76ms
+iter 4050: loss 4.2446, time 22.20ms
+iter 4100: loss 4.4104, time 22.16ms
+iter 4150: loss 4.3228, time 22.25ms
+iter 4200: loss 4.3240, time 22.19ms
+iter 4250: loss 4.2675, time 22.34ms
+iter 4300: loss 4.3403, time 22.54ms
+iter 4350: loss 4.3613, time 22.05ms
+iter 4400: loss 4.3698, time 22.18ms
+iter 4450: loss 4.2627, time 22.35ms
+step 4500: train loss 4.3077, val loss 4.3028, train acc 0.0344, val acc 0.0346, lr 9.27e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_04500.pt
+iter 4500: loss 4.3400, time 7068.59ms
+iter 4550: loss 4.2934, time 22.41ms
+iter 4600: loss 4.3589, time 22.03ms
+iter 4650: loss 4.3076, time 22.03ms
+iter 4700: loss 4.2921, time 22.17ms
+iter 4750: loss 4.2899, time 22.05ms
+iter 4800: loss 4.3205, time 22.07ms
+iter 4850: loss 4.3248, time 22.26ms
+iter 4900: loss 4.2912, time 22.18ms
+iter 4950: loss 4.3036, time 22.07ms
+step 5000: train loss 4.3070, val loss 4.3046, train acc 0.0342, val acc 0.0344, lr 9.05e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_05000.pt
+iter 5000: loss 4.3003, time 7150.36ms
+iter 5050: loss 4.3848, time 22.22ms
+iter 5100: loss 4.2937, time 22.05ms
+iter 5150: loss 4.3016, time 22.19ms
+iter 5200: loss 4.2802, time 22.07ms
+iter 5250: loss 4.2715, time 22.36ms
+iter 5300: loss 4.3248, time 22.32ms
+iter 5350: loss 4.3214, time 22.21ms
+iter 5400: loss 4.3719, time 22.56ms
+iter 5450: loss 4.3927, time 22.38ms
+step 5500: train loss 4.3137, val loss 4.3013, train acc 0.0347, val acc 0.0349, lr 8.81e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_05500.pt
+iter 5500: loss 4.3059, time 7125.78ms
+iter 5550: loss 4.3229, time 22.04ms
+iter 5600: loss 4.3310, time 22.42ms
+iter 5650: loss 4.3027, time 22.04ms
+iter 5700: loss 4.2735, time 22.24ms
+iter 5750: loss 4.3335, time 22.17ms
+iter 5800: loss 4.3879, time 22.09ms
+iter 5850: loss 4.2925, time 22.06ms
+iter 5900: loss 4.3164, time 22.06ms
+iter 5950: loss 4.3063, time 22.23ms
+step 6000: train loss 4.3068, val loss 4.2980, train acc 0.0344, val acc 0.0346, lr 8.55e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_06000.pt
+iter 6000: loss 4.2559, time 7057.76ms
+iter 6050: loss 4.2522, time 22.72ms
+iter 6100: loss 4.3329, time 22.80ms
+iter 6150: loss 4.2836, time 22.91ms
+iter 6200: loss 4.2918, time 22.21ms
+iter 6250: loss 4.2440, time 22.20ms
+iter 6300: loss 4.2294, time 23.74ms
+iter 6350: loss 4.2654, time 22.58ms
+iter 6400: loss 4.3178, time 22.16ms
+iter 6450: loss 4.2679, time 22.92ms
+step 6500: train loss 4.3073, val loss 4.3026, train acc 0.0347, val acc 0.0345, lr 8.26e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_06500.pt
+iter 6500: loss 4.3259, time 7206.96ms
+iter 6550: loss 4.2688, time 24.22ms
+iter 6600: loss 4.3000, time 59.55ms
+iter 6650: loss 4.2767, time 22.43ms
+iter 6700: loss 4.3535, time 22.59ms
+iter 6750: loss 4.3612, time 22.08ms
+iter 6800: loss 4.3257, time 22.10ms
+iter 6850: loss 4.2876, time 22.36ms
+iter 6900: loss 4.2831, time 22.09ms
+iter 6950: loss 4.4644, time 22.59ms
+step 7000: train loss 4.3049, val loss 4.3008, train acc 0.0350, val acc 0.0347, lr 7.96e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_07000.pt
+iter 7000: loss 4.2836, time 7146.21ms
+iter 7050: loss 4.3064, time 22.72ms
+iter 7100: loss 4.3434, time 22.17ms
+iter 7150: loss 4.2465, time 22.08ms
+iter 7200: loss 4.2469, time 22.04ms
+iter 7250: loss 4.2795, time 22.19ms
+iter 7300: loss 4.3192, time 22.07ms
+iter 7350: loss 4.3376, time 22.04ms
+iter 7400: loss 4.2714, time 22.03ms
+iter 7450: loss 4.2945, time 22.19ms
+step 7500: train loss 4.3059, val loss 4.3051, train acc 0.0347, val acc 0.0348, lr 7.64e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_07500.pt
+iter 7500: loss 4.2845, time 7358.88ms
+iter 7550: loss 4.3578, time 22.14ms
+iter 7600: loss 4.3244, time 22.05ms
+iter 7650: loss 4.3003, time 22.04ms
+iter 7700: loss 4.2748, time 22.06ms
+iter 7750: loss 4.3142, time 22.22ms
+iter 7800: loss 4.2488, time 45.81ms
+iter 7850: loss 4.2617, time 22.07ms
+iter 7900: loss 4.2696, time 22.22ms
+iter 7950: loss 4.2687, time 22.04ms
+step 8000: train loss 4.3018, val loss 4.2977, train acc 0.0351, val acc 0.0351, lr 7.31e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_08000.pt
+iter 8000: loss 4.3575, time 7366.66ms
+iter 8050: loss 4.3145, time 22.01ms
+iter 8100: loss 4.2578, time 21.99ms
+iter 8150: loss 4.3105, time 22.06ms
+iter 8200: loss 4.3270, time 22.03ms
+iter 8250: loss 4.3686, time 22.18ms
+iter 8300: loss 4.2713, time 22.17ms
+iter 8350: loss 4.3937, time 22.20ms
+iter 8400: loss 4.3020, time 22.19ms
+iter 8450: loss 4.3664, time 22.42ms
+step 8500: train loss 4.2999, val loss 4.2996, train acc 0.0351, val acc 0.0350, lr 6.96e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_08500.pt
+iter 8500: loss 4.3103, time 7234.00ms
+iter 8550: loss 4.2624, time 22.16ms
+iter 8600: loss 4.2864, time 22.08ms
+iter 8650: loss 4.3435, time 22.15ms
+iter 8700: loss 4.3159, time 23.01ms
+iter 8750: loss 4.4490, time 22.20ms
+iter 8800: loss 4.2414, time 22.07ms
+iter 8850: loss 4.3425, time 22.20ms
+iter 8900: loss 4.2632, time 22.11ms
+iter 8950: loss 4.3220, time 22.07ms
+step 9000: train loss 4.3003, val loss 4.2936, train acc 0.0352, val acc 0.0354, lr 6.60e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_09000.pt
+iter 9000: loss 4.3616, time 7443.08ms
+iter 9050: loss 4.3831, time 22.05ms
+iter 9100: loss 4.3740, time 22.03ms
+iter 9150: loss 4.3048, time 22.08ms
+iter 9200: loss 4.3575, time 22.06ms
+iter 9250: loss 4.3451, time 22.10ms
+iter 9300: loss 4.2865, time 22.55ms
+iter 9350: loss 4.2494, time 22.07ms
+iter 9400: loss 4.2942, time 22.16ms
+iter 9450: loss 4.3294, time 22.25ms
+step 9500: train loss 4.2985, val loss 4.2930, train acc 0.0353, val acc 0.0354, lr 6.24e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_09500.pt
+iter 9500: loss 4.2734, time 7334.70ms
+iter 9550: loss 4.2862, time 22.02ms
+iter 9600: loss 4.2667, time 22.05ms
+iter 9650: loss 4.2701, time 22.18ms
+iter 9700: loss 4.3188, time 22.29ms
+iter 9750: loss 4.3081, time 22.41ms
+iter 9800: loss 4.3483, time 22.12ms
+iter 9850: loss 4.2904, time 22.35ms
+iter 9900: loss 4.2265, time 22.05ms
+iter 9950: loss 4.2804, time 22.09ms
+step 10000: train loss 4.2990, val loss 4.2991, train acc 0.0353, val acc 0.0350, lr 5.87e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_10000.pt
+iter 10000: loss 4.2507, time 7693.96ms
+iter 10050: loss 4.2905, time 22.05ms
+iter 10100: loss 4.3280, time 22.61ms
+iter 10150: loss 4.3544, time 22.23ms
+iter 10200: loss 4.3943, time 22.26ms
+iter 10250: loss 4.2650, time 38.13ms
+iter 10300: loss 4.2501, time 22.26ms
+iter 10350: loss 4.2787, time 22.26ms
+iter 10400: loss 4.2394, time 22.39ms
+iter 10450: loss 4.3005, time 22.08ms
+step 10500: train loss 4.3078, val loss 4.3046, train acc 0.0352, val acc 0.0349, lr 5.50e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_10500.pt
+iter 10500: loss 4.3051, time 7296.56ms
+iter 10550: loss 4.3100, time 22.06ms
+iter 10600: loss 4.3952, time 22.29ms
+iter 10650: loss 4.2608, time 22.04ms
+iter 10700: loss 4.2604, time 22.19ms
+iter 10750: loss 4.2576, time 22.02ms
+iter 10800: loss 4.3431, time 22.10ms
+iter 10850: loss 4.2205, time 22.47ms
+iter 10900: loss 4.3513, time 22.04ms
+iter 10950: loss 4.2750, time 22.17ms
+step 11000: train loss 4.3025, val loss 4.2950, train acc 0.0352, val acc 0.0352, lr 5.13e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_11000.pt
+iter 11000: loss 4.3182, time 7693.43ms
+iter 11050: loss 4.3028, time 22.81ms
+iter 11100: loss 4.2527, time 22.97ms
+iter 11150: loss 4.2406, time 23.14ms
+iter 11200: loss 4.3070, time 22.77ms
+iter 11250: loss 4.2392, time 22.86ms
+iter 11300: loss 4.2599, time 22.83ms
+iter 11350: loss 4.3189, time 22.79ms
+iter 11400: loss 4.2740, time 22.76ms
+iter 11450: loss 4.2945, time 23.14ms
+step 11500: train loss 4.3039, val loss 4.2994, train acc 0.0351, val acc 0.0350, lr 4.76e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_11500.pt
+iter 11500: loss 4.3618, time 7076.47ms
+iter 11550: loss 4.2712, time 22.69ms
+iter 11600: loss 4.2746, time 22.78ms
+iter 11650: loss 4.2388, time 23.34ms
+iter 11700: loss 4.3430, time 22.85ms
+iter 11750: loss 4.2799, time 22.77ms
+iter 11800: loss 4.2930, time 22.92ms
+iter 11850: loss 4.2920, time 22.93ms
+iter 11900: loss 4.3028, time 22.79ms
+iter 11950: loss 4.2248, time 22.74ms
+step 12000: train loss 4.3040, val loss 4.2971, train acc 0.0352, val acc 0.0354, lr 4.40e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_12000.pt
+iter 12000: loss 4.3910, time 7056.92ms
+iter 12050: loss 4.2525, time 22.06ms
+iter 12100: loss 4.2757, time 22.07ms
+iter 12150: loss 4.3027, time 22.08ms
+iter 12200: loss 4.3150, time 22.11ms
+iter 12250: loss 4.2031, time 22.38ms
+iter 12300: loss 4.3381, time 22.23ms
+iter 12350: loss 4.2729, time 22.47ms
+iter 12400: loss 4.3115, time 22.36ms
+iter 12450: loss 4.3565, time 22.18ms
+step 12500: train loss 4.3018, val loss 4.2970, train acc 0.0353, val acc 0.0355, lr 4.04e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_12500.pt
+iter 12500: loss 4.3070, time 7134.06ms
+iter 12550: loss 4.3090, time 22.00ms
+iter 12600: loss 4.3584, time 22.07ms
+iter 12650: loss 4.2856, time 22.19ms
+iter 12700: loss 4.2513, time 22.25ms
+iter 12750: loss 4.2788, time 23.30ms
+iter 12800: loss 4.3019, time 23.35ms
+iter 12850: loss 4.2978, time 23.15ms
+iter 12900: loss 4.2675, time 23.94ms
+iter 12950: loss 4.3613, time 23.78ms
+step 13000: train loss 4.3008, val loss 4.3005, train acc 0.0355, val acc 0.0356, lr 3.69e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_13000.pt
+iter 13000: loss 4.3119, time 7162.89ms
+iter 13050: loss 4.2796, time 23.00ms
+iter 13100: loss 4.3659, time 23.09ms
+iter 13150: loss 4.3231, time 23.15ms
+iter 13200: loss 4.3878, time 23.52ms
+iter 13250: loss 4.2985, time 23.34ms
+iter 13300: loss 4.3133, time 23.99ms
+iter 13350: loss 4.2800, time 23.29ms
+iter 13400: loss 4.4014, time 23.94ms
+iter 13450: loss 4.2830, time 23.83ms
+step 13500: train loss 4.3007, val loss 4.2930, train acc 0.0354, val acc 0.0352, lr 3.36e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_13500.pt
+iter 13500: loss 4.3284, time 7466.12ms
+iter 13550: loss 4.2885, time 23.19ms
+iter 13600: loss 4.3107, time 23.30ms
+iter 13650: loss 4.3240, time 23.05ms
+iter 13700: loss 4.3331, time 23.50ms
+iter 13750: loss 4.2719, time 23.21ms
+iter 13800: loss 4.3052, time 23.16ms
+iter 13850: loss 4.3374, time 23.16ms
+iter 13900: loss 4.2934, time 23.84ms
+iter 13950: loss 4.3040, time 23.01ms
+step 14000: train loss 4.2974, val loss 4.2911, train acc 0.0355, val acc 0.0357, lr 3.04e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_14000.pt
+iter 14000: loss 4.2948, time 7152.22ms
+iter 14050: loss 4.3115, time 23.44ms
+iter 14100: loss 4.3067, time 22.67ms
+iter 14150: loss 4.3874, time 22.67ms
+iter 14200: loss 4.2603, time 22.88ms
+iter 14250: loss 4.3464, time 23.10ms
+iter 14300: loss 4.2833, time 22.70ms
+iter 14350: loss 4.4429, time 22.97ms
+iter 14400: loss 4.3571, time 22.69ms
+iter 14450: loss 4.3724, time 23.54ms
+step 14500: train loss 4.2993, val loss 4.2996, train acc 0.0355, val acc 0.0355, lr 2.74e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_14500.pt
+iter 14500: loss 4.2694, time 7200.51ms
+iter 14550: loss 4.3363, time 23.72ms
+iter 14600: loss 4.2474, time 23.50ms
+iter 14650: loss 4.2287, time 22.63ms
+iter 14700: loss 4.2629, time 22.88ms
+iter 14750: loss 4.2977, time 23.01ms
+iter 14800: loss 4.2683, time 22.13ms
+iter 14850: loss 4.3131, time 22.09ms
+iter 14900: loss 4.3019, time 23.11ms
+iter 14950: loss 4.3822, time 23.79ms
+step 15000: train loss 4.3029, val loss 4.2932, train acc 0.0355, val acc 0.0355, lr 2.45e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_15000.pt
+iter 15000: loss 4.2547, time 7139.73ms
+iter 15050: loss 4.2406, time 23.24ms
+iter 15100: loss 4.3116, time 22.68ms
+iter 15150: loss 4.3548, time 22.68ms
+iter 15200: loss 4.3078, time 23.09ms
+iter 15250: loss 4.2848, time 22.66ms
+iter 15300: loss 4.3221, time 22.65ms
+iter 15350: loss 4.3323, time 22.71ms
+iter 15400: loss 4.2636, time 22.87ms
+iter 15450: loss 4.2598, time 23.51ms
+step 15500: train loss 4.3023, val loss 4.2934, train acc 0.0353, val acc 0.0354, lr 2.19e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_15500.pt
+iter 15500: loss 4.2585, time 8041.35ms
+iter 15550: loss 4.3716, time 22.73ms
+iter 15600: loss 4.3121, time 22.89ms
+iter 15650: loss 4.2817, time 23.61ms
+iter 15700: loss 4.3416, time 23.07ms
+iter 15750: loss 4.3068, time 24.01ms
+iter 15800: loss 4.3267, time 25.81ms
+iter 15850: loss 4.2827, time 22.69ms
+iter 15900: loss 4.2573, time 23.10ms
+iter 15950: loss 4.3274, time 22.72ms
+step 16000: train loss 4.2968, val loss 4.2984, train acc 0.0354, val acc 0.0354, lr 1.95e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_16000.pt
+iter 16000: loss 4.3797, time 8376.20ms
+iter 16050: loss 4.3238, time 24.73ms
+iter 16100: loss 4.2624, time 23.21ms
+iter 16150: loss 4.3216, time 22.63ms
+iter 16200: loss 4.2846, time 23.91ms
+iter 16250: loss 4.3302, time 22.65ms
+iter 16300: loss 4.3168, time 22.72ms
+iter 16350: loss 4.2448, time 23.06ms
+iter 16400: loss 4.2490, time 23.00ms
+iter 16450: loss 4.2812, time 23.81ms
+step 16500: train loss 4.2956, val loss 4.2964, train acc 0.0356, val acc 0.0355, lr 1.73e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_16500.pt
+iter 16500: loss 4.2972, time 8642.77ms
+iter 16550: loss 4.3105, time 22.92ms
+iter 16600: loss 4.2692, time 22.98ms
+iter 16650: loss 4.3321, time 23.10ms
+iter 16700: loss 4.3542, time 22.89ms
+iter 16750: loss 4.2557, time 23.97ms
+iter 16800: loss 4.2711, time 23.12ms
+iter 16850: loss 4.3211, time 23.40ms
+iter 16900: loss 4.3295, time 23.15ms
+iter 16950: loss 4.3252, time 29.35ms
+step 17000: train loss 4.2960, val loss 4.2957, train acc 0.0354, val acc 0.0353, lr 1.54e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_17000.pt
+iter 17000: loss 4.3072, time 7276.90ms
+iter 17050: loss 4.3636, time 22.76ms
+iter 17100: loss 4.3362, time 22.68ms
+iter 17150: loss 4.3709, time 22.65ms
+iter 17200: loss 4.2963, time 22.67ms
+iter 17250: loss 4.2585, time 22.72ms
+iter 17300: loss 4.2862, time 23.48ms
+iter 17350: loss 4.3118, time 22.82ms
+iter 17400: loss 4.2545, time 22.68ms
+iter 17450: loss 4.2622, time 23.10ms
+step 17500: train loss 4.3014, val loss 4.2936, train acc 0.0353, val acc 0.0356, lr 1.38e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_17500.pt
+iter 17500: loss 4.2549, time 7375.00ms
+iter 17550: loss 4.2413, time 28.79ms
+iter 17600: loss 4.2464, time 23.12ms
+iter 17650: loss 4.2678, time 22.82ms
+iter 17700: loss 4.2190, time 22.70ms
+iter 17750: loss 4.2528, time 22.65ms
+iter 17800: loss 4.2637, time 22.68ms
+iter 17850: loss 4.2967, time 23.79ms
+iter 17900: loss 4.3347, time 22.62ms
+iter 17950: loss 4.3356, time 22.64ms
+step 18000: train loss 4.2958, val loss 4.2955, train acc 0.0357, val acc 0.0355, lr 1.24e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_18000.pt
+iter 18000: loss 4.2095, time 7079.51ms
+iter 18050: loss 4.2538, time 22.57ms
+iter 18100: loss 4.2408, time 22.62ms
+iter 18150: loss 4.3647, time 23.52ms
+iter 18200: loss 4.3600, time 22.64ms
+iter 18250: loss 4.3241, time 23.34ms
+iter 18300: loss 4.2869, time 23.16ms
+iter 18350: loss 4.2878, time 22.67ms
+iter 18400: loss 4.2774, time 22.82ms
+iter 18450: loss 4.3517, time 22.84ms
+step 18500: train loss 4.2985, val loss 4.2984, train acc 0.0357, val acc 0.0356, lr 1.14e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_18500.pt
+iter 18500: loss 4.2301, time 7143.74ms
+iter 18550: loss 4.4484, time 23.52ms
+iter 18600: loss 4.2935, time 22.82ms
+iter 18650: loss 4.2823, time 23.23ms
+iter 18700: loss 4.3102, time 25.67ms
+iter 18750: loss 4.2698, time 22.59ms
+iter 18800: loss 4.2673, time 22.70ms
+iter 18850: loss 4.2944, time 23.13ms
+iter 18900: loss 4.2928, time 22.80ms
+iter 18950: loss 4.2543, time 22.65ms
+step 19000: train loss 4.3060, val loss 4.2949, train acc 0.0354, val acc 0.0357, lr 1.06e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_19000.pt
+iter 19000: loss 4.4701, time 7484.41ms
+iter 19050: loss 4.3117, time 22.66ms
+iter 19100: loss 4.3301, time 23.44ms
+iter 19150: loss 4.3042, time 22.67ms
+iter 19200: loss 4.2269, time 23.46ms
+iter 19250: loss 4.2124, time 23.30ms
+iter 19300: loss 4.3689, time 22.67ms
+iter 19350: loss 4.2537, time 22.64ms
+iter 19400: loss 4.3296, time 23.07ms
+iter 19450: loss 4.3489, time 22.63ms
+step 19500: train loss 4.3040, val loss 4.2933, train acc 0.0353, val acc 0.0355, lr 1.02e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_19500.pt
+iter 19500: loss 4.3002, time 7091.07ms
+iter 19550: loss 4.3001, time 23.72ms
+iter 19600: loss 4.2763, time 23.81ms
+iter 19650: loss 4.2629, time 23.89ms
+iter 19700: loss 4.4038, time 23.07ms
+iter 19750: loss 4.2297, time 23.03ms
+iter 19800: loss 4.2765, time 23.07ms
+iter 19850: loss 4.2755, time 23.14ms
+iter 19900: loss 4.3784, time 22.95ms
+iter 19950: loss 4.2332, time 22.95ms
+step 20000: train loss 4.2950, val loss 4.2959, train acc 0.0358, val acc 0.0355, lr 1.00e-04
+saving checkpoint to out-position-classifier-large-frozen/ckpt_20000.pt
+iter 20000: loss 4.3096, time 7420.37ms
+
+Training complete!
+Best validation loss: 4.2911
+Checkpoints saved to: out-position-classifier-large-frozen/
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-6layer-posclf-frozen[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260116_024410-qrzf7gtq/logs[0m

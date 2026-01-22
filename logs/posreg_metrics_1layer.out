@@ -1,0 +1,658 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run x99m7xlk
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260119_173913-x99m7xlk
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run per_k_out-posreg-1layer-until-mlp_unique
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/x99m7xlk
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:   5%|▌         | 1/20 [00:01<00:26,  1.38s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  10%|█         | 2/20 [00:02<00:25,  1.44s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  15%|█▌        | 3/20 [00:06<00:39,  2.30s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  20%|██        | 4/20 [00:10<00:51,  3.19s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  25%|██▌       | 5/20 [00:12<00:37,  2.50s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  30%|███       | 6/20 [00:14<00:34,  2.46s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  35%|███▌      | 7/20 [00:19<00:44,  3.39s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  40%|████      | 8/20 [00:21<00:35,  2.99s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  45%|████▌     | 9/20 [00:26<00:38,  3.54s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  50%|█████     | 10/20 [00:27<00:27,  2.75s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  55%|█████▌    | 11/20 [00:31<00:28,  3.18s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  60%|██████    | 12/20 [00:34<00:25,  3.18s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  65%|██████▌   | 13/20 [00:38<00:22,  3.17s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  70%|███████   | 14/20 [00:41<00:19,  3.29s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  75%|███████▌  | 15/20 [00:42<00:13,  2.63s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  80%|████████  | 16/20 [00:48<00:13,  3.48s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  85%|████████▌ | 17/20 [00:51<00:10,  3.53s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  90%|█████████ | 18/20 [00:55<00:07,  3.54s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing:  95%|█████████▌| 19/20 [01:02<00:04,  4.68s/it]Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 669, in main
+    result = analyze_checkpoint(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 578, in analyze_checkpoint
+    model, meta = load_checkpoint(str(ckpt_path), device)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/position_regression_metrics.py", line 88, in load_checkpoint
+    model.load_state_dict(state_dict)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2624, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+Analyzing: 100%|██████████| 20/20 [01:03<00:00,  3.59s/it]Analyzing: 100%|██████████| 20/20 [01:03<00:00,  3.19s/it]
+wandb: updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading summary, console lines 576-640
+wandb: 🚀 View run per_k_out-posreg-1layer-until-mlp_unique at: https://wandb.ai/matan_avitan/nope-position-regression-metrics/runs/x99m7xlk
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260119_173913-x99m7xlk/logs
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 1000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 2000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 3000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 4000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 5000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 6000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 7000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 8000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 9000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 10000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 11000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 12000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 13000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 14000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 15000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 16000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 17000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 18000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 19000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           45.71M
+============================================================
+
+Step 20000: Error - Error(s) in loading state_dict for GPTPositionClassifier:
+	Missing key(s) in state_dict: "pos_head.weight", "pos_head.bias". 
+	Unexpected key(s) in state_dict: "lm_head.weight". 
+
+Analysis complete! Results in /home/nlp/matan_avitan/git/nopos_locating_new/results/position_regression_metrics_out-posreg-1layer-until-mlp_unique

@@ -1,0 +1,86 @@
+WandB: https://wandb.ai/matan_avitan/nope-position-regression-metrics
+Analyzing:   0%|          | 0/20 [00:00<?, ?it/s]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 1000: Error - 'GPTPositionClassifier' object has no attribute 'position_classifier'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 394, in main
+    result = run_intervention_experiment(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 187, in run_intervention_experiment
+    predictions, probs = get_position_predictions(model, tokens)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 130, in get_position_predictions
+    logits = model.position_classifier(x)  # (batch, seq_len, n_positions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'GPTPositionClassifier' object has no attribute 'position_classifier'
+Analyzing:   5%|▌         | 1/20 [00:05<01:46,  5.59s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 2000: Error - 'GPTPositionClassifier' object has no attribute 'position_classifier'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 394, in main
+    result = run_intervention_experiment(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 187, in run_intervention_experiment
+    predictions, probs = get_position_predictions(model, tokens)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 130, in get_position_predictions
+    logits = model.position_classifier(x)  # (batch, seq_len, n_positions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1962, in __getattr__
+    raise AttributeError(
+AttributeError: 'GPTPositionClassifier' object has no attribute 'position_classifier'
+Analyzing:  10%|█         | 2/20 [00:08<01:11,  3.99s/it]Traceback (most recent call last):
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  Step 3000: Error - 'GPTPositionClassifier' object has no attribute 'position_classifier'
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 394, in main
+    result = run_intervention_experiment(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 187, in run_intervention_experiment
+    predictions, probs = get_position_predictions(model, tokens)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_k.py", line 130, in get_position_predictions
+    logits = model.position_classifier(x)  # (batch, seq_len, n_positions)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+Exception ignored in: <generator object tqdm.__iter__ at 0x7fdb3457c040>Exception ignored in sys.unraisablehook: <built-in function unraisablehook>

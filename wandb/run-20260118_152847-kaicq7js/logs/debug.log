@@ -1,0 +1,21 @@
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_setup.py:_flush():80] Current SDK version is 0.23.1
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_setup.py:_flush():80] Configure stats pid to 1176456
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/.config/wandb/settings
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_setup.py:_flush():80] Loading settings from /home/nlp/matan_avitan/git/nopos_locating_new/wandb/settings
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_setup.py:_flush():80] Loading settings from environment variables
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_init.py:setup_run_log_directory():714] Logging user logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_152847-kaicq7js/logs/debug.log
+2026-01-18 15:28:47,852 INFO    MainThread:1176456 [wandb_init.py:setup_run_log_directory():715] Logging internal logs to /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_152847-kaicq7js/logs/debug-internal.log
+2026-01-18 15:28:47,858 INFO    MainThread:1176456 [wandb_init.py:init():841] calling init triggers
+2026-01-18 15:28:47,859 INFO    MainThread:1176456 [wandb_init.py:init():846] wandb.init called with sweep_config: {}
+config: {'n_samples': 100, 'checkpoint_steps': [500, 2000, 5000, 10000, 15000, 20000], 'prefix_diversity_levels': [0, 2, 4, 8, 128], 'layers': ['post_ln2', 'mlp_hidden', 'post_mlp'], 'experiment': 'nope-6layer-until-first-mlp', 'comparison': 'unique_vs_random', '_wandb': {}}
+2026-01-18 15:28:47,859 INFO    MainThread:1176456 [wandb_init.py:init():889] starting backend
+2026-01-18 15:28:48,285 INFO    MainThread:1176456 [wandb_init.py:init():892] sending inform_init request
+2026-01-18 15:28:48,294 INFO    MainThread:1176456 [wandb_init.py:init():900] backend started and connected
+2026-01-18 15:28:48,326 INFO    MainThread:1176456 [wandb_init.py:init():970] updated telemetry
+2026-01-18 15:28:48,341 INFO    MainThread:1176456 [wandb_init.py:init():994] communicating run to backend with 90.0 second timeout
+2026-01-18 15:28:49,229 INFO    MainThread:1176456 [wandb_init.py:init():1041] starting run threads in backend
+2026-01-18 15:28:49,583 INFO    MainThread:1176456 [wandb_run.py:_console_start():2521] atexit reg
+2026-01-18 15:28:49,584 INFO    MainThread:1176456 [wandb_run.py:_redirect():2369] redirect: wrap_raw
+2026-01-18 15:28:49,584 INFO    MainThread:1176456 [wandb_run.py:_redirect():2438] Wrapping output streams.
+2026-01-18 15:28:49,584 INFO    MainThread:1176456 [wandb_run.py:_redirect():2461] Redirects installed.
+2026-01-18 15:28:49,591 INFO    MainThread:1176456 [wandb_init.py:init():1081] run started, returning control to user process

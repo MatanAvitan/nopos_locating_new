@@ -1,0 +1,26 @@
+
+WandB initialized. Project: nope-7neurons-tsne
+Analyzing checkpoints:   0%|          | 0/11 [00:00<?, ?it/s]
+
+--- Checkpoint 500 ---
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                1
+  Embedding Dim:        7
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           0.36M
+============================================================
+
+  Loaded model (n_embd=7)
+  Collecting activations...
+  Creating t-SNE for embed...
+    Running t-SNE (1000 samples)...
+  Creating t-SNE for post_ln1...
+    Running t-SNE (1000 samples)...

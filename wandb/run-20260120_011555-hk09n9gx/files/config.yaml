@@ -1,0 +1,120 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            z7x857629xqblptd49g285radgb99yjh:
+                args:
+                    - --n_samples
+                    - "500"
+                    - --checkpoint_dir
+                    - nanoGPT/out-posreg-6layer-until-mlp
+                    - --output_suffix
+                    - _6layer_mlp_cos
+                    - --layers
+                    - mlp_hidden,post_mlp
+                    - --wandb
+                    - --wandb_run_name
+                    - axis-alignment-owt-6layer-mlp-cos
+                codePath: analysis_scripts/axis_alignment_owt.py
+                codePathLocal: analysis_scripts/axis_alignment_owt.py
+                cpu_count: 40
+                cpu_count_logical: 80
+                cudaVersion: "12.0"
+                disk:
+                    /:
+                        total: "469166645248"
+                        used: "379291512832"
+                email: matan13av@gmail.com
+                executable: /home/nlp/matan_avitan/.conda/envs/py312/bin/python
+                git:
+                    commit: ba4fbcd15bc2c35e2ba5b36ae651f9955f09ba84
+                    remote: git@github.com:MatanAvitan/nopos_locating_new.git
+                gpu: Tesla V100-SXM2-32GB
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-322bdf20-2bda-ba04-ce00-4f01b294b000
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-6a4d83e5-94fb-6473-36da-044ad53d1dab
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-3f1be713-069c-6d24-7823-2b185781c0b1
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-f3b59ae6-d7a3-36a4-9faf-1199bd99ba24
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-a92f2aae-810b-4d0f-c2d6-12ab9eb9cdfd
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-421e456f-057d-8090-3d49-f5ec5396e716
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-b9946419-4738-5294-7574-0c3679386556
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "34359738368"
+                      name: Tesla V100-SXM2-32GB
+                      uuid: GPU-c2d47e5f-483f-df00-4d92-a1f919d53ca3
+                host: dgx02
+                memory:
+                    total: "540917411840"
+                os: Linux-5.4.0-122-generic-x86_64-with-glibc2.31
+                program: /home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/axis_alignment_owt.py
+                python: CPython 3.12.8
+                root: /home/nlp/matan_avitan/git/nopos_locating_new
+                startedAt: "2026-01-19T23:15:55.403845Z"
+                writerId: z7x857629xqblptd49g285radgb99yjh
+        m: []
+        python_version: 3.12.8
+        t:
+            "1":
+                - 1
+                - 105
+            "2":
+                - 1
+                - 105
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.12.8
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": linux-x86_64
+batch_size:
+    value: 32
+checkpoint_dir:
+    value: nanoGPT/out-posreg-6layer-until-mlp
+gpu:
+    value: null
+layers:
+    value: mlp_hidden,post_mlp
+n_samples:
+    value: 500
+output_suffix:
+    value: _6layer_mlp_cos
+seq_len:
+    value: 128
+wandb:
+    value: true
+wandb_project:
+    value: nope-position-regression-metrics
+wandb_run_name:
+    value: axis-alignment-owt-6layer-mlp-cos

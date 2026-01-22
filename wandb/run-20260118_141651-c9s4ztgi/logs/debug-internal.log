@@ -1,0 +1,6 @@
+{"time":"2026-01-18T14:16:51.66794034+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-18T14:16:52.204901556+02:00","level":"INFO","msg":"stream: created new stream","id":"c9s4ztgi"}
+{"time":"2026-01-18T14:16:52.204972906+02:00","level":"INFO","msg":"handler: started","stream_id":"c9s4ztgi"}
+{"time":"2026-01-18T14:16:52.206526263+02:00","level":"INFO","msg":"stream: started","id":"c9s4ztgi"}
+{"time":"2026-01-18T14:16:52.206556061+02:00","level":"INFO","msg":"writer: started","stream_id":"c9s4ztgi"}
+{"time":"2026-01-18T14:16:52.206561662+02:00","level":"INFO","msg":"sender: started","stream_id":"c9s4ztgi"}

@@ -1,0 +1,19 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run ez1x16or
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260118_143033-ez1x16or
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run tsne_nope-6layer-until-first-mlp
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-position-regression-tsne
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-position-regression-tsne/runs/ez1x16or
+
+======================================================================
+t-SNE Visualization Over Training Checkpoints - nope-6layer-until-first-mlp
+======================================================================
+Checkpoint dir: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-posreg-6layer-until-mlp
+Checkpoints to analyze: [500, 2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000, 18000, 20000]
+Layers to plot: ['embed', 'post_ln1', 'post_attn', 'pre_ln2', 'post_ln2', 'post_mlp']
+Samples per checkpoint: 100
+
+WandB initialized. Project: nope-position-regression-tsne, Run: nope-6layer-until-first-mlp
+Analyzing checkpoints:   0%|          | 0/11 [00:00<?, ?it/s]

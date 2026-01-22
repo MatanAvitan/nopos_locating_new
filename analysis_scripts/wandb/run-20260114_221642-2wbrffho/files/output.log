@@ -1,0 +1,160 @@
+
+WandB initialized. Logging to project: nope-linear-probing
+
+============================================================
+Analyzing: NoPE + LayerNorm
+============================================================
+
+[Random Initialization]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+  Computing linear probe metrics...
+    embed: Full=0.029, Dir=0.029, Norm=0.027
+    post_ln1: Full=0.042, Dir=0.042, Norm=0.025
+    post_attn: Full=0.251, Dir=0.251, Norm=0.303
+    pre_ln2: Full=0.149, Dir=0.152, Norm=0.287
+    post_ln2: Full=0.173, Dir=0.173, Norm=0.277
+    post_mlp: Full=0.173, Dir=0.173, Norm=0.029
+
+[Trained Model]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+  Computing linear probe metrics...
+    embed: Full=0.031, Dir=0.029, Norm=0.029
+    post_ln1: Full=0.027, Dir=0.027, Norm=0.027
+    post_attn: Full=0.223, Dir=0.244, Norm=0.085
+    pre_ln2: Full=0.099, Dir=0.126, Norm=0.115
+    post_ln2: Full=0.137, Dir=0.135, Norm=0.089
+    post_mlp: Full=0.102, Dir=0.098, Norm=0.050
+
+[Creating t-SNE visualizations...]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+  Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/linear_probe_post_ln/plots/tsne_NoPE_LN_comparison.png
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+    Running t-SNE (1000 samples)...
+
+============================================================
+Analyzing: NoPE + RMSNorm
+============================================================
+
+[Random Initialization]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+  Computing linear probe metrics...
+    embed: Full=0.030, Dir=0.030, Norm=0.022
+    post_ln1: Full=0.031, Dir=0.031, Norm=0.027
+    post_attn: Full=0.251, Dir=0.258, Norm=0.307
+    pre_ln2: Full=0.160, Dir=0.171, Norm=0.297
+    post_ln2: Full=0.172, Dir=0.172, Norm=0.277
+    post_mlp: Full=0.165, Dir=0.165, Norm=0.029
+
+[Trained Model]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+  Computing linear probe metrics...
+    embed: Full=0.035, Dir=0.035, Norm=0.023
+    post_ln1: Full=0.029, Dir=0.029, Norm=0.031
+    post_attn: Full=0.340, Dir=0.353, Norm=0.034
+    pre_ln2: Full=0.288, Dir=0.299, Norm=0.050
+    post_ln2: Full=0.285, Dir=0.286, Norm=0.039
+    post_mlp: Full=0.242, Dir=0.248, Norm=0.041
+
+[Creating t-SNE visualizations...]
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================

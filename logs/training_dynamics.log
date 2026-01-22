@@ -1,0 +1,801 @@
+Configuration:
+  n_samples: 10000
+  seq_len: 64
+  checkpoints: 250 to 5000
+  device: cuda
+
+============================================================
+Analyzing LayerNorm checkpoints
+============================================================
+Analyzing LayerNorm:   0%|          | 0/20 [00:00<?, ?it/s]Analyzing LayerNorm:   5%|▌         | 1/20 [00:01<00:30,  1.58s/it]Analyzing LayerNorm:  10%|█         | 2/20 [00:03<00:27,  1.53s/it]Analyzing LayerNorm:  15%|█▌        | 3/20 [00:04<00:25,  1.48s/it]Analyzing LayerNorm:  20%|██        | 4/20 [00:05<00:23,  1.45s/it]Analyzing LayerNorm:  25%|██▌       | 5/20 [00:07<00:21,  1.45s/it]Analyzing LayerNorm:  30%|███       | 6/20 [00:08<00:20,  1.44s/it]Analyzing LayerNorm:  35%|███▌      | 7/20 [00:10<00:19,  1.47s/it]Analyzing LayerNorm:  40%|████      | 8/20 [00:11<00:17,  1.46s/it]Analyzing LayerNorm:  45%|████▌     | 9/20 [00:13<00:15,  1.45s/it]Analyzing LayerNorm:  50%|█████     | 10/20 [00:14<00:14,  1.43s/it]Analyzing LayerNorm:  55%|█████▌    | 11/20 [00:16<00:12,  1.44s/it]Analyzing LayerNorm:  60%|██████    | 12/20 [00:17<00:11,  1.44s/it]Analyzing LayerNorm:  65%|██████▌   | 13/20 [00:18<00:10,  1.43s/it]Analyzing LayerNorm:  70%|███████   | 14/20 [00:20<00:08,  1.46s/it]Analyzing LayerNorm:  75%|███████▌  | 15/20 [00:21<00:07,  1.46s/it]Analyzing LayerNorm:  80%|████████  | 16/20 [00:23<00:05,  1.46s/it]Analyzing LayerNorm:  85%|████████▌ | 17/20 [00:24<00:04,  1.45s/it]Analyzing LayerNorm:  90%|█████████ | 18/20 [00:26<00:02,  1.44s/it]Analyzing LayerNorm:  95%|█████████▌| 19/20 [00:27<00:01,  1.45s/it]Analyzing LayerNorm: 100%|██████████| 20/20 [00:29<00:00,  1.44s/it]Analyzing LayerNorm: 100%|██████████| 20/20 [00:29<00:00,  1.45s/it]
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_00250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_00250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_00500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_00500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_00750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_00750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_01000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_01000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_01250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_01250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_01500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_01500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_01750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_01750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_02000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_02000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_02250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_02250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_02500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_02500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_02750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_02750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_03000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_03000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_03250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_03250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_03500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_03500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_03750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_03750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_04000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_04000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_04250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_04250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_04500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_04500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_04750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_04750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-ln/ckpt_05000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-ln/ckpt_05000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+
+============================================================
+Analyzing RMSNorm checkpoints
+============================================================
+Analyzing RMSNorm:   0%|          | 0/20 [00:00<?, ?it/s]Analyzing RMSNorm:   5%|▌         | 1/20 [00:01<00:28,  1.52s/it]Analyzing RMSNorm:  10%|█         | 2/20 [00:03<00:27,  1.51s/it]Analyzing RMSNorm:  15%|█▌        | 3/20 [00:04<00:25,  1.49s/it]Analyzing RMSNorm:  20%|██        | 4/20 [00:06<00:24,  1.54s/it]Analyzing RMSNorm:  25%|██▌       | 5/20 [00:07<00:22,  1.53s/it]Analyzing RMSNorm:  30%|███       | 6/20 [00:09<00:21,  1.52s/it]Analyzing RMSNorm:  35%|███▌      | 7/20 [00:10<00:20,  1.56s/it]Analyzing RMSNorm:  40%|████      | 8/20 [00:12<00:18,  1.52s/it]Analyzing RMSNorm:  45%|████▌     | 9/20 [00:13<00:16,  1.50s/it]Analyzing RMSNorm:  50%|█████     | 10/20 [00:15<00:14,  1.47s/it]Analyzing RMSNorm:  55%|█████▌    | 11/20 [00:16<00:13,  1.45s/it]Analyzing RMSNorm:  60%|██████    | 12/20 [00:17<00:11,  1.44s/it]Analyzing RMSNorm:  65%|██████▌   | 13/20 [00:19<00:10,  1.47s/it]Analyzing RMSNorm:  70%|███████   | 14/20 [00:21<00:09,  1.51s/it]Analyzing RMSNorm:  75%|███████▌  | 15/20 [00:22<00:07,  1.52s/it]Analyzing RMSNorm:  80%|████████  | 16/20 [00:24<00:06,  1.52s/it]Analyzing RMSNorm:  85%|████████▌ | 17/20 [00:25<00:04,  1.50s/it]Analyzing RMSNorm:  90%|█████████ | 18/20 [00:26<00:02,  1.46s/it]Analyzing RMSNorm:  95%|█████████▌| 19/20 [00:28<00:01,  1.45s/it]Analyzing RMSNorm: 100%|██████████| 20/20 [00:29<00:00,  1.45s/it]Analyzing RMSNorm: 100%|██████████| 20/20 [00:29<00:00,  1.49s/it]
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:526: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:527: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:566: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:569: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:612: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:613: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:651: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/training_dynamics_analysis.py:654: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_00250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_00250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_00500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_00500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_00750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_00750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_01000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_01000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_01250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_01250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_01500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_01500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_01750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_01750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_02000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_02000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_02250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_02250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_02500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_02500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_02750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_02750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_03000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_03000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_03250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_03250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_03500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_03500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_03750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_03750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_04000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_04000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_04250.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_04250.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_04500.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_04500.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_04750.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_04750.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+  Loading nanoGPT/out-nope-1layer-rms/ckpt_05000.pt...
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   rmsnorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Parameters:           45.71M
+============================================================
+
+  Extracting activations...
+  Error analyzing nanoGPT/out-nope-1layer-rms/ckpt_05000.pt: 'CausalSelfAttention' object has no attribute 'c_attn_q'
+
+Creating plots...
+  Plots saved!
+
+============================================================
+TRAINING DYNAMICS SUMMARY
+============================================================
+
+Results saved to: results/training_dynamics
+Plots saved to: overleaf/nopos---claude-version/plots

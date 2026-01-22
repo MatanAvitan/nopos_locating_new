@@ -1,0 +1,31 @@
+Starting Long Context Position Encoding Analysis
+Job ID: 991515
+Node: hpc8h200-01
+GPU: 0
+Start time: Sun Jan 11 12:19:19 PM IST 2026
+======================================================================
+LONG CONTEXT POSITION ENCODING: LAYERNORM vs RMSNORM
+======================================================================
+
+Device: cuda
+
+============================================================
+CONTEXT LENGTH: 64, NORM TYPE: LAYERNORM
+============================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                4
+  Embedding Dim:        256
+  Block Size:           64
+  Vocab Size:           1000
+  Attention Stats:      False
+  Parameters:           1.05M
+============================================================
+
+Done!
+End time: Sun Jan 11 12:19:29 PM IST 2026

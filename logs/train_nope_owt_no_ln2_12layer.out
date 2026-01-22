@@ -1,0 +1,1760 @@
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/cuda/__init__.py:283: UserWarning: 
+    Found GPU0 NVIDIA B200 which is of cuda capability 10.0.
+    Minimum and Maximum cuda capability supported by this version of PyTorch is
+    (5.0) - (9.0)
+    
+  warnings.warn(
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/cuda/__init__.py:304: UserWarning: 
+    Please install PyTorch with a following CUDA
+    configurations:  12.8 12.9 following instructions at
+    https://pytorch.org/get-started/locally/
+    
+  warnings.warn(matched_cuda_warn.format(matched_arches))
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/cuda/__init__.py:326: UserWarning: 
+NVIDIA B200 with CUDA capability sm_100 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_50 sm_60 sm_70 sm_75 sm_80 sm_86 sm_90.
+If you want to use the NVIDIA B200 GPU with PyTorch, please check the instructions at https://pytorch.org/get-started/locally/
+
+  warnings.warn(
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py:262: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run rw8swdsn
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260112_183546-rw8swdsn
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-owt-no-ln2-12layer
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-emergence
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-emergence/runs/rw8swdsn
+Overriding config with config/train_nope_owt_no_ln2_12layer.py:
+# Training config for 12-layer NoPE transformer WITHOUT LN2 on OpenWebText
+# Tests hypothesis: Does LN2 hurt positional encoding by normalizing variance in deeper models?
+#
+# Key features:
+# - No positional embeddings (NoPE mode)
+# - NO second LayerNorm (skip_ln2=True) - KEY ABLATION
+# - 12 layers (GPT-2 small scale)
+# - OpenWebText dataset (~9B tokens)
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_nope_owt_no_ln2_12layer.py
+
+# I/O
+out_dir = "out-nope-owt-no-ln2-12layer"
+eval_interval = 500  # Checkpoint every 500 iters for resumability
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-emergence"
+wandb_run_name = "nope-owt-no-ln2-12layer"
+
+# Data
+dataset = "openwebtext"  # Full OpenWebText (~9B tokens)
+gradient_accumulation_steps = (
+    1  # No accumulation - need large batch for population statistics
+)
+batch_size = 128  # Large batch (128 * 512 = 65K tokens)
+block_size = 512  # Context length
+
+# Model architecture - 12 layers (GPT-2 small scale)
+n_layer = 12
+n_head = 12
+n_embd = 768
+dropout = 0.0  # No dropout for clean analysis
+bias = False  # Modern practice
+
+# NoPE-specific settings
+use_positional_embedding = False  # KEY: No positional embeddings
+norm_type = "layernorm"  # Standard LayerNorm (for LN1)
+log_attention_stats = True  # Log attention entropy/uniformity
+skip_ln2 = True  # KEY ABLATION: Skip second LayerNorm
+
+# Optimizer
+learning_rate = 6e-4
+max_iters = 50000
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = True
+dtype = "bfloat16"
+
+# Reproducibility
+seed = 42
+
+# Stability tracking (important for no-LN2 variant)
+track_stability = True
+stability_log_interval = 100
+
+tokens per iteration will be: 65,536
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               12
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           123.58M
+============================================================
+
+num decayed parameter tensors: 49, with 123,568,128 parameters
+num non-decayed parameter tensors: 13, with 9,984 parameters
+using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: False
+  Dataset: openwebtext
+  Batch size: 128 x 1 = 128
+  Block size: 512
+  Learning rate: 0.0006 -> 6e-05
+
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py", line 383, in <module>
+    losses = estimate_loss()
+             ^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_nope.py", line 296, in estimate_loss
+    logits, loss = model(X, Y)
+                   ^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 375, in __call__
+    return super().__call__(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_dynamo/eval_frame.py", line 749, in compile_wrapper
+    raise e.remove_dynamo_frames() from None  # see TORCHDYNAMO_VERBOSE=1
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_dynamo/output_graph.py", line 1871, in _call_user_compiler
+    raise BackendCompilerFailed(
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_dynamo/output_graph.py", line 1846, in _call_user_compiler
+    compiled_fn = compiler_fn(gm, example_inputs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_dynamo/repro/after_dynamo.py", line 150, in __call__
+    compiled_gm = compiler_fn(gm, example_inputs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/__init__.py", line 2380, in __call__
+    return compile_fx(model_, inputs_, config_patches=self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/compile_fx.py", line 2418, in compile_fx
+    return aot_autograd(
+           ^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_dynamo/backends/common.py", line 109, in __call__
+    cg = aot_module_simplified(gm, example_inputs, **self.kwargs)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/aot_autograd.py", line 1199, in aot_module_simplified
+    compiled_fn = AOTAutogradCache.load(
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/_aot_autograd/autograd_cache.py", line 1140, in load
+    compiled_fn = dispatch_and_compile()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/aot_autograd.py", line 1184, in dispatch_and_compile
+    compiled_fn, _ = create_aot_dispatcher_function(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/aot_autograd.py", line 576, in create_aot_dispatcher_function
+    return _create_aot_dispatcher_function(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/aot_autograd.py", line 836, in _create_aot_dispatcher_function
+    compiled_fn, fw_metadata = compiler_fn(
+                               ^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/_aot_autograd/jit_compile_runtime_wrappers.py", line 245, in aot_dispatch_base
+    compiled_fw = compiler(fw_module, updated_flat_args)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_functorch/aot_autograd.py", line 483, in __call__
+    return self.compiler_fn(gm, example_inputs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/compile_fx.py", line 2183, in fw_compiler_base
+    _recursive_joint_graph_passes(gm)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/compile_fx.py", line 492, in _recursive_joint_graph_passes
+    joint_graph_passes(gm)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/fx_passes/joint_graph.py", line 587, in joint_graph_passes
+    GraphTransformObserver(graph, "constant_fold_uniform_value").apply_gm_pass(
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/fx/passes/graph_transform_observer.py", line 78, in apply_gm_pass
+    return pass_fn(self.gm)
+           ^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/fx_passes/joint_graph.py", line 384, in constant_fold_uniform_value
+    cf.run()
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/constant_folding.py", line 295, in run
+    return super().run(initial_env=env)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/fx/interpreter.py", line 173, in run
+    self.env[node] = self.run_node(node)
+                     ^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/constant_folding.py", line 250, in run_node
+    out = self._deduce_value(node)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_inductor/fx_passes/joint_graph.py", line 335, in _deduce_value
+    return aten.full.default(*new_args, **node.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/torch/_ops.py", line 829, in __call__
+    return self._op(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+torch._dynamo.exc.BackendCompilerFailed: backend='inductor' raised:
+AcceleratorError: CUDA error: no kernel image is available for execution on the device
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+While executing %full : [num_users=1] = call_function[target=torch.ops.aten.full.default](args = ([512, 512], True), kwargs = {dtype: torch.bool, layout: torch.strided, device: cuda:0, pin_memory: False})
+GraphModule: class <lambda>(torch.nn.Module):
+    def forward(self, arg0_1: "i64[128, 512][512, 1]", arg1_1: "f32[50304, 768][768, 1]", arg2_1: "f32[768][1]", arg3_1: "f32[2304, 768][768, 1]", arg4_1: "f32[768, 768][768, 1]", arg5_1: "f32[3072, 768][768, 1]", arg6_1: "f32[768, 3072][3072, 1]", arg7_1: "f32[768][1]", arg8_1: "f32[2304, 768][768, 1]", arg9_1: "f32[768, 768][768, 1]", arg10_1: "f32[3072, 768][768, 1]", arg11_1: "f32[768, 3072][3072, 1]", arg12_1: "f32[768][1]", arg13_1: "f32[2304, 768][768, 1]", arg14_1: "f32[768, 768][768, 1]", arg15_1: "f32[3072, 768][768, 1]", arg16_1: "f32[768, 3072][3072, 1]", arg17_1: "f32[768][1]", arg18_1: "f32[2304, 768][768, 1]", arg19_1: "f32[768, 768][768, 1]", arg20_1: "f32[3072, 768][768, 1]", arg21_1: "f32[768, 3072][3072, 1]", arg22_1: "f32[768][1]", arg23_1: "f32[2304, 768][768, 1]", arg24_1: "f32[768, 768][768, 1]", arg25_1: "f32[3072, 768][768, 1]", arg26_1: "f32[768, 3072][3072, 1]", arg27_1: "f32[768][1]", arg28_1: "f32[2304, 768][768, 1]", arg29_1: "f32[768, 768][768, 1]", arg30_1: "f32[3072, 768][768, 1]", arg31_1: "f32[768, 3072][3072, 1]", arg32_1: "f32[768][1]", arg33_1: "f32[2304, 768][768, 1]", arg34_1: "f32[768, 768][768, 1]", arg35_1: "f32[3072, 768][768, 1]", arg36_1: "f32[768, 3072][3072, 1]", arg37_1: "f32[768][1]", arg38_1: "f32[2304, 768][768, 1]", arg39_1: "f32[768, 768][768, 1]", arg40_1: "f32[3072, 768][768, 1]", arg41_1: "f32[768, 3072][3072, 1]", arg42_1: "f32[768][1]", arg43_1: "f32[2304, 768][768, 1]", arg44_1: "f32[768, 768][768, 1]", arg45_1: "f32[3072, 768][768, 1]", arg46_1: "f32[768, 3072][3072, 1]", arg47_1: "f32[768][1]", arg48_1: "f32[2304, 768][768, 1]", arg49_1: "f32[768, 768][768, 1]", arg50_1: "f32[3072, 768][768, 1]", arg51_1: "f32[768, 3072][3072, 1]", arg52_1: "f32[768][1]", arg53_1: "f32[2304, 768][768, 1]", arg54_1: "f32[768, 768][768, 1]", arg55_1: "f32[3072, 768][768, 1]", arg56_1: "f32[768, 3072][3072, 1]", arg57_1: "f32[768][1]", arg58_1: "f32[2304, 768][768, 1]", arg59_1: "f32[768, 768][768, 1]", arg60_1: "f32[3072, 768][768, 1]", arg61_1: "f32[768, 3072][3072, 1]", arg62_1: "f32[768][1]", arg63_1: "i64[128, 512][512, 1]"):
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:427 in forward, code: tok_emb = self.transformer.wte(idx)  # [b, t, n_embd]
+        embedding: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.embedding.default(arg1_1, arg0_1);  arg0_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean = torch.ops.aten.var_mean.correction(embedding, [2], correction = 0, keepdim = True)
+        getitem: "f32[128, 512, 1][512, 1, 1]" = var_mean[0]
+        getitem_1: "f32[128, 512, 1][512, 1, 1]" = var_mean[1];  var_mean = None
+        add: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem, 1e-05);  getitem = None
+        rsqrt: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add);  add = None
+        sub: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(embedding, getitem_1);  getitem_1 = None
+        mul: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub, rsqrt);  sub = rsqrt = None
+        mul_1: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul, arg2_1);  mul = arg2_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg3_1, torch.bfloat16);  arg3_1 = None
+        convert_element_type_1: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_1, torch.bfloat16);  mul_1 = None
+        permute: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type, [1, 0]);  convert_element_type = None
+        view: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_1, [65536, 768]);  convert_element_type_1 = None
+        mm: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view, permute);  view = permute = None
+        view_1: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm, [128, 512, 2304]);  mm = None
+        split = torch.ops.aten.split.Tensor(view_1, 768, 2);  view_1 = None
+        getitem_2: "bf16[128, 512, 768][1179648, 2304, 1]" = split[0]
+        getitem_3: "bf16[128, 512, 768][1179648, 2304, 1]" = split[1]
+        getitem_4: "bf16[128, 512, 768][1179648, 2304, 1]" = split[2];  split = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_2: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_3, [128, 512, 12, 64]);  getitem_3 = None
+        permute_1: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_2, [0, 2, 1, 3]);  view_2 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_3: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_2, [128, 512, 12, 64]);  getitem_2 = None
+        permute_2: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_3, [0, 2, 1, 3]);  view_3 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_4: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_4, [128, 512, 12, 64]);  getitem_4 = None
+        permute_3: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_4, [0, 2, 1, 3]);  view_4 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_4: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_1, [0, 1, 3, 2]);  permute_1 = None
+        expand: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_2, [128, 12, 512, 64]);  permute_2 = None
+        clone_1: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand, memory_format = torch.contiguous_format);  expand = None
+        view_5: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_1, [1536, 512, 64]);  clone_1 = None
+        expand_1: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_4, [128, 12, 64, 512]);  permute_4 = None
+        clone_2: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_1, memory_format = torch.contiguous_format);  expand_1 = None
+        view_6: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_2, [1536, 64, 512]);  clone_2 = None
+        bmm: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_5, view_6);  view_5 = view_6 = None
+        view_7: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm, [128, 12, 512, 512]);  bmm = None
+        mul_2: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_7, 0.125);  view_7 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota, -2);  iota = None
+        iota_1: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_1: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_1, -1);  iota_1 = None
+        sub_1: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze, unsqueeze_1);  unsqueeze = unsqueeze_1 = None
+        ge: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_1, 1);  sub_1 = None
+        logical_and: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge, full);  ge = full = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and, scalar_tensor, mul_2);  logical_and = scalar_tensor = mul_2 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_6: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where, torch.float32);  where = None
+        amax: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_6, [-1], True)
+        sub_2: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_6, amax);  convert_element_type_6 = amax = None
+        exp: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_2);  sub_2 = None
+        sum_1: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp, [-1], True)
+        div: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp, sum_1);  exp = sum_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_7: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div, torch.bfloat16);  div = None
+        expand_2: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_7, [128, 12, 512, 512]);  convert_element_type_7 = None
+        view_8: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_2, [1536, 512, 512]);  expand_2 = None
+        expand_3: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_3, [128, 12, 512, 64]);  permute_3 = None
+        clone_4: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_3, memory_format = torch.contiguous_format);  expand_3 = None
+        view_9: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_4, [1536, 512, 64]);  clone_4 = None
+        bmm_1: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_8, view_9);  view_8 = view_9 = None
+        view_10: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_1, [128, 12, 512, 64]);  bmm_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_5: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_10, [0, 2, 1, 3]);  view_10 = None
+        clone_5: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_5, memory_format = torch.contiguous_format);  permute_5 = None
+        view_11: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_5, [128, 512, 768]);  clone_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_10: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg4_1, torch.bfloat16);  arg4_1 = None
+        permute_6: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_10, [1, 0]);  convert_element_type_10 = None
+        view_12: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_11, [65536, 768]);  view_11 = None
+        mm_1: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_12, permute_6);  view_12 = permute_6 = None
+        view_13: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_1, [128, 512, 768]);  mm_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_1: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(embedding, view_13);  embedding = view_13 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_13: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg5_1, torch.bfloat16);  arg5_1 = None
+        convert_element_type_14: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_1, torch.bfloat16)
+        permute_7: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_13, [1, 0]);  convert_element_type_13 = None
+        view_14: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_14, [65536, 768]);  convert_element_type_14 = None
+        mm_2: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_14, permute_7);  view_14 = permute_7 = None
+        view_15: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_2, [128, 512, 3072]);  mm_2 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_17: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_15, torch.float32);  view_15 = None
+        mul_3: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_17, 0.5)
+        mul_4: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_17, 0.7071067811865476);  convert_element_type_17 = None
+        erf: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_4);  mul_4 = None
+        add_2: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf, 1);  erf = None
+        mul_5: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_3, add_2);  mul_3 = add_2 = None
+        convert_element_type_18: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_5, torch.bfloat16);  mul_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_19: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg6_1, torch.bfloat16);  arg6_1 = None
+        permute_8: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_19, [1, 0]);  convert_element_type_19 = None
+        view_16: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_18, [65536, 3072]);  convert_element_type_18 = None
+        mm_3: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_16, permute_8);  view_16 = permute_8 = None
+        view_17: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_3, [128, 512, 768]);  mm_3 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_3: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_1, view_17);  add_1 = view_17 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_1 = torch.ops.aten.var_mean.correction(add_3, [2], correction = 0, keepdim = True)
+        getitem_5: "f32[128, 512, 1][512, 1, 1]" = var_mean_1[0]
+        getitem_6: "f32[128, 512, 1][512, 1, 1]" = var_mean_1[1];  var_mean_1 = None
+        add_4: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_5, 1e-05);  getitem_5 = None
+        rsqrt_1: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_4);  add_4 = None
+        sub_3: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_3, getitem_6);  getitem_6 = None
+        mul_6: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_3, rsqrt_1);  sub_3 = rsqrt_1 = None
+        mul_7: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_6, arg7_1);  mul_6 = arg7_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_22: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg8_1, torch.bfloat16);  arg8_1 = None
+        convert_element_type_23: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_7, torch.bfloat16);  mul_7 = None
+        permute_9: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_22, [1, 0]);  convert_element_type_22 = None
+        view_18: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_23, [65536, 768]);  convert_element_type_23 = None
+        mm_4: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_18, permute_9);  view_18 = permute_9 = None
+        view_19: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_4, [128, 512, 2304]);  mm_4 = None
+        split_1 = torch.ops.aten.split.Tensor(view_19, 768, 2);  view_19 = None
+        getitem_7: "bf16[128, 512, 768][1179648, 2304, 1]" = split_1[0]
+        getitem_8: "bf16[128, 512, 768][1179648, 2304, 1]" = split_1[1]
+        getitem_9: "bf16[128, 512, 768][1179648, 2304, 1]" = split_1[2];  split_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_20: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_8, [128, 512, 12, 64]);  getitem_8 = None
+        permute_10: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_20, [0, 2, 1, 3]);  view_20 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_21: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_7, [128, 512, 12, 64]);  getitem_7 = None
+        permute_11: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_21, [0, 2, 1, 3]);  view_21 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_22: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_9, [128, 512, 12, 64]);  getitem_9 = None
+        permute_12: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_22, [0, 2, 1, 3]);  view_22 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_13: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_10, [0, 1, 3, 2]);  permute_10 = None
+        expand_4: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_11, [128, 12, 512, 64]);  permute_11 = None
+        clone_8: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_4, memory_format = torch.contiguous_format);  expand_4 = None
+        view_23: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_8, [1536, 512, 64]);  clone_8 = None
+        expand_5: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_13, [128, 12, 64, 512]);  permute_13 = None
+        clone_9: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_5, memory_format = torch.contiguous_format);  expand_5 = None
+        view_24: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_9, [1536, 64, 512]);  clone_9 = None
+        bmm_2: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_23, view_24);  view_23 = view_24 = None
+        view_25: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_2, [128, 12, 512, 512]);  bmm_2 = None
+        mul_8: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_25, 0.125);  view_25 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_1: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_2: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_2: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_2, -2);  iota_2 = None
+        iota_3: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_3: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_3, -1);  iota_3 = None
+        sub_4: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_2, unsqueeze_3);  unsqueeze_2 = unsqueeze_3 = None
+        ge_1: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_4, 1);  sub_4 = None
+        logical_and_1: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_1, full_1);  ge_1 = full_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_1: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_1: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_1, scalar_tensor_1, mul_8);  logical_and_1 = scalar_tensor_1 = mul_8 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_28: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_1, torch.float32);  where_1 = None
+        amax_1: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_28, [-1], True)
+        sub_5: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_28, amax_1);  convert_element_type_28 = amax_1 = None
+        exp_1: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_5);  sub_5 = None
+        sum_2: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_1, [-1], True)
+        div_1: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_1, sum_2);  exp_1 = sum_2 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_29: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_1, torch.bfloat16);  div_1 = None
+        expand_6: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_29, [128, 12, 512, 512]);  convert_element_type_29 = None
+        view_26: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_6, [1536, 512, 512]);  expand_6 = None
+        expand_7: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_12, [128, 12, 512, 64]);  permute_12 = None
+        clone_11: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_7, memory_format = torch.contiguous_format);  expand_7 = None
+        view_27: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_11, [1536, 512, 64]);  clone_11 = None
+        bmm_3: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_26, view_27);  view_26 = view_27 = None
+        view_28: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_3, [128, 12, 512, 64]);  bmm_3 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_14: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_28, [0, 2, 1, 3]);  view_28 = None
+        clone_12: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_14, memory_format = torch.contiguous_format);  permute_14 = None
+        view_29: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_12, [128, 512, 768]);  clone_12 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_32: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg9_1, torch.bfloat16);  arg9_1 = None
+        permute_15: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_32, [1, 0]);  convert_element_type_32 = None
+        view_30: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_29, [65536, 768]);  view_29 = None
+        mm_5: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_30, permute_15);  view_30 = permute_15 = None
+        view_31: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_5, [128, 512, 768]);  mm_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_5: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_3, view_31);  add_3 = view_31 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_35: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg10_1, torch.bfloat16);  arg10_1 = None
+        convert_element_type_36: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_5, torch.bfloat16)
+        permute_16: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_35, [1, 0]);  convert_element_type_35 = None
+        view_32: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_36, [65536, 768]);  convert_element_type_36 = None
+        mm_6: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_32, permute_16);  view_32 = permute_16 = None
+        view_33: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_6, [128, 512, 3072]);  mm_6 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_39: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_33, torch.float32);  view_33 = None
+        mul_9: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_39, 0.5)
+        mul_10: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_39, 0.7071067811865476);  convert_element_type_39 = None
+        erf_1: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_10);  mul_10 = None
+        add_6: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_1, 1);  erf_1 = None
+        mul_11: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_9, add_6);  mul_9 = add_6 = None
+        convert_element_type_40: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_11, torch.bfloat16);  mul_11 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_41: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg11_1, torch.bfloat16);  arg11_1 = None
+        permute_17: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_41, [1, 0]);  convert_element_type_41 = None
+        view_34: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_40, [65536, 3072]);  convert_element_type_40 = None
+        mm_7: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_34, permute_17);  view_34 = permute_17 = None
+        view_35: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_7, [128, 512, 768]);  mm_7 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_7: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_5, view_35);  add_5 = view_35 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_2 = torch.ops.aten.var_mean.correction(add_7, [2], correction = 0, keepdim = True)
+        getitem_10: "f32[128, 512, 1][512, 1, 1]" = var_mean_2[0]
+        getitem_11: "f32[128, 512, 1][512, 1, 1]" = var_mean_2[1];  var_mean_2 = None
+        add_8: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_10, 1e-05);  getitem_10 = None
+        rsqrt_2: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_8);  add_8 = None
+        sub_6: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_7, getitem_11);  getitem_11 = None
+        mul_12: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_6, rsqrt_2);  sub_6 = rsqrt_2 = None
+        mul_13: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_12, arg12_1);  mul_12 = arg12_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_44: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg13_1, torch.bfloat16);  arg13_1 = None
+        convert_element_type_45: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_13, torch.bfloat16);  mul_13 = None
+        permute_18: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_44, [1, 0]);  convert_element_type_44 = None
+        view_36: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_45, [65536, 768]);  convert_element_type_45 = None
+        mm_8: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_36, permute_18);  view_36 = permute_18 = None
+        view_37: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_8, [128, 512, 2304]);  mm_8 = None
+        split_2 = torch.ops.aten.split.Tensor(view_37, 768, 2);  view_37 = None
+        getitem_12: "bf16[128, 512, 768][1179648, 2304, 1]" = split_2[0]
+        getitem_13: "bf16[128, 512, 768][1179648, 2304, 1]" = split_2[1]
+        getitem_14: "bf16[128, 512, 768][1179648, 2304, 1]" = split_2[2];  split_2 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_38: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_13, [128, 512, 12, 64]);  getitem_13 = None
+        permute_19: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_38, [0, 2, 1, 3]);  view_38 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_39: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_12, [128, 512, 12, 64]);  getitem_12 = None
+        permute_20: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_39, [0, 2, 1, 3]);  view_39 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_40: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_14, [128, 512, 12, 64]);  getitem_14 = None
+        permute_21: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_40, [0, 2, 1, 3]);  view_40 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_22: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_19, [0, 1, 3, 2]);  permute_19 = None
+        expand_8: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_20, [128, 12, 512, 64]);  permute_20 = None
+        clone_15: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_8, memory_format = torch.contiguous_format);  expand_8 = None
+        view_41: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_15, [1536, 512, 64]);  clone_15 = None
+        expand_9: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_22, [128, 12, 64, 512]);  permute_22 = None
+        clone_16: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_9, memory_format = torch.contiguous_format);  expand_9 = None
+        view_42: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_16, [1536, 64, 512]);  clone_16 = None
+        bmm_4: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_41, view_42);  view_41 = view_42 = None
+        view_43: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_4, [128, 12, 512, 512]);  bmm_4 = None
+        mul_14: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_43, 0.125);  view_43 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_2: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_4: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_4: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_4, -2);  iota_4 = None
+        iota_5: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_5: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_5, -1);  iota_5 = None
+        sub_7: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_4, unsqueeze_5);  unsqueeze_4 = unsqueeze_5 = None
+        ge_2: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_7, 1);  sub_7 = None
+        logical_and_2: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_2, full_2);  ge_2 = full_2 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_2: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_2: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_2, scalar_tensor_2, mul_14);  logical_and_2 = scalar_tensor_2 = mul_14 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_50: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_2, torch.float32);  where_2 = None
+        amax_2: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_50, [-1], True)
+        sub_8: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_50, amax_2);  convert_element_type_50 = amax_2 = None
+        exp_2: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_8);  sub_8 = None
+        sum_3: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_2, [-1], True)
+        div_2: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_2, sum_3);  exp_2 = sum_3 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_51: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_2, torch.bfloat16);  div_2 = None
+        expand_10: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_51, [128, 12, 512, 512]);  convert_element_type_51 = None
+        view_44: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_10, [1536, 512, 512]);  expand_10 = None
+        expand_11: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_21, [128, 12, 512, 64]);  permute_21 = None
+        clone_18: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_11, memory_format = torch.contiguous_format);  expand_11 = None
+        view_45: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_18, [1536, 512, 64]);  clone_18 = None
+        bmm_5: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_44, view_45);  view_44 = view_45 = None
+        view_46: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_5, [128, 12, 512, 64]);  bmm_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_23: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_46, [0, 2, 1, 3]);  view_46 = None
+        clone_19: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_23, memory_format = torch.contiguous_format);  permute_23 = None
+        view_47: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_19, [128, 512, 768]);  clone_19 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_54: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg14_1, torch.bfloat16);  arg14_1 = None
+        permute_24: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_54, [1, 0]);  convert_element_type_54 = None
+        view_48: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_47, [65536, 768]);  view_47 = None
+        mm_9: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_48, permute_24);  view_48 = permute_24 = None
+        view_49: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_9, [128, 512, 768]);  mm_9 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_9: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_7, view_49);  add_7 = view_49 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_57: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg15_1, torch.bfloat16);  arg15_1 = None
+        convert_element_type_58: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_9, torch.bfloat16)
+        permute_25: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_57, [1, 0]);  convert_element_type_57 = None
+        view_50: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_58, [65536, 768]);  convert_element_type_58 = None
+        mm_10: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_50, permute_25);  view_50 = permute_25 = None
+        view_51: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_10, [128, 512, 3072]);  mm_10 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_61: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_51, torch.float32);  view_51 = None
+        mul_15: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_61, 0.5)
+        mul_16: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_61, 0.7071067811865476);  convert_element_type_61 = None
+        erf_2: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_16);  mul_16 = None
+        add_10: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_2, 1);  erf_2 = None
+        mul_17: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_15, add_10);  mul_15 = add_10 = None
+        convert_element_type_62: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_17, torch.bfloat16);  mul_17 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_63: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg16_1, torch.bfloat16);  arg16_1 = None
+        permute_26: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_63, [1, 0]);  convert_element_type_63 = None
+        view_52: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_62, [65536, 3072]);  convert_element_type_62 = None
+        mm_11: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_52, permute_26);  view_52 = permute_26 = None
+        view_53: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_11, [128, 512, 768]);  mm_11 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_11: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_9, view_53);  add_9 = view_53 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_3 = torch.ops.aten.var_mean.correction(add_11, [2], correction = 0, keepdim = True)
+        getitem_15: "f32[128, 512, 1][512, 1, 1]" = var_mean_3[0]
+        getitem_16: "f32[128, 512, 1][512, 1, 1]" = var_mean_3[1];  var_mean_3 = None
+        add_12: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_15, 1e-05);  getitem_15 = None
+        rsqrt_3: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_12);  add_12 = None
+        sub_9: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_11, getitem_16);  getitem_16 = None
+        mul_18: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_9, rsqrt_3);  sub_9 = rsqrt_3 = None
+        mul_19: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_18, arg17_1);  mul_18 = arg17_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_66: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg18_1, torch.bfloat16);  arg18_1 = None
+        convert_element_type_67: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_19, torch.bfloat16);  mul_19 = None
+        permute_27: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_66, [1, 0]);  convert_element_type_66 = None
+        view_54: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_67, [65536, 768]);  convert_element_type_67 = None
+        mm_12: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_54, permute_27);  view_54 = permute_27 = None
+        view_55: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_12, [128, 512, 2304]);  mm_12 = None
+        split_3 = torch.ops.aten.split.Tensor(view_55, 768, 2);  view_55 = None
+        getitem_17: "bf16[128, 512, 768][1179648, 2304, 1]" = split_3[0]
+        getitem_18: "bf16[128, 512, 768][1179648, 2304, 1]" = split_3[1]
+        getitem_19: "bf16[128, 512, 768][1179648, 2304, 1]" = split_3[2];  split_3 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_56: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_18, [128, 512, 12, 64]);  getitem_18 = None
+        permute_28: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_56, [0, 2, 1, 3]);  view_56 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_57: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_17, [128, 512, 12, 64]);  getitem_17 = None
+        permute_29: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_57, [0, 2, 1, 3]);  view_57 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_58: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_19, [128, 512, 12, 64]);  getitem_19 = None
+        permute_30: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_58, [0, 2, 1, 3]);  view_58 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_31: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_28, [0, 1, 3, 2]);  permute_28 = None
+        expand_12: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_29, [128, 12, 512, 64]);  permute_29 = None
+        clone_22: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_12, memory_format = torch.contiguous_format);  expand_12 = None
+        view_59: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_22, [1536, 512, 64]);  clone_22 = None
+        expand_13: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_31, [128, 12, 64, 512]);  permute_31 = None
+        clone_23: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_13, memory_format = torch.contiguous_format);  expand_13 = None
+        view_60: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_23, [1536, 64, 512]);  clone_23 = None
+        bmm_6: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_59, view_60);  view_59 = view_60 = None
+        view_61: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_6, [128, 12, 512, 512]);  bmm_6 = None
+        mul_20: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_61, 0.125);  view_61 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_3: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_6: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_6: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_6, -2);  iota_6 = None
+        iota_7: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_7: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_7, -1);  iota_7 = None
+        sub_10: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_6, unsqueeze_7);  unsqueeze_6 = unsqueeze_7 = None
+        ge_3: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_10, 1);  sub_10 = None
+        logical_and_3: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_3, full_3);  ge_3 = full_3 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_3: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_3: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_3, scalar_tensor_3, mul_20);  logical_and_3 = scalar_tensor_3 = mul_20 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_72: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_3, torch.float32);  where_3 = None
+        amax_3: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_72, [-1], True)
+        sub_11: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_72, amax_3);  convert_element_type_72 = amax_3 = None
+        exp_3: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_11);  sub_11 = None
+        sum_4: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_3, [-1], True)
+        div_3: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_3, sum_4);  exp_3 = sum_4 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_73: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_3, torch.bfloat16);  div_3 = None
+        expand_14: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_73, [128, 12, 512, 512]);  convert_element_type_73 = None
+        view_62: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_14, [1536, 512, 512]);  expand_14 = None
+        expand_15: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_30, [128, 12, 512, 64]);  permute_30 = None
+        clone_25: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_15, memory_format = torch.contiguous_format);  expand_15 = None
+        view_63: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_25, [1536, 512, 64]);  clone_25 = None
+        bmm_7: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_62, view_63);  view_62 = view_63 = None
+        view_64: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_7, [128, 12, 512, 64]);  bmm_7 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_32: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_64, [0, 2, 1, 3]);  view_64 = None
+        clone_26: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_32, memory_format = torch.contiguous_format);  permute_32 = None
+        view_65: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_26, [128, 512, 768]);  clone_26 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_76: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg19_1, torch.bfloat16);  arg19_1 = None
+        permute_33: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_76, [1, 0]);  convert_element_type_76 = None
+        view_66: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_65, [65536, 768]);  view_65 = None
+        mm_13: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_66, permute_33);  view_66 = permute_33 = None
+        view_67: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_13, [128, 512, 768]);  mm_13 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_13: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_11, view_67);  add_11 = view_67 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_79: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg20_1, torch.bfloat16);  arg20_1 = None
+        convert_element_type_80: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_13, torch.bfloat16)
+        permute_34: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_79, [1, 0]);  convert_element_type_79 = None
+        view_68: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_80, [65536, 768]);  convert_element_type_80 = None
+        mm_14: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_68, permute_34);  view_68 = permute_34 = None
+        view_69: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_14, [128, 512, 3072]);  mm_14 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_83: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_69, torch.float32);  view_69 = None
+        mul_21: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_83, 0.5)
+        mul_22: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_83, 0.7071067811865476);  convert_element_type_83 = None
+        erf_3: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_22);  mul_22 = None
+        add_14: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_3, 1);  erf_3 = None
+        mul_23: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_21, add_14);  mul_21 = add_14 = None
+        convert_element_type_84: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_23, torch.bfloat16);  mul_23 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_85: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg21_1, torch.bfloat16);  arg21_1 = None
+        permute_35: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_85, [1, 0]);  convert_element_type_85 = None
+        view_70: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_84, [65536, 3072]);  convert_element_type_84 = None
+        mm_15: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_70, permute_35);  view_70 = permute_35 = None
+        view_71: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_15, [128, 512, 768]);  mm_15 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_15: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_13, view_71);  add_13 = view_71 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_4 = torch.ops.aten.var_mean.correction(add_15, [2], correction = 0, keepdim = True)
+        getitem_20: "f32[128, 512, 1][512, 1, 1]" = var_mean_4[0]
+        getitem_21: "f32[128, 512, 1][512, 1, 1]" = var_mean_4[1];  var_mean_4 = None
+        add_16: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_20, 1e-05);  getitem_20 = None
+        rsqrt_4: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_16);  add_16 = None
+        sub_12: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_15, getitem_21);  getitem_21 = None
+        mul_24: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_12, rsqrt_4);  sub_12 = rsqrt_4 = None
+        mul_25: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_24, arg22_1);  mul_24 = arg22_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_88: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg23_1, torch.bfloat16);  arg23_1 = None
+        convert_element_type_89: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_25, torch.bfloat16);  mul_25 = None
+        permute_36: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_88, [1, 0]);  convert_element_type_88 = None
+        view_72: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_89, [65536, 768]);  convert_element_type_89 = None
+        mm_16: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_72, permute_36);  view_72 = permute_36 = None
+        view_73: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_16, [128, 512, 2304]);  mm_16 = None
+        split_4 = torch.ops.aten.split.Tensor(view_73, 768, 2);  view_73 = None
+        getitem_22: "bf16[128, 512, 768][1179648, 2304, 1]" = split_4[0]
+        getitem_23: "bf16[128, 512, 768][1179648, 2304, 1]" = split_4[1]
+        getitem_24: "bf16[128, 512, 768][1179648, 2304, 1]" = split_4[2];  split_4 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_74: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_23, [128, 512, 12, 64]);  getitem_23 = None
+        permute_37: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_74, [0, 2, 1, 3]);  view_74 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_75: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_22, [128, 512, 12, 64]);  getitem_22 = None
+        permute_38: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_75, [0, 2, 1, 3]);  view_75 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_76: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_24, [128, 512, 12, 64]);  getitem_24 = None
+        permute_39: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_76, [0, 2, 1, 3]);  view_76 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_40: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_37, [0, 1, 3, 2]);  permute_37 = None
+        expand_16: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_38, [128, 12, 512, 64]);  permute_38 = None
+        clone_29: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_16, memory_format = torch.contiguous_format);  expand_16 = None
+        view_77: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_29, [1536, 512, 64]);  clone_29 = None
+        expand_17: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_40, [128, 12, 64, 512]);  permute_40 = None
+        clone_30: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_17, memory_format = torch.contiguous_format);  expand_17 = None
+        view_78: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_30, [1536, 64, 512]);  clone_30 = None
+        bmm_8: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_77, view_78);  view_77 = view_78 = None
+        view_79: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_8, [128, 12, 512, 512]);  bmm_8 = None
+        mul_26: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_79, 0.125);  view_79 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_4: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_8: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_8: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_8, -2);  iota_8 = None
+        iota_9: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_9: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_9, -1);  iota_9 = None
+        sub_13: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_8, unsqueeze_9);  unsqueeze_8 = unsqueeze_9 = None
+        ge_4: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_13, 1);  sub_13 = None
+        logical_and_4: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_4, full_4);  ge_4 = full_4 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_4: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_4: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_4, scalar_tensor_4, mul_26);  logical_and_4 = scalar_tensor_4 = mul_26 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_94: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_4, torch.float32);  where_4 = None
+        amax_4: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_94, [-1], True)
+        sub_14: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_94, amax_4);  convert_element_type_94 = amax_4 = None
+        exp_4: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_14);  sub_14 = None
+        sum_5: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_4, [-1], True)
+        div_4: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_4, sum_5);  exp_4 = sum_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_95: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_4, torch.bfloat16);  div_4 = None
+        expand_18: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_95, [128, 12, 512, 512]);  convert_element_type_95 = None
+        view_80: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_18, [1536, 512, 512]);  expand_18 = None
+        expand_19: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_39, [128, 12, 512, 64]);  permute_39 = None
+        clone_32: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_19, memory_format = torch.contiguous_format);  expand_19 = None
+        view_81: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_32, [1536, 512, 64]);  clone_32 = None
+        bmm_9: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_80, view_81);  view_80 = view_81 = None
+        view_82: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_9, [128, 12, 512, 64]);  bmm_9 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_41: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_82, [0, 2, 1, 3]);  view_82 = None
+        clone_33: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_41, memory_format = torch.contiguous_format);  permute_41 = None
+        view_83: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_33, [128, 512, 768]);  clone_33 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_98: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg24_1, torch.bfloat16);  arg24_1 = None
+        permute_42: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_98, [1, 0]);  convert_element_type_98 = None
+        view_84: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_83, [65536, 768]);  view_83 = None
+        mm_17: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_84, permute_42);  view_84 = permute_42 = None
+        view_85: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_17, [128, 512, 768]);  mm_17 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_17: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_15, view_85);  add_15 = view_85 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_101: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg25_1, torch.bfloat16);  arg25_1 = None
+        convert_element_type_102: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_17, torch.bfloat16)
+        permute_43: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_101, [1, 0]);  convert_element_type_101 = None
+        view_86: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_102, [65536, 768]);  convert_element_type_102 = None
+        mm_18: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_86, permute_43);  view_86 = permute_43 = None
+        view_87: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_18, [128, 512, 3072]);  mm_18 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_105: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_87, torch.float32);  view_87 = None
+        mul_27: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_105, 0.5)
+        mul_28: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_105, 0.7071067811865476);  convert_element_type_105 = None
+        erf_4: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_28);  mul_28 = None
+        add_18: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_4, 1);  erf_4 = None
+        mul_29: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_27, add_18);  mul_27 = add_18 = None
+        convert_element_type_106: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_29, torch.bfloat16);  mul_29 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_107: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg26_1, torch.bfloat16);  arg26_1 = None
+        permute_44: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_107, [1, 0]);  convert_element_type_107 = None
+        view_88: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_106, [65536, 3072]);  convert_element_type_106 = None
+        mm_19: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_88, permute_44);  view_88 = permute_44 = None
+        view_89: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_19, [128, 512, 768]);  mm_19 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_19: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_17, view_89);  add_17 = view_89 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_5 = torch.ops.aten.var_mean.correction(add_19, [2], correction = 0, keepdim = True)
+        getitem_25: "f32[128, 512, 1][512, 1, 1]" = var_mean_5[0]
+        getitem_26: "f32[128, 512, 1][512, 1, 1]" = var_mean_5[1];  var_mean_5 = None
+        add_20: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_25, 1e-05);  getitem_25 = None
+        rsqrt_5: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_20);  add_20 = None
+        sub_15: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_19, getitem_26);  getitem_26 = None
+        mul_30: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_15, rsqrt_5);  sub_15 = rsqrt_5 = None
+        mul_31: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_30, arg27_1);  mul_30 = arg27_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_110: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg28_1, torch.bfloat16);  arg28_1 = None
+        convert_element_type_111: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_31, torch.bfloat16);  mul_31 = None
+        permute_45: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_110, [1, 0]);  convert_element_type_110 = None
+        view_90: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_111, [65536, 768]);  convert_element_type_111 = None
+        mm_20: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_90, permute_45);  view_90 = permute_45 = None
+        view_91: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_20, [128, 512, 2304]);  mm_20 = None
+        split_5 = torch.ops.aten.split.Tensor(view_91, 768, 2);  view_91 = None
+        getitem_27: "bf16[128, 512, 768][1179648, 2304, 1]" = split_5[0]
+        getitem_28: "bf16[128, 512, 768][1179648, 2304, 1]" = split_5[1]
+        getitem_29: "bf16[128, 512, 768][1179648, 2304, 1]" = split_5[2];  split_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_92: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_28, [128, 512, 12, 64]);  getitem_28 = None
+        permute_46: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_92, [0, 2, 1, 3]);  view_92 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_93: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_27, [128, 512, 12, 64]);  getitem_27 = None
+        permute_47: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_93, [0, 2, 1, 3]);  view_93 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_94: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_29, [128, 512, 12, 64]);  getitem_29 = None
+        permute_48: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_94, [0, 2, 1, 3]);  view_94 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_49: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_46, [0, 1, 3, 2]);  permute_46 = None
+        expand_20: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_47, [128, 12, 512, 64]);  permute_47 = None
+        clone_36: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_20, memory_format = torch.contiguous_format);  expand_20 = None
+        view_95: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_36, [1536, 512, 64]);  clone_36 = None
+        expand_21: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_49, [128, 12, 64, 512]);  permute_49 = None
+        clone_37: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_21, memory_format = torch.contiguous_format);  expand_21 = None
+        view_96: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_37, [1536, 64, 512]);  clone_37 = None
+        bmm_10: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_95, view_96);  view_95 = view_96 = None
+        view_97: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_10, [128, 12, 512, 512]);  bmm_10 = None
+        mul_32: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_97, 0.125);  view_97 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_5: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_10: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_10: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_10, -2);  iota_10 = None
+        iota_11: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_11: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_11, -1);  iota_11 = None
+        sub_16: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_10, unsqueeze_11);  unsqueeze_10 = unsqueeze_11 = None
+        ge_5: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_16, 1);  sub_16 = None
+        logical_and_5: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_5, full_5);  ge_5 = full_5 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_5: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_5: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_5, scalar_tensor_5, mul_32);  logical_and_5 = scalar_tensor_5 = mul_32 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_116: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_5, torch.float32);  where_5 = None
+        amax_5: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_116, [-1], True)
+        sub_17: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_116, amax_5);  convert_element_type_116 = amax_5 = None
+        exp_5: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_17);  sub_17 = None
+        sum_6: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_5, [-1], True)
+        div_5: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_5, sum_6);  exp_5 = sum_6 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_117: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_5, torch.bfloat16);  div_5 = None
+        expand_22: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_117, [128, 12, 512, 512]);  convert_element_type_117 = None
+        view_98: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_22, [1536, 512, 512]);  expand_22 = None
+        expand_23: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_48, [128, 12, 512, 64]);  permute_48 = None
+        clone_39: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_23, memory_format = torch.contiguous_format);  expand_23 = None
+        view_99: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_39, [1536, 512, 64]);  clone_39 = None
+        bmm_11: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_98, view_99);  view_98 = view_99 = None
+        view_100: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_11, [128, 12, 512, 64]);  bmm_11 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_50: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_100, [0, 2, 1, 3]);  view_100 = None
+        clone_40: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_50, memory_format = torch.contiguous_format);  permute_50 = None
+        view_101: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_40, [128, 512, 768]);  clone_40 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_120: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg29_1, torch.bfloat16);  arg29_1 = None
+        permute_51: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_120, [1, 0]);  convert_element_type_120 = None
+        view_102: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_101, [65536, 768]);  view_101 = None
+        mm_21: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_102, permute_51);  view_102 = permute_51 = None
+        view_103: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_21, [128, 512, 768]);  mm_21 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_21: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_19, view_103);  add_19 = view_103 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_123: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg30_1, torch.bfloat16);  arg30_1 = None
+        convert_element_type_124: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_21, torch.bfloat16)
+        permute_52: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_123, [1, 0]);  convert_element_type_123 = None
+        view_104: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_124, [65536, 768]);  convert_element_type_124 = None
+        mm_22: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_104, permute_52);  view_104 = permute_52 = None
+        view_105: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_22, [128, 512, 3072]);  mm_22 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_127: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_105, torch.float32);  view_105 = None
+        mul_33: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_127, 0.5)
+        mul_34: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_127, 0.7071067811865476);  convert_element_type_127 = None
+        erf_5: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_34);  mul_34 = None
+        add_22: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_5, 1);  erf_5 = None
+        mul_35: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_33, add_22);  mul_33 = add_22 = None
+        convert_element_type_128: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_35, torch.bfloat16);  mul_35 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_129: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg31_1, torch.bfloat16);  arg31_1 = None
+        permute_53: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_129, [1, 0]);  convert_element_type_129 = None
+        view_106: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_128, [65536, 3072]);  convert_element_type_128 = None
+        mm_23: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_106, permute_53);  view_106 = permute_53 = None
+        view_107: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_23, [128, 512, 768]);  mm_23 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_23: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_21, view_107);  add_21 = view_107 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_6 = torch.ops.aten.var_mean.correction(add_23, [2], correction = 0, keepdim = True)
+        getitem_30: "f32[128, 512, 1][512, 1, 1]" = var_mean_6[0]
+        getitem_31: "f32[128, 512, 1][512, 1, 1]" = var_mean_6[1];  var_mean_6 = None
+        add_24: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_30, 1e-05);  getitem_30 = None
+        rsqrt_6: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_24);  add_24 = None
+        sub_18: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_23, getitem_31);  getitem_31 = None
+        mul_36: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_18, rsqrt_6);  sub_18 = rsqrt_6 = None
+        mul_37: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_36, arg32_1);  mul_36 = arg32_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_132: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg33_1, torch.bfloat16);  arg33_1 = None
+        convert_element_type_133: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_37, torch.bfloat16);  mul_37 = None
+        permute_54: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_132, [1, 0]);  convert_element_type_132 = None
+        view_108: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_133, [65536, 768]);  convert_element_type_133 = None
+        mm_24: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_108, permute_54);  view_108 = permute_54 = None
+        view_109: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_24, [128, 512, 2304]);  mm_24 = None
+        split_6 = torch.ops.aten.split.Tensor(view_109, 768, 2);  view_109 = None
+        getitem_32: "bf16[128, 512, 768][1179648, 2304, 1]" = split_6[0]
+        getitem_33: "bf16[128, 512, 768][1179648, 2304, 1]" = split_6[1]
+        getitem_34: "bf16[128, 512, 768][1179648, 2304, 1]" = split_6[2];  split_6 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_110: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_33, [128, 512, 12, 64]);  getitem_33 = None
+        permute_55: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_110, [0, 2, 1, 3]);  view_110 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_111: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_32, [128, 512, 12, 64]);  getitem_32 = None
+        permute_56: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_111, [0, 2, 1, 3]);  view_111 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_112: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_34, [128, 512, 12, 64]);  getitem_34 = None
+        permute_57: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_112, [0, 2, 1, 3]);  view_112 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_58: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_55, [0, 1, 3, 2]);  permute_55 = None
+        expand_24: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_56, [128, 12, 512, 64]);  permute_56 = None
+        clone_43: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_24, memory_format = torch.contiguous_format);  expand_24 = None
+        view_113: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_43, [1536, 512, 64]);  clone_43 = None
+        expand_25: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_58, [128, 12, 64, 512]);  permute_58 = None
+        clone_44: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_25, memory_format = torch.contiguous_format);  expand_25 = None
+        view_114: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_44, [1536, 64, 512]);  clone_44 = None
+        bmm_12: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_113, view_114);  view_113 = view_114 = None
+        view_115: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_12, [128, 12, 512, 512]);  bmm_12 = None
+        mul_38: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_115, 0.125);  view_115 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_6: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_12: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_12: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_12, -2);  iota_12 = None
+        iota_13: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_13: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_13, -1);  iota_13 = None
+        sub_19: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_12, unsqueeze_13);  unsqueeze_12 = unsqueeze_13 = None
+        ge_6: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_19, 1);  sub_19 = None
+        logical_and_6: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_6, full_6);  ge_6 = full_6 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_6: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_6: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_6, scalar_tensor_6, mul_38);  logical_and_6 = scalar_tensor_6 = mul_38 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_138: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_6, torch.float32);  where_6 = None
+        amax_6: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_138, [-1], True)
+        sub_20: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_138, amax_6);  convert_element_type_138 = amax_6 = None
+        exp_6: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_20);  sub_20 = None
+        sum_7: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_6, [-1], True)
+        div_6: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_6, sum_7);  exp_6 = sum_7 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_139: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_6, torch.bfloat16);  div_6 = None
+        expand_26: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_139, [128, 12, 512, 512]);  convert_element_type_139 = None
+        view_116: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_26, [1536, 512, 512]);  expand_26 = None
+        expand_27: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_57, [128, 12, 512, 64]);  permute_57 = None
+        clone_46: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_27, memory_format = torch.contiguous_format);  expand_27 = None
+        view_117: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_46, [1536, 512, 64]);  clone_46 = None
+        bmm_13: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_116, view_117);  view_116 = view_117 = None
+        view_118: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_13, [128, 12, 512, 64]);  bmm_13 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_59: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_118, [0, 2, 1, 3]);  view_118 = None
+        clone_47: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_59, memory_format = torch.contiguous_format);  permute_59 = None
+        view_119: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_47, [128, 512, 768]);  clone_47 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_142: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg34_1, torch.bfloat16);  arg34_1 = None
+        permute_60: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_142, [1, 0]);  convert_element_type_142 = None
+        view_120: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_119, [65536, 768]);  view_119 = None
+        mm_25: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_120, permute_60);  view_120 = permute_60 = None
+        view_121: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_25, [128, 512, 768]);  mm_25 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_25: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_23, view_121);  add_23 = view_121 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_145: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg35_1, torch.bfloat16);  arg35_1 = None
+        convert_element_type_146: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_25, torch.bfloat16)
+        permute_61: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_145, [1, 0]);  convert_element_type_145 = None
+        view_122: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_146, [65536, 768]);  convert_element_type_146 = None
+        mm_26: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_122, permute_61);  view_122 = permute_61 = None
+        view_123: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_26, [128, 512, 3072]);  mm_26 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_149: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_123, torch.float32);  view_123 = None
+        mul_39: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_149, 0.5)
+        mul_40: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_149, 0.7071067811865476);  convert_element_type_149 = None
+        erf_6: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_40);  mul_40 = None
+        add_26: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_6, 1);  erf_6 = None
+        mul_41: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_39, add_26);  mul_39 = add_26 = None
+        convert_element_type_150: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_41, torch.bfloat16);  mul_41 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_151: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg36_1, torch.bfloat16);  arg36_1 = None
+        permute_62: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_151, [1, 0]);  convert_element_type_151 = None
+        view_124: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_150, [65536, 3072]);  convert_element_type_150 = None
+        mm_27: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_124, permute_62);  view_124 = permute_62 = None
+        view_125: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_27, [128, 512, 768]);  mm_27 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_27: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_25, view_125);  add_25 = view_125 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_7 = torch.ops.aten.var_mean.correction(add_27, [2], correction = 0, keepdim = True)
+        getitem_35: "f32[128, 512, 1][512, 1, 1]" = var_mean_7[0]
+        getitem_36: "f32[128, 512, 1][512, 1, 1]" = var_mean_7[1];  var_mean_7 = None
+        add_28: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_35, 1e-05);  getitem_35 = None
+        rsqrt_7: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_28);  add_28 = None
+        sub_21: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_27, getitem_36);  getitem_36 = None
+        mul_42: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_21, rsqrt_7);  sub_21 = rsqrt_7 = None
+        mul_43: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_42, arg37_1);  mul_42 = arg37_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_154: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg38_1, torch.bfloat16);  arg38_1 = None
+        convert_element_type_155: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_43, torch.bfloat16);  mul_43 = None
+        permute_63: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_154, [1, 0]);  convert_element_type_154 = None
+        view_126: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_155, [65536, 768]);  convert_element_type_155 = None
+        mm_28: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_126, permute_63);  view_126 = permute_63 = None
+        view_127: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_28, [128, 512, 2304]);  mm_28 = None
+        split_7 = torch.ops.aten.split.Tensor(view_127, 768, 2);  view_127 = None
+        getitem_37: "bf16[128, 512, 768][1179648, 2304, 1]" = split_7[0]
+        getitem_38: "bf16[128, 512, 768][1179648, 2304, 1]" = split_7[1]
+        getitem_39: "bf16[128, 512, 768][1179648, 2304, 1]" = split_7[2];  split_7 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_128: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_38, [128, 512, 12, 64]);  getitem_38 = None
+        permute_64: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_128, [0, 2, 1, 3]);  view_128 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_129: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_37, [128, 512, 12, 64]);  getitem_37 = None
+        permute_65: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_129, [0, 2, 1, 3]);  view_129 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_130: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_39, [128, 512, 12, 64]);  getitem_39 = None
+        permute_66: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_130, [0, 2, 1, 3]);  view_130 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_67: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_64, [0, 1, 3, 2]);  permute_64 = None
+        expand_28: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_65, [128, 12, 512, 64]);  permute_65 = None
+        clone_50: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_28, memory_format = torch.contiguous_format);  expand_28 = None
+        view_131: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_50, [1536, 512, 64]);  clone_50 = None
+        expand_29: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_67, [128, 12, 64, 512]);  permute_67 = None
+        clone_51: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_29, memory_format = torch.contiguous_format);  expand_29 = None
+        view_132: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_51, [1536, 64, 512]);  clone_51 = None
+        bmm_14: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_131, view_132);  view_131 = view_132 = None
+        view_133: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_14, [128, 12, 512, 512]);  bmm_14 = None
+        mul_44: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_133, 0.125);  view_133 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_7: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_14: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_14: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_14, -2);  iota_14 = None
+        iota_15: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_15: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_15, -1);  iota_15 = None
+        sub_22: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_14, unsqueeze_15);  unsqueeze_14 = unsqueeze_15 = None
+        ge_7: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_22, 1);  sub_22 = None
+        logical_and_7: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_7, full_7);  ge_7 = full_7 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_7: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_7: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_7, scalar_tensor_7, mul_44);  logical_and_7 = scalar_tensor_7 = mul_44 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_160: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_7, torch.float32);  where_7 = None
+        amax_7: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_160, [-1], True)
+        sub_23: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_160, amax_7);  convert_element_type_160 = amax_7 = None
+        exp_7: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_23);  sub_23 = None
+        sum_8: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_7, [-1], True)
+        div_7: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_7, sum_8);  exp_7 = sum_8 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_161: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_7, torch.bfloat16);  div_7 = None
+        expand_30: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_161, [128, 12, 512, 512]);  convert_element_type_161 = None
+        view_134: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_30, [1536, 512, 512]);  expand_30 = None
+        expand_31: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_66, [128, 12, 512, 64]);  permute_66 = None
+        clone_53: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_31, memory_format = torch.contiguous_format);  expand_31 = None
+        view_135: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_53, [1536, 512, 64]);  clone_53 = None
+        bmm_15: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_134, view_135);  view_134 = view_135 = None
+        view_136: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_15, [128, 12, 512, 64]);  bmm_15 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_68: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_136, [0, 2, 1, 3]);  view_136 = None
+        clone_54: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_68, memory_format = torch.contiguous_format);  permute_68 = None
+        view_137: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_54, [128, 512, 768]);  clone_54 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_164: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg39_1, torch.bfloat16);  arg39_1 = None
+        permute_69: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_164, [1, 0]);  convert_element_type_164 = None
+        view_138: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_137, [65536, 768]);  view_137 = None
+        mm_29: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_138, permute_69);  view_138 = permute_69 = None
+        view_139: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_29, [128, 512, 768]);  mm_29 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_29: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_27, view_139);  add_27 = view_139 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_167: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg40_1, torch.bfloat16);  arg40_1 = None
+        convert_element_type_168: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_29, torch.bfloat16)
+        permute_70: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_167, [1, 0]);  convert_element_type_167 = None
+        view_140: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_168, [65536, 768]);  convert_element_type_168 = None
+        mm_30: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_140, permute_70);  view_140 = permute_70 = None
+        view_141: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_30, [128, 512, 3072]);  mm_30 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_171: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_141, torch.float32);  view_141 = None
+        mul_45: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_171, 0.5)
+        mul_46: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_171, 0.7071067811865476);  convert_element_type_171 = None
+        erf_7: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_46);  mul_46 = None
+        add_30: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_7, 1);  erf_7 = None
+        mul_47: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_45, add_30);  mul_45 = add_30 = None
+        convert_element_type_172: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_47, torch.bfloat16);  mul_47 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_173: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg41_1, torch.bfloat16);  arg41_1 = None
+        permute_71: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_173, [1, 0]);  convert_element_type_173 = None
+        view_142: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_172, [65536, 3072]);  convert_element_type_172 = None
+        mm_31: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_142, permute_71);  view_142 = permute_71 = None
+        view_143: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_31, [128, 512, 768]);  mm_31 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_31: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_29, view_143);  add_29 = view_143 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_8 = torch.ops.aten.var_mean.correction(add_31, [2], correction = 0, keepdim = True)
+        getitem_40: "f32[128, 512, 1][512, 1, 1]" = var_mean_8[0]
+        getitem_41: "f32[128, 512, 1][512, 1, 1]" = var_mean_8[1];  var_mean_8 = None
+        add_32: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_40, 1e-05);  getitem_40 = None
+        rsqrt_8: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_32);  add_32 = None
+        sub_24: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_31, getitem_41);  getitem_41 = None
+        mul_48: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_24, rsqrt_8);  sub_24 = rsqrt_8 = None
+        mul_49: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_48, arg42_1);  mul_48 = arg42_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_176: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg43_1, torch.bfloat16);  arg43_1 = None
+        convert_element_type_177: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_49, torch.bfloat16);  mul_49 = None
+        permute_72: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_176, [1, 0]);  convert_element_type_176 = None
+        view_144: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_177, [65536, 768]);  convert_element_type_177 = None
+        mm_32: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_144, permute_72);  view_144 = permute_72 = None
+        view_145: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_32, [128, 512, 2304]);  mm_32 = None
+        split_8 = torch.ops.aten.split.Tensor(view_145, 768, 2);  view_145 = None
+        getitem_42: "bf16[128, 512, 768][1179648, 2304, 1]" = split_8[0]
+        getitem_43: "bf16[128, 512, 768][1179648, 2304, 1]" = split_8[1]
+        getitem_44: "bf16[128, 512, 768][1179648, 2304, 1]" = split_8[2];  split_8 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_146: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_43, [128, 512, 12, 64]);  getitem_43 = None
+        permute_73: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_146, [0, 2, 1, 3]);  view_146 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_147: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_42, [128, 512, 12, 64]);  getitem_42 = None
+        permute_74: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_147, [0, 2, 1, 3]);  view_147 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_148: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_44, [128, 512, 12, 64]);  getitem_44 = None
+        permute_75: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_148, [0, 2, 1, 3]);  view_148 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_76: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_73, [0, 1, 3, 2]);  permute_73 = None
+        expand_32: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_74, [128, 12, 512, 64]);  permute_74 = None
+        clone_57: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_32, memory_format = torch.contiguous_format);  expand_32 = None
+        view_149: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_57, [1536, 512, 64]);  clone_57 = None
+        expand_33: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_76, [128, 12, 64, 512]);  permute_76 = None
+        clone_58: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_33, memory_format = torch.contiguous_format);  expand_33 = None
+        view_150: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_58, [1536, 64, 512]);  clone_58 = None
+        bmm_16: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_149, view_150);  view_149 = view_150 = None
+        view_151: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_16, [128, 12, 512, 512]);  bmm_16 = None
+        mul_50: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_151, 0.125);  view_151 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_8: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_16: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_16: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_16, -2);  iota_16 = None
+        iota_17: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_17: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_17, -1);  iota_17 = None
+        sub_25: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_16, unsqueeze_17);  unsqueeze_16 = unsqueeze_17 = None
+        ge_8: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_25, 1);  sub_25 = None
+        logical_and_8: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_8, full_8);  ge_8 = full_8 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_8: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_8: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_8, scalar_tensor_8, mul_50);  logical_and_8 = scalar_tensor_8 = mul_50 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_182: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_8, torch.float32);  where_8 = None
+        amax_8: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_182, [-1], True)
+        sub_26: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_182, amax_8);  convert_element_type_182 = amax_8 = None
+        exp_8: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_26);  sub_26 = None
+        sum_9: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_8, [-1], True)
+        div_8: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_8, sum_9);  exp_8 = sum_9 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_183: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_8, torch.bfloat16);  div_8 = None
+        expand_34: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_183, [128, 12, 512, 512]);  convert_element_type_183 = None
+        view_152: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_34, [1536, 512, 512]);  expand_34 = None
+        expand_35: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_75, [128, 12, 512, 64]);  permute_75 = None
+        clone_60: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_35, memory_format = torch.contiguous_format);  expand_35 = None
+        view_153: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_60, [1536, 512, 64]);  clone_60 = None
+        bmm_17: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_152, view_153);  view_152 = view_153 = None
+        view_154: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_17, [128, 12, 512, 64]);  bmm_17 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_77: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_154, [0, 2, 1, 3]);  view_154 = None
+        clone_61: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_77, memory_format = torch.contiguous_format);  permute_77 = None
+        view_155: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_61, [128, 512, 768]);  clone_61 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_186: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg44_1, torch.bfloat16);  arg44_1 = None
+        permute_78: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_186, [1, 0]);  convert_element_type_186 = None
+        view_156: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_155, [65536, 768]);  view_155 = None
+        mm_33: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_156, permute_78);  view_156 = permute_78 = None
+        view_157: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_33, [128, 512, 768]);  mm_33 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_33: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_31, view_157);  add_31 = view_157 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_189: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg45_1, torch.bfloat16);  arg45_1 = None
+        convert_element_type_190: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_33, torch.bfloat16)
+        permute_79: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_189, [1, 0]);  convert_element_type_189 = None
+        view_158: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_190, [65536, 768]);  convert_element_type_190 = None
+        mm_34: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_158, permute_79);  view_158 = permute_79 = None
+        view_159: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_34, [128, 512, 3072]);  mm_34 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_193: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_159, torch.float32);  view_159 = None
+        mul_51: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_193, 0.5)
+        mul_52: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_193, 0.7071067811865476);  convert_element_type_193 = None
+        erf_8: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_52);  mul_52 = None
+        add_34: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_8, 1);  erf_8 = None
+        mul_53: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_51, add_34);  mul_51 = add_34 = None
+        convert_element_type_194: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_53, torch.bfloat16);  mul_53 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_195: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg46_1, torch.bfloat16);  arg46_1 = None
+        permute_80: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_195, [1, 0]);  convert_element_type_195 = None
+        view_160: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_194, [65536, 3072]);  convert_element_type_194 = None
+        mm_35: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_160, permute_80);  view_160 = permute_80 = None
+        view_161: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_35, [128, 512, 768]);  mm_35 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_35: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_33, view_161);  add_33 = view_161 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_9 = torch.ops.aten.var_mean.correction(add_35, [2], correction = 0, keepdim = True)
+        getitem_45: "f32[128, 512, 1][512, 1, 1]" = var_mean_9[0]
+        getitem_46: "f32[128, 512, 1][512, 1, 1]" = var_mean_9[1];  var_mean_9 = None
+        add_36: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_45, 1e-05);  getitem_45 = None
+        rsqrt_9: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_36);  add_36 = None
+        sub_27: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_35, getitem_46);  getitem_46 = None
+        mul_54: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_27, rsqrt_9);  sub_27 = rsqrt_9 = None
+        mul_55: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_54, arg47_1);  mul_54 = arg47_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_198: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg48_1, torch.bfloat16);  arg48_1 = None
+        convert_element_type_199: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_55, torch.bfloat16);  mul_55 = None
+        permute_81: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_198, [1, 0]);  convert_element_type_198 = None
+        view_162: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_199, [65536, 768]);  convert_element_type_199 = None
+        mm_36: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_162, permute_81);  view_162 = permute_81 = None
+        view_163: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_36, [128, 512, 2304]);  mm_36 = None
+        split_9 = torch.ops.aten.split.Tensor(view_163, 768, 2);  view_163 = None
+        getitem_47: "bf16[128, 512, 768][1179648, 2304, 1]" = split_9[0]
+        getitem_48: "bf16[128, 512, 768][1179648, 2304, 1]" = split_9[1]
+        getitem_49: "bf16[128, 512, 768][1179648, 2304, 1]" = split_9[2];  split_9 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_164: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_48, [128, 512, 12, 64]);  getitem_48 = None
+        permute_82: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_164, [0, 2, 1, 3]);  view_164 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_165: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_47, [128, 512, 12, 64]);  getitem_47 = None
+        permute_83: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_165, [0, 2, 1, 3]);  view_165 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_166: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_49, [128, 512, 12, 64]);  getitem_49 = None
+        permute_84: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_166, [0, 2, 1, 3]);  view_166 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_85: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_82, [0, 1, 3, 2]);  permute_82 = None
+        expand_36: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_83, [128, 12, 512, 64]);  permute_83 = None
+        clone_64: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_36, memory_format = torch.contiguous_format);  expand_36 = None
+        view_167: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_64, [1536, 512, 64]);  clone_64 = None
+        expand_37: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_85, [128, 12, 64, 512]);  permute_85 = None
+        clone_65: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_37, memory_format = torch.contiguous_format);  expand_37 = None
+        view_168: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_65, [1536, 64, 512]);  clone_65 = None
+        bmm_18: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_167, view_168);  view_167 = view_168 = None
+        view_169: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_18, [128, 12, 512, 512]);  bmm_18 = None
+        mul_56: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_169, 0.125);  view_169 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_9: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_18: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_18: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_18, -2);  iota_18 = None
+        iota_19: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_19: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_19, -1);  iota_19 = None
+        sub_28: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_18, unsqueeze_19);  unsqueeze_18 = unsqueeze_19 = None
+        ge_9: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_28, 1);  sub_28 = None
+        logical_and_9: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_9, full_9);  ge_9 = full_9 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_9: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_9: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_9, scalar_tensor_9, mul_56);  logical_and_9 = scalar_tensor_9 = mul_56 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_204: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_9, torch.float32);  where_9 = None
+        amax_9: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_204, [-1], True)
+        sub_29: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_204, amax_9);  convert_element_type_204 = amax_9 = None
+        exp_9: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_29);  sub_29 = None
+        sum_10: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_9, [-1], True)
+        div_9: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_9, sum_10);  exp_9 = sum_10 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_205: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_9, torch.bfloat16);  div_9 = None
+        expand_38: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_205, [128, 12, 512, 512]);  convert_element_type_205 = None
+        view_170: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_38, [1536, 512, 512]);  expand_38 = None
+        expand_39: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_84, [128, 12, 512, 64]);  permute_84 = None
+        clone_67: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_39, memory_format = torch.contiguous_format);  expand_39 = None
+        view_171: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_67, [1536, 512, 64]);  clone_67 = None
+        bmm_19: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_170, view_171);  view_170 = view_171 = None
+        view_172: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_19, [128, 12, 512, 64]);  bmm_19 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_86: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_172, [0, 2, 1, 3]);  view_172 = None
+        clone_68: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_86, memory_format = torch.contiguous_format);  permute_86 = None
+        view_173: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_68, [128, 512, 768]);  clone_68 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_208: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg49_1, torch.bfloat16);  arg49_1 = None
+        permute_87: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_208, [1, 0]);  convert_element_type_208 = None
+        view_174: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_173, [65536, 768]);  view_173 = None
+        mm_37: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_174, permute_87);  view_174 = permute_87 = None
+        view_175: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_37, [128, 512, 768]);  mm_37 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_37: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_35, view_175);  add_35 = view_175 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_211: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg50_1, torch.bfloat16);  arg50_1 = None
+        convert_element_type_212: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_37, torch.bfloat16)
+        permute_88: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_211, [1, 0]);  convert_element_type_211 = None
+        view_176: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_212, [65536, 768]);  convert_element_type_212 = None
+        mm_38: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_176, permute_88);  view_176 = permute_88 = None
+        view_177: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_38, [128, 512, 3072]);  mm_38 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_215: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_177, torch.float32);  view_177 = None
+        mul_57: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_215, 0.5)
+        mul_58: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_215, 0.7071067811865476);  convert_element_type_215 = None
+        erf_9: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_58);  mul_58 = None
+        add_38: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_9, 1);  erf_9 = None
+        mul_59: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_57, add_38);  mul_57 = add_38 = None
+        convert_element_type_216: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_59, torch.bfloat16);  mul_59 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_217: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg51_1, torch.bfloat16);  arg51_1 = None
+        permute_89: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_217, [1, 0]);  convert_element_type_217 = None
+        view_178: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_216, [65536, 3072]);  convert_element_type_216 = None
+        mm_39: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_178, permute_89);  view_178 = permute_89 = None
+        view_179: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_39, [128, 512, 768]);  mm_39 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_39: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_37, view_179);  add_37 = view_179 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_10 = torch.ops.aten.var_mean.correction(add_39, [2], correction = 0, keepdim = True)
+        getitem_50: "f32[128, 512, 1][512, 1, 1]" = var_mean_10[0]
+        getitem_51: "f32[128, 512, 1][512, 1, 1]" = var_mean_10[1];  var_mean_10 = None
+        add_40: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_50, 1e-05);  getitem_50 = None
+        rsqrt_10: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_40);  add_40 = None
+        sub_30: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_39, getitem_51);  getitem_51 = None
+        mul_60: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_30, rsqrt_10);  sub_30 = rsqrt_10 = None
+        mul_61: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_60, arg52_1);  mul_60 = arg52_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_220: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg53_1, torch.bfloat16);  arg53_1 = None
+        convert_element_type_221: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_61, torch.bfloat16);  mul_61 = None
+        permute_90: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_220, [1, 0]);  convert_element_type_220 = None
+        view_180: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_221, [65536, 768]);  convert_element_type_221 = None
+        mm_40: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_180, permute_90);  view_180 = permute_90 = None
+        view_181: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_40, [128, 512, 2304]);  mm_40 = None
+        split_10 = torch.ops.aten.split.Tensor(view_181, 768, 2);  view_181 = None
+        getitem_52: "bf16[128, 512, 768][1179648, 2304, 1]" = split_10[0]
+        getitem_53: "bf16[128, 512, 768][1179648, 2304, 1]" = split_10[1]
+        getitem_54: "bf16[128, 512, 768][1179648, 2304, 1]" = split_10[2];  split_10 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_182: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_53, [128, 512, 12, 64]);  getitem_53 = None
+        permute_91: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_182, [0, 2, 1, 3]);  view_182 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_183: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_52, [128, 512, 12, 64]);  getitem_52 = None
+        permute_92: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_183, [0, 2, 1, 3]);  view_183 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_184: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_54, [128, 512, 12, 64]);  getitem_54 = None
+        permute_93: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_184, [0, 2, 1, 3]);  view_184 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_94: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_91, [0, 1, 3, 2]);  permute_91 = None
+        expand_40: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_92, [128, 12, 512, 64]);  permute_92 = None
+        clone_71: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_40, memory_format = torch.contiguous_format);  expand_40 = None
+        view_185: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_71, [1536, 512, 64]);  clone_71 = None
+        expand_41: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_94, [128, 12, 64, 512]);  permute_94 = None
+        clone_72: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_41, memory_format = torch.contiguous_format);  expand_41 = None
+        view_186: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_72, [1536, 64, 512]);  clone_72 = None
+        bmm_20: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_185, view_186);  view_185 = view_186 = None
+        view_187: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_20, [128, 12, 512, 512]);  bmm_20 = None
+        mul_62: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_187, 0.125);  view_187 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_10: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_20: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_20: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_20, -2);  iota_20 = None
+        iota_21: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_21: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_21, -1);  iota_21 = None
+        sub_31: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_20, unsqueeze_21);  unsqueeze_20 = unsqueeze_21 = None
+        ge_10: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_31, 1);  sub_31 = None
+        logical_and_10: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_10, full_10);  ge_10 = full_10 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_10: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_10: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_10, scalar_tensor_10, mul_62);  logical_and_10 = scalar_tensor_10 = mul_62 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_226: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_10, torch.float32);  where_10 = None
+        amax_10: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_226, [-1], True)
+        sub_32: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_226, amax_10);  convert_element_type_226 = amax_10 = None
+        exp_10: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_32);  sub_32 = None
+        sum_11: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_10, [-1], True)
+        div_10: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_10, sum_11);  exp_10 = sum_11 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_227: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_10, torch.bfloat16);  div_10 = None
+        expand_42: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_227, [128, 12, 512, 512]);  convert_element_type_227 = None
+        view_188: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_42, [1536, 512, 512]);  expand_42 = None
+        expand_43: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_93, [128, 12, 512, 64]);  permute_93 = None
+        clone_74: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_43, memory_format = torch.contiguous_format);  expand_43 = None
+        view_189: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_74, [1536, 512, 64]);  clone_74 = None
+        bmm_21: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_188, view_189);  view_188 = view_189 = None
+        view_190: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_21, [128, 12, 512, 64]);  bmm_21 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_95: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_190, [0, 2, 1, 3]);  view_190 = None
+        clone_75: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_95, memory_format = torch.contiguous_format);  permute_95 = None
+        view_191: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_75, [128, 512, 768]);  clone_75 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_230: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg54_1, torch.bfloat16);  arg54_1 = None
+        permute_96: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_230, [1, 0]);  convert_element_type_230 = None
+        view_192: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_191, [65536, 768]);  view_191 = None
+        mm_41: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_192, permute_96);  view_192 = permute_96 = None
+        view_193: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_41, [128, 512, 768]);  mm_41 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_41: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_39, view_193);  add_39 = view_193 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_233: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg55_1, torch.bfloat16);  arg55_1 = None
+        convert_element_type_234: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_41, torch.bfloat16)
+        permute_97: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_233, [1, 0]);  convert_element_type_233 = None
+        view_194: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_234, [65536, 768]);  convert_element_type_234 = None
+        mm_42: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_194, permute_97);  view_194 = permute_97 = None
+        view_195: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_42, [128, 512, 3072]);  mm_42 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_237: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_195, torch.float32);  view_195 = None
+        mul_63: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_237, 0.5)
+        mul_64: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_237, 0.7071067811865476);  convert_element_type_237 = None
+        erf_10: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_64);  mul_64 = None
+        add_42: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_10, 1);  erf_10 = None
+        mul_65: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_63, add_42);  mul_63 = add_42 = None
+        convert_element_type_238: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_65, torch.bfloat16);  mul_65 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_239: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg56_1, torch.bfloat16);  arg56_1 = None
+        permute_98: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_239, [1, 0]);  convert_element_type_239 = None
+        view_196: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_238, [65536, 3072]);  convert_element_type_238 = None
+        mm_43: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_196, permute_98);  view_196 = permute_98 = None
+        view_197: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_43, [128, 512, 768]);  mm_43 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_43: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_41, view_197);  add_41 = view_197 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_11 = torch.ops.aten.var_mean.correction(add_43, [2], correction = 0, keepdim = True)
+        getitem_55: "f32[128, 512, 1][512, 1, 1]" = var_mean_11[0]
+        getitem_56: "f32[128, 512, 1][512, 1, 1]" = var_mean_11[1];  var_mean_11 = None
+        add_44: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_55, 1e-05);  getitem_55 = None
+        rsqrt_11: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_44);  add_44 = None
+        sub_33: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_43, getitem_56);  getitem_56 = None
+        mul_66: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_33, rsqrt_11);  sub_33 = rsqrt_11 = None
+        mul_67: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_66, arg57_1);  mul_66 = arg57_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:127 in forward, code: q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+        convert_element_type_242: "bf16[2304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg58_1, torch.bfloat16);  arg58_1 = None
+        convert_element_type_243: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_67, torch.bfloat16);  mul_67 = None
+        permute_99: "bf16[768, 2304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_242, [1, 0]);  convert_element_type_242 = None
+        view_198: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_243, [65536, 768]);  convert_element_type_243 = None
+        mm_44: "bf16[65536, 2304][2304, 1]" = torch.ops.aten.mm.default(view_198, permute_99);  view_198 = permute_99 = None
+        view_199: "bf16[128, 512, 2304][1179648, 2304, 1]" = torch.ops.aten.view.default(mm_44, [128, 512, 2304]);  mm_44 = None
+        split_11 = torch.ops.aten.split.Tensor(view_199, 768, 2);  view_199 = None
+        getitem_57: "bf16[128, 512, 768][1179648, 2304, 1]" = split_11[0]
+        getitem_58: "bf16[128, 512, 768][1179648, 2304, 1]" = split_11[1]
+        getitem_59: "bf16[128, 512, 768][1179648, 2304, 1]" = split_11[2];  split_11 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:128 in forward, code: k = k.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_200: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_58, [128, 512, 12, 64]);  getitem_58 = None
+        permute_100: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_200, [0, 2, 1, 3]);  view_200 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:131 in forward, code: q = q.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_201: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_57, [128, 512, 12, 64]);  getitem_57 = None
+        permute_101: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_201, [0, 2, 1, 3]);  view_201 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:134 in forward, code: v = v.view(B, T, self.n_head, C // self.n_head).transpose(
+        view_202: "bf16[128, 512, 12, 64][1179648, 2304, 64, 1]" = torch.ops.aten.view.default(getitem_59, [128, 512, 12, 64]);  getitem_59 = None
+        permute_102: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.permute.default(view_202, [0, 2, 1, 3]);  view_202 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:150 in forward, code: att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        permute_103: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.permute.default(permute_100, [0, 1, 3, 2]);  permute_100 = None
+        expand_44: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_101, [128, 12, 512, 64]);  permute_101 = None
+        clone_78: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_44, memory_format = torch.contiguous_format);  expand_44 = None
+        view_203: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_78, [1536, 512, 64]);  clone_78 = None
+        expand_45: "bf16[128, 12, 64, 512][1179648, 64, 1, 2304]" = torch.ops.aten.expand.default(permute_103, [128, 12, 64, 512]);  permute_103 = None
+        clone_79: "bf16[128, 12, 64, 512][393216, 32768, 512, 1]" = torch.ops.aten.clone.default(expand_45, memory_format = torch.contiguous_format);  expand_45 = None
+        view_204: "bf16[1536, 64, 512][32768, 512, 1]" = torch.ops.aten.view.default(clone_79, [1536, 64, 512]);  clone_79 = None
+        bmm_22: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.bmm.default(view_203, view_204);  view_203 = view_204 = None
+        view_205: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.view.default(bmm_22, [128, 12, 512, 512]);  bmm_22 = None
+        mul_68: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.mul.Tensor(view_205, 0.125);  view_205 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:153 in forward, code: torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+        full_11: "b8[512, 512][512, 1]" = torch.ops.aten.full.default([512, 512], True, dtype = torch.bool, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:152 in forward, code: causal_mask = torch.triu(
+        iota_22: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_22: "i64[1, 512][512, 1]" = torch.ops.aten.unsqueeze.default(iota_22, -2);  iota_22 = None
+        iota_23: "i64[512][1]" = torch.ops.prims.iota.default(512, start = 0, step = 1, dtype = torch.int64, device = device(type='cuda', index=0), requires_grad = False)
+        unsqueeze_23: "i64[512, 1][1, 1]" = torch.ops.aten.unsqueeze.default(iota_23, -1);  iota_23 = None
+        sub_34: "i64[512, 512][512, 1]" = torch.ops.aten.sub.Tensor(unsqueeze_22, unsqueeze_23);  unsqueeze_22 = unsqueeze_23 = None
+        ge_11: "b8[512, 512][512, 1]" = torch.ops.aten.ge.Scalar(sub_34, 1);  sub_34 = None
+        logical_and_11: "b8[512, 512][512, 1]" = torch.ops.aten.logical_and.default(ge_11, full_11);  ge_11 = full_11 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:155 in forward, code: att = att.masked_fill(causal_mask, float("-inf"))
+        scalar_tensor_11: "bf16[][]" = torch.ops.aten.scalar_tensor.default(-inf, dtype = torch.bfloat16, layout = torch.strided, device = device(type='cuda', index=0))
+        where_11: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.where.self(logical_and_11, scalar_tensor_11, mul_68);  logical_and_11 = scalar_tensor_11 = mul_68 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:156 in forward, code: att = F.softmax(att, dim=-1)
+        convert_element_type_248: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(where_11, torch.float32);  where_11 = None
+        amax_11: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.amax.default(convert_element_type_248, [-1], True)
+        sub_35: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_248, amax_11);  convert_element_type_248 = amax_11 = None
+        exp_11: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.exp.default(sub_35);  sub_35 = None
+        sum_12: "f32[128, 12, 512, 1][6144, 512, 1, 1]" = torch.ops.aten.sum.dim_IntList(exp_11, [-1], True)
+        div_11: "f32[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.div.Tensor(exp_11, sum_12);  exp_11 = sum_12 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:163 in forward, code: y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+        convert_element_type_249: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.prims.convert_element_type.default(div_11, torch.bfloat16);  div_11 = None
+        expand_46: "bf16[128, 12, 512, 512][3145728, 262144, 512, 1]" = torch.ops.aten.expand.default(convert_element_type_249, [128, 12, 512, 512]);  convert_element_type_249 = None
+        view_206: "bf16[1536, 512, 512][262144, 512, 1]" = torch.ops.aten.view.default(expand_46, [1536, 512, 512]);  expand_46 = None
+        expand_47: "bf16[128, 12, 512, 64][1179648, 64, 2304, 1]" = torch.ops.aten.expand.default(permute_102, [128, 12, 512, 64]);  permute_102 = None
+        clone_81: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.clone.default(expand_47, memory_format = torch.contiguous_format);  expand_47 = None
+        view_207: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.view.default(clone_81, [1536, 512, 64]);  clone_81 = None
+        bmm_23: "bf16[1536, 512, 64][32768, 64, 1]" = torch.ops.aten.bmm.default(view_206, view_207);  view_206 = view_207 = None
+        view_208: "bf16[128, 12, 512, 64][393216, 32768, 64, 1]" = torch.ops.aten.view.default(bmm_23, [128, 12, 512, 64]);  bmm_23 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:166 in forward, code: y = y.transpose(1, 2).contiguous().view(B, T, C)
+        permute_104: "bf16[128, 512, 12, 64][393216, 64, 32768, 1]" = torch.ops.aten.permute.default(view_208, [0, 2, 1, 3]);  view_208 = None
+        clone_82: "bf16[128, 512, 12, 64][393216, 768, 64, 1]" = torch.ops.aten.clone.default(permute_104, memory_format = torch.contiguous_format);  permute_104 = None
+        view_209: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(clone_82, [128, 512, 768]);  clone_82 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:169 in forward, code: y = self.resid_dropout(self.c_proj(y))
+        convert_element_type_252: "bf16[768, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg59_1, torch.bfloat16);  arg59_1 = None
+        permute_105: "bf16[768, 768][1, 768]" = torch.ops.aten.permute.default(convert_element_type_252, [1, 0]);  convert_element_type_252 = None
+        view_210: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(view_209, [65536, 768]);  view_209 = None
+        mm_45: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_210, permute_105);  view_210 = permute_105 = None
+        view_211: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_45, [128, 512, 768]);  mm_45 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:268 in forward, code: x = x + self.attn(self.ln_1(x))
+        add_45: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_43, view_211);  add_43 = view_211 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:229 in forward, code: x = self.c_fc(x)
+        convert_element_type_255: "bf16[3072, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg60_1, torch.bfloat16);  arg60_1 = None
+        convert_element_type_256: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(add_45, torch.bfloat16)
+        permute_106: "bf16[768, 3072][1, 768]" = torch.ops.aten.permute.default(convert_element_type_255, [1, 0]);  convert_element_type_255 = None
+        view_212: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_256, [65536, 768]);  convert_element_type_256 = None
+        mm_46: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.mm.default(view_212, permute_106);  view_212 = permute_106 = None
+        view_213: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.view.default(mm_46, [128, 512, 3072]);  mm_46 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:230 in forward, code: x = self.gelu(x)
+        convert_element_type_259: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(view_213, torch.float32);  view_213 = None
+        mul_69: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_259, 0.5)
+        mul_70: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(convert_element_type_259, 0.7071067811865476);  convert_element_type_259 = None
+        erf_11: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.erf.default(mul_70);  mul_70 = None
+        add_46: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.add.Tensor(erf_11, 1);  erf_11 = None
+        mul_71: "f32[128, 512, 3072][1572864, 3072, 1]" = torch.ops.aten.mul.Tensor(mul_69, add_46);  mul_69 = add_46 = None
+        convert_element_type_260: "bf16[128, 512, 3072][1572864, 3072, 1]" = torch.ops.prims.convert_element_type.default(mul_71, torch.bfloat16);  mul_71 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:231 in forward, code: x = self.c_proj(x)
+        convert_element_type_261: "bf16[768, 3072][3072, 1]" = torch.ops.prims.convert_element_type.default(arg61_1, torch.bfloat16);  arg61_1 = None
+        permute_107: "bf16[3072, 768][1, 3072]" = torch.ops.aten.permute.default(convert_element_type_261, [1, 0]);  convert_element_type_261 = None
+        view_214: "bf16[65536, 3072][3072, 1]" = torch.ops.aten.view.default(convert_element_type_260, [65536, 3072]);  convert_element_type_260 = None
+        mm_47: "bf16[65536, 768][768, 1]" = torch.ops.aten.mm.default(view_214, permute_107);  view_214 = permute_107 = None
+        view_215: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.aten.view.default(mm_47, [128, 512, 768]);  mm_47 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:270 in forward, code: x = x + self.mlp(x)
+        add_47: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.add.Tensor(add_45, view_215);  add_45 = view_215 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:31 in forward, code: return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+        var_mean_12 = torch.ops.aten.var_mean.correction(add_47, [2], correction = 0, keepdim = True)
+        getitem_60: "f32[128, 512, 1][512, 1, 1]" = var_mean_12[0]
+        getitem_61: "f32[128, 512, 1][512, 1, 1]" = var_mean_12[1];  var_mean_12 = None
+        add_48: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.add.Tensor(getitem_60, 1e-05);  getitem_60 = None
+        rsqrt_12: "f32[128, 512, 1][512, 1, 1]" = torch.ops.aten.rsqrt.default(add_48);  add_48 = None
+        sub_36: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.sub.Tensor(add_47, getitem_61);  add_47 = getitem_61 = None
+        mul_72: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(sub_36, rsqrt_12);  sub_36 = rsqrt_12 = None
+        mul_73: "f32[128, 512, 768][393216, 768, 1]" = torch.ops.aten.mul.Tensor(mul_72, arg62_1);  mul_72 = arg62_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:447 in forward, code: logits = self.lm_head(x)
+        convert_element_type_264: "bf16[50304, 768][768, 1]" = torch.ops.prims.convert_element_type.default(arg1_1, torch.bfloat16);  arg1_1 = None
+        convert_element_type_265: "bf16[128, 512, 768][393216, 768, 1]" = torch.ops.prims.convert_element_type.default(mul_73, torch.bfloat16);  mul_73 = None
+        permute_108: "bf16[768, 50304][1, 768]" = torch.ops.aten.permute.default(convert_element_type_264, [1, 0]);  convert_element_type_264 = None
+        view_216: "bf16[65536, 768][768, 1]" = torch.ops.aten.view.default(convert_element_type_265, [65536, 768]);  convert_element_type_265 = None
+        mm_48: "bf16[65536, 50304][50304, 1]" = torch.ops.aten.mm.default(view_216, permute_108);  view_216 = permute_108 = None
+        view_217: "bf16[128, 512, 50304][25755648, 50304, 1]" = torch.ops.aten.view.default(mm_48, [128, 512, 50304]);  mm_48 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:449 in forward, code: logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1
+        view_218: "bf16[65536, 50304][50304, 1]" = torch.ops.aten.view.default(view_217, [-1, 50304])
+        view_219: "i64[65536][1]" = torch.ops.aten.view.default(arg63_1, [-1]);  arg63_1 = None
+        
+         # File: /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py:448 in forward, code: loss = F.cross_entropy(
+        convert_element_type_268: "f32[65536, 50304][50304, 1]" = torch.ops.prims.convert_element_type.default(view_218, torch.float32);  view_218 = None
+        amax_12: "f32[65536, 1][1, 1]" = torch.ops.aten.amax.default(convert_element_type_268, [1], True)
+        sub_37: "f32[65536, 50304][50304, 1]" = torch.ops.aten.sub.Tensor(convert_element_type_268, amax_12);  convert_element_type_268 = amax_12 = None
+        exp_12: "f32[65536, 50304][50304, 1]" = torch.ops.aten.exp.default(sub_37)
+        sum_13: "f32[65536, 1][1, 1]" = torch.ops.aten.sum.dim_IntList(exp_12, [1], True);  exp_12 = None
+        log: "f32[65536, 1][1, 1]" = torch.ops.aten.log.default(sum_13);  sum_13 = None
+        sub_38: "f32[65536, 50304][50304, 1]" = torch.ops.aten.sub.Tensor(sub_37, log);  sub_37 = log = None
+        convert_element_type_269: "bf16[65536, 50304][50304, 1]" = torch.ops.prims.convert_element_type.default(sub_38, torch.bfloat16);  sub_38 = None
+        convert_element_type_270: "f32[65536, 50304][50304, 1]" = torch.ops.prims.convert_element_type.default(convert_element_type_269, torch.float32);  convert_element_type_269 = None
+        ne: "b8[65536][1]" = torch.ops.aten.ne.Scalar(view_219, -1)
+        scalar_tensor_12: "i64[][]" = torch.ops.aten.scalar_tensor.default(0, dtype = torch.int64, layout = torch.strided, device = device(type='cuda', index=0))
+        where_12: "i64[65536][1]" = torch.ops.aten.where.self(ne, view_219, scalar_tensor_12);  ne = scalar_tensor_12 = None
+        unsqueeze_24: "i64[65536, 1][1, 1]" = torch.ops.aten.unsqueeze.default(where_12, 1);  where_12 = None
+        gather: "f32[65536, 1][1, 1]" = torch.ops.aten.gather.default(convert_element_type_270, 1, unsqueeze_24);  convert_element_type_270 = unsqueeze_24 = None
+        squeeze: "f32[65536][1]" = torch.ops.aten.squeeze.dim(gather, 1);  gather = None
+        neg: "f32[65536][1]" = torch.ops.aten.neg.default(squeeze);  squeeze = None
+        ne_1: "b8[65536][1]" = torch.ops.aten.ne.Scalar(view_219, -1)
+        scalar_tensor_13: "f32[][]" = torch.ops.aten.scalar_tensor.default(0, dtype = torch.float32, layout = torch.strided, device = device(type='cuda', index=0))
+        where_13: "f32[65536][1]" = torch.ops.aten.where.self(ne_1, neg, scalar_tensor_13);  ne_1 = neg = scalar_tensor_13 = None
+        ne_2: "b8[65536][1]" = torch.ops.aten.ne.Scalar(view_219, -1);  view_219 = None
+        sum_14: "i64[][]" = torch.ops.aten.sum.default(ne_2);  ne_2 = None
+        convert_element_type_271: "f32[][]" = torch.ops.prims.convert_element_type.default(sum_14, torch.float32);  sum_14 = None
+        sum_15: "f32[][]" = torch.ops.aten.sum.default(where_13);  where_13 = None
+        div_12: "f32[][]" = torch.ops.aten.div.Tensor(sum_15, convert_element_type_271);  sum_15 = convert_element_type_271 = None
+        return (view_217, div_12)
+        
+
+Original traceback:
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 440, in forward
+    x = block(x)
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 268, in forward
+    x = x + self.attn(self.ln_1(x))
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/model_nope.py", line 153, in forward
+    torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-owt-no-ln2-12layer[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260112_183546-rw8swdsn/logs[0m

@@ -1,0 +1,110 @@
+Starting NoPE training (NO LN2) on OpenWebText at Mon Jan 12 03:14:41 PM IST 2026
+GPU: NVIDIA H200
+Python: /home/nlp/matan_avitan/.conda/envs/py312/bin/python
+Overriding config with config/train_nope_owt_no_ln2.py:
+# Training config for NoPE transformer WITHOUT LN2 on OpenWebText
+# Tests hypothesis: Does LN2 hurt positional encoding by normalizing variance?
+#
+# Key features:
+# - No positional embeddings (NoPE mode)
+# - NO second LayerNorm (skip_ln2=True) - KEY ABLATION
+# - Xavier initialization for attention Q, K, V
+# - OpenWebText dataset (~9B tokens)
+# - Context length 2048 for testing long-range position encoding
+#
+# Run with:
+#   CUDA_VISIBLE_DEVICES=0 python train_nope.py config/train_nope_owt_no_ln2.py
+
+# I/O
+out_dir = "out-nope-owt-no-ln2"
+eval_interval = 1000  # Checkpoint every 1000 iters
+eval_iters = 200
+log_interval = 50
+
+always_save_checkpoint = True
+init_from = "scratch"
+
+# Wandb logging
+wandb_log = False
+wandb_project = "nope-emergence"
+wandb_run_name = "nope-owt-no-ln2"
+
+# Data
+dataset = "openwebtext"  # Full OpenWebText (~9B tokens)
+gradient_accumulation_steps = 1  # No accumulation - use large batch directly
+batch_size = 128  # Large batch size for better gradient estimates
+block_size = 2048  # Long context for position encoding study
+
+# Model architecture
+n_layer = 1
+n_head = 12
+n_embd = 768
+dropout = 0.0  # No dropout for clean analysis
+bias = False  # Modern practice
+
+# NoPE-specific settings
+use_positional_embedding = False  # KEY: No positional embeddings
+norm_type = "layernorm"  # Standard LayerNorm (for LN1)
+log_attention_stats = True  # Log attention entropy/uniformity
+skip_ln2 = True  # KEY ABLATION: Skip second LayerNorm
+
+# Optimizer
+learning_rate = 6e-4
+max_iters = 50000
+lr_decay_iters = 50000
+min_lr = 6e-5
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+
+warmup_iters = 2000
+
+# System
+device = "cuda"
+compile = True
+dtype = "bfloat16"
+
+# Reproducibility
+seed = 42
+
+# Stability tracking (important for no-LN2 variant)
+track_stability = True
+stability_log_interval = 100
+
+tokens per iteration will be: 262,144
+Initializing a new NoPE model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           2048
+  Vocab Size:           50304
+  Attention Stats:      True
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+num decayed parameter tensors: 5, with 45,711,360 parameters
+num non-decayed parameter tensors: 2, with 1,536 parameters
+using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 50000 iterations...
+  Model: NoPE GPT with layernorm
+  Positional Embedding: False
+  Dataset: openwebtext
+  Batch size: 128 x 1 = 128
+  Block size: 2048
+  Learning rate: 0.0006 -> 6e-05
+
+step 0: train loss 10.9104, val loss 10.9099, lr 3.00e-07
+Finished at Mon Jan 12 03:20:43 PM IST 2026
+Checkpoint saved to: out-nope-owt-no-ln2/

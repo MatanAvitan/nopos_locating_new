@@ -1,0 +1,180 @@
+
+──────────────────────────────────────────────────────────────────────
+Processing step 500
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0118)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0124)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0173)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0134)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0128)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0148)
+
+──────────────────────────────────────────────────────────────────────
+Processing step 1000
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0119)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0141)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0161)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0123)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0138)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0155)
+
+──────────────────────────────────────────────────────────────────────
+Processing step 2000
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0121)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0133)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0145)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0123)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0149)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0165)
+
+──────────────────────────────────────────────────────────────────────
+Processing step 5000
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0129)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0137)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0137)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0124)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0143)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0172)
+
+──────────────────────────────────────────────────────────────────────
+Processing step 10000
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0130)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0134)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0136)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0135)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0125)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0146)
+
+──────────────────────────────────────────────────────────────────────
+Processing step 15000
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0114)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0122)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0149)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0126)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0136)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0159)
+
+──────────────────────────────────────────────────────────────────────
+Processing step 20000
+──────────────────────────────────────────────────────────────────────
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+  K=  2: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0118)
+  K=  5: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0152)
+  K= 10: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0119)
+  K= 20: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0144)
+  K= 50: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0137)
+  K=100: Generating 100 sequences... Analyzing alignment... ✓ (max |cos| W_V: 0.0162)
+
+✓ Results saved to results/decoding_vector_alignment_controlled_k/controlled_k_alignment_results.json
+
+Generating plots...
+✓ Plots saved to results/decoding_vector_alignment_controlled_k

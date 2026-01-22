@@ -1,0 +1,181 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:288: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260120_122530-yenr7pjc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Resuming run nope-6layer-until-first-mlp-lm
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-lm
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-lm/runs/yenr7pjc
+wandb: updating run metadata
+wandb: uploading wandb-summary.json; uploading output.log
+wandb: uploading config.yaml
+wandb: uploading history steps 80-80, summary, console lines 39-39
+wandb: 
+wandb: Run history:
+wandb:           eval/ckpt_step ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       eval/train_lm_loss █▇▆▆▅▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: eval/train_lm_perplexity █▅▄▃▃▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:         eval/val_lm_loss █▇▆▅▅▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:   eval/val_lm_perplexity █▅▄▃▃▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb: distinctive/128_tokens_acc 0.02344
+wandb:  distinctive/16_tokens_acc 0.00781
+wandb:   distinctive/1_tokens_acc 0.00781
+wandb:   distinctive/2_tokens_acc 0.02344
+wandb:  distinctive/32_tokens_acc 0.02344
+wandb:   distinctive/4_tokens_acc 0.01562
+wandb:  distinctive/64_tokens_acc 0.00781
+wandb:   distinctive/8_tokens_acc 0
+wandb:  distinctive/mean_accuracy 0.01367
+wandb:             eval/ckpt_step 20000
+wandb:                       +147 ...
+wandb: 
+wandb: 🚀 View run nope-6layer-until-first-mlp-lm at: https://wandb.ai/matan_avitan/nope-lm/runs/yenr7pjc
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-lm
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260120_122530-yenr7pjc/logs
+Overriding config with config/train_lm_6layer_until_mlp.py:
+# Configuration for LM Training - 6 Layer - Freeze Until First MLP
+# Same architecture as position regression, but trains on next-token prediction loss
+# This allows comparing LM training vs position regression with same frozen layers
+
+# I/O
+out_dir = "out-lm-6layer-until-mlp"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-lm"
+wandb_run_name = "nope-6layer-until-first-mlp-lm"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 1
+batch_size = 512
+block_size = 128
+
+# Model - 6 layers (same as position regression)
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+
+# Training mode - KEY DIFFERENCE from position regression
+freeze_transformer = False
+freeze_attention_only = False
+freeze_until_first_mlp = True  # Freeze embeddings + block0 attn/norms
+use_regression = False  # Not regression mode
+compute_lm_loss = True  # Enable LM head
+train_lm_only = True  # Train on LM loss instead of position loss
+
+# AdamW optimizer
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"  # H100 supports bfloat16
+compile = False  # Disable - torch.compile hangs on this system
+seed = 42
+
+Overriding: eval_only = True
+Overriding: lm_eval_ckpt_dir = out-lm-6layer-until-mlp
+Overriding: lm_eval_wandb_run_id = yenr7pjc
+Overriding: lm_eval_wandb_project = nope-lm
+Overriding: batch_size = 64
+tokens per iteration will be: 8,192
+Initializing a new Position Classifier model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.21M
+============================================================
+
+
+*** FREEZE UNTIL FIRST MLP MODE ***
+Frozen: 40,994,304 params (embeddings + block0 attention/norms)
+Trainable: 40,214,784 params (block0 MLP + blocks 1+ + heads)
+Total: 81,209,088 params
+Decayed params: 23 tensors, 40,206,336 params
+Non-decayed params: 11 tensors, 8,448 params
+Using fused AdamW: True
+
+Starting training for 20000 iterations...
+  Model: Position Classifier
+  Positional Embedding: False
+  Frozen transformer: False
+  Freeze attention only: False
+  Freeze until first MLP: True
+  Use regression: False
+  Compute LM loss: True
+  Train LM only: True
+  Dataset: openwebtext
+  Batch size: 64 x 1 = 64
+  Block size: 128
+  Position classes: 128
+  Learning rate: 0.0003 -> 3e-05
+
+eval step 500: val lm loss 8.2140, ppl 3692.3
+eval step 1000: val lm loss 7.7467, ppl 2313.8
+eval step 1500: val lm loss 7.3851, ppl 1611.9
+eval step 2000: val lm loss 7.2919, ppl 1468.3
+eval step 2500: val lm loss 7.0787, ppl 1186.4
+eval step 3000: val lm loss 6.8983, ppl 990.6
+eval step 3500: val lm loss 6.7626, ppl 864.9
+eval step 4000: val lm loss 6.6193, ppl 749.4
+eval step 4500: val lm loss 6.4978, ppl 663.7
+eval step 5000: val lm loss 6.4077, ppl 606.5
+eval step 5500: val lm loss 6.3113, ppl 550.8
+eval step 6000: val lm loss 6.2372, ppl 511.4
+eval step 6500: val lm loss 6.1640, ppl 475.3
+eval step 7000: val lm loss 6.1230, ppl 456.2
+eval step 7500: val lm loss 6.0803, ppl 437.2
+eval step 8000: val lm loss 6.0332, ppl 417.1
+eval step 8500: val lm loss 6.0070, ppl 406.3
+eval step 9000: val lm loss 5.9738, ppl 393.0
+eval step 9500: val lm loss 5.9432, ppl 381.2
+eval step 10000: val lm loss 5.9143, ppl 370.3
+eval step 10500: val lm loss 5.8927, ppl 362.4
+eval step 11000: val lm loss 5.8575, ppl 349.8
+eval step 11500: val lm loss 5.8362, ppl 342.5
+eval step 12000: val lm loss 5.8176, ppl 336.2
+eval step 12500: val lm loss 5.8046, ppl 331.8
+eval step 13000: val lm loss 5.7746, ppl 322.0
+eval step 13500: val lm loss 5.7757, ppl 322.4
+eval step 14000: val lm loss 5.7512, ppl 314.6
+eval step 14500: val lm loss 5.7359, ppl 309.8
+eval step 15000: val lm loss 5.7290, ppl 307.7
+eval step 15500: val lm loss 5.7155, ppl 303.5
+eval step 16000: val lm loss 5.6848, ppl 294.4
+eval step 16500: val lm loss 5.6858, ppl 294.7
+eval step 17000: val lm loss 5.6765, ppl 291.9
+eval step 17500: val lm loss 5.6455, ppl 283.0
+eval step 18000: val lm loss 5.6597, ppl 287.0
+eval step 18500: val lm loss 5.6559, ppl 286.0
+eval step 19000: val lm loss 5.6418, ppl 282.0
+eval step 19500: val lm loss 5.6371, ppl 280.7
+eval step 20000: val lm loss 5.6367, ppl 280.5

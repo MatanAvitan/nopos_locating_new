@@ -1,0 +1,582 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_position_classifier.py:245: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run qvps7q5b
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260116_025022-qvps7q5b
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-6layer-regression
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/position-classifier
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/position-classifier/runs/qvps7q5b
+Overriding config with config/train_posclf_6layer_regression.py:
+# Configuration for Position Classifier - 6 Layer with REGRESSION loss
+# Tests if regression loss works better than classification
+
+# I/O
+out_dir = "out-posclf-6layer-regression"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "position-classifier"
+wandb_run_name = "nope-6layer-regression"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 4
+batch_size = 64
+block_size = 128
+
+# Model - 6 layers
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+
+# Training
+freeze_transformer = False
+use_regression = True  # REGRESSION instead of classification
+
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = True
+seed = 42
+
+tokens per iteration will be: 32,768
+Initializing a new Position Classifier model from scratch
+defaulting to vocab_size of GPT-2: 50304
+
+============================================================
+Position Classifier Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Vocab Size:           50304
+  Position Classes:     128
+  Parameters:           81.11M
+============================================================
+
+Decayed params: 26 tensors, 81,101,568 params
+Non-decayed params: 14 tensors, 9,985 params
+Using fused AdamW: True
+compiling the model... (takes a ~minute)
+
+Starting training for 20000 iterations...
+  Model: Position Classifier
+  Positional Embedding: False
+  Frozen transformer: False
+  Dataset: openwebtext
+  Batch size: 64 x 4 = 256
+  Block size: 128
+  Position classes: 128
+  Learning rate: 0.0003 -> 3e-05
+
+step 0: train loss 0.0951, val loss 0.0954, train acc 0.0126, val acc 0.0128, lr 3.00e-07
+iter 0: loss 0.0963, time 19543.39ms
+iter 50: loss 0.0195, time 62.63ms
+iter 100: loss 0.0272, time 62.36ms
+iter 150: loss 0.0157, time 63.03ms
+iter 200: loss 0.0190, time 62.37ms
+iter 250: loss 0.0114, time 63.64ms
+iter 300: loss 0.0079, time 63.30ms
+iter 350: loss 0.0045, time 62.93ms
+iter 400: loss 0.0067, time 63.72ms
+iter 450: loss 0.0077, time 63.56ms
+step 500: train loss 0.0065, val loss 0.0063, train acc 0.1072, val acc 0.1071, lr 1.50e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_00500.pt
+iter 500: loss 0.0092, time 10429.42ms
+iter 550: loss 0.0033, time 63.09ms
+iter 600: loss 0.0043, time 62.77ms
+iter 650: loss 0.0022, time 63.79ms
+iter 700: loss 0.0043, time 62.53ms
+iter 750: loss 0.0025, time 63.14ms
+iter 800: loss 0.0014, time 62.75ms
+iter 850: loss 0.0027, time 62.64ms
+iter 900: loss 0.0028, time 63.25ms
+iter 950: loss 0.0042, time 63.23ms
+step 1000: train loss 0.0029, val loss 0.0029, train acc 0.1466, val acc 0.1449, lr 3.00e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_01000.pt
+iter 1000: loss 0.0027, time 10664.94ms
+iter 1050: loss 0.0033, time 62.24ms
+iter 1100: loss 0.0022, time 62.52ms
+iter 1150: loss 0.0037, time 62.33ms
+iter 1200: loss 0.0026, time 62.42ms
+iter 1250: loss 0.0020, time 62.54ms
+iter 1300: loss 0.0044, time 63.07ms
+iter 1350: loss 0.0022, time 62.91ms
+iter 1400: loss 0.0023, time 62.25ms
+iter 1450: loss 0.0011, time 62.18ms
+step 1500: train loss 0.0015, val loss 0.0014, train acc 0.1844, val acc 0.1854, lr 3.00e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_01500.pt
+iter 1500: loss 0.0021, time 10245.70ms
+iter 1550: loss 0.0008, time 64.24ms
+iter 1600: loss 0.0009, time 61.94ms
+iter 1650: loss 0.0032, time 62.17ms
+iter 1700: loss 0.0010, time 62.51ms
+iter 1750: loss 0.0012, time 62.94ms
+iter 1800: loss 0.0007, time 62.62ms
+iter 1850: loss 0.0010, time 62.62ms
+iter 1900: loss 0.0021, time 62.76ms
+iter 1950: loss 0.0010, time 62.16ms
+step 2000: train loss 0.0019, val loss 0.0018, train acc 0.1668, val acc 0.1676, lr 2.98e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_02000.pt
+iter 2000: loss 0.0015, time 9968.22ms
+iter 2050: loss 0.0019, time 62.41ms
+iter 2100: loss 0.0006, time 63.65ms
+iter 2150: loss 0.0012, time 62.23ms
+iter 2200: loss 0.0006, time 62.19ms
+iter 2250: loss 0.0005, time 61.96ms
+iter 2300: loss 0.0018, time 62.16ms
+iter 2350: loss 0.0005, time 62.60ms
+iter 2400: loss 0.0002, time 63.77ms
+iter 2450: loss 0.0004, time 62.20ms
+step 2500: train loss 0.0005, val loss 0.0004, train acc 0.4237, val acc 0.4274, lr 2.96e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_02500.pt
+iter 2500: loss 0.0002, time 10189.60ms
+iter 2550: loss 0.0008, time 63.25ms
+iter 2600: loss 0.0008, time 62.70ms
+iter 2650: loss 0.0004, time 63.70ms
+iter 2700: loss 0.0007, time 63.35ms
+iter 2750: loss 0.0006, time 62.44ms
+iter 2800: loss 0.0009, time 62.38ms
+iter 2850: loss 0.0014, time 62.33ms
+iter 2900: loss 0.0005, time 62.32ms
+iter 2950: loss 0.0010, time 62.16ms
+step 3000: train loss 0.0004, val loss 0.0004, train acc 0.4395, val acc 0.4414, lr 2.93e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_03000.pt
+iter 3000: loss 0.0003, time 10118.75ms
+iter 3050: loss 0.0009, time 63.29ms
+iter 3100: loss 0.0003, time 62.97ms
+iter 3150: loss 0.0009, time 63.06ms
+iter 3200: loss 0.0002, time 63.10ms
+iter 3250: loss 0.0005, time 62.85ms
+iter 3300: loss 0.0002, time 63.14ms
+iter 3350: loss 0.0004, time 63.62ms
+iter 3400: loss 0.0003, time 62.27ms
+iter 3450: loss 0.0003, time 62.98ms
+step 3500: train loss 0.0004, val loss 0.0004, train acc 0.4773, val acc 0.4758, lr 2.89e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_03500.pt
+iter 3500: loss 0.0005, time 11078.58ms
+iter 3550: loss 0.0002, time 64.57ms
+iter 3600: loss 0.0002, time 62.74ms
+iter 3650: loss 0.0002, time 62.78ms
+iter 3700: loss 0.0002, time 62.99ms
+iter 3750: loss 0.0003, time 63.59ms
+iter 3800: loss 0.0002, time 63.38ms
+iter 3850: loss 0.0003, time 63.01ms
+iter 3900: loss 0.0001, time 63.26ms
+iter 3950: loss 0.0009, time 63.36ms
+step 4000: train loss 0.0004, val loss 0.0003, train acc 0.5267, val acc 0.5261, lr 2.84e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_04000.pt
+iter 4000: loss 0.0005, time 10200.65ms
+iter 4050: loss 0.0012, time 63.11ms
+iter 4100: loss 0.0002, time 63.25ms
+iter 4150: loss 0.0005, time 63.02ms
+iter 4200: loss 0.0002, time 63.40ms
+iter 4250: loss 0.0009, time 63.06ms
+iter 4300: loss 0.0002, time 62.68ms
+iter 4350: loss 0.0002, time 63.07ms
+iter 4400: loss 0.0013, time 62.74ms
+iter 4450: loss 0.0003, time 62.28ms
+step 4500: train loss 0.0002, val loss 0.0002, train acc 0.5707, val acc 0.5751, lr 2.78e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_04500.pt
+iter 4500: loss 0.0001, time 11360.55ms
+iter 4550: loss 0.0001, time 63.04ms
+iter 4600: loss 0.0001, time 62.71ms
+iter 4650: loss 0.0002, time 63.34ms
+iter 4700: loss 0.0003, time 63.20ms
+iter 4750: loss 0.0001, time 63.25ms
+iter 4800: loss 0.0099, time 63.20ms
+iter 4850: loss 0.0002, time 62.98ms
+iter 4900: loss 0.0001, time 63.22ms
+iter 4950: loss 0.0001, time 63.20ms
+step 5000: train loss 0.0002, val loss 0.0002, train acc 0.5169, val acc 0.5191, lr 2.72e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_05000.pt
+iter 5000: loss 0.0001, time 10330.80ms
+iter 5050: loss 0.0002, time 63.22ms
+iter 5100: loss 0.0001, time 63.32ms
+iter 5150: loss 0.0003, time 63.21ms
+iter 5200: loss 0.0006, time 63.07ms
+iter 5250: loss 0.0001, time 63.59ms
+iter 5300: loss 0.0001, time 63.29ms
+iter 5350: loss 0.0002, time 62.99ms
+iter 5400: loss 0.0002, time 63.57ms
+iter 5450: loss 0.0003, time 63.15ms
+step 5500: train loss 0.0003, val loss 0.0003, train acc 0.3159, val acc 0.3140, lr 2.64e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_05500.pt
+iter 5500: loss 0.0002, time 11811.35ms
+iter 5550: loss 0.0001, time 62.47ms
+iter 5600: loss 0.0001, time 62.25ms
+iter 5650: loss 0.0002, time 62.61ms
+iter 5700: loss 0.0002, time 62.62ms
+iter 5750: loss 0.0002, time 62.39ms
+iter 5800: loss 0.0004, time 62.47ms
+iter 5850: loss 0.0001, time 62.69ms
+iter 5900: loss 0.0001, time 62.44ms
+iter 5950: loss 0.0002, time 62.70ms
+step 6000: train loss 0.0001, val loss 0.0002, train acc 0.5801, val acc 0.5814, lr 2.56e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_06000.pt
+iter 6000: loss 0.0005, time 10267.44ms
+iter 6050: loss 0.0006, time 62.38ms
+iter 6100: loss 0.0001, time 62.73ms
+iter 6150: loss 0.0003, time 62.71ms
+iter 6200: loss 0.0002, time 62.66ms
+iter 6250: loss 0.0001, time 63.41ms
+iter 6300: loss 0.0001, time 63.98ms
+iter 6350: loss 0.0001, time 62.76ms
+iter 6400: loss 0.0001, time 62.99ms
+iter 6450: loss 0.0001, time 62.61ms
+step 6500: train loss 0.0002, val loss 0.0001, train acc 0.7041, val acc 0.7052, lr 2.48e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_06500.pt
+iter 6500: loss 0.0001, time 11227.47ms
+iter 6550: loss 0.0002, time 62.13ms
+iter 6600: loss 0.0002, time 62.24ms
+iter 6650: loss 0.0002, time 62.24ms
+iter 6700: loss 0.0002, time 62.25ms
+iter 6750: loss 0.0072, time 62.29ms
+iter 6800: loss 0.0001, time 62.20ms
+iter 6850: loss 0.0001, time 63.04ms
+iter 6900: loss 0.0001, time 62.29ms
+iter 6950: loss 0.0001, time 62.33ms
+step 7000: train loss 0.0001, val loss 0.0002, train acc 0.4554, val acc 0.4537, lr 2.39e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_07000.pt
+iter 7000: loss 0.0001, time 9976.92ms
+iter 7050: loss 0.0001, time 62.23ms
+iter 7100: loss 0.0002, time 63.04ms
+iter 7150: loss 0.0001, time 63.06ms
+iter 7200: loss 0.0001, time 62.59ms
+iter 7250: loss 0.0001, time 62.28ms
+iter 7300: loss 0.0001, time 62.71ms
+iter 7350: loss 0.0001, time 62.52ms
+iter 7400: loss 0.0002, time 62.34ms
+iter 7450: loss 0.0001, time 62.19ms
+step 7500: train loss 0.0001, val loss 0.0001, train acc 0.8580, val acc 0.8555, lr 2.29e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_07500.pt
+iter 7500: loss 0.0000, time 10913.89ms
+iter 7550: loss 0.0000, time 62.55ms
+iter 7600: loss 0.0001, time 62.25ms
+iter 7650: loss 0.0001, time 62.53ms
+iter 7700: loss 0.0001, time 62.39ms
+iter 7750: loss 0.0001, time 62.16ms
+iter 7800: loss 0.0002, time 62.26ms
+iter 7850: loss 0.0003, time 62.73ms
+iter 7900: loss 0.0001, time 62.44ms
+iter 7950: loss 0.0019, time 63.17ms
+step 8000: train loss 0.0001, val loss 0.0001, train acc 0.6685, val acc 0.6708, lr 2.19e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_08000.pt
+iter 8000: loss 0.0001, time 10043.16ms
+iter 8050: loss 0.0001, time 61.95ms
+iter 8100: loss 0.0001, time 61.90ms
+iter 8150: loss 0.0008, time 62.25ms
+iter 8200: loss 0.0000, time 62.29ms
+iter 8250: loss 0.0000, time 62.33ms
+iter 8300: loss 0.0001, time 62.96ms
+iter 8350: loss 0.0001, time 62.00ms
+iter 8400: loss 0.0001, time 62.15ms
+iter 8450: loss 0.0001, time 62.51ms
+step 8500: train loss 0.0001, val loss 0.0001, train acc 0.7334, val acc 0.7337, lr 2.09e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_08500.pt
+iter 8500: loss 0.0000, time 10407.95ms
+iter 8550: loss 0.0001, time 62.12ms
+iter 8600: loss 0.0001, time 62.28ms
+iter 8650: loss 0.0001, time 68.26ms
+iter 8700: loss 0.0001, time 62.73ms
+iter 8750: loss 0.0001, time 62.16ms
+iter 8800: loss 0.0003, time 62.14ms
+iter 8850: loss 0.0000, time 62.13ms
+iter 8900: loss 0.0004, time 62.49ms
+iter 8950: loss 0.0003, time 72.35ms
+step 9000: train loss 0.0002, val loss 0.0001, train acc 0.6162, val acc 0.6171, lr 1.98e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_09000.pt
+iter 9000: loss 0.0003, time 12122.39ms
+iter 9050: loss 0.0001, time 63.17ms
+iter 9100: loss 0.0000, time 63.38ms
+iter 9150: loss 0.0001, time 63.38ms
+iter 9200: loss 0.0000, time 62.88ms
+iter 9250: loss 0.0000, time 63.64ms
+iter 9300: loss 0.0001, time 63.15ms
+iter 9350: loss 0.0000, time 63.40ms
+iter 9400: loss 0.0000, time 62.88ms
+iter 9450: loss 0.0001, time 63.81ms
+step 9500: train loss 0.0004, val loss 0.0004, train acc 0.2358, val acc 0.2369, lr 1.87e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_09500.pt
+iter 9500: loss 0.0004, time 12992.80ms
+iter 9550: loss 0.0002, time 63.11ms
+iter 9600: loss 0.0000, time 62.27ms
+iter 9650: loss 0.0001, time 62.39ms
+iter 9700: loss 0.0001, time 62.24ms
+iter 9750: loss 0.0000, time 62.26ms
+iter 9800: loss 0.0001, time 63.63ms
+iter 9850: loss 0.0001, time 62.47ms
+iter 9900: loss 0.0001, time 62.41ms
+iter 9950: loss 0.0002, time 62.88ms
+step 10000: train loss 0.0000, val loss 0.0000, train acc 0.8474, val acc 0.8493, lr 1.76e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_10000.pt
+iter 10000: loss 0.0000, time 10355.81ms
+iter 10050: loss 0.0000, time 62.75ms
+iter 10100: loss 0.0000, time 63.07ms
+iter 10150: loss 0.0001, time 62.78ms
+iter 10200: loss 0.0000, time 62.17ms
+iter 10250: loss 0.0001, time 62.71ms
+iter 10300: loss 0.0000, time 62.48ms
+iter 10350: loss 0.0000, time 62.24ms
+iter 10400: loss 0.0000, time 62.24ms
+iter 10450: loss 0.0000, time 62.37ms
+step 10500: train loss 0.0001, val loss 0.0001, train acc 0.5275, val acc 0.5249, lr 1.65e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_10500.pt
+iter 10500: loss 0.0001, time 12738.20ms
+iter 10550: loss 0.0001, time 62.88ms
+iter 10600: loss 0.0000, time 62.56ms
+iter 10650: loss 0.0000, time 62.32ms
+iter 10700: loss 0.0000, time 62.37ms
+iter 10750: loss 0.0000, time 62.76ms
+iter 10800: loss 0.0000, time 62.73ms
+iter 10850: loss 0.0001, time 62.98ms
+iter 10900: loss 0.0001, time 62.75ms
+iter 10950: loss 0.0000, time 62.13ms
+step 11000: train loss 0.0002, val loss 0.0002, train acc 0.4641, val acc 0.4634, lr 1.54e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_11000.pt
+iter 11000: loss 0.0002, time 11210.88ms
+iter 11050: loss 0.0000, time 62.98ms
+iter 11100: loss 0.0000, time 62.41ms
+iter 11150: loss 0.0000, time 62.46ms
+iter 11200: loss 0.0000, time 62.85ms
+iter 11250: loss 0.0000, time 62.40ms
+iter 11300: loss 0.0001, time 62.23ms
+iter 11350: loss 0.0001, time 62.65ms
+iter 11400: loss 0.0000, time 62.68ms
+iter 11450: loss 0.0000, time 62.58ms
+step 11500: train loss 0.0001, val loss 0.0000, train acc 0.8427, val acc 0.8455, lr 1.43e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_11500.pt
+iter 11500: loss 0.0000, time 10516.14ms
+iter 11550: loss 0.0000, time 63.21ms
+iter 11600: loss 0.0000, time 62.31ms
+iter 11650: loss 0.0001, time 62.57ms
+iter 11700: loss 0.0000, time 62.35ms
+iter 11750: loss 0.0000, time 62.21ms
+iter 11800: loss 0.0000, time 62.91ms
+iter 11850: loss 0.0000, time 62.41ms
+iter 11900: loss 0.0000, time 62.53ms
+iter 11950: loss 0.0000, time 62.66ms
+step 12000: train loss 0.0000, val loss 0.0000, train acc 0.9266, val acc 0.9275, lr 1.32e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_12000.pt
+iter 12000: loss 0.0000, time 11930.06ms
+iter 12050: loss 0.0000, time 62.66ms
+iter 12100: loss 0.0001, time 62.74ms
+iter 12150: loss 0.0000, time 62.85ms
+iter 12200: loss 0.0000, time 62.85ms
+iter 12250: loss 0.0000, time 62.75ms
+iter 12300: loss 0.0001, time 62.81ms
+iter 12350: loss 0.0001, time 62.61ms
+iter 12400: loss 0.0001, time 62.26ms
+iter 12450: loss 0.0001, time 62.65ms
+step 12500: train loss 0.0000, val loss 0.0000, train acc 0.8877, val acc 0.8871, lr 1.21e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_12500.pt
+iter 12500: loss 0.0000, time 10749.99ms
+iter 12550: loss 0.0000, time 62.50ms
+iter 12600: loss 0.0002, time 62.42ms
+iter 12650: loss 0.0000, time 62.34ms
+iter 12700: loss 0.0000, time 62.70ms
+iter 12750: loss 0.0000, time 62.60ms
+iter 12800: loss 0.0000, time 62.73ms
+iter 12850: loss 0.0000, time 62.26ms
+iter 12900: loss 0.0000, time 62.31ms
+iter 12950: loss 0.0000, time 62.92ms
+step 13000: train loss 0.0000, val loss 0.0000, train acc 0.8316, val acc 0.8241, lr 1.11e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_13000.pt
+iter 13000: loss 0.0000, time 10002.04ms
+iter 13050: loss 0.0000, time 62.71ms
+iter 13100: loss 0.0000, time 62.59ms
+iter 13150: loss 0.0000, time 62.26ms
+iter 13200: loss 0.0000, time 62.86ms
+iter 13250: loss 0.0000, time 62.71ms
+iter 13300: loss 0.0001, time 63.09ms
+iter 13350: loss 0.0000, time 63.03ms
+iter 13400: loss 0.0001, time 63.98ms
+iter 13450: loss 0.0000, time 63.10ms
+step 13500: train loss 0.0000, val loss 0.0000, train acc 0.9334, val acc 0.9351, lr 1.01e-04
+saving checkpoint to out-posclf-6layer-regression/ckpt_13500.pt
+iter 13500: loss 0.0000, time 10124.20ms
+iter 13550: loss 0.0000, time 63.10ms
+iter 13600: loss 0.0000, time 63.00ms
+iter 13650: loss 0.0000, time 62.76ms
+iter 13700: loss 0.0000, time 63.05ms
+iter 13750: loss 0.0000, time 63.80ms
+iter 13800: loss 0.0000, time 62.97ms
+iter 13850: loss 0.0000, time 63.42ms
+iter 13900: loss 0.0000, time 62.94ms
+iter 13950: loss 0.0000, time 63.78ms
+step 14000: train loss 0.0001, val loss 0.0001, train acc 0.6677, val acc 0.6695, lr 9.12e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_14000.pt
+iter 14000: loss 0.0001, time 10023.46ms
+iter 14050: loss 0.0001, time 62.80ms
+iter 14100: loss 0.0000, time 62.35ms
+iter 14150: loss 0.0004, time 62.65ms
+iter 14200: loss 0.0000, time 62.14ms
+iter 14250: loss 0.0000, time 62.39ms
+iter 14300: loss 0.0000, time 62.30ms
+iter 14350: loss 0.0000, time 62.20ms
+iter 14400: loss 0.0000, time 62.44ms
+iter 14450: loss 0.0000, time 62.28ms
+step 14500: train loss 0.0000, val loss 0.0000, train acc 0.9373, val acc 0.9392, lr 8.21e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_14500.pt
+iter 14500: loss 0.0000, time 10117.08ms
+iter 14550: loss 0.0000, time 62.43ms
+iter 14600: loss 0.0000, time 63.01ms
+iter 14650: loss 0.0000, time 62.71ms
+iter 14700: loss 0.0000, time 62.18ms
+iter 14750: loss 0.0000, time 62.62ms
+iter 14800: loss 0.0000, time 62.75ms
+iter 14850: loss 0.0000, time 62.39ms
+iter 14900: loss 0.0000, time 62.99ms
+iter 14950: loss 0.0000, time 62.58ms
+step 15000: train loss 0.0000, val loss 0.0000, train acc 0.8942, val acc 0.8950, lr 7.36e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_15000.pt
+iter 15000: loss 0.0000, time 10036.64ms
+iter 15050: loss 0.0000, time 62.17ms
+iter 15100: loss 0.0000, time 62.31ms
+iter 15150: loss 0.0000, time 62.27ms
+iter 15200: loss 0.0000, time 62.52ms
+iter 15250: loss 0.0000, time 62.30ms
+iter 15300: loss 0.0000, time 62.26ms
+iter 15350: loss 0.0000, time 62.66ms
+iter 15400: loss 0.0000, time 62.77ms
+iter 15450: loss 0.0000, time 62.97ms
+step 15500: train loss 0.0000, val loss 0.0000, train acc 0.9630, val acc 0.9630, lr 6.57e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_15500.pt
+iter 15500: loss 0.0000, time 10044.46ms
+iter 15550: loss 0.0000, time 62.96ms
+iter 15600: loss 0.0000, time 62.42ms
+iter 15650: loss 0.0000, time 62.37ms
+iter 15700: loss 0.0000, time 62.60ms
+iter 15750: loss 0.0000, time 62.31ms
+iter 15800: loss 0.0000, time 62.38ms
+iter 15850: loss 0.0000, time 62.75ms
+iter 15900: loss 0.0000, time 62.40ms
+iter 15950: loss 0.0000, time 62.08ms
+step 16000: train loss 0.0000, val loss 0.0000, train acc 0.9814, val acc 0.9833, lr 5.85e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_16000.pt
+iter 16000: loss 0.0000, time 10046.18ms
+iter 16050: loss 0.0000, time 62.63ms
+iter 16100: loss 0.0000, time 62.51ms
+iter 16150: loss 0.0000, time 62.40ms
+iter 16200: loss 0.0000, time 62.55ms
+iter 16250: loss 0.0000, time 62.39ms
+iter 16300: loss 0.0010, time 63.02ms
+iter 16350: loss 0.0000, time 62.46ms
+iter 16400: loss 0.0000, time 62.27ms
+iter 16450: loss 0.0000, time 62.50ms
+step 16500: train loss 0.0000, val loss 0.0000, train acc 0.8937, val acc 0.8954, lr 5.20e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_16500.pt
+iter 16500: loss 0.0000, time 10500.44ms
+iter 16550: loss 0.0000, time 62.15ms
+iter 16600: loss 0.0000, time 62.12ms
+iter 16650: loss 0.0000, time 62.44ms
+iter 16700: loss 0.0000, time 62.20ms
+iter 16750: loss 0.0000, time 62.33ms
+iter 16800: loss 0.0000, time 62.72ms
+iter 16850: loss 0.0000, time 62.70ms
+iter 16900: loss 0.0000, time 62.75ms
+iter 16950: loss 0.0000, time 62.82ms
+step 17000: train loss 0.0000, val loss 0.0000, train acc 0.9879, val acc 0.9887, lr 4.63e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_17000.pt
+iter 17000: loss 0.0000, time 10673.43ms
+iter 17050: loss 0.0000, time 62.61ms
+iter 17100: loss 0.0000, time 62.56ms
+iter 17150: loss 0.0000, time 63.03ms
+iter 17200: loss 0.0000, time 62.31ms
+iter 17250: loss 0.0000, time 62.28ms
+iter 17300: loss 0.0000, time 62.56ms
+iter 17350: loss 0.0000, time 62.10ms
+iter 17400: loss 0.0000, time 62.66ms
+iter 17450: loss 0.0000, time 62.63ms
+step 17500: train loss 0.0000, val loss 0.0000, train acc 0.9865, val acc 0.9866, lr 4.14e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_17500.pt
+iter 17500: loss 0.0000, time 10335.43ms
+iter 17550: loss 0.0000, time 62.10ms
+iter 17600: loss 0.0000, time 62.74ms
+iter 17650: loss 0.0000, time 62.37ms
+iter 17700: loss 0.0000, time 62.84ms
+iter 17750: loss 0.0000, time 62.78ms
+iter 17800: loss 0.0000, time 62.81ms
+iter 17850: loss 0.0000, time 62.21ms
+iter 17900: loss 0.0000, time 62.35ms
+iter 17950: loss 0.0000, time 62.35ms
+step 18000: train loss 0.0000, val loss 0.0000, train acc 0.9635, val acc 0.9638, lr 3.73e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_18000.pt
+iter 18000: loss 0.0001, time 10334.25ms
+iter 18050: loss 0.0000, time 62.30ms
+iter 18100: loss 0.0000, time 62.72ms
+iter 18150: loss 0.0000, time 62.54ms
+iter 18200: loss 0.0000, time 62.31ms
+iter 18250: loss 0.0000, time 62.19ms
+iter 18300: loss 0.0000, time 62.43ms
+iter 18350: loss 0.0000, time 62.38ms
+iter 18400: loss 0.0000, time 62.08ms
+iter 18450: loss 0.0000, time 62.79ms
+step 18500: train loss 0.0000, val loss 0.0000, train acc 0.9827, val acc 0.9844, lr 3.41e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_18500.pt
+iter 18500: loss 0.0000, time 10902.64ms
+iter 18550: loss 0.0000, time 62.24ms
+iter 18600: loss 0.0000, time 62.60ms
+iter 18650: loss 0.0000, time 62.22ms
+iter 18700: loss 0.0000, time 62.24ms
+iter 18750: loss 0.0000, time 63.02ms
+iter 18800: loss 0.0000, time 62.34ms
+iter 18850: loss 0.0000, time 62.88ms
+iter 18900: loss 0.0000, time 62.66ms
+iter 18950: loss 0.0000, time 62.31ms
+step 19000: train loss 0.0000, val loss 0.0000, train acc 0.9921, val acc 0.9916, lr 3.18e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_19000.pt
+iter 19000: loss 0.0000, time 10297.09ms
+iter 19050: loss 0.0000, time 62.59ms
+iter 19100: loss 0.0000, time 62.68ms
+iter 19150: loss 0.0000, time 62.22ms
+iter 19200: loss 0.0000, time 62.05ms
+iter 19250: loss 0.0000, time 62.59ms
+iter 19300: loss 0.0000, time 62.50ms
+iter 19350: loss 0.0000, time 62.70ms
+iter 19400: loss 0.0000, time 62.01ms
+iter 19450: loss 0.0000, time 62.27ms
+step 19500: train loss 0.0000, val loss 0.0000, train acc 0.9805, val acc 0.9824, lr 3.05e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_19500.pt
+iter 19500: loss 0.0000, time 10778.64ms
+iter 19550: loss 0.0000, time 62.34ms
+iter 19600: loss 0.0000, time 62.45ms
+iter 19650: loss 0.0000, time 62.84ms
+iter 19700: loss 0.0000, time 62.43ms
+iter 19750: loss 0.0000, time 62.37ms
+iter 19800: loss 0.0000, time 62.31ms
+iter 19850: loss 0.0000, time 62.87ms
+iter 19900: loss 0.0000, time 62.93ms
+iter 19950: loss 0.0000, time 62.42ms
+step 20000: train loss 0.0000, val loss 0.0000, train acc 0.9752, val acc 0.9772, lr 3.00e-05
+saving checkpoint to out-posclf-6layer-regression/ckpt_20000.pt
+iter 20000: loss 0.0000, time 10584.21ms
+
+Training complete!
+Best validation loss: 0.0000
+Checkpoints saved to: out-posclf-6layer-regression/
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mnope-6layer-regression[0m at: [34m[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20260116_025022-qvps7q5b/logs[0m

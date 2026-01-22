@@ -1,0 +1,218 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run sg4uamm7
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/wandb/run-20260116_004312-sg4uamm7
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run corrected_n100_c256
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-decoding-vector
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-decoding-vector/runs/sg4uamm7
+======================================================================
+CORRECTED DECODING VECTOR ANALYSIS
+======================================================================
+Formula: decoding_vector = W_o^-1 @ W_v^-1 * √d * σ_init + Σe_i
+  Sequences: 100
+  Context length: 256
+  σ_init: 0.02
+  √d: 27.71
+  Device: cuda
+
+WandB initialized. Project: nope-decoding-vector
+
+Loading OWT data...
+  Loaded 100 sequences of length 256
+
+======================================================================
+MODEL: NoPE + LayerNorm (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_random
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([768, 768])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+    Base vector norm: 160232.1719
+
+[3/4] Extracting activations...
+Processing batches:   0%|          | 0/10 [00:00<?, ?it/s]Processing batches: 100%|██████████| 10/10 [00:00<00:00, 211.57it/s]
+
+[4/4] Analyzing correlations...
+
+--- Layer: post_attn ---
+    Pearson r: -0.0103
+    Spearman r: -0.0115
+    R² score: -0.0006
+
+--- Layer: post_ln2 ---
+    Pearson r: 0.0142
+    Spearman r: 0.0383
+    R² score: 0.0001
+
+======================================================================
+MODEL: NoPE + LayerNorm (Trained)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: NoPE_LN_trained
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([768, 768])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+    Base vector norm: 148558.7188
+
+[3/4] Extracting activations...
+Processing batches:   0%|          | 0/10 [00:00<?, ?it/s]Processing batches: 100%|██████████| 10/10 [00:00<00:00, 670.98it/s]
+
+[4/4] Analyzing correlations...
+
+--- Layer: post_attn ---
+    Pearson r: 0.0168
+    Spearman r: 0.0269
+    R² score: 0.0000
+
+--- Layer: post_ln2 ---
+    Pearson r: 0.0120
+    Spearman r: 0.0284
+    R² score: -0.0001
+
+======================================================================
+MODEL: Baseline + PE (Random Initialization)
+======================================================================
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: True
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           256
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing: Baseline_PE_random
+============================================================
+
+[1/4] Extracting W_v and W_o matrices...
+    W_v shape: torch.Size([768, 768])
+    W_o shape: torch.Size([768, 768])
+
+[2/4] Computing base decoding vector...
+    Base vector norm: 21492.1914
+
+[3/4] Extracting activations...
+Processing batches:   0%|          | 0/10 [00:00<?, ?it/s]Processing batches: 100%|██████████| 10/10 [00:00<00:00, 732.13it/s]
+wandb: uploading media/images/scatter/Baseline_PE_random/post_ln2_10_e135ce11515cfd0861b8.png; uploading media/images/boxplot/Baseline_PE_random/post_ln2_11_82592f91d9606f773938.png; updating run metadata
+wandb: uploading media/images/summary/comparison_12_b8a25fd278c399390702.png; uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 0-18, summary, console lines 4-162
+wandb: 
+wandb: Run history:
+wandb: metrics/Baseline_PE_random/post_attn/pearson_r ▁
+wandb:  metrics/Baseline_PE_random/post_attn/r2_score ▁
+wandb:  metrics/Baseline_PE_random/post_ln2/pearson_r ▁
+wandb:   metrics/Baseline_PE_random/post_ln2/r2_score ▁
+wandb:     metrics/NoPE_LN_random/post_attn/pearson_r ▁
+wandb:      metrics/NoPE_LN_random/post_attn/r2_score ▁
+wandb:      metrics/NoPE_LN_random/post_ln2/pearson_r ▁
+wandb:       metrics/NoPE_LN_random/post_ln2/r2_score ▁
+wandb:    metrics/NoPE_LN_trained/post_attn/pearson_r ▁
+wandb:     metrics/NoPE_LN_trained/post_attn/r2_score ▁
+wandb:                                             +2 ...
+wandb: 
+wandb: Run summary:
+wandb: metrics/Baseline_PE_random/post_attn/pearson_r 0.00939
+wandb:  metrics/Baseline_PE_random/post_attn/r2_score 0.00012
+wandb:  metrics/Baseline_PE_random/post_ln2/pearson_r -0.00217
+wandb:   metrics/Baseline_PE_random/post_ln2/r2_score -0.00037
+wandb:     metrics/NoPE_LN_random/post_attn/pearson_r -0.01026
+wandb:      metrics/NoPE_LN_random/post_attn/r2_score -0.00059
+wandb:      metrics/NoPE_LN_random/post_ln2/pearson_r 0.01419
+wandb:       metrics/NoPE_LN_random/post_ln2/r2_score 0.00013
+wandb:    metrics/NoPE_LN_trained/post_attn/pearson_r 0.01681
+wandb:     metrics/NoPE_LN_trained/post_attn/r2_score 2e-05
+wandb:                                             +2 ...
+wandb: 
+wandb: 🚀 View run corrected_n100_c256 at: https://wandb.ai/matan_avitan/nope-decoding-vector/runs/sg4uamm7
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-decoding-vector
+wandb: Synced 5 W&B file(s), 13 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260116_004312-sg4uamm7/logs
+
+[4/4] Analyzing correlations...
+
+--- Layer: post_attn ---
+    Pearson r: 0.0094
+    Spearman r: 0.0017
+    R² score: 0.0001
+
+--- Layer: post_ln2 ---
+    Pearson r: -0.0022
+    Spearman r: -0.0037
+    R² score: -0.0004
+
+[Creating summary plots...]
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_vector_corrected/decoding_vector_results.json
+
+======================================================================
+FINAL SUMMARY
+======================================================================
+
+Model                     Layer           Pearson r    R²        
+-----------------------------------------------------------------
+NoPE_LN_random            post_attn          -0.0103    -0.0006
+NoPE_LN_random            post_ln2            0.0142     0.0001
+NoPE_LN_trained           post_attn           0.0168     0.0000
+NoPE_LN_trained           post_ln2            0.0120    -0.0001
+Baseline_PE_random        post_attn           0.0094     0.0001
+Baseline_PE_random        post_ln2           -0.0022    -0.0004
+
+WandB run finished.
+
+All plots saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/decoding_vector_corrected/plots

@@ -1,0 +1,114 @@
+
+============================================================
+CAUSAL INTERVENTION EXPERIMENTS
+============================================================
+Samples: 10000
+Sequence length: 64
+Model dimension: 1024
+============================================================
+
+
+============================================================
+INTERVENTION 1: Activation Patching
+============================================================
+  Patch 0 -> 32: mean pred = 22.7, closer to source = 33.9%
+  Patch 16 -> 48: mean pred = 30.9, closer to source = 58.9%
+  Patch 32 -> 16: mean pred = 32.6, closer to source = 97.9%
+  Patch 63 -> 0: mean pred = 33.5, closer to source = 70.8%
+
+============================================================
+INTERVENTION 2: Attention Pattern Intervention
+============================================================
+  uniform: R² = -0.1031, r = 0.0160
+  diagonal: R² = -0.0107, r = -0.0059
+  first_only: R² = -0.0027, r = 0.0019
+  random: R² = -0.0814, r = 0.0119
+
+============================================================
+INTERVENTION 3: Decoding Vector Knockout
+============================================================
+  Clean R²: -0.0275
+  Knockout R²: -0.0275
+  R² Drop: -0.0000 (0.1%)
+
+============================================================
+INTERVENTION 4: LayerNorm Bypass
+============================================================
+  LN1 (pre-attention):
+    With LN: R² = -0.0037
+    Bypass LN: R² = -0.0037
+  LN2 (pre-MLP):
+    With LN: R² = 0.0115
+    Bypass LN: R² = -0.0275
+
+============================================================
+INTERVENTION 5: Population Mean Intervention
+============================================================
+  Clean R²: 0.0115
+  Mean Removed R²: -0.0355
+  Mean Swapped R²: 0.0086
+  Swap follows expected: True
+
+============================================================
+INTERVENTION 6: Value Vector Corruption
+============================================================
+  clean: R² = -0.0446
+  zero_values: R² = -0.0056
+  noisy_values: R² = -0.0515
+  shuffled_values: R² = -0.0610
+
+============================================================
+GENERATING PLOTS
+============================================================
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py:762: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py:763: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py:872: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py:873: DeprecationWarning:
+
+
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 1058, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 1015, in main
+    save_results(all_results, str(RESULTS_DIR / "causal_intervention_results.json"))
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/causal_intervention_experiments.py", line 879, in save_results
+    json.dump(results, f, indent=2)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type bool is not JSON serializable

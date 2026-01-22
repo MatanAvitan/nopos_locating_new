@@ -1,0 +1,224 @@
+======================================================================
+OWT LAYERNORM LINEARIZATION ANALYSIS
+======================================================================
+
+Device: cuda
+
+######################################################################
+# NoPE + LayerNorm
+######################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing linearization: NoPE + LayerNorm (trained)
+skip_ln2=False
+============================================================
+
+Pre-LN2:  Full R²=0.0758, Dir R²=0.3989, Norm R²=0.2116, Norm-Pos r=-0.4611
+Post-LN2: Full R²=0.3993, Dir R²=0.3843, Norm R²=0.1983, Norm-Pos r=0.4404
+
+Linearization Effect:
+  Norm R² change: -0.0134
+  Dir R² change:  -0.0146
+  Normalized effect: -0.0633
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing linearization: NoPE + LayerNorm (random)
+skip_ln2=False
+============================================================
+
+Pre-LN2:  Full R²=0.0764, Dir R²=0.0806, Norm R²=0.3207, Norm-Pos r=-0.5661
+Post-LN2: Full R²=0.0802, Dir R²=0.0806, Norm R²=0.8832, Norm-Pos r=-0.9400
+
+Linearization Effect:
+  Norm R² change: +0.5625
+  Dir R² change:  +0.0000
+  Normalized effect: +1.7540
+
+--- Linearization Comparison: NoPE + LayerNorm ---
+  Trained linearization effect: -0.0633
+  Random linearization effect:  +1.7540
+  Difference: -1.8173
+
+######################################################################
+# NoPE + BatchNorm2
+######################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing linearization: NoPE + BatchNorm2 (trained)
+skip_ln2=False
+============================================================
+
+Pre-LN2:  Full R²=0.0767, Dir R²=0.3013, Norm R²=0.1400, Norm-Pos r=-0.3698
+Post-LN2: Full R²=0.0766, Dir R²=0.4264, Norm R²=0.2325, Norm-Pos r=-0.4810
+
+Linearization Effect:
+  Norm R² change: +0.0926
+  Dir R² change:  +0.1251
+  Normalized effect: +0.6616
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             False
+  Use BatchNorm LN2:    True
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing linearization: NoPE + BatchNorm2 (random)
+skip_ln2=False
+============================================================
+
+Pre-LN2:  Full R²=0.0613, Dir R²=0.0854, Norm R²=0.3163, Norm-Pos r=-0.5662
+Post-LN2: Full R²=0.0613, Dir R²=0.0854, Norm R²=0.3163, Norm-Pos r=-0.5662
+
+Linearization Effect:
+  Norm R² change: +0.0000
+  Dir R² change:  +0.0000
+  Normalized effect: +0.0000
+
+--- Linearization Comparison: NoPE + BatchNorm2 ---
+  Trained linearization effect: +0.6616
+  Random linearization effect:  +0.0000
+  Difference: +0.6616
+
+######################################################################
+# NoPE + No LN2
+######################################################################
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing linearization: NoPE + No LN2 (trained)
+skip_ln2=True
+============================================================
+
+Pre-LN2:  Full R²=0.1315, Dir R²=0.5276, Norm R²=0.2313, Norm-Pos r=-0.4807
+Post-LN2: Full R²=0.1315, Dir R²=0.5276, Norm R²=0.2313, Norm-Pos r=-0.4807
+
+Linearization Effect:
+  Norm R² change: +0.0000
+  Dir R² change:  +0.0000
+  Normalized effect: +0.0000
+
+============================================================
+NoPE GPT Model Initialized
+============================================================
+  Positional Embedding: False
+  Normalization Type:   layernorm
+  Layers:               1
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           512
+  Vocab Size:           50304
+  Attention Stats:      False
+  Skip LN2:             True
+  Use BatchNorm LN2:    False
+  Parameters:           45.71M
+============================================================
+
+
+============================================================
+Analyzing linearization: NoPE + No LN2 (random)
+skip_ln2=True
+============================================================
+
+Pre-LN2:  Full R²=0.0700, Dir R²=0.0896, Norm R²=0.3208, Norm-Pos r=-0.5646
+Post-LN2: Full R²=0.0700, Dir R²=0.0896, Norm R²=0.3208, Norm-Pos r=-0.5646
+
+Linearization Effect:
+  Norm R² change: +0.0000
+  Dir R² change:  +0.0000
+  Normalized effect: +0.0000
+
+--- Linearization Comparison: NoPE + No LN2 ---
+  Trained linearization effect: +0.0000
+  Random linearization effect:  +0.0000
+  Difference: +0.0000
+
+======================================================================
+FINAL SUMMARY: Linearization Effects
+======================================================================
+
+Experiment                 Trained Lin   Random Lin Trained Norm Δ  Random Norm Δ
+-------------------------------------------------------------------------------
+NoPE + LayerNorm               -0.0633      +1.7540        -0.0134        +0.5625
+NoPE + BatchNorm2              +0.6616      +0.0000        +0.0926        +0.0000
+NoPE + No LN2                  +0.0000      +0.0000        +0.0000        +0.0000
+
+Results saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/owt_comprehensive/owt_linearization_results.json

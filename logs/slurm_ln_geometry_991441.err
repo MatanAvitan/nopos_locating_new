@@ -1,0 +1,13 @@
+/home/nlp/matan_avitan/.bashrc: line 9: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 10: bind: warning: line editing not enabled
+/home/nlp/matan_avitan/.bashrc: line 11: bind: warning: line editing not enabled
+Traceback (most recent call last):
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/layernorm_geometry_analysis.py", line 581, in <module>
+    main()
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/layernorm_geometry_analysis.py", line 535, in main
+    results = analyze_layernorm_geometry(model, n_samples=500, block_size=64)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/layernorm_geometry_analysis.py", line 224, in analyze_layernorm_geometry
+    just_gain_norm_by_pos = just_gain_norm.mean(dim=0).cpu().numpy()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
