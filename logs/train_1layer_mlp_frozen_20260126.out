@@ -1,0 +1,86 @@
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 1ewt8nss
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260126_211311-1ewt8nss
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run 1layer_frozen_mlp_train
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-1layer-mechanism
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-1layer-mechanism/runs/1ewt8nss
+wandb: uploading wandb-summary.json; uploading output.log
+wandb: uploading history steps 60-60, summary, console lines 60-60
+wandb: 
+wandb: Run history:
+wandb:       iter ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇▇██
+wandb: train_loss █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:   val_loss █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:       iter 30000
+wandb: train_loss 155.72174
+wandb:   val_loss 145.23813
+wandb: 
+wandb: 🚀 View run 1layer_frozen_mlp_train at: https://wandb.ai/matan_avitan/nope-1layer-mechanism/runs/1ewt8nss
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-1layer-mechanism
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260126_211311-1ewt8nss/logs
+iter 0: train_loss 5411.6528, val_loss 4191.7237
+iter 500: train_loss 316.1927, val_loss 334.2983
+iter 1000: train_loss 293.6069, val_loss 293.3819
+iter 1500: train_loss 280.6316, val_loss 276.5586
+iter 2000: train_loss 265.6916, val_loss 272.4030
+iter 2500: train_loss 309.6864, val_loss 257.5452
+iter 3000: train_loss 272.0816, val_loss 258.7951
+iter 3500: train_loss 212.8668, val_loss 239.1142
+iter 4000: train_loss 254.1104, val_loss 248.9763
+iter 4500: train_loss 220.1305, val_loss 225.8422
+iter 5000: train_loss 227.3436, val_loss 223.6138
+iter 5500: train_loss 229.3381, val_loss 218.5664
+iter 6000: train_loss 192.9031, val_loss 208.3454
+iter 6500: train_loss 210.3293, val_loss 201.5747
+iter 7000: train_loss 244.3451, val_loss 201.7848
+iter 7500: train_loss 216.1865, val_loss 192.6194
+iter 8000: train_loss 187.3736, val_loss 195.1306
+iter 8500: train_loss 180.6029, val_loss 190.1783
+iter 9000: train_loss 218.0897, val_loss 196.3723
+iter 9500: train_loss 164.2881, val_loss 180.6868
+iter 10000: train_loss 163.4005, val_loss 178.6385
+iter 10500: train_loss 168.8985, val_loss 178.8277
+iter 11000: train_loss 152.8337, val_loss 174.5819
+iter 11500: train_loss 161.5984, val_loss 182.3456
+iter 12000: train_loss 164.4088, val_loss 166.1860
+iter 12500: train_loss 170.8573, val_loss 170.4732
+iter 13000: train_loss 196.0391, val_loss 175.6424
+iter 13500: train_loss 159.0495, val_loss 164.5835
+iter 14000: train_loss 173.3421, val_loss 171.3417
+iter 14500: train_loss 162.1276, val_loss 162.5527
+iter 15000: train_loss 160.0178, val_loss 162.5839
+iter 15500: train_loss 151.8464, val_loss 163.7526
+iter 16000: train_loss 149.6497, val_loss 159.4087
+iter 16500: train_loss 141.2055, val_loss 169.4830
+iter 17000: train_loss 144.5355, val_loss 155.9566
+iter 17500: train_loss 181.7691, val_loss 156.3719
+iter 18000: train_loss 177.0671, val_loss 157.8172
+iter 18500: train_loss 170.5921, val_loss 165.3609
+iter 19000: train_loss 164.8040, val_loss 151.3181
+iter 19500: train_loss 176.9998, val_loss 151.8956
+iter 20000: train_loss 158.8525, val_loss 156.9611
+iter 20500: train_loss 156.6365, val_loss 151.0119
+iter 21000: train_loss 172.8605, val_loss 153.8519
+iter 21500: train_loss 149.2574, val_loss 159.9943
+iter 22000: train_loss 158.3683, val_loss 153.7876
+iter 22500: train_loss 163.9639, val_loss 161.1831
+iter 23000: train_loss 137.9199, val_loss 157.6705
+iter 23500: train_loss 150.5646, val_loss 148.6745
+iter 24000: train_loss 130.5718, val_loss 151.7870
+iter 24500: train_loss 129.5947, val_loss 152.4389
+iter 25000: train_loss 134.7687, val_loss 150.3123
+iter 25500: train_loss 171.9562, val_loss 151.4554
+iter 26000: train_loss 193.1140, val_loss 147.6786
+iter 26500: train_loss 138.9756, val_loss 149.1316
+iter 27000: train_loss 135.9187, val_loss 148.1581
+iter 27500: train_loss 159.5718, val_loss 148.4151
+iter 28000: train_loss 126.8070, val_loss 153.2560
+iter 28500: train_loss 148.4672, val_loss 144.8000
+iter 29000: train_loss 142.7062, val_loss 149.4863
+iter 29500: train_loss 126.6924, val_loss 148.4221
+iter 30000: train_loss 155.7217, val_loss 145.2381

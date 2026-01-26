@@ -1,0 +1,754 @@
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_2layer_mechanism.py:496: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(config.dtype == "float16"))
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 88r6ppz7
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260126_175342-88r6ppz7
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run R2_exp1_freeze_train_matrix
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-2layer-mechanism
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-2layer-mechanism/runs/88r6ppz7
+wandb: updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json
+wandb: uploading history steps 59-60, summary, console lines 657-665
+wandb: 
+wandb: Run history:
+wandb: hypothesis/val_r2_for_comparison ▁███████████████████████████████████████
+wandb:                             iter ▁▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇████
+wandb:                               lr ▁████▇▇▇▇▆▆▆▅▅▅▄▄▄▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+wandb:                       train/loss █▆▄▅▅▄▄▅▃▃▃▂▂▂▂▂▂▂▂▁▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                        train/mae █▆▅▄▅▄▆▄▄▃▄▃▃▃▃▃▂▂▂▂▂▂▂▂▁▂▁▂▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                         train/r2 ▁███████████████████████████████████████
+wandb:                         val/loss █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                          val/mae █▂▂▂▂▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                val/per_pos_mae/0 ▂█▇▅▄▅▃▃▁▃▂▁▃▂▂▂▂▃▃▂▃▄▃▄▃▄▄▆▅▄▅▄▅▆▅▅▅▅▄▅
+wandb:                val/per_pos_mae/1 ▂█▄▂▂▂▂▂▁▁▁▁▁▁▁▂▁▁▂▂▁▂▁▁▂▂▂▃▂▂▂▂▂▂▂▂▂▂▂▂
+wandb:                             +128 ...
+wandb: 
+wandb: Run summary:
+wandb:                     best_val_mae 1.92624
+wandb:                      best_val_r2 0.99413
+wandb:                   final_val_loss 10.19597
+wandb:                    final_val_mae 2.27691
+wandb:                     final_val_r2 0.99253
+wandb:                hypothesis/regime R2
+wandb: hypothesis/val_r2_for_comparison 0.99206
+wandb:                             iter 30000
+wandb:                               lr 6e-05
+wandb:               regime_description Attn2-only - freeze ...
+wandb:                             +135 ...
+wandb: 
+wandb: 🚀 View run R2_exp1_freeze_train_matrix at: https://wandb.ai/matan_avitan/nope-2layer-mechanism/runs/88r6ppz7
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-2layer-mechanism
+wandb: Synced 5 W&B file(s), 244 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260126_175342-88r6ppz7/logs
+Loaded data: train=9,035,582,489 tokens, val=4,434,606 tokens
+
+*** BOS token (ID 50256) is inserted at position 0 ***
+
+
+============================================================
+2-Layer Mechanism Analysis Model Initialized
+============================================================
+  Embedding Dim:        768
+  Heads:                1
+  Head Dim:             768
+  Block Size:           128
+  Normalization:        layernorm
+  Regression Mode:      True
+  Parameters:           53.40M
+============================================================
+
+
+============================================================
+Regime: R2: Attn2-only
+============================================================
+  Trainable:  2,957,570 params (5.5%)
+  Frozen:     50,445,312 params (94.5%)
+  Total:      53,402,882 params
+
+  Component status:
+    Embedding      : frozen (38,633,472 params)
+    Block1.LN1     : frozen (1,536 params)
+    Block1.Attn    : frozen (2,362,368 params)
+    Block1.LN2     : frozen (1,536 params)
+    Block1.MLP     : frozen (4,722,432 params)
+    Block2.LN1     : TRAIN  (1,536 params)
+    Block2.Attn    : TRAIN  (2,362,368 params)
+    Block2.LN2     : frozen (1,536 params)
+    Block2.MLP     : frozen (4,722,432 params)
+    Final LN       : TRAIN  (1,536 params)
+    Pos Head       : TRAIN  (769 params)
+    MLP Probe      : TRAIN  (591,361 params)
+============================================================
+
+Compiling model...
+Optimizer: 5 weight decay, 9 no decay
+
+============================================================
+Training Regime: R2
+Max iterations: 30000
+============================================================
+
+iter     0 | train loss 5402.7422 | val loss 5401.3233 | val MAE 63.561 | val R² -2.9563 | lr 1.20e-06
+  iter 50: loss = 3962.5381
+  iter 100: loss = 3386.8955
+  iter 150: loss = 2877.4106
+  iter 200: loss = 2189.8828
+  iter 250: loss = 1446.6389
+  iter 300: loss = 793.1177
+  iter 350: loss = 372.1696
+  iter 400: loss = 244.4479
+  iter 450: loss = 265.0454
+iter   500 | train loss 188.6555 | val loss 186.1580 | val MAE 10.682 | val R² 0.8636 | lr 6.00e-04
+  iter 500: loss = 181.7917
+  iter 550: loss = 246.3593
+  iter 600: loss = 128.1123
+  iter 650: loss = 126.8678
+  iter 700: loss = 144.4131
+  iter 750: loss = 161.6032
+  iter 800: loss = 119.6446
+  iter 850: loss = 109.9805
+  iter 900: loss = 136.0536
+  iter 950: loss = 120.7587
+iter  1000 | train loss 124.4323 | val loss 123.2067 | val MAE 8.316 | val R² 0.9098 | lr 5.99e-04
+  iter 1000: loss = 132.6025
+  iter 1050: loss = 136.8387
+  iter 1100: loss = 90.9382
+  iter 1150: loss = 93.2327
+  iter 1200: loss = 163.2617
+  iter 1250: loss = 121.3284
+  iter 1300: loss = 98.0315
+  iter 1350: loss = 150.7881
+  iter 1400: loss = 86.1576
+  iter 1450: loss = 113.6377
+iter  1500 | train loss 96.2311 | val loss 95.1725 | val MAE 7.051 | val R² 0.9303 | lr 5.97e-04
+  iter 1500: loss = 78.6525
+  iter 1550: loss = 122.5706
+  iter 1600: loss = 125.2712
+  iter 1650: loss = 96.8684
+  iter 1700: loss = 107.4690
+  iter 1750: loss = 116.7769
+  iter 1800: loss = 74.4932
+  iter 1850: loss = 108.7862
+  iter 1900: loss = 105.5653
+  iter 1950: loss = 107.2990
+iter  2000 | train loss 100.0775 | val loss 100.1580 | val MAE 7.189 | val R² 0.9266 | lr 5.92e-04
+  iter 2000: loss = 105.4833
+  iter 2050: loss = 84.3837
+  iter 2100: loss = 70.8558
+  iter 2150: loss = 101.1408
+  iter 2200: loss = 168.6582
+  iter 2250: loss = 128.2953
+  iter 2300: loss = 110.8397
+  iter 2350: loss = 86.2564
+  iter 2400: loss = 74.1477
+  iter 2450: loss = 74.4827
+iter  2500 | train loss 116.3799 | val loss 114.5118 | val MAE 7.644 | val R² 0.9161 | lr 5.86e-04
+  iter 2500: loss = 121.5016
+  iter 2550: loss = 90.4855
+  iter 2600: loss = 70.8762
+  iter 2650: loss = 71.6660
+  iter 2700: loss = 79.8898
+  iter 2750: loss = 101.3347
+  iter 2800: loss = 89.5005
+  iter 2850: loss = 69.5033
+  iter 2900: loss = 136.7349
+  iter 2950: loss = 100.9302
+iter  3000 | train loss 67.9222 | val loss 68.9730 | val MAE 6.017 | val R² 0.9495 | lr 5.78e-04
+  iter 3000: loss = 69.3372
+  iter 3050: loss = 94.4853
+  iter 3100: loss = 76.6635
+  iter 3150: loss = 71.9736
+  iter 3200: loss = 68.1315
+  iter 3250: loss = 86.2022
+  iter 3300: loss = 86.6665
+  iter 3350: loss = 69.0690
+  iter 3400: loss = 122.2904
+  iter 3450: loss = 90.6189
+iter  3500 | train loss 83.9207 | val loss 83.2952 | val MAE 6.935 | val R² 0.9390 | lr 5.69e-04
+  iter 3500: loss = 75.3895
+  iter 3550: loss = 81.4549
+  iter 3600: loss = 60.7852
+  iter 3650: loss = 65.6443
+  iter 3700: loss = 56.5648
+  iter 3750: loss = 68.7885
+  iter 3800: loss = 75.3046
+  iter 3850: loss = 87.2180
+  iter 3900: loss = 91.4788
+  iter 3950: loss = 78.8405
+iter  4000 | train loss 77.8091 | val loss 76.2763 | val MAE 6.286 | val R² 0.9441 | lr 5.58e-04
+  iter 4000: loss = 73.9584
+  iter 4050: loss = 69.4560
+  iter 4100: loss = 70.0163
+  iter 4150: loss = 65.4408
+  iter 4200: loss = 65.0561
+  iter 4250: loss = 80.1303
+  iter 4300: loss = 53.5092
+  iter 4350: loss = 63.7253
+  iter 4400: loss = 53.1840
+  iter 4450: loss = 83.6323
+iter  4500 | train loss 64.8671 | val loss 64.4506 | val MAE 5.880 | val R² 0.9528 | lr 5.46e-04
+  iter 4500: loss = 56.4516
+  iter 4550: loss = 63.3953
+  iter 4600: loss = 60.8292
+  iter 4650: loss = 50.8644
+  iter 4700: loss = 43.5880
+  iter 4750: loss = 70.1994
+  iter 4800: loss = 58.5402
+  iter 4850: loss = 62.4684
+  iter 4900: loss = 88.3583
+  iter 4950: loss = 90.4621
+iter  5000 | train loss 100.7839 | val loss 101.4799 | val MAE 7.711 | val R² 0.9257 | lr 5.32e-04
+  iter 5000: loss = 99.9988
+  iter 5050: loss = 69.0316
+  iter 5100: loss = 57.4604
+  iter 5150: loss = 59.9381
+  iter 5200: loss = 72.4082
+  iter 5250: loss = 90.4812
+  iter 5300: loss = 53.5299
+  iter 5350: loss = 66.6899
+  iter 5400: loss = 51.0203
+  iter 5450: loss = 45.7041
+iter  5500 | train loss 57.0026 | val loss 57.6248 | val MAE 5.385 | val R² 0.9578 | lr 5.17e-04
+  iter 5500: loss = 49.4508
+  iter 5550: loss = 47.0255
+  iter 5600: loss = 49.6385
+  iter 5650: loss = 55.5365
+  iter 5700: loss = 48.2511
+  iter 5750: loss = 51.2525
+  iter 5800: loss = 49.1973
+  iter 5850: loss = 41.9158
+  iter 5900: loss = 52.2261
+  iter 5950: loss = 42.0308
+iter  6000 | train loss 58.9260 | val loss 59.3431 | val MAE 5.671 | val R² 0.9565 | lr 5.01e-04
+  iter 6000: loss = 52.5063
+  iter 6050: loss = 55.2745
+  iter 6100: loss = 61.7250
+  iter 6150: loss = 42.2442
+  iter 6200: loss = 60.3225
+  iter 6250: loss = 47.8837
+  iter 6300: loss = 55.8786
+  iter 6350: loss = 53.6713
+  iter 6400: loss = 49.3238
+  iter 6450: loss = 74.8263
+iter  6500 | train loss 48.5322 | val loss 48.6344 | val MAE 5.050 | val R² 0.9644 | lr 4.83e-04
+  iter 6500: loss = 45.6592
+  iter 6550: loss = 79.2092
+  iter 6600: loss = 46.2149
+  iter 6650: loss = 58.8888
+  iter 6700: loss = 46.1353
+  iter 6750: loss = 37.2436
+  iter 6800: loss = 50.7852
+  iter 6850: loss = 57.7502
+  iter 6900: loss = 42.0473
+  iter 6950: loss = 49.5368
+iter  7000 | train loss 55.6313 | val loss 54.3620 | val MAE 5.240 | val R² 0.9602 | lr 4.65e-04
+  iter 7000: loss = 64.4283
+  iter 7050: loss = 56.7592
+  iter 7100: loss = 56.8212
+  iter 7150: loss = 53.1962
+  iter 7200: loss = 37.4650
+  iter 7250: loss = 50.3607
+  iter 7300: loss = 39.0378
+  iter 7350: loss = 39.6430
+  iter 7400: loss = 59.0156
+  iter 7450: loss = 52.1175
+iter  7500 | train loss 60.0220 | val loss 58.6523 | val MAE 5.483 | val R² 0.9570 | lr 4.46e-04
+  iter 7500: loss = 61.7471
+  iter 7550: loss = 50.1221
+  iter 7600: loss = 53.1536
+  iter 7650: loss = 39.8868
+  iter 7700: loss = 38.8594
+  iter 7750: loss = 41.9584
+  iter 7800: loss = 37.6166
+  iter 7850: loss = 45.8612
+  iter 7900: loss = 46.6985
+  iter 7950: loss = 45.0616
+iter  8000 | train loss 44.4866 | val loss 44.6145 | val MAE 4.702 | val R² 0.9673 | lr 4.26e-04
+  iter 8000: loss = 53.6285
+  iter 8050: loss = 42.2411
+  iter 8100: loss = 40.5802
+  iter 8150: loss = 42.9090
+  iter 8200: loss = 44.2243
+  iter 8250: loss = 48.8499
+  iter 8300: loss = 38.4209
+  iter 8350: loss = 27.0815
+  iter 8400: loss = 71.7411
+  iter 8450: loss = 45.0990
+iter  8500 | train loss 39.7939 | val loss 40.0607 | val MAE 4.449 | val R² 0.9707 | lr 4.05e-04
+  iter 8500: loss = 44.1278
+  iter 8550: loss = 33.0510
+  iter 8600: loss = 37.8408
+  iter 8650: loss = 32.8194
+  iter 8700: loss = 32.1436
+  iter 8750: loss = 38.6417
+  iter 8800: loss = 44.8321
+  iter 8850: loss = 41.6877
+  iter 8900: loss = 32.7054
+  iter 8950: loss = 51.4483
+iter  9000 | train loss 40.5039 | val loss 39.7841 | val MAE 4.570 | val R² 0.9709 | lr 3.84e-04
+  iter 9000: loss = 44.3775
+  iter 9050: loss = 34.8518
+  iter 9100: loss = 43.5149
+  iter 9150: loss = 35.2822
+  iter 9200: loss = 36.3217
+  iter 9250: loss = 32.7762
+  iter 9300: loss = 59.0884
+  iter 9350: loss = 44.2416
+  iter 9400: loss = 103.6824
+  iter 9450: loss = 31.2495
+iter  9500 | train loss 36.1524 | val loss 34.2136 | val MAE 4.143 | val R² 0.9749 | lr 3.63e-04
+  iter 9500: loss = 33.8238
+  iter 9550: loss = 49.9073
+  iter 9600: loss = 32.1217
+  iter 9650: loss = 60.8888
+  iter 9700: loss = 71.6928
+  iter 9750: loss = 45.7408
+  iter 9800: loss = 48.1508
+  iter 9850: loss = 58.7588
+  iter 9900: loss = 31.0132
+  iter 9950: loss = 47.2230
+iter 10000 | train loss 45.9736 | val loss 45.7416 | val MAE 4.808 | val R² 0.9665 | lr 3.41e-04
+  iter 10000: loss = 41.0795
+  iter 10050: loss = 34.2504
+  iter 10100: loss = 30.0608
+  iter 10150: loss = 31.3833
+  iter 10200: loss = 28.4734
+  iter 10250: loss = 29.1898
+  iter 10300: loss = 31.1474
+  iter 10350: loss = 26.2196
+  iter 10400: loss = 34.3469
+  iter 10450: loss = 29.7182
+iter 10500 | train loss 30.0633 | val loss 29.6898 | val MAE 3.828 | val R² 0.9783 | lr 3.19e-04
+  iter 10500: loss = 23.4417
+  iter 10550: loss = 30.2338
+  iter 10600: loss = 42.2712
+  iter 10650: loss = 28.1395
+  iter 10700: loss = 46.4325
+  iter 10750: loss = 31.0854
+  iter 10800: loss = 28.1381
+  iter 10850: loss = 26.8021
+  iter 10900: loss = 26.3715
+  iter 10950: loss = 30.1641
+iter 11000 | train loss 57.0558 | val loss 57.3779 | val MAE 5.638 | val R² 0.9580 | lr 2.97e-04
+  iter 11000: loss = 53.5163
+  iter 11050: loss = 36.0051
+  iter 11100: loss = 40.6698
+  iter 11150: loss = 31.7988
+  iter 11200: loss = 52.6401
+  iter 11250: loss = 25.6273
+  iter 11300: loss = 26.0267
+  iter 11350: loss = 31.8259
+  iter 11400: loss = 25.7475
+  iter 11450: loss = 24.0409
+iter 11500 | train loss 44.5711 | val loss 44.8411 | val MAE 5.115 | val R² 0.9672 | lr 2.76e-04
+  iter 11500: loss = 46.1090
+  iter 11550: loss = 31.2890
+  iter 11600: loss = 47.2403
+  iter 11650: loss = 32.1177
+  iter 11700: loss = 32.6472
+  iter 11750: loss = 25.5238
+  iter 11800: loss = 22.2087
+  iter 11850: loss = 25.8957
+  iter 11900: loss = 32.0860
+  iter 11950: loss = 41.6617
+iter 12000 | train loss 30.6757 | val loss 29.6318 | val MAE 3.808 | val R² 0.9783 | lr 2.55e-04
+  iter 12000: loss = 24.0954
+  iter 12050: loss = 24.9780
+  iter 12100: loss = 21.0029
+  iter 12150: loss = 23.1292
+  iter 12200: loss = 23.1924
+  iter 12250: loss = 21.5904
+  iter 12300: loss = 22.0562
+  iter 12350: loss = 28.9025
+  iter 12400: loss = 27.8930
+  iter 12450: loss = 37.5711
+iter 12500 | train loss 24.4375 | val loss 24.8480 | val MAE 3.587 | val R² 0.9818 | lr 2.34e-04
+  iter 12500: loss = 24.4095
+  iter 12550: loss = 18.6312
+  iter 12600: loss = 24.7503
+  iter 12650: loss = 31.4801
+  iter 12700: loss = 20.5421
+  iter 12750: loss = 20.9301
+  iter 12800: loss = 24.4933
+  iter 12850: loss = 18.5463
+  iter 12900: loss = 23.0616
+  iter 12950: loss = 32.2938
+iter 13000 | train loss 24.5844 | val loss 24.8302 | val MAE 3.602 | val R² 0.9818 | lr 2.14e-04
+  iter 13000: loss = 24.9174
+  iter 13050: loss = 28.6933
+  iter 13100: loss = 22.1641
+  iter 13150: loss = 48.5901
+  iter 13200: loss = 24.7283
+  iter 13250: loss = 23.1811
+  iter 13300: loss = 18.2435
+  iter 13350: loss = 26.5199
+  iter 13400: loss = 19.5802
+  iter 13450: loss = 19.9772
+iter 13500 | train loss 28.1854 | val loss 27.5500 | val MAE 3.701 | val R² 0.9798 | lr 1.95e-04
+  iter 13500: loss = 32.1034
+  iter 13550: loss = 22.9105
+  iter 13600: loss = 18.6777
+  iter 13650: loss = 37.4058
+  iter 13700: loss = 50.8815
+  iter 13750: loss = 21.5543
+  iter 13800: loss = 28.1240
+  iter 13850: loss = 18.4582
+  iter 13900: loss = 23.8040
+  iter 13950: loss = 18.5900
+iter 14000 | train loss 20.3662 | val loss 19.8981 | val MAE 3.121 | val R² 0.9854 | lr 1.77e-04
+  iter 14000: loss = 17.2594
+  iter 14050: loss = 19.6067
+  iter 14100: loss = 16.9351
+  iter 14150: loss = 25.7915
+  iter 14200: loss = 20.1192
+  iter 14250: loss = 15.1906
+  iter 14300: loss = 18.9449
+  iter 14350: loss = 50.4558
+  iter 14400: loss = 31.8179
+  iter 14450: loss = 20.4906
+iter 14500 | train loss 23.7977 | val loss 23.6748 | val MAE 3.607 | val R² 0.9827 | lr 1.59e-04
+  iter 14500: loss = 39.6939
+  iter 14550: loss = 40.0291
+  iter 14600: loss = 23.5237
+  iter 14650: loss = 20.9775
+  iter 14700: loss = 17.9106
+  iter 14750: loss = 25.0005
+  iter 14800: loss = 22.9763
+  iter 14850: loss = 35.1952
+  iter 14900: loss = 20.9743
+  iter 14950: loss = 15.1959
+iter 15000 | train loss 21.1139 | val loss 19.8924 | val MAE 3.096 | val R² 0.9854 | lr 1.43e-04
+  iter 15000: loss = 19.1372
+  iter 15050: loss = 17.4022
+  iter 15100: loss = 13.2969
+  iter 15150: loss = 18.7973
+  iter 15200: loss = 19.1911
+  iter 15250: loss = 16.3723
+  iter 15300: loss = 17.9598
+  iter 15350: loss = 20.6269
+  iter 15400: loss = 13.9628
+  iter 15450: loss = 19.3426
+iter 15500 | train loss 19.0033 | val loss 19.4394 | val MAE 3.169 | val R² 0.9858 | lr 1.28e-04
+  iter 15500: loss = 17.3155
+  iter 15550: loss = 18.9804
+  iter 15600: loss = 20.3715
+  iter 15650: loss = 15.6448
+  iter 15700: loss = 18.9523
+  iter 15750: loss = 16.5141
+  iter 15800: loss = 14.3886
+  iter 15850: loss = 17.0773
+  iter 15900: loss = 13.7670
+  iter 15950: loss = 15.3570
+iter 16000 | train loss 22.5181 | val loss 22.0922 | val MAE 3.418 | val R² 0.9838 | lr 1.14e-04
+  iter 16000: loss = 19.3473
+  iter 16050: loss = 16.7188
+  iter 16100: loss = 13.8834
+  iter 16150: loss = 15.6908
+  iter 16200: loss = 34.9793
+  iter 16250: loss = 12.9221
+  iter 16300: loss = 15.5142
+  iter 16350: loss = 13.6628
+  iter 16400: loss = 16.1735
+  iter 16450: loss = 13.7005
+iter 16500 | train loss 17.0350 | val loss 16.7662 | val MAE 2.982 | val R² 0.9877 | lr 1.02e-04
+  iter 16500: loss = 14.7884
+  iter 16550: loss = 17.9659
+  iter 16600: loss = 19.0846
+  iter 16650: loss = 12.6370
+  iter 16700: loss = 13.5526
+  iter 16750: loss = 15.6686
+  iter 16800: loss = 15.8480
+  iter 16850: loss = 12.8208
+  iter 16900: loss = 15.1069
+  iter 16950: loss = 16.3648
+iter 17000 | train loss 14.1358 | val loss 13.4741 | val MAE 2.619 | val R² 0.9901 | lr 9.09e-05
+  iter 17000: loss = 11.7480
+  iter 17050: loss = 12.6251
+  iter 17100: loss = 12.7133
+  iter 17150: loss = 12.4997
+  iter 17200: loss = 14.5999
+  iter 17250: loss = 12.5384
+  iter 17300: loss = 18.1511
+  iter 17350: loss = 16.2270
+  iter 17400: loss = 15.5817
+  iter 17450: loss = 33.6807
+iter 17500 | train loss 14.8487 | val loss 14.7837 | val MAE 2.743 | val R² 0.9892 | lr 8.16e-05
+  iter 17500: loss = 14.9559
+  iter 17550: loss = 10.1727
+  iter 17600: loss = 35.5159
+  iter 17650: loss = 14.4328
+  iter 17700: loss = 12.7919
+  iter 17750: loss = 13.6440
+  iter 17800: loss = 14.7432
+  iter 17850: loss = 17.2194
+  iter 17900: loss = 17.3784
+  iter 17950: loss = 12.4012
+iter 18000 | train loss 12.9338 | val loss 14.2675 | val MAE 2.509 | val R² 0.9895 | lr 7.39e-05
+  iter 18000: loss = 13.3171
+  iter 18050: loss = 13.3698
+  iter 18100: loss = 10.2261
+  iter 18150: loss = 16.3077
+  iter 18200: loss = 12.5267
+  iter 18250: loss = 10.6939
+  iter 18300: loss = 9.7916
+  iter 18350: loss = 10.2102
+  iter 18400: loss = 11.6192
+  iter 18450: loss = 10.4759
+iter 18500 | train loss 13.4212 | val loss 13.3236 | val MAE 2.548 | val R² 0.9902 | lr 6.78e-05
+  iter 18500: loss = 11.6472
+  iter 18550: loss = 12.2926
+  iter 18600: loss = 12.3511
+  iter 18650: loss = 13.7393
+  iter 18700: loss = 10.0468
+  iter 18750: loss = 16.0210
+  iter 18800: loss = 14.2494
+  iter 18850: loss = 10.8873
+  iter 18900: loss = 13.2889
+  iter 18950: loss = 11.8795
+iter 19000 | train loss 12.3427 | val loss 12.2452 | val MAE 2.385 | val R² 0.9910 | lr 6.35e-05
+  iter 19000: loss = 11.4970
+  iter 19050: loss = 15.6636
+  iter 19100: loss = 31.9006
+  iter 19150: loss = 11.6559
+  iter 19200: loss = 11.5185
+  iter 19250: loss = 10.0826
+  iter 19300: loss = 10.8125
+  iter 19350: loss = 11.4488
+  iter 19400: loss = 15.9125
+  iter 19450: loss = 9.9603
+iter 19500 | train loss 13.2678 | val loss 13.5348 | val MAE 2.475 | val R² 0.9901 | lr 6.09e-05
+  iter 19500: loss = 9.5388
+  iter 19550: loss = 33.4175
+  iter 19600: loss = 14.2261
+  iter 19650: loss = 7.9298
+  iter 19700: loss = 11.6083
+  iter 19750: loss = 10.0294
+  iter 19800: loss = 11.7842
+  iter 19850: loss = 9.0995
+  iter 19900: loss = 10.1400
+  iter 19950: loss = 11.4575
+iter 20000 | train loss 11.0590 | val loss 11.6580 | val MAE 2.275 | val R² 0.9915 | lr 6.00e-05
+  iter 20000: loss = 7.7799
+  iter 20050: loss = 11.8341
+  iter 20100: loss = 12.7960
+  iter 20150: loss = 9.0050
+  iter 20200: loss = 12.1405
+  iter 20250: loss = 8.3011
+  iter 20300: loss = 10.1859
+  iter 20350: loss = 8.7848
+  iter 20400: loss = 9.5397
+  iter 20450: loss = 10.6857
+iter 20500 | train loss 12.4505 | val loss 12.1808 | val MAE 2.564 | val R² 0.9911 | lr 6.00e-05
+  iter 20500: loss = 14.1925
+  iter 20550: loss = 7.2422
+  iter 20600: loss = 10.9106
+  iter 20650: loss = 11.7252
+  iter 20700: loss = 8.6294
+  iter 20750: loss = 11.3085
+  iter 20800: loss = 18.2669
+  iter 20850: loss = 9.6050
+  iter 20900: loss = 11.8160
+  iter 20950: loss = 33.1209
+iter 21000 | train loss 10.1050 | val loss 9.3723 | val MAE 2.219 | val R² 0.9931 | lr 6.00e-05
+  iter 21000: loss = 9.4673
+  iter 21050: loss = 10.7679
+  iter 21100: loss = 9.0641
+  iter 21150: loss = 11.8590
+  iter 21200: loss = 11.2353
+  iter 21250: loss = 8.9102
+  iter 21300: loss = 10.5203
+  iter 21350: loss = 7.4349
+  iter 21400: loss = 9.3007
+  iter 21450: loss = 8.9732
+iter 21500 | train loss 14.9927 | val loss 15.1600 | val MAE 2.766 | val R² 0.9889 | lr 6.00e-05
+  iter 21500: loss = 11.6896
+  iter 21550: loss = 9.5115
+  iter 21600: loss = 6.3539
+  iter 21650: loss = 10.5313
+  iter 21700: loss = 7.7058
+  iter 21750: loss = 8.9427
+  iter 21800: loss = 8.6821
+  iter 21850: loss = 12.8069
+  iter 21900: loss = 8.2571
+  iter 21950: loss = 8.8003
+iter 22000 | train loss 9.7104 | val loss 10.0630 | val MAE 2.098 | val R² 0.9926 | lr 6.00e-05
+  iter 22000: loss = 8.4240
+  iter 22050: loss = 6.3545
+  iter 22100: loss = 12.0253
+  iter 22150: loss = 8.2343
+  iter 22200: loss = 12.8966
+  iter 22250: loss = 10.4550
+  iter 22300: loss = 9.8012
+  iter 22350: loss = 7.9265
+  iter 22400: loss = 10.2415
+  iter 22450: loss = 8.4472
+iter 22500 | train loss 9.0781 | val loss 9.8268 | val MAE 2.126 | val R² 0.9928 | lr 6.00e-05
+  iter 22500: loss = 8.9398
+  iter 22550: loss = 14.8568
+  iter 22600: loss = 9.5622
+  iter 22650: loss = 9.9137
+  iter 22700: loss = 29.7392
+  iter 22750: loss = 28.6863
+  iter 22800: loss = 12.8877
+  iter 22850: loss = 9.5624
+  iter 22900: loss = 10.0276
+  iter 22950: loss = 7.4332
+iter 23000 | train loss 10.6560 | val loss 10.2261 | val MAE 2.290 | val R² 0.9925 | lr 6.00e-05
+  iter 23000: loss = 8.1039
+  iter 23050: loss = 10.4229
+  iter 23100: loss = 7.5770
+  iter 23150: loss = 12.9194
+  iter 23200: loss = 7.6743
+  iter 23250: loss = 7.5965
+  iter 23300: loss = 30.7937
+  iter 23350: loss = 7.4485
+  iter 23400: loss = 8.9714
+  iter 23450: loss = 10.4891
+iter 23500 | train loss 11.1450 | val loss 10.3543 | val MAE 2.226 | val R² 0.9924 | lr 6.00e-05
+  iter 23500: loss = 6.6609
+  iter 23550: loss = 8.4342
+  iter 23600: loss = 9.2054
+  iter 23650: loss = 11.5769
+  iter 23700: loss = 34.0876
+  iter 23750: loss = 9.6531
+  iter 23800: loss = 10.7382
+  iter 23850: loss = 8.4585
+  iter 23900: loss = 17.5760
+  iter 23950: loss = 9.4353
+iter 24000 | train loss 11.0381 | val loss 9.5915 | val MAE 2.175 | val R² 0.9930 | lr 6.00e-05
+  iter 24000: loss = 9.6454
+  iter 24050: loss = 9.8103
+  iter 24100: loss = 8.1864
+  iter 24150: loss = 8.1881
+  iter 24200: loss = 8.3488
+  iter 24250: loss = 6.9687
+  iter 24300: loss = 8.8190
+  iter 24350: loss = 5.7078
+  iter 24400: loss = 11.2876
+  iter 24450: loss = 6.9155
+iter 24500 | train loss 8.8987 | val loss 8.2493 | val MAE 1.976 | val R² 0.9940 | lr 6.00e-05
+  iter 24500: loss = 5.6896
+  iter 24550: loss = 6.1525
+  iter 24600: loss = 12.1674
+  iter 24650: loss = 10.6174
+  iter 24700: loss = 27.7368
+  iter 24750: loss = 9.9056
+  iter 24800: loss = 7.2582
+  iter 24850: loss = 7.5004
+  iter 24900: loss = 8.1298
+  iter 24950: loss = 9.7009
+iter 25000 | train loss 9.2675 | val loss 9.5772 | val MAE 2.108 | val R² 0.9930 | lr 6.00e-05
+  iter 25000: loss = 7.1322
+  iter 25050: loss = 10.7342
+  iter 25100: loss = 10.3035
+  iter 25150: loss = 5.2407
+  iter 25200: loss = 31.4784
+  iter 25250: loss = 7.1934
+  iter 25300: loss = 6.9705
+  iter 25350: loss = 6.1077
+  iter 25400: loss = 11.4428
+  iter 25450: loss = 6.7480
+iter 25500 | train loss 8.8818 | val loss 9.1903 | val MAE 1.992 | val R² 0.9933 | lr 6.00e-05
+  iter 25500: loss = 6.8575
+  iter 25550: loss = 6.2116
+  iter 25600: loss = 8.8012
+  iter 25650: loss = 8.4093
+  iter 25700: loss = 7.8111
+  iter 25750: loss = 9.5150
+  iter 25800: loss = 8.0712
+  iter 25850: loss = 6.5197
+  iter 25900: loss = 6.7277
+  iter 25950: loss = 7.5024
+iter 26000 | train loss 9.3856 | val loss 9.8572 | val MAE 2.115 | val R² 0.9928 | lr 6.00e-05
+  iter 26000: loss = 7.0280
+  iter 26050: loss = 9.5390
+  iter 26100: loss = 7.6889
+  iter 26150: loss = 5.8166
+  iter 26200: loss = 29.3053
+  iter 26250: loss = 8.2254
+  iter 26300: loss = 12.8588
+  iter 26350: loss = 10.8791
+  iter 26400: loss = 10.3868
+  iter 26450: loss = 9.2285
+iter 26500 | train loss 11.1091 | val loss 10.7893 | val MAE 2.426 | val R² 0.9921 | lr 6.00e-05
+  iter 26500: loss = 7.7400
+  iter 26550: loss = 10.0151
+  iter 26600: loss = 10.4246
+  iter 26650: loss = 10.7639
+  iter 26700: loss = 7.2243
+  iter 26750: loss = 9.1069
+  iter 26800: loss = 7.0885
+  iter 26850: loss = 6.2839
+  iter 26900: loss = 6.8456
+  iter 26950: loss = 14.4472
+iter 27000 | train loss 9.2775 | val loss 8.9615 | val MAE 2.005 | val R² 0.9934 | lr 6.00e-05
+  iter 27000: loss = 6.8813
+  iter 27050: loss = 9.7825
+  iter 27100: loss = 7.3259
+  iter 27150: loss = 10.6539
+  iter 27200: loss = 7.7038
+  iter 27250: loss = 8.8463
+  iter 27300: loss = 7.9186
+  iter 27350: loss = 8.9351
+  iter 27400: loss = 8.4563
+  iter 27450: loss = 7.5747
+iter 27500 | train loss 8.2500 | val loss 8.3761 | val MAE 2.013 | val R² 0.9939 | lr 6.00e-05
+  iter 27500: loss = 7.9186
+  iter 27550: loss = 7.1039
+  iter 27600: loss = 32.2949
+  iter 27650: loss = 7.3731
+  iter 27700: loss = 6.5349
+  iter 27750: loss = 7.4832
+  iter 27800: loss = 8.6977
+  iter 27850: loss = 7.9093
+  iter 27900: loss = 8.4070
+  iter 27950: loss = 12.6819
+iter 28000 | train loss 10.2893 | val loss 10.0489 | val MAE 2.306 | val R² 0.9926 | lr 6.00e-05
+  iter 28000: loss = 9.2610
+  iter 28050: loss = 10.8124
+  iter 28100: loss = 6.9163
+  iter 28150: loss = 9.4120
+  iter 28200: loss = 5.6185
+  iter 28250: loss = 11.0859
+  iter 28300: loss = 25.1733
+  iter 28350: loss = 11.4890
+  iter 28400: loss = 7.3461
+  iter 28450: loss = 10.3136
+iter 28500 | train loss 7.7938 | val loss 8.0183 | val MAE 1.926 | val R² 0.9941 | lr 6.00e-05
+  iter 28500: loss = 6.2964
+  iter 28550: loss = 13.4006
+  iter 28600: loss = 8.2298
+  iter 28650: loss = 12.1620
+  iter 28700: loss = 8.7634
+  iter 28750: loss = 7.5308
+  iter 28800: loss = 8.3521
+  iter 28850: loss = 33.2351
+  iter 28900: loss = 17.7626
+  iter 28950: loss = 9.1178
+iter 29000 | train loss 8.4985 | val loss 8.6381 | val MAE 2.017 | val R² 0.9937 | lr 6.00e-05
+  iter 29000: loss = 6.7164
+  iter 29050: loss = 6.1030
+  iter 29100: loss = 9.3303
+  iter 29150: loss = 6.2705
+  iter 29200: loss = 12.0863
+  iter 29250: loss = 7.2834
+  iter 29300: loss = 6.7932
+  iter 29350: loss = 10.3012
+  iter 29400: loss = 11.4608
+  iter 29450: loss = 29.4620
+iter 29500 | train loss 12.0675 | val loss 12.7203 | val MAE 2.577 | val R² 0.9907 | lr 6.00e-05
+  iter 29500: loss = 11.0036
+  iter 29550: loss = 31.1996
+  iter 29600: loss = 5.5015
+  iter 29650: loss = 31.3686
+  iter 29700: loss = 9.1932
+  iter 29750: loss = 11.2962
+  iter 29800: loss = 10.5268
+  iter 29850: loss = 9.7826
+  iter 29900: loss = 11.0203
+  iter 29950: loss = 11.6910
+iter 30000 | train loss 10.1965 | val loss 10.8461 | val MAE 2.280 | val R² 0.9921 | lr 6.00e-05
+
+Experiment complete!

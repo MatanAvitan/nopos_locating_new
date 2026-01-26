@@ -1,0 +1,696 @@
+W0123 22:47:41.975000 1193672 site-packages/torch/distributed/run.py:774] 
+W0123 22:47:41.975000 1193672 site-packages/torch/distributed/run.py:774] *****************************************
+W0123 22:47:41.975000 1193672 site-packages/torch/distributed/run.py:774] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0123 22:47:41.975000 1193672 site-packages/torch/distributed/run.py:774] *****************************************
+Overriding config with config/train_lm_6layer_forced_bos.py:
+Overriding config with config/train_lm_6layer_forced_bos.py:
+# Configuration for LM Training - 6 Layer - Forced BOS Mechanism (DDP)
+# Hard-codes position encoding via frozen attention heads:
+# - Block 0, Head 0: Uniform causal attention (prefix averaging)
+# - Block 1, Head 0: BOS attention (attend only to position 0)
+
+# I/O
+out_dir = "out-lm-6layer-forced-bos"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-lm"
+wandb_run_name = "nope-6layer-forced-bos-lm"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 2  # divided by world_size
+batch_size = 512
+block_size = 128
+
+# Model - 6 layers
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+log_attention_stats = True
+
+# Forced BOS mechanism
+use_forced_bos_model = True
+freeze_uniform_head_idx = 0  # Head 0 in block 0 -> uniform attention
+freeze_bos_head_idx = 0  # Head 0 in block 1 -> BOS attention
+uniform_head_block = 0
+bos_head_block = 1
+
+# Training mode - all weights trainable (except frozen attention patterns)
+freeze_transformer = False
+freeze_attention_only = False
+freeze_until_first_mlp = False
+use_regression = False
+compute_lm_loss = True
+train_lm_only = True
+
+# AdamW optimizer (same as vanilla LM)
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = False
+seed = 42
+# Configuration for LM Training - 6 Layer - Forced BOS Mechanism (DDP)
+# Hard-codes position encoding via frozen attention heads:
+# - Block 0, Head 0: Uniform causal attention (prefix averaging)
+# - Block 1, Head 0: BOS attention (attend only to position 0)
+
+# I/O
+out_dir = "out-lm-6layer-forced-bos"
+eval_interval = 500
+log_interval = 50
+eval_iters = 200
+always_save_checkpoint = True
+
+# Wandb logging
+wandb_log = True
+wandb_project = "nope-lm"
+wandb_run_name = "nope-6layer-forced-bos-lm"
+
+# Data
+dataset = "openwebtext"
+gradient_accumulation_steps = 2  # divided by world_size
+batch_size = 512
+block_size = 128
+
+# Model - 6 layers
+n_layer = 6
+n_head = 12
+n_embd = 768
+dropout = 0.0
+bias = False
+
+# NoPE
+use_positional_embedding = False
+norm_type = "layernorm"
+log_attention_stats = True
+
+# Forced BOS mechanism
+use_forced_bos_model = True
+freeze_uniform_head_idx = 0  # Head 0 in block 0 -> uniform attention
+freeze_bos_head_idx = 0  # Head 0 in block 1 -> BOS attention
+uniform_head_block = 0
+bos_head_block = 1
+
+# Training mode - all weights trainable (except frozen attention patterns)
+freeze_transformer = False
+freeze_attention_only = False
+freeze_until_first_mlp = False
+use_regression = False
+compute_lm_loss = True
+train_lm_only = True
+
+# AdamW optimizer (same as vanilla LM)
+learning_rate = 3e-4
+max_iters = 20000
+weight_decay = 0.1
+warmup_iters = 1000
+lr_decay_iters = 20000
+min_lr = 3e-5
+
+# System
+device = "cuda"
+dtype = "bfloat16"
+compile = False
+seed = 42
+
+
+tokens per iteration will be: 131,072
+defaulting to vocab_size of GPT-2 to 50304
+defaulting to vocab_size of GPT-2 to 50304
+
+============================================================
+NoPE GPT with Forced BOS Mechanism Initialized
+============================================================
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Uniform Head:         Block 0, Head 0
+  BOS Head:             Block 1, Head 0
+  Parameters:           81.11M
+============================================================
+
+
+============================================================
+NoPE GPT with Forced BOS Mechanism Initialized
+============================================================
+  Layers:               6
+  Heads:                12
+  Embedding Dim:        768
+  Block Size:           128
+  Uniform Head:         Block 0, Head 0
+  BOS Head:             Block 1, Head 0
+  Parameters:           81.11M
+============================================================
+
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_forced_bos_lm.py:218: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+num decayed parameter tensors: 25, with 81,100,800 parameters
+num non-decayed parameter tensors: 13, with 9,984 parameters
+/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/train_forced_bos_lm.py:218: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=(dtype == "float16"))
+num decayed parameter tensors: 25, with 81,100,800 parameters
+num non-decayed parameter tensors: 13, with 9,984 parameters
+using fused AdamW: True
+using fused AdamW: True
+wandb: Currently logged in as: matan_avitan to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+[rank1]:[W123 22:47:54.840524446 reducer.cpp:1457] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+wandb: setting up run yx5sf86z
+wandb: Tracking run with wandb version 0.23.1
+wandb: Run data is saved locally in /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/wandb/run-20260123_224753-yx5sf86z
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run nope-6layer-forced-bos-lm
+wandb: ⭐️ View project at https://wandb.ai/matan_avitan/nope-lm
+wandb: 🚀 View run at https://wandb.ai/matan_avitan/nope-lm/runs/yx5sf86z
+
+Starting training for 20000 iterations...
+Forced BOS mechanism: Block 0 Head 0 (uniform), Block 1 Head 0 (BOS)
+step 0: train loss 11.0021, val loss 11.0024
+saving checkpoint to out-lm-6layer-forced-bos
+[rank0]:[W123 22:48:50.686445790 reducer.cpp:1457] Warning: find_unused_parameters=True was specified in DDP constructor, but did not find any unused parameters in the forward pass. This flag results in an extra traversal of the autograd graph every iteration,  which can adversely affect performance. If your model indeed never has any unused parameters in the forward pass, consider turning this flag off. Note that this warning may be a false positive if your model has flow control causing later iterations to have unused parameters. (function operator())
+iter 0: loss 11.0100, time 56374.89ms
+iter 50: loss 9.1895, time 301.42ms
+iter 100: loss 7.9811, time 301.63ms
+iter 150: loss 7.0939, time 301.93ms
+iter 200: loss 6.7082, time 300.65ms
+iter 250: loss 6.3870, time 302.16ms
+iter 300: loss 6.1771, time 302.50ms
+iter 350: loss 6.0051, time 302.27ms
+iter 400: loss 5.8788, time 302.63ms
+iter 450: loss 5.8035, time 302.62ms
+step 500: train loss 5.6587, val loss 5.6640
+saving checkpoint to out-lm-6layer-forced-bos
+iter 500: loss 5.6411, time 56145.95ms
+iter 550: loss 5.5533, time 302.79ms
+iter 600: loss 5.4616, time 302.72ms
+iter 650: loss 5.3751, time 303.46ms
+iter 700: loss 5.2832, time 302.80ms
+iter 750: loss 5.2689, time 301.85ms
+iter 800: loss 5.0885, time 302.62ms
+iter 850: loss 5.0681, time 301.57ms
+iter 900: loss 5.0128, time 302.45ms
+iter 950: loss 4.9265, time 301.65ms
+step 1000: train loss 4.8650, val loss 4.8683
+saving checkpoint to out-lm-6layer-forced-bos
+iter 1000: loss 4.8404, time 56093.53ms
+iter 1050: loss 4.7993, time 302.71ms
+iter 1100: loss 4.7413, time 302.35ms
+iter 1150: loss 4.7102, time 302.62ms
+iter 1200: loss 4.6493, time 302.53ms
+iter 1250: loss 4.6264, time 303.24ms
+iter 1300: loss 4.5654, time 302.99ms
+iter 1350: loss 4.5443, time 303.27ms
+iter 1400: loss 4.4857, time 303.52ms
+iter 1450: loss 4.4987, time 304.48ms
+step 1500: train loss 4.4574, val loss 4.4645
+saving checkpoint to out-lm-6layer-forced-bos
+iter 1500: loss 4.4886, time 56045.64ms
+iter 1550: loss 4.4521, time 301.89ms
+iter 1600: loss 4.3781, time 302.25ms
+iter 1650: loss 4.3416, time 303.80ms
+iter 1700: loss 4.3242, time 303.52ms
+iter 1750: loss 4.3051, time 303.22ms
+iter 1800: loss 4.3379, time 304.62ms
+iter 1850: loss 4.3113, time 302.86ms
+iter 1900: loss 4.2935, time 303.54ms
+iter 1950: loss 4.3207, time 305.56ms
+step 2000: train loss 4.2780, val loss 4.2772
+saving checkpoint to out-lm-6layer-forced-bos
+iter 2000: loss 4.2385, time 56851.24ms
+iter 2050: loss 4.2131, time 302.68ms
+iter 2100: loss 4.2903, time 302.78ms
+iter 2150: loss 4.2515, time 301.94ms
+iter 2200: loss 4.2246, time 303.28ms
+iter 2250: loss 4.2818, time 302.51ms
+iter 2300: loss 4.2158, time 301.41ms
+iter 2350: loss 4.2207, time 302.99ms
+iter 2400: loss 4.1613, time 303.26ms
+iter 2450: loss 4.1827, time 304.21ms
+step 2500: train loss 4.1672, val loss 4.1742
+saving checkpoint to out-lm-6layer-forced-bos
+iter 2500: loss 4.1318, time 56135.16ms
+iter 2550: loss 4.2181, time 302.39ms
+iter 2600: loss 4.1311, time 303.05ms
+iter 2650: loss 4.1844, time 301.81ms
+iter 2700: loss 4.1580, time 302.61ms
+iter 2750: loss 4.1299, time 302.43ms
+iter 2800: loss 4.0980, time 303.58ms
+iter 2850: loss 4.1427, time 303.43ms
+iter 2900: loss 4.1071, time 302.35ms
+iter 2950: loss 4.0970, time 302.49ms
+step 3000: train loss 4.0935, val loss 4.0964
+saving checkpoint to out-lm-6layer-forced-bos
+iter 3000: loss 4.0653, time 56175.57ms
+iter 3050: loss 4.1225, time 302.82ms
+iter 3100: loss 4.0911, time 302.01ms
+iter 3150: loss 4.1033, time 303.04ms
+iter 3200: loss 4.0728, time 303.68ms
+iter 3250: loss 4.0845, time 303.26ms
+iter 3300: loss 4.0792, time 302.63ms
+iter 3350: loss 4.0772, time 303.71ms
+iter 3400: loss 4.0477, time 302.32ms
+iter 3450: loss 4.0377, time 303.48ms
+step 3500: train loss 4.0390, val loss 4.0414
+saving checkpoint to out-lm-6layer-forced-bos
+iter 3500: loss 4.0499, time 56154.91ms
+iter 3550: loss 4.0328, time 302.03ms
+iter 3600: loss 4.0795, time 302.53ms
+iter 3650: loss 4.0067, time 302.78ms
+iter 3700: loss 4.0159, time 303.47ms
+iter 3750: loss 3.9849, time 303.72ms
+iter 3800: loss 4.0150, time 305.02ms
+iter 3850: loss 3.9492, time 304.50ms
+iter 3900: loss 4.0102, time 303.57ms
+iter 3950: loss 3.9703, time 303.88ms
+step 4000: train loss 3.9911, val loss 3.9949
+saving checkpoint to out-lm-6layer-forced-bos
+iter 4000: loss 4.0373, time 56039.34ms
+iter 4050: loss 4.0002, time 302.49ms
+iter 4100: loss 3.9878, time 301.64ms
+iter 4150: loss 3.9643, time 303.89ms
+iter 4200: loss 4.0330, time 303.37ms
+iter 4250: loss 3.9680, time 303.63ms
+iter 4300: loss 3.9551, time 303.38ms
+iter 4350: loss 3.9157, time 304.09ms
+iter 4400: loss 3.9879, time 303.42ms
+iter 4450: loss 3.9346, time 303.09ms
+step 4500: train loss 3.9579, val loss 3.9589
+saving checkpoint to out-lm-6layer-forced-bos
+iter 4500: loss 3.9792, time 56139.57ms
+iter 4550: loss 3.9749, time 302.52ms
+iter 4600: loss 3.9496, time 302.08ms
+iter 4650: loss 3.9532, time 303.64ms
+iter 4700: loss 3.9188, time 303.21ms
+iter 4750: loss 3.9929, time 303.14ms
+iter 4800: loss 3.9424, time 302.57ms
+iter 4850: loss 3.9520, time 302.12ms
+iter 4900: loss 3.9176, time 302.93ms
+iter 4950: loss 3.9411, time 302.98ms
+step 5000: train loss 3.9240, val loss 3.9293
+saving checkpoint to out-lm-6layer-forced-bos
+iter 5000: loss 3.9488, time 56149.15ms
+iter 5050: loss 3.9131, time 303.44ms
+iter 5100: loss 3.8943, time 300.95ms
+iter 5150: loss 3.9087, time 303.16ms
+iter 5200: loss 3.9404, time 304.43ms
+iter 5250: loss 3.9070, time 303.18ms
+iter 5300: loss 3.9038, time 302.96ms
+iter 5350: loss 3.8839, time 304.07ms
+iter 5400: loss 3.9122, time 302.41ms
+iter 5450: loss 3.8752, time 303.75ms
+step 5500: train loss 3.8982, val loss 3.8986
+saving checkpoint to out-lm-6layer-forced-bos
+iter 5500: loss 3.9196, time 56059.62ms
+iter 5550: loss 3.9030, time 302.54ms
+iter 5600: loss 3.8480, time 302.56ms
+iter 5650: loss 3.8486, time 302.51ms
+iter 5700: loss 3.9097, time 302.94ms
+iter 5750: loss 3.8942, time 303.10ms
+iter 5800: loss 3.8936, time 303.58ms
+iter 5850: loss 3.9191, time 303.63ms
+iter 5900: loss 3.9605, time 304.36ms
+iter 5950: loss 3.9032, time 303.26ms
+step 6000: train loss 3.8731, val loss 3.8785
+saving checkpoint to out-lm-6layer-forced-bos
+iter 6000: loss 3.9022, time 56233.81ms
+iter 6050: loss 3.9337, time 302.02ms
+iter 6100: loss 3.8415, time 302.11ms
+iter 6150: loss 3.8385, time 304.23ms
+iter 6200: loss 3.8451, time 303.09ms
+iter 6250: loss 3.8595, time 304.26ms
+iter 6300: loss 3.8576, time 303.70ms
+iter 6350: loss 3.8799, time 303.26ms
+iter 6400: loss 3.8638, time 304.22ms
+iter 6450: loss 3.8453, time 303.75ms
+step 6500: train loss 3.8526, val loss 3.8547
+saving checkpoint to out-lm-6layer-forced-bos
+iter 6500: loss 3.8348, time 56342.07ms
+iter 6550: loss 3.8474, time 302.31ms
+iter 6600: loss 3.8091, time 301.97ms
+iter 6650: loss 3.9151, time 302.87ms
+iter 6700: loss 3.8330, time 304.06ms
+iter 6750: loss 3.8339, time 303.49ms
+iter 6800: loss 3.8277, time 303.34ms
+iter 6850: loss 3.8652, time 303.42ms
+iter 6900: loss 3.8249, time 302.33ms
+iter 6950: loss 3.8299, time 303.53ms
+step 7000: train loss 3.8352, val loss 3.8349
+saving checkpoint to out-lm-6layer-forced-bos
+iter 7000: loss 3.8364, time 56317.41ms
+iter 7050: loss 3.8331, time 303.22ms
+iter 7100: loss 3.8449, time 302.73ms
+iter 7150: loss 3.8261, time 301.88ms
+iter 7200: loss 3.8577, time 303.79ms
+iter 7250: loss 3.7959, time 303.38ms
+iter 7300: loss 3.8573, time 302.50ms
+iter 7350: loss 3.8917, time 303.67ms
+iter 7400: loss 3.8044, time 304.26ms
+iter 7450: loss 3.8593, time 303.05ms
+step 7500: train loss 3.8172, val loss 3.8192
+saving checkpoint to out-lm-6layer-forced-bos
+iter 7500: loss 3.8288, time 56218.56ms
+iter 7550: loss 3.8127, time 302.67ms
+iter 7600: loss 3.8217, time 303.32ms
+iter 7650: loss 3.7650, time 302.64ms
+iter 7700: loss 3.8305, time 303.91ms
+iter 7750: loss 3.8376, time 301.93ms
+iter 7800: loss 3.8076, time 302.95ms
+iter 7850: loss 3.8083, time 303.70ms
+iter 7900: loss 3.8323, time 304.22ms
+iter 7950: loss 3.7748, time 302.61ms
+step 8000: train loss 3.8023, val loss 3.7990
+saving checkpoint to out-lm-6layer-forced-bos
+iter 8000: loss 3.8033, time 56292.34ms
+iter 8050: loss 3.7667, time 301.91ms
+iter 8100: loss 3.8354, time 303.03ms
+iter 8150: loss 3.7934, time 302.15ms
+iter 8200: loss 3.7890, time 302.35ms
+iter 8250: loss 3.8098, time 303.54ms
+iter 8300: loss 3.7903, time 303.42ms
+iter 8350: loss 3.8044, time 304.20ms
+iter 8400: loss 3.7691, time 302.32ms
+iter 8450: loss 3.8069, time 303.81ms
+step 8500: train loss 3.7803, val loss 3.7847
+saving checkpoint to out-lm-6layer-forced-bos
+iter 8500: loss 3.7840, time 56238.50ms
+iter 8550: loss 3.7335, time 302.16ms
+iter 8600: loss 3.7826, time 303.06ms
+iter 8650: loss 3.8092, time 303.93ms
+iter 8700: loss 3.7851, time 303.40ms
+iter 8750: loss 3.7832, time 303.55ms
+iter 8800: loss 3.7638, time 302.74ms
+iter 8850: loss 3.7576, time 303.63ms
+iter 8900: loss 3.7546, time 303.52ms
+iter 8950: loss 3.7860, time 303.82ms
+step 9000: train loss 3.7693, val loss 3.7734
+saving checkpoint to out-lm-6layer-forced-bos
+iter 9000: loss 3.7514, time 56233.97ms
+iter 9050: loss 3.7621, time 303.10ms
+iter 9100: loss 3.7669, time 301.97ms
+iter 9150: loss 3.7812, time 302.82ms
+iter 9200: loss 3.7451, time 304.02ms
+iter 9250: loss 3.7626, time 303.50ms
+iter 9300: loss 3.7974, time 303.50ms
+iter 9350: loss 3.7427, time 304.70ms
+iter 9400: loss 3.7857, time 302.82ms
+iter 9450: loss 3.7444, time 302.84ms
+step 9500: train loss 3.7575, val loss 3.7614
+saving checkpoint to out-lm-6layer-forced-bos
+iter 9500: loss 3.7646, time 56306.21ms
+iter 9550: loss 3.7807, time 301.54ms
+iter 9600: loss 3.7697, time 303.16ms
+iter 9650: loss 3.7742, time 303.68ms
+iter 9700: loss 3.7277, time 303.22ms
+iter 9750: loss 3.7695, time 302.61ms
+iter 9800: loss 3.7702, time 302.81ms
+iter 9850: loss 3.7411, time 303.20ms
+iter 9900: loss 3.7686, time 303.44ms
+iter 9950: loss 3.7730, time 303.37ms
+step 10000: train loss 3.7449, val loss 3.7520
+saving checkpoint to out-lm-6layer-forced-bos
+iter 10000: loss 3.7283, time 56146.77ms
+iter 10050: loss 3.7207, time 302.84ms
+iter 10100: loss 3.7190, time 301.96ms
+iter 10150: loss 3.7343, time 302.60ms
+iter 10200: loss 3.7075, time 303.49ms
+iter 10250: loss 3.7707, time 301.71ms
+iter 10300: loss 3.7004, time 303.48ms
+iter 10350: loss 3.7518, time 302.80ms
+iter 10400: loss 3.7381, time 302.85ms
+iter 10450: loss 3.7276, time 304.44ms
+step 10500: train loss 3.7339, val loss 3.7375
+saving checkpoint to out-lm-6layer-forced-bos
+iter 10500: loss 3.7094, time 56188.82ms
+iter 10550: loss 3.6904, time 300.98ms
+iter 10600: loss 3.7371, time 303.62ms
+iter 10650: loss 3.7271, time 303.69ms
+iter 10700: loss 3.7361, time 303.72ms
+iter 10750: loss 3.7253, time 303.87ms
+iter 10800: loss 3.7049, time 303.60ms
+iter 10850: loss 3.7114, time 303.72ms
+iter 10900: loss 3.6954, time 303.05ms
+iter 10950: loss 3.7100, time 302.75ms
+step 11000: train loss 3.7224, val loss 3.7261
+saving checkpoint to out-lm-6layer-forced-bos
+iter 11000: loss 3.7324, time 56069.95ms
+iter 11050: loss 3.7061, time 449.77ms
+iter 11100: loss 3.7672, time 303.56ms
+iter 11150: loss 3.7620, time 301.56ms
+iter 11200: loss 3.6961, time 303.23ms
+iter 11250: loss 3.7311, time 303.19ms
+iter 11300: loss 3.7667, time 303.67ms
+iter 11350: loss 3.6936, time 303.86ms
+iter 11400: loss 3.7072, time 302.56ms
+iter 11450: loss 3.7250, time 302.81ms
+step 11500: train loss 3.7128, val loss 3.7113
+saving checkpoint to out-lm-6layer-forced-bos
+iter 11500: loss 3.7251, time 56316.02ms
+iter 11550: loss 3.7270, time 303.48ms
+iter 11600: loss 3.7306, time 303.61ms
+iter 11650: loss 3.6997, time 303.51ms
+iter 11700: loss 3.7081, time 305.65ms
+iter 11750: loss 3.7013, time 303.63ms
+iter 11800: loss 3.7355, time 303.11ms
+iter 11850: loss 3.6664, time 304.22ms
+iter 11900: loss 3.6523, time 302.36ms
+iter 11950: loss 3.6589, time 302.38ms
+step 12000: train loss 3.7027, val loss 3.7051
+saving checkpoint to out-lm-6layer-forced-bos
+iter 12000: loss 3.7216, time 56197.37ms
+iter 12050: loss 3.7002, time 300.81ms
+iter 12100: loss 3.6790, time 301.79ms
+iter 12150: loss 3.7370, time 303.63ms
+iter 12200: loss 3.7004, time 303.92ms
+iter 12250: loss 3.6961, time 304.59ms
+iter 12300: loss 3.7380, time 302.72ms
+iter 12350: loss 3.6988, time 301.83ms
+iter 12400: loss 3.6609, time 302.58ms
+iter 12450: loss 3.6677, time 301.24ms
+step 12500: train loss 3.6900, val loss 3.6932
+saving checkpoint to out-lm-6layer-forced-bos
+iter 12500: loss 3.6549, time 56410.25ms
+iter 12550: loss 3.6860, time 302.48ms
+iter 12600: loss 3.6629, time 304.32ms
+iter 12650: loss 3.6967, time 302.70ms
+iter 12700: loss 3.7090, time 304.12ms
+iter 12750: loss 3.6445, time 302.96ms
+iter 12800: loss 3.6683, time 303.94ms
+iter 12850: loss 3.7220, time 303.40ms
+iter 12900: loss 3.6858, time 303.84ms
+iter 12950: loss 3.7353, time 302.53ms
+step 13000: train loss 3.6822, val loss 3.6866
+saving checkpoint to out-lm-6layer-forced-bos
+iter 13000: loss 3.7048, time 56249.05ms
+iter 13050: loss 3.6452, time 302.21ms
+iter 13100: loss 3.6800, time 302.09ms
+iter 13150: loss 3.6835, time 304.24ms
+iter 13200: loss 3.6632, time 303.56ms
+iter 13250: loss 3.6933, time 303.79ms
+iter 13300: loss 3.6809, time 304.54ms
+iter 13350: loss 3.7038, time 304.78ms
+iter 13400: loss 3.6702, time 302.69ms
+iter 13450: loss 3.6422, time 302.90ms
+step 13500: train loss 3.6722, val loss 3.6770
+saving checkpoint to out-lm-6layer-forced-bos
+iter 13500: loss 3.6447, time 56146.69ms
+iter 13550: loss 3.6641, time 304.79ms
+iter 13600: loss 3.6828, time 302.59ms
+iter 13650: loss 3.6969, time 303.10ms
+iter 13700: loss 3.6608, time 303.56ms
+iter 13750: loss 3.6689, time 304.16ms
+iter 13800: loss 3.6650, time 302.73ms
+iter 13850: loss 3.6612, time 303.29ms
+iter 13900: loss 3.7229, time 302.90ms
+iter 13950: loss 3.6834, time 303.16ms
+step 14000: train loss 3.6658, val loss 3.6679
+saving checkpoint to out-lm-6layer-forced-bos
+iter 14000: loss 3.7020, time 56229.97ms
+iter 14050: loss 3.6873, time 303.05ms
+iter 14100: loss 3.6658, time 303.46ms
+iter 14150: loss 3.6660, time 302.61ms
+iter 14200: loss 3.7013, time 303.07ms
+iter 14250: loss 3.6623, time 303.65ms
+iter 14300: loss 3.6868, time 303.13ms
+iter 14350: loss 3.6815, time 303.60ms
+iter 14400: loss 3.6677, time 303.67ms
+iter 14450: loss 3.7202, time 303.67ms
+step 14500: train loss 3.6590, val loss 3.6616
+saving checkpoint to out-lm-6layer-forced-bos
+iter 14500: loss 3.6799, time 56223.08ms
+iter 14550: loss 3.6305, time 301.89ms
+iter 14600: loss 3.7013, time 301.85ms
+iter 14650: loss 3.6472, time 303.17ms
+iter 14700: loss 3.6582, time 303.18ms
+iter 14750: loss 3.6762, time 302.32ms
+iter 14800: loss 3.6434, time 303.68ms
+iter 14850: loss 3.6629, time 302.75ms
+iter 14900: loss 3.6340, time 303.61ms
+iter 14950: loss 3.6819, time 303.52ms
+step 15000: train loss 3.6568, val loss 3.6543
+saving checkpoint to out-lm-6layer-forced-bos
+iter 15000: loss 3.6338, time 56542.02ms
+iter 15050: loss 3.6965, time 303.38ms
+iter 15100: loss 3.6565, time 302.87ms
+iter 15150: loss 3.6480, time 302.58ms
+iter 15200: loss 3.6533, time 303.39ms
+iter 15250: loss 3.6172, time 303.31ms
+iter 15300: loss 3.6505, time 303.38ms
+iter 15350: loss 3.6599, time 303.46ms
+iter 15400: loss 3.6286, time 303.49ms
+iter 15450: loss 3.6339, time 304.19ms
+step 15500: train loss 3.6443, val loss 3.6518
+saving checkpoint to out-lm-6layer-forced-bos
+iter 15500: loss 3.6515, time 56155.02ms
+iter 15550: loss 3.6227, time 302.09ms
+iter 15600: loss 3.6289, time 302.38ms
+iter 15650: loss 3.6278, time 303.89ms
+iter 15700: loss 3.6587, time 303.23ms
+iter 15750: loss 3.6014, time 304.75ms
+iter 15800: loss 3.6458, time 303.28ms
+iter 15850: loss 3.6702, time 303.15ms
+iter 15900: loss 3.6575, time 302.69ms
+iter 15950: loss 3.6324, time 303.91ms
+step 16000: train loss 3.6417, val loss 3.6400
+saving checkpoint to out-lm-6layer-forced-bos
+iter 16000: loss 3.6295, time 56583.29ms
+iter 16050: loss 3.6832, time 304.54ms
+iter 16100: loss 3.6394, time 301.46ms
+iter 16150: loss 3.6092, time 303.79ms
+iter 16200: loss 3.6709, time 302.87ms
+iter 16250: loss 3.6160, time 302.76ms
+iter 16300: loss 3.6610, time 302.89ms
+iter 16350: loss 3.6391, time 303.23ms
+iter 16400: loss 3.6431, time 303.45ms
+iter 16450: loss 3.6642, time 304.13ms
+step 16500: train loss 3.6318, val loss 3.6409
+saving checkpoint to out-lm-6layer-forced-bos
+iter 16500: loss 3.6568, time 56212.51ms
+iter 16550: loss 3.6052, time 303.14ms
+iter 16600: loss 3.6336, time 303.15ms
+iter 16650: loss 3.6470, time 302.69ms
+iter 16700: loss 3.6463, time 302.65ms
+iter 16750: loss 3.6705, time 302.47ms
+iter 16800: loss 3.6247, time 303.55ms
+iter 16850: loss 3.6238, time 303.93ms
+iter 16900: loss 3.6682, time 304.08ms
+iter 16950: loss 3.6493, time 303.53ms
+step 17000: train loss 3.6316, val loss 3.6328
+saving checkpoint to out-lm-6layer-forced-bos
+iter 17000: loss 3.6205, time 56016.81ms
+iter 17050: loss 3.5929, time 302.49ms
+iter 17100: loss 3.5828, time 303.52ms
+iter 17150: loss 3.6023, time 302.94ms
+iter 17200: loss 3.5984, time 303.09ms
+iter 17250: loss 3.5835, time 303.14ms
+iter 17300: loss 3.6389, time 302.31ms
+iter 17350: loss 3.5459, time 251.18ms
+iter 17400: loss 3.6320, time 304.39ms
+iter 17450: loss 3.6597, time 302.82ms
+step 17500: train loss 3.6259, val loss 3.6306
+saving checkpoint to out-lm-6layer-forced-bos
+iter 17500: loss 3.6174, time 56049.41ms
+iter 17550: loss 3.6116, time 302.59ms
+iter 17600: loss 3.5949, time 303.31ms
+iter 17650: loss 3.5795, time 301.82ms
+iter 17700: loss 3.6323, time 301.90ms
+iter 17750: loss 3.6179, time 303.55ms
+iter 17800: loss 3.6010, time 302.09ms
+iter 17850: loss 3.6483, time 303.14ms
+iter 17900: loss 3.6203, time 303.60ms
+iter 17950: loss 3.6354, time 303.81ms
+step 18000: train loss 3.6224, val loss 3.6243
+saving checkpoint to out-lm-6layer-forced-bos
+iter 18000: loss 3.6723, time 56275.53ms
+iter 18050: loss 3.6311, time 303.02ms
+iter 18100: loss 3.6623, time 302.38ms
+iter 18150: loss 3.5962, time 302.32ms
+iter 18200: loss 3.6126, time 303.55ms
+iter 18250: loss 3.6170, time 303.43ms
+iter 18300: loss 3.6294, time 303.58ms
+iter 18350: loss 3.6308, time 304.73ms
+iter 18400: loss 3.6229, time 303.49ms
+iter 18450: loss 3.6001, time 303.21ms
+step 18500: train loss 3.6188, val loss 3.6202
+saving checkpoint to out-lm-6layer-forced-bos
+iter 18500: loss 3.6358, time 56141.55ms
+iter 18550: loss 3.6490, time 302.49ms
+iter 18600: loss 3.6308, time 301.74ms
+iter 18650: loss 3.6375, time 302.85ms
+iter 18700: loss 3.6352, time 304.23ms
+iter 18750: loss 3.6210, time 303.43ms
+iter 18800: loss 3.5866, time 303.33ms
+iter 18850: loss 3.5940, time 303.15ms
+iter 18900: loss 3.6278, time 303.56ms
+iter 18950: loss 3.6207, time 303.19ms
+step 19000: train loss 3.6172, val loss 3.6165
+saving checkpoint to out-lm-6layer-forced-bos
+iter 19000: loss 3.5839, time 56287.00ms
+iter 19050: loss 3.6173, time 302.10ms
+iter 19100: loss 3.6280, time 302.70ms
+iter 19150: loss 3.5856, time 302.57ms
+iter 19200: loss 3.5595, time 302.69ms
+iter 19250: loss 3.6126, time 303.28ms
+iter 19300: loss 3.6639, time 303.52ms
+iter 19350: loss 3.6064, time 306.04ms
+iter 19400: loss 3.6014, time 302.77ms
+iter 19450: loss 3.6037, time 304.92ms
+step 19500: train loss 3.6131, val loss 3.6162
+saving checkpoint to out-lm-6layer-forced-bos
+iter 19500: loss 3.6197, time 56051.41ms
+iter 19550: loss 3.6043, time 302.55ms
+iter 19600: loss 3.6319, time 303.06ms
+iter 19650: loss 3.5831, time 303.71ms
+iter 19700: loss 3.6202, time 303.37ms
+iter 19750: loss 3.6028, time 303.51ms
+iter 19800: loss 3.5685, time 305.79ms
+iter 19850: loss 3.6304, time 303.08ms
+iter 19900: loss 3.5775, time 304.74ms
+iter 19950: loss 3.5789, time 304.30ms
+step 20000: train loss 3.6125, val loss 3.6136
+saving checkpoint to out-lm-6layer-forced-bos
+iter 20000: loss 3.5868, time 56208.62ms
+Training complete!
+wandb: updating run metadata
+wandb: uploading output.log; uploading wandb-summary.json
+wandb: uploading config.yaml
+wandb: 
+wandb: Run history:
+wandb:             iter ▁▁▁▁▁▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▄▄▄▅▅▅▅▅▇▇▇▇▇▇▇███
+wandb:               lr ▁▅███████▇▇▇▇▇▇▆▆▆▆▅▅▅▅▄▄▄▄▃▃▃▃▃▂▂▂▂▂▂▂▂
+wandb:       train/loss █▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: train/loss_batch █▇▅▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:         train/lr ▁▁▆███████▇▇▇▇▇▇▇▆▆▆▆▆▅▅▅▄▄▃▃▃▃▃▃▃▂▂▂▁▁▁
+wandb:    train/time_ms ▁▁▁▁▁▁▁▁█▁▁▁▁▁█▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:         val/loss █▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:             iter 20000
+wandb:               lr 3e-05
+wandb:       train/loss 3.61251
+wandb: train/loss_batch 3.58681
+wandb:         train/lr 3e-05
+wandb:    train/time_ms 56208.61721
+wandb:         val/loss 3.61362
+wandb: 
+wandb: 🚀 View run nope-6layer-forced-bos-lm at: https://wandb.ai/matan_avitan/nope-lm/runs/yx5sf86z
+wandb: ⭐️ View project at: https://wandb.ai/matan_avitan/nope-lm
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260123_224753-yx5sf86z/logs

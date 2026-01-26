@@ -1,0 +1,131 @@
+Loaded existing results up to L=1024
+Loading data...
+Validation data size: 4,434,606 tokens
+
+============================================================
+Analyzing R0
+============================================================
+
+============================================================
+2-Layer Mechanism Analysis Model Initialized
+============================================================
+  Embedding Dim:        768
+  Heads:                12
+  Head Dim:             64
+  Block Size:           128
+  Normalization:        layernorm
+  Regression Mode:      True
+  Parameters:           53.40M
+============================================================
+
+
+Context length: 2048
+  L=2048: 50 batches x 8 = 400 sequences
+    batch 0/50
+    batch 10/50
+    batch 20/50
+    batch 30/50
+    batch 40/50
+  R²: 0.9771
+  Mean |r|: 0.6142
+
+Context length: 4096
+  L=4096: 50 batches x 4 = 200 sequences
+    batch 0/50
+  OOM at L=4096, skipping...
+
+Context length: 8192
+  L=8192: 50 batches x 2 = 100 sequences
+    batch 0/50
+  OOM at L=8192, skipping...
+
+============================================================
+Analyzing R2
+============================================================
+
+============================================================
+2-Layer Mechanism Analysis Model Initialized
+============================================================
+  Embedding Dim:        768
+  Heads:                12
+  Head Dim:             64
+  Block Size:           128
+  Normalization:        layernorm
+  Regression Mode:      True
+  Parameters:           53.40M
+============================================================
+
+
+Context length: 2048
+  L=2048: 50 batches x 8 = 400 sequences
+    batch 0/50
+    batch 10/50
+    batch 20/50
+    batch 30/50
+    batch 40/50
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/linear_model/_ridge.py:215: LinAlgWarning: Ill-conditioned matrix (rcond=2.13807e-08): result may not be accurate.
+  return linalg.solve(A, Xy, assume_a="pos", overwrite_a=True).T
+  R²: 0.7420
+  Mean |r|: 0.6932
+
+Context length: 4096
+  L=4096: 50 batches x 4 = 200 sequences
+    batch 0/50
+    batch 10/50
+    batch 20/50
+    batch 30/50
+    batch 40/50
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/linear_model/_ridge.py:215: LinAlgWarning: Ill-conditioned matrix (rcond=1.90294e-08): result may not be accurate.
+  return linalg.solve(A, Xy, assume_a="pos", overwrite_a=True).T
+  R²: 0.6973
+  Mean |r|: 0.6228
+
+Context length: 8192
+  L=8192: 50 batches x 2 = 100 sequences
+    batch 0/50
+    batch 10/50
+    batch 20/50
+    batch 30/50
+    batch 40/50
+/home/nlp/matan_avitan/.conda/envs/py312/lib/python3.12/site-packages/sklearn/linear_model/_ridge.py:215: LinAlgWarning: Ill-conditioned matrix (rcond=2.03468e-08): result may not be accurate.
+  return linalg.solve(A, Xy, assume_a="pos", overwrite_a=True).T
+  R²: 0.6697
+  Mean |r|: 0.5906
+
+============================================================
+EXTRAPOLATION SUMMARY
+============================================================
+Model    L        R²        
+------------------------------
+R0       128      0.9658    
+R0       256      0.9574    
+R0       512      0.9689    
+R0       1024     0.9755    
+R0       2048     0.9771    
+R2       128      0.9310    
+R2       256      0.9109    
+R2       512      0.8681    
+R2       1024     0.8106    
+R2       2048     0.7420    
+R2       4096     0.6973    
+R2       8192     0.6697    
+
+============================================================
+DEGRADATION ANALYSIS (relative to L=128)
+============================================================
+
+R0:
+  L=256: R²=0.9574 (-0.9%)
+  L=512: R²=0.9689 (+0.3%)
+  L=1024: R²=0.9755 (+1.0%)
+  L=2048: R²=0.9771 (+1.2%)
+
+R2:
+  L=256: R²=0.9109 (-2.2%)
+  L=512: R²=0.8681 (-6.8%)
+  L=1024: R²=0.8106 (-12.9%)
+  L=2048: R²=0.7420 (-20.3%)
+  L=4096: R²=0.6973 (-25.1%)
+  L=8192: R²=0.6697 (-28.1%)
+
+Results saved to results/extrapolation_long_context

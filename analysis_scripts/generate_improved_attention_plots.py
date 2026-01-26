@@ -26,28 +26,32 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
 # ICML style settings
-plt.rcParams.update({
-    'font.family': 'serif',
-    'font.serif': ['Times New Roman', 'Times', 'DejaVu Serif'],
-    'font.size': 9,
-    'axes.titlesize': 10,
-    'axes.labelsize': 9,
-    'xtick.labelsize': 8,
-    'ytick.labelsize': 8,
-    'legend.fontsize': 8,
-    'figure.titlesize': 11,
-    'axes.linewidth': 0.8,
-    'axes.spines.top': False,
-    'axes.spines.right': False,
-    'figure.dpi': 300,
-    'savefig.dpi': 300,
-    'savefig.bbox': 'tight',
-    'savefig.pad_inches': 0.02,
-})
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
+        "font.size": 9,
+        "axes.titlesize": 10,
+        "axes.labelsize": 9,
+        "xtick.labelsize": 8,
+        "ytick.labelsize": 8,
+        "legend.fontsize": 8,
+        "figure.titlesize": 11,
+        "axes.linewidth": 0.8,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "figure.dpi": 300,
+        "savefig.dpi": 300,
+        "savefig.bbox": "tight",
+        "savefig.pad_inches": 0.02,
+    }
+)
 
 # Colors (colorblind-friendly)
-COLOR_BOS = '#D55E00'     # Vermillion for BOS heads
-COLOR_NON_BOS = '#0072B2'  # Blue for non-BOS heads
+COLOR_BOS = "#D55E00"  # Vermillion for BOS heads
+COLOR_NON_BOS = "#0072B2"  # Blue for non-BOS heads
+
+BOS_TOKEN_ID = 50256
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -60,7 +64,9 @@ def load_model(checkpoint_path: str, device: str = "cuda"):
     model = TwoLayerMechanismModel(config)
 
     state_dict = checkpoint["model"]
-    unwrapped = {(k[10:] if k.startswith("_orig_mod.") else k): v for k, v in state_dict.items()}
+    unwrapped = {
+        (k[10:] if k.startswith("_orig_mod.") else k): v for k, v in state_dict.items()
+    }
     model.load_state_dict(unwrapped)
     model.to(device)
     model.eval()
@@ -74,17 +80,25 @@ def load_owt_data(data_dir: str = "nanoGPT/data/openwebtext"):
     return val_data
 
 
-def get_batch(data: np.ndarray, batch_size: int, block_size: int, device: str, seed: int = 42):
-    """Get a batch of sequences with fixed seed for reproducibility."""
+def get_batch(
+    data: np.ndarray, batch_size: int, block_size: int, device: str, seed: int = 42
+):
+    """Get a batch of sequences with BOS token at position 0."""
     np.random.seed(seed)
-    ix = np.random.randint(0, len(data) - block_size, size=batch_size)
-    x = torch.stack([
-        torch.from_numpy((data[i:i + block_size]).astype(np.int64)) for i in ix
-    ])
+    tokens_needed = block_size - 1
+    ix = np.random.randint(0, len(data) - tokens_needed, size=batch_size)
+    sequences = []
+    for i in ix:
+        after_bos = data[i : i + tokens_needed].astype(np.int64)
+        seq = np.concatenate([[BOS_TOKEN_ID], after_bos])
+        sequences.append(torch.from_numpy(seq))
+    x = torch.stack(sequences)
     return x.to(device)
 
 
-def get_attention_weights(model: TwoLayerMechanismModel, tokens: torch.Tensor, device: str = "cuda"):
+def get_attention_weights(
+    model: TwoLayerMechanismModel, tokens: torch.Tensor, device: str = "cuda"
+):
     """Extract attention weights from both blocks."""
     B, T = tokens.shape
     D = model.config.n_embd
@@ -106,7 +120,7 @@ def get_attention_weights(model: TwoLayerMechanismModel, tokens: torch.Tensor, d
 
         scores1 = (q1 @ k1.transpose(-2, -1)) / np.sqrt(head_dim)
         causal_mask = torch.triu(torch.ones(T, T, device=device), diagonal=1).bool()
-        scores1 = scores1.masked_fill(causal_mask, float('-inf'))
+        scores1 = scores1.masked_fill(causal_mask, float("-inf"))
         attn_weights1 = F.softmax(scores1, dim=-1)
 
         # Block 1 output
@@ -128,14 +142,19 @@ def get_attention_weights(model: TwoLayerMechanismModel, tokens: torch.Tensor, d
         v2 = v2.view(B, T, n_head, head_dim).transpose(1, 2)
 
         scores2 = (q2 @ k2.transpose(-2, -1)) / np.sqrt(head_dim)
-        scores2 = scores2.masked_fill(causal_mask, float('-inf'))
+        scores2 = scores2.masked_fill(causal_mask, float("-inf"))
         attn_weights2 = F.softmax(scores2, dim=-1)
 
     return attn_weights1, attn_weights2
 
 
-def plot_improved_bos_heads(model: TwoLayerMechanismModel, tokens: torch.Tensor,
-                            regime: str, save_path: str, device: str = "cuda"):
+def plot_improved_bos_heads(
+    model: TwoLayerMechanismModel,
+    tokens: torch.Tensor,
+    regime: str,
+    save_path: str,
+    device: str = "cuda",
+):
     """
     Create improved BOS heads figure with viridis colormap.
 
@@ -153,29 +172,72 @@ def plot_improved_bos_heads(model: TwoLayerMechanismModel, tokens: torch.Tensor,
     # Compute BOS scores (average attention to position 0)
     bos_scores = weights[:, :, 0].mean(axis=1)
 
-    # Identify BOS heads (>50% attention to position 0)
-    bos_heads = np.where(bos_scores > 0.5)[0]
-    top_bos = np.argsort(bos_scores)[-2:][::-1]  # Top 2 by BOS score
+    # Identify BOS heads dynamically (>50% attention to position 0)
+    bos_threshold = 0.5
+    bos_head_mask = bos_scores > bos_threshold
+    bos_heads = np.where(bos_head_mask)[0]
+
+    # Verification: Check if head 0 is a BOS head
+    expected_bos_heads = [0]
+    if len(bos_heads) >= 2:
+        # Prefer expected heads if they're in the top BOS heads
+        if 0 in bos_heads:
+            fixed_bos_heads = expected_bos_heads + [int(np.argsort(bos_scores)[-2])]
+            fixed_bos_heads = list(dict.fromkeys(fixed_bos_heads))[:2]
+            print(f"✓ Verified: Head 0 is a BOS head (score: {bos_scores[0]:.3f})")
+        else:
+            # Use top 2 BOS heads instead
+            top_2_indices = np.argsort(bos_scores)[-2:][::-1]
+            fixed_bos_heads = top_2_indices.tolist()
+            print(
+                f"⚠ Warning: Expected BOS head [0] not found. Using top 2: {fixed_bos_heads}"
+            )
+            print(f"  Head 0 BOS score: {bos_scores[0]:.3f}")
+            print(f"  Actual BOS heads: {bos_heads.tolist()}")
+    else:
+        print(
+            f"⚠ Warning: Found {len(bos_heads)} BOS heads with >{bos_threshold} threshold"
+        )
+        print(
+            f"  All BOS scores: {[f'H{i}:{bos_scores[i]:.2f}' for i in range(len(bos_scores))]}"
+        )
+        # Fallback to top 2
+        top_2_indices = np.argsort(bos_scores)[-2:][::-1]
+        fixed_bos_heads = top_2_indices.tolist()
 
     # Create figure
     fig = plt.figure(figsize=(6.5, 2.8))
-    gs = GridSpec(1, 3, figure=fig, wspace=0.35, left=0.08, right=0.95, top=0.85, bottom=0.15)
+    gs = GridSpec(
+        1, 3, figure=fig, wspace=0.35, left=0.08, right=0.95, top=0.85, bottom=0.15
+    )
 
-    # Plot top 2 BOS heads with viridis
-    for i, h in enumerate(top_bos):
+    # Plot BOS heads (dynamically identified above)
+    for i, h in enumerate(fixed_bos_heads):
         ax = fig.add_subplot(gs[0, i])
 
-        # Use viridis colormap for better contrast
-        im = ax.imshow(weights[h], cmap='viridis', aspect='auto', vmin=0, vmax=1)
+        # Use ICML attention colormap
+        im = ax.imshow(weights[h], cmap="Blues", aspect="auto", vmin=0, vmax=1)
+        ax.plot(
+            0,
+            -3,
+            marker="v",
+            color="#C44E52",
+            markersize=5,
+            clip_on=False,
+            markeredgecolor="black",
+            markeredgewidth=0.3,
+        )
 
         # Add title with BOS score
-        is_bos = h in bos_heads
-        title_color = COLOR_BOS if is_bos else 'black'
-        ax.set_title(f'Head {h} (BOS: {bos_scores[h]:.2f})', fontsize=10, color=title_color)
+        is_bos = h in fixed_bos_heads
+        title_color = COLOR_BOS if is_bos else "black"
+        ax.set_title(
+            f"Head {h} (BOS: {bos_scores[h]:.2f})", fontsize=10, color=title_color
+        )
 
-        ax.set_xlabel('Key Position', fontsize=9)
+        ax.set_xlabel("Key Position", fontsize=9)
         if i == 0:
-            ax.set_ylabel('Query Position', fontsize=9)
+            ax.set_ylabel("Query Position", fontsize=9)
 
         # Clean tick formatting
         ax.xaxis.set_major_locator(ticker.MaxNLocator(5))
@@ -184,7 +246,7 @@ def plot_improved_bos_heads(model: TwoLayerMechanismModel, tokens: torch.Tensor,
         # Add colorbar for first subplot only
         if i == 0:
             cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-            cbar.set_label('Attention', fontsize=8)
+            cbar.set_label("Attention", fontsize=8)
             cbar.ax.tick_params(labelsize=7)
 
     # Bar chart of BOS scores
@@ -192,31 +254,53 @@ def plot_improved_bos_heads(model: TwoLayerMechanismModel, tokens: torch.Tensor,
 
     # Color bars based on BOS status
     colors = [COLOR_BOS if h in bos_heads else COLOR_NON_BOS for h in range(n_head)]
-    bars = ax3.bar(range(n_head), bos_scores, color=colors, edgecolor='black', linewidth=0.5, alpha=0.85)
+    bars = ax3.bar(
+        range(n_head),
+        bos_scores,
+        color=colors,
+        edgecolor="black",
+        linewidth=0.5,
+        alpha=0.85,
+    )
 
     # Add threshold line
-    ax3.axhline(y=0.5, color='gray', linestyle='--', linewidth=1, alpha=0.7)
-    ax3.text(n_head - 0.5, 0.52, 'Threshold', fontsize=7, ha='right', va='bottom', color='gray')
+    ax3.axhline(y=0.5, color="gray", linestyle="--", linewidth=1, alpha=0.7)
+    ax3.text(
+        n_head - 0.5,
+        0.52,
+        "Threshold",
+        fontsize=7,
+        ha="right",
+        va="bottom",
+        color="gray",
+    )
 
-    ax3.set_xlabel('Head', fontsize=9)
-    ax3.set_ylabel('BOS Score', fontsize=9)
-    ax3.set_title('BOS Attention by Head', fontsize=10)
+    ax3.set_xlabel("Head", fontsize=9)
+    ax3.set_ylabel("BOS Score", fontsize=9)
+    ax3.set_title("BOS Attention by Head", fontsize=10)
     ax3.set_xticks(range(0, n_head, 2))
     ax3.set_ylim(0, 1.05)
-    ax3.grid(True, alpha=0.2, axis='y', linewidth=0.5)
+    ax3.grid(True, alpha=0.2, axis="y", linewidth=0.5)
 
     # Add legend
     from matplotlib.patches import Patch
+
     legend_elements = [
-        Patch(facecolor=COLOR_BOS, edgecolor='black', label='BOS head (>0.5)'),
-        Patch(facecolor=COLOR_NON_BOS, edgecolor='black', label='Non-BOS head')
+        Patch(facecolor=COLOR_BOS, edgecolor="black", label="BOS head (>0.5)"),
+        Patch(facecolor=COLOR_NON_BOS, edgecolor="black", label="Non-BOS head"),
     ]
-    ax3.legend(handles=legend_elements, loc='upper right', fontsize=7, frameon=True, framealpha=0.9)
+    ax3.legend(
+        handles=legend_elements,
+        loc="upper right",
+        fontsize=7,
+        frameon=True,
+        framealpha=0.9,
+    )
 
-    fig.suptitle(f'{regime}: BOS Head Analysis', fontsize=11, y=0.98)
+    fig.suptitle(f"{regime}: BOS Head Analysis", fontsize=11, y=0.98)
 
-    plt.savefig(save_path, bbox_inches='tight')
-    plt.savefig(save_path.replace('.pdf', '.png'), bbox_inches='tight', dpi=300)
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.savefig(save_path.replace(".pdf", ".png"), bbox_inches="tight", dpi=300)
     plt.close()
 
     print(f"Saved improved BOS heads figure to {save_path}")
@@ -228,8 +312,13 @@ def plot_improved_bos_heads(model: TwoLayerMechanismModel, tokens: torch.Tensor,
     }
 
 
-def plot_appendix_attention_maps(model: TwoLayerMechanismModel, tokens: torch.Tensor,
-                                  regime: str, save_path: str, device: str = "cuda"):
+def plot_appendix_attention_maps(
+    model: TwoLayerMechanismModel,
+    tokens: torch.Tensor,
+    regime: str,
+    save_path: str,
+    device: str = "cuda",
+):
     """
     Create full-page attention map figure for appendix.
     Shows all 12 heads for both Block 1 and Block 2.
@@ -253,13 +342,13 @@ def plot_appendix_attention_maps(model: TwoLayerMechanismModel, tokens: torch.Te
         col = h % 6
         ax = axes[row, col]
 
-        im = ax.imshow(weights1[h], cmap='viridis', aspect='auto', vmin=0, vmax=1)
-        ax.set_title(f'H{h}', fontsize=9, pad=2)
+        im = ax.imshow(weights1[h], cmap="viridis", aspect="auto", vmin=0, vmax=1)
+        ax.set_title(f"H{h}", fontsize=9, pad=2)
 
         if col == 0 and row == 0:
-            ax.set_ylabel('Block 1\nQuery', fontsize=9)
+            ax.set_ylabel("Block 1\nQuery", fontsize=9)
         elif col == 0 and row == 1:
-            ax.set_ylabel('Query', fontsize=9)
+            ax.set_ylabel("Query", fontsize=9)
 
         ax.set_xticks([])
         ax.set_yticks([])
@@ -270,21 +359,26 @@ def plot_appendix_attention_maps(model: TwoLayerMechanismModel, tokens: torch.Te
         col = h % 6
         ax = axes[row, col]
 
-        im = ax.imshow(weights2[h], cmap='viridis', aspect='auto', vmin=0, vmax=1)
+        im = ax.imshow(weights2[h], cmap="viridis", aspect="auto", vmin=0, vmax=1)
 
         # Highlight BOS heads with colored title
         is_bos = bos_scores[h] > 0.5
-        title_color = COLOR_BOS if is_bos else 'black'
-        bos_marker = '*' if is_bos else ''
-        ax.set_title(f'H{h}{bos_marker} ({bos_scores[h]:.2f})', fontsize=8, pad=2, color=title_color)
+        title_color = COLOR_BOS if is_bos else "black"
+        bos_marker = "*" if is_bos else ""
+        ax.set_title(
+            f"H{h}{bos_marker} ({bos_scores[h]:.2f})",
+            fontsize=8,
+            pad=2,
+            color=title_color,
+        )
 
         if col == 0 and row == 2:
-            ax.set_ylabel('Block 2\nQuery', fontsize=9)
+            ax.set_ylabel("Block 2\nQuery", fontsize=9)
         elif col == 0 and row == 3:
-            ax.set_ylabel('Query', fontsize=9)
+            ax.set_ylabel("Query", fontsize=9)
 
         if row == 3:
-            ax.set_xlabel('Key', fontsize=8)
+            ax.set_xlabel("Key", fontsize=8)
 
         ax.set_xticks([])
         ax.set_yticks([])
@@ -293,14 +387,18 @@ def plot_appendix_attention_maps(model: TwoLayerMechanismModel, tokens: torch.Te
     fig.subplots_adjust(right=0.92, hspace=0.25, wspace=0.1)
     cbar_ax = fig.add_axes([0.94, 0.15, 0.015, 0.7])
     cbar = fig.colorbar(im, cax=cbar_ax)
-    cbar.set_label('Attention Weight', fontsize=9)
+    cbar.set_label("Attention Weight", fontsize=9)
     cbar.ax.tick_params(labelsize=8)
 
-    fig.suptitle(f'{regime}: Full Attention Maps (Block 1 top, Block 2 bottom)\n'
-                 f'* indicates BOS head (>50% attention to position 0)', fontsize=11, y=0.98)
+    fig.suptitle(
+        f"{regime}: Full Attention Maps (Block 1 top, Block 2 bottom)\n"
+        f"* indicates BOS head (>50% attention to position 0)",
+        fontsize=11,
+        y=0.98,
+    )
 
-    plt.savefig(save_path, bbox_inches='tight')
-    plt.savefig(save_path.replace('.pdf', '.png'), bbox_inches='tight', dpi=300)
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.savefig(save_path.replace(".pdf", ".png"), bbox_inches="tight", dpi=300)
     plt.close()
 
     print(f"Saved appendix attention maps for {regime} to {save_path}")
@@ -308,10 +406,16 @@ def plot_appendix_attention_maps(model: TwoLayerMechanismModel, tokens: torch.Te
 
 def main():
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default="nanoGPT/data/openwebtext")
-    parser.add_argument("--checkpoint_dir", type=str, default="nanoGPT/out-2layer-mechanism")
-    parser.add_argument("--save_dir", type=str, default="overleaf/nopos_icml_2026/plots")
+    parser.add_argument(
+        "--checkpoint_dir", type=str, default="nanoGPT/out-2layer-mechanism"
+    )
+    parser.add_argument("--r0_checkpoint", type=str, default=None)
+    parser.add_argument(
+        "--save_dir", type=str, default="overleaf/nopos_icml_2026/plots"
+    )
     parser.add_argument("--batch_size", type=int, default=200)
     args = parser.parse_args()
 
@@ -325,17 +429,37 @@ def main():
     regimes = ["R0", "R1", "R2", "R3"]
 
     for regime in regimes:
-        checkpoint_path = f"{args.checkpoint_dir}/{regime}/best_ckpt.pt"
+        if regime == "R0" and args.r0_checkpoint:
+            checkpoint_path = args.r0_checkpoint
+        else:
+            checkpoint_path = f"{args.checkpoint_dir}/{regime}/best_ckpt.pt"
 
         if not os.path.exists(checkpoint_path):
             print(f"Checkpoint not found for {regime}, skipping...")
             continue
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Processing {regime}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         model, config = load_model(checkpoint_path, DEVICE)
+
+        # Print checkpoint info
+        print(f"  Checkpoint: {checkpoint_path}")
+        print(
+            f"  Model config: n_head={config.n_head}, "
+            f"n_embd={config.n_embd}, block_size={config.block_size}"
+        )
+
+        # Get modification time
+        import datetime
+
+        ckpt_mtime = os.path.getmtime(checkpoint_path)
+        ckpt_date = datetime.datetime.fromtimestamp(ckpt_mtime).strftime(
+            "%Y-%m-%d %H:%M"
+        )
+        print(f"  Checkpoint date: {ckpt_date}")
+
         block_size = config.block_size
 
         tokens = get_batch(val_data, args.batch_size, block_size, DEVICE, seed=42)
@@ -343,24 +467,28 @@ def main():
         # Generate improved BOS heads figure (only for R0)
         if regime == "R0":
             bos_info = plot_improved_bos_heads(
-                model, tokens, regime,
+                model,
+                tokens,
+                regime,
                 os.path.join(args.save_dir, "R0_bos_heads.pdf"),
-                DEVICE
+                DEVICE,
             )
             print(f"  BOS heads: {bos_info['bos_heads']}")
             print(f"  BOS scores: {[f'{s:.2f}' for s in bos_info['bos_scores']]}")
 
         # Generate appendix attention maps
         plot_appendix_attention_maps(
-            model, tokens, regime,
+            model,
+            tokens,
+            regime,
             os.path.join(args.save_dir, f"appendix_attention_{regime}.pdf"),
-            DEVICE
+            DEVICE,
         )
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("All visualizations complete!")
     print(f"Output directory: {args.save_dir}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
 
 if __name__ == "__main__":

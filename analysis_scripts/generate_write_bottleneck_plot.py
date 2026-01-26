@@ -32,31 +32,35 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
 # ICML style settings
-plt.rcParams.update({
-    'font.family': 'serif',
-    'font.serif': ['Times New Roman', 'Times', 'DejaVu Serif'],
-    'font.size': 9,
-    'axes.labelsize': 10,
-    'axes.titlesize': 10,
-    'legend.fontsize': 8,
-    'xtick.labelsize': 8,
-    'ytick.labelsize': 8,
-    'axes.linewidth': 0.8,
-    'lines.linewidth': 1.5,
-    'lines.markersize': 5,
-    'figure.dpi': 300,
-    'savefig.dpi': 300,
-    'savefig.bbox': 'tight',
-    'savefig.pad_inches': 0.02,
-    'axes.spines.top': False,
-    'axes.spines.right': False,
-})
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
+        "font.size": 9,
+        "axes.labelsize": 10,
+        "axes.titlesize": 10,
+        "legend.fontsize": 8,
+        "xtick.labelsize": 8,
+        "ytick.labelsize": 8,
+        "axes.linewidth": 0.8,
+        "lines.linewidth": 1.5,
+        "lines.markersize": 5,
+        "figure.dpi": 300,
+        "savefig.dpi": 300,
+        "savefig.bbox": "tight",
+        "savefig.pad_inches": 0.02,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+    }
+)
 
 # Colors (colorblind-friendly)
-COLOR_R0 = '#0072B2'  # Blue
-COLOR_R2 = '#D55E00'  # Vermillion
+COLOR_R0 = "#0072B2"  # Blue
+COLOR_R2 = "#D55E00"  # Vermillion
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+BOS_TOKEN_ID = 50256
 
 
 def load_model(checkpoint_path: str, device: str = "cuda"):
@@ -70,7 +74,7 @@ def load_model(checkpoint_path: str, device: str = "cuda"):
     unwrapped_state_dict = {}
     for k, v in state_dict.items():
         if k.startswith("_orig_mod."):
-            unwrapped_state_dict[k[len("_orig_mod."):]] = v
+            unwrapped_state_dict[k[len("_orig_mod.") :]] = v
         else:
             unwrapped_state_dict[k] = v
 
@@ -87,12 +91,29 @@ def load_owt_data(data_dir: str = "nanoGPT/data/openwebtext"):
     return val_data
 
 
-def get_batch(data: np.ndarray, batch_size: int, block_size: int, device: str):
-    """Get a batch of sequences."""
-    ix = torch.randint(len(data) - block_size, (batch_size,))
-    x = torch.stack([
-        torch.from_numpy((data[i:i + block_size]).astype(np.int64)) for i in ix
-    ])
+def get_batch(
+    data: np.ndarray,
+    batch_size: int,
+    block_size: int,
+    device: str,
+    force_bos: bool = False,
+    bos_token_id: int = BOS_TOKEN_ID,
+):
+    """Get a batch of sequences, optionally forcing BOS at position 0."""
+    if force_bos:
+        tokens_needed = block_size - 1
+        ix = torch.randint(len(data) - tokens_needed, (batch_size,))
+        sequences = []
+        for i in ix:
+            after_bos = data[i : i + tokens_needed].astype(np.int64)
+            seq = np.concatenate([[bos_token_id], after_bos])
+            sequences.append(torch.from_numpy(seq))
+        x = torch.stack(sequences)
+    else:
+        ix = torch.randint(len(data) - block_size, (batch_size,))
+        x = torch.stack(
+            [torch.from_numpy((data[i : i + block_size]).astype(np.int64)) for i in ix]
+        )
     return x.to(device)
 
 
@@ -106,7 +127,7 @@ def get_block2_write_map_svd(model: TwoLayerMechanismModel):
     d_model = c_attn_weight.shape[1]
 
     # Extract W_V (last third of c_attn)
-    W_V = c_attn_weight[2 * d_model:, :]  # [d_model, d_model]
+    W_V = c_attn_weight[2 * d_model :, :]  # [d_model, d_model]
     W_O = attn.c_proj.weight  # [d_model, d_model]
     B = W_O @ W_V  # [d_model, d_model]
 
@@ -156,8 +177,10 @@ def forward_with_write_intervention(
         v1 = v1.view(B, T, n_head, head_dim).transpose(1, 2)
 
         att1 = (q1 @ k1.transpose(-2, -1)) * (1.0 / np.sqrt(head_dim))
-        causal_mask = torch.triu(torch.ones(T, T, device=tokens.device), diagonal=1).bool()
-        att1 = att1.masked_fill(causal_mask, float('-inf'))
+        causal_mask = torch.triu(
+            torch.ones(T, T, device=tokens.device), diagonal=1
+        ).bool()
+        att1 = att1.masked_fill(causal_mask, float("-inf"))
         att1 = F.softmax(att1, dim=-1)
         y1 = (att1 @ v1).transpose(1, 2).contiguous().view(B, T, d_model)
         attn_out1 = attn1.c_proj(y1)
@@ -178,7 +201,7 @@ def forward_with_write_intervention(
         v2 = v2.view(B, T, n_head, head_dim).transpose(1, 2)
 
         att2 = (q2 @ k2.transpose(-2, -1)) * (1.0 / np.sqrt(head_dim))
-        att2 = att2.masked_fill(causal_mask, float('-inf'))
+        att2 = att2.masked_fill(causal_mask, float("-inf"))
         att2 = F.softmax(att2, dim=-1)
         y2 = (att2 @ v2).transpose(1, 2).contiguous().view(B, T, d_model)
         attn_out2 = attn2.c_proj(y2)  # This is o_i before residual
@@ -224,9 +247,16 @@ def compute_r2_at_rank(
 
     for _ in range(n_batches):
         tokens = get_batch(data, batch_size, block_size, DEVICE)
-        preds = forward_with_write_intervention(model, tokens, U, rank, intervention_type)
+        preds = forward_with_write_intervention(
+            model, tokens, U, rank, intervention_type
+        )
 
-        positions = torch.arange(block_size, device=DEVICE).float().unsqueeze(0).expand(batch_size, -1)
+        positions = (
+            torch.arange(block_size, device=DEVICE)
+            .float()
+            .unsqueeze(0)
+            .expand(batch_size, -1)
+        )
 
         all_preds.append(preds.cpu())
         all_positions.append(positions.cpu())
@@ -236,7 +266,7 @@ def compute_r2_at_rank(
 
     # Compute R²
     r, _ = stats.pearsonr(all_positions, all_preds)
-    r2 = r ** 2
+    r2 = r**2
 
     return r2
 
@@ -250,9 +280,9 @@ def run_write_bottleneck_experiment(
     batch_size: int = 32,
 ):
     """Run full write bottleneck experiment for a model."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Running write bottleneck experiment for {model_name}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Get SVD of write map
     U, S, Vt = get_block2_write_map_svd(model)
@@ -260,8 +290,14 @@ def run_write_bottleneck_experiment(
 
     # Compute baseline R² (no intervention)
     baseline_r2 = compute_r2_at_rank(
-        model, data, U, 768, "retention",  # Full rank = no intervention
-        n_batches, batch_size, block_size
+        model,
+        data,
+        U,
+        768,
+        "retention",  # Full rank = no intervention
+        n_batches,
+        batch_size,
+        block_size,
     )
     print(f"Baseline R²: {baseline_r2:.4f}")
 
@@ -271,12 +307,10 @@ def run_write_bottleneck_experiment(
 
     for rank in tqdm(ranks, desc=f"{model_name} ranks"):
         ret_r2 = compute_r2_at_rank(
-            model, data, U, rank, "retention",
-            n_batches, batch_size, block_size
+            model, data, U, rank, "retention", n_batches, batch_size, block_size
         )
         abl_r2 = compute_r2_at_rank(
-            model, data, U, rank, "ablation",
-            n_batches, batch_size, block_size
+            model, data, U, rank, "ablation", n_batches, batch_size, block_size
         )
         retention_r2s.append(ret_r2)
         ablation_r2s.append(abl_r2)
@@ -308,48 +342,89 @@ def create_main_text_plot(results_r0: dict, results_r2: dict, save_path: str):
     ranks = results_r0["ranks"]
 
     # R0 curves (no markers for readability)
-    ax.plot(ranks, results_r0["retention_r2s"], '-', color=COLOR_R0,
-            label='R0 retention', linewidth=1.5)
-    ax.plot(ranks, results_r0["ablation_r2s"], '--', color=COLOR_R0,
-            label='R0 ablation', linewidth=1.5, alpha=0.7)
+    ax.plot(
+        ranks,
+        results_r0["retention_r2s"],
+        "-",
+        color=COLOR_R0,
+        label="R0 retention",
+        linewidth=1.5,
+    )
+    ax.plot(
+        ranks,
+        results_r0["ablation_r2s"],
+        "--",
+        color=COLOR_R0,
+        label="R0 ablation",
+        linewidth=1.5,
+        alpha=0.7,
+    )
 
     # R2 curves (no markers for readability)
-    ax.plot(ranks, results_r2["retention_r2s"], '-', color=COLOR_R2,
-            label='R2 retention', linewidth=1.5)
-    ax.plot(ranks, results_r2["ablation_r2s"], '--', color=COLOR_R2,
-            label='R2 ablation', linewidth=1.5, alpha=0.7)
+    ax.plot(
+        ranks,
+        results_r2["retention_r2s"],
+        "-",
+        color=COLOR_R2,
+        label="R2 retention",
+        linewidth=1.5,
+    )
+    ax.plot(
+        ranks,
+        results_r2["ablation_r2s"],
+        "--",
+        color=COLOR_R2,
+        label="R2 ablation",
+        linewidth=1.5,
+        alpha=0.7,
+    )
 
     # Mark r_95 points
     if results_r0["r_95"]:
         idx = ranks.index(results_r0["r_95"])
-        ax.axvline(x=results_r0["r_95"], color=COLOR_R0, linestyle=':', alpha=0.5, linewidth=1)
-        ax.annotate(f'$r_{{95}}$={results_r0["r_95"]}',
-                   xy=(results_r0["r_95"], results_r0["retention_r2s"][idx]),
-                   xytext=(results_r0["r_95"]+5, results_r0["retention_r2s"][idx]-0.1),
-                   fontsize=7, color=COLOR_R0)
+        ax.axvline(
+            x=results_r0["r_95"], color=COLOR_R0, linestyle=":", alpha=0.5, linewidth=1
+        )
+        ax.annotate(
+            f"$r_{{95}}$={results_r0['r_95']}",
+            xy=(results_r0["r_95"], results_r0["retention_r2s"][idx]),
+            xytext=(results_r0["r_95"] + 5, results_r0["retention_r2s"][idx] - 0.1),
+            fontsize=7,
+            color=COLOR_R0,
+        )
 
     if results_r2["r_95"]:
         idx = ranks.index(results_r2["r_95"])
-        ax.axvline(x=results_r2["r_95"], color=COLOR_R2, linestyle=':', alpha=0.5, linewidth=1)
-        ax.annotate(f'$r_{{95}}$={results_r2["r_95"]}',
-                   xy=(results_r2["r_95"], results_r2["retention_r2s"][idx]),
-                   xytext=(results_r2["r_95"]+5, results_r2["retention_r2s"][idx]+0.05),
-                   fontsize=7, color=COLOR_R2)
+        ax.axvline(
+            x=results_r2["r_95"], color=COLOR_R2, linestyle=":", alpha=0.5, linewidth=1
+        )
+        ax.annotate(
+            f"$r_{{95}}$={results_r2['r_95']}",
+            xy=(results_r2["r_95"], results_r2["retention_r2s"][idx]),
+            xytext=(results_r2["r_95"] + 5, results_r2["retention_r2s"][idx] + 0.05),
+            fontsize=7,
+            color=COLOR_R2,
+        )
 
     # 95% baseline line
-    ax.axhline(y=0.95 * results_r0["baseline_r2"], color='gray', linestyle='--',
-               alpha=0.3, linewidth=0.8)
+    ax.axhline(
+        y=0.95 * results_r0["baseline_r2"],
+        color="gray",
+        linestyle="--",
+        alpha=0.3,
+        linewidth=0.8,
+    )
 
-    ax.set_xlabel('Rank $r$')
-    ax.set_ylabel('Position $R^2$')
+    ax.set_xlabel("Rank $r$")
+    ax.set_ylabel("Position $R^2$")
     ax.set_xlim(0, max(ranks))
     ax.set_ylim(0, 1.05)
-    ax.legend(loc='lower right', fontsize=7, frameon=True, framealpha=0.9)
+    ax.legend(loc="lower right", fontsize=7, frameon=True, framealpha=0.9)
     ax.grid(True, alpha=0.2, linewidth=0.5)
 
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches='tight')
-    plt.savefig(save_path.replace('.pdf', '.png'), bbox_inches='tight', dpi=300)
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.savefig(save_path.replace(".pdf", ".png"), bbox_inches="tight", dpi=300)
     plt.close()
 
     print(f"Saved main text figure to {save_path}")
@@ -367,8 +442,15 @@ def create_appendix_plot(all_results: dict, save_path: str):
         ax = axes[i]
 
         if model_key not in all_results:
-            ax.text(0.5, 0.5, f'{title}\n(not available)', ha='center', va='center',
-                   transform=ax.transAxes, fontsize=10)
+            ax.text(
+                0.5,
+                0.5,
+                f"{title}\n(not available)",
+                ha="center",
+                va="center",
+                transform=ax.transAxes,
+                fontsize=10,
+            )
             ax.set_title(title)
             continue
 
@@ -376,30 +458,53 @@ def create_appendix_plot(all_results: dict, save_path: str):
         ranks = results["ranks"]
 
         # No markers for readability
-        ax.plot(ranks, results["retention_r2s"], '-', color=color,
-                label='Retention', linewidth=1.5)
-        ax.plot(ranks, results["ablation_r2s"], '--', color=color,
-                label='Ablation', linewidth=1.5, alpha=0.7)
+        ax.plot(
+            ranks,
+            results["retention_r2s"],
+            "-",
+            color=color,
+            label="Retention",
+            linewidth=1.5,
+        )
+        ax.plot(
+            ranks,
+            results["ablation_r2s"],
+            "--",
+            color=color,
+            label="Ablation",
+            linewidth=1.5,
+            alpha=0.7,
+        )
 
         if results["r_95"]:
-            ax.axvline(x=results["r_95"], color=color, linestyle=':', alpha=0.5)
-            ax.text(results["r_95"]+2, 0.1, f'$r_{{95}}$={results["r_95"]}',
-                   fontsize=7, color=color)
+            ax.axvline(x=results["r_95"], color=color, linestyle=":", alpha=0.5)
+            ax.text(
+                results["r_95"] + 2,
+                0.1,
+                f"$r_{{95}}$={results['r_95']}",
+                fontsize=7,
+                color=color,
+            )
 
-        ax.axhline(y=0.95 * results["baseline_r2"], color='gray', linestyle='--',
-                   alpha=0.3, linewidth=0.8)
+        ax.axhline(
+            y=0.95 * results["baseline_r2"],
+            color="gray",
+            linestyle="--",
+            alpha=0.3,
+            linewidth=0.8,
+        )
 
-        ax.set_xlabel('Rank $r$')
-        ax.set_ylabel('Position $R^2$')
+        ax.set_xlabel("Rank $r$")
+        ax.set_ylabel("Position $R^2$")
         ax.set_title(title)
         ax.set_xlim(0, max(ranks))
         ax.set_ylim(0, 1.05)
-        ax.legend(loc='lower right', fontsize=6, frameon=True)
+        ax.legend(loc="lower right", fontsize=6, frameon=True)
         ax.grid(True, alpha=0.2, linewidth=0.5)
 
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches='tight')
-    plt.savefig(save_path.replace('.pdf', '.png'), bbox_inches='tight', dpi=300)
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.savefig(save_path.replace(".pdf", ".png"), bbox_inches="tight", dpi=300)
     plt.close()
 
     print(f"Saved appendix figure to {save_path}")
@@ -407,14 +512,18 @@ def create_appendix_plot(all_results: dict, save_path: str):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--r0_checkpoint", type=str,
-                       default="nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt")
-    parser.add_argument("--r2_checkpoint", type=str,
-                       default="nanoGPT/out-2layer-mechanism/R2/best_ckpt.pt")
-    parser.add_argument("--data_dir", type=str,
-                       default="nanoGPT/data/openwebtext")
-    parser.add_argument("--save_dir", type=str,
-                       default="results/write_bottleneck")
+    parser.add_argument(
+        "--r0_checkpoint",
+        type=str,
+        default="nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt",
+    )
+    parser.add_argument(
+        "--r2_checkpoint",
+        type=str,
+        default="nanoGPT/out-2layer-mechanism/R2/best_ckpt.pt",
+    )
+    parser.add_argument("--data_dir", type=str, default="nanoGPT/data/openwebtext")
+    parser.add_argument("--save_dir", type=str, default="results/write_bottleneck")
     parser.add_argument("--n_batches", type=int, default=50)
     parser.add_argument("--batch_size", type=int, default=32)
     args = parser.parse_args()
@@ -426,7 +535,9 @@ def main():
     val_data = load_owt_data(args.data_dir)
 
     # Define ranks to test
-    ranks = list(range(1, 21)) + list(range(25, 101, 5))  # 1-20 dense, then 25, 30, ..., 100
+    ranks = list(range(1, 21)) + list(
+        range(25, 101, 5)
+    )  # 1-20 dense, then 25, 30, ..., 100
 
     all_results = {}
 
@@ -456,35 +567,36 @@ def main():
 
     # Create main text figure
     create_main_text_plot(
-        results_r0, results_r2,
-        os.path.join(args.save_dir, "write_bottleneck_curves.pdf")
+        results_r0,
+        results_r2,
+        os.path.join(args.save_dir, "write_bottleneck_curves.pdf"),
     )
 
     # Create appendix figure (just with available models for now)
     create_appendix_plot(
-        all_results,
-        os.path.join(args.save_dir, "write_bottleneck_curves_all.pdf")
+        all_results, os.path.join(args.save_dir, "write_bottleneck_curves_all.pdf")
     )
 
     # Copy to paper directory
     import shutil
+
     paper_dir = "overleaf/nopos_icml_2026/plots"
     shutil.copy(
         os.path.join(args.save_dir, "write_bottleneck_curves.pdf"),
-        os.path.join(paper_dir, "write_bottleneck_curves.pdf")
+        os.path.join(paper_dir, "write_bottleneck_curves.pdf"),
     )
     shutil.copy(
         os.path.join(args.save_dir, "write_bottleneck_curves_all.pdf"),
-        os.path.join(paper_dir, "write_bottleneck_curves_all_models.pdf")
+        os.path.join(paper_dir, "write_bottleneck_curves_all_models.pdf"),
     )
     print(f"\nCopied figures to {paper_dir}")
 
     # Print table data for paper
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("TABLE DATA FOR PAPER (tab:r95)")
-    print("="*60)
+    print("=" * 60)
     print(f"{'Model':<15} {'Baseline R²':<15} {'r_95':<10}")
-    print("-"*40)
+    print("-" * 40)
     for key, results in all_results.items():
         print(f"{key:<15} {results['baseline_r2']:.4f}         {results['r_95']}")
 

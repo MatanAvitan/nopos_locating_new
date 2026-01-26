@@ -1,0 +1,306 @@
+Using device: cuda
+Loaded 9,035,582,489 tokens
+
+============================================================
+2-Layer Mechanism Analysis Model Initialized
+============================================================
+  Embedding Dim:        768
+  Heads:                12
+  Head Dim:             64
+  Block Size:           128
+  Normalization:        layernorm
+  Regression Mode:      True
+  Parameters:           53.40M
+============================================================
+
+
+============================================================
+Regime: R0: Full Training
+============================================================
+  Trainable:  53,402,882 params (100.0%)
+  Frozen:     0 params (0.0%)
+  Total:      53,402,882 params
+
+  Component status:
+    Embedding      : TRAIN  (38,633,472 params)
+    Block1.LN1     : TRAIN  (1,536 params)
+    Block1.Attn    : TRAIN  (2,362,368 params)
+    Block1.LN2     : TRAIN  (1,536 params)
+    Block1.MLP     : TRAIN  (4,722,432 params)
+    Block2.LN1     : TRAIN  (1,536 params)
+    Block2.Attn    : TRAIN  (2,362,368 params)
+    Block2.LN2     : TRAIN  (1,536 params)
+    Block2.MLP     : TRAIN  (4,722,432 params)
+    Final LN       : TRAIN  (1,536 params)
+    Pos Head       : TRAIN  (769 params)
+    MLP Probe      : TRAIN  (591,361 params)
+============================================================
+
+Optimizer: 12 weight decay, 21 no decay
+
+======================================================================
+Training BOS@80 Model for 20000 iterations with gradient logging
+======================================================================
+
+Initial attention - Head 7 → pos 0: 0.0447
+Initial attention - Head 9 → BOS:   0.0102
+  [EVAL] Head7→pos0: 0.0463, Head9→BOS: 0.0099
+iter   100 | loss 3364.6138 | lr 5.00e-04 | 29ms/iter
+iter   200 | loss 1076.3349 | lr 1.00e-03 | 26ms/iter
+iter   300 | loss 230.1980 | lr 1.00e-03 | 26ms/iter
+iter   400 | loss 148.5212 | lr 1.00e-03 | 26ms/iter
+iter   500 | loss 137.4632 | lr 9.99e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0569, Head9→BOS: 0.0004
+iter   600 | loss 116.1215 | lr 9.99e-04 | 27ms/iter
+iter   700 | loss 86.9053 | lr 9.99e-04 | 26ms/iter
+iter   800 | loss 84.0397 | lr 9.98e-04 | 26ms/iter
+iter   900 | loss 75.8518 | lr 9.97e-04 | 26ms/iter
+iter  1000 | loss 74.2208 | lr 9.96e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0474, Head9→BOS: 0.0031
+iter  1100 | loss 70.6594 | lr 9.95e-04 | 27ms/iter
+iter  1200 | loss 64.7068 | lr 9.94e-04 | 26ms/iter
+iter  1300 | loss 67.8657 | lr 9.93e-04 | 26ms/iter
+iter  1400 | loss 65.2465 | lr 9.92e-04 | 26ms/iter
+iter  1500 | loss 61.9907 | lr 9.90e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0587, Head9→BOS: 0.0005
+iter  1600 | loss 58.0141 | lr 9.89e-04 | 27ms/iter
+iter  1700 | loss 58.2879 | lr 9.87e-04 | 26ms/iter
+iter  1800 | loss 56.4422 | lr 9.86e-04 | 26ms/iter
+iter  1900 | loss 57.5476 | lr 9.84e-04 | 26ms/iter
+iter  2000 | loss 56.8562 | lr 9.82e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0711, Head9→BOS: 0.0087
+iter  2100 | loss 56.8347 | lr 9.80e-04 | 27ms/iter
+iter  2200 | loss 53.1342 | lr 9.78e-04 | 26ms/iter
+iter  2300 | loss 57.0412 | lr 9.75e-04 | 26ms/iter
+iter  2400 | loss 55.3152 | lr 9.73e-04 | 26ms/iter
+iter  2500 | loss 52.9825 | lr 9.70e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0818, Head9→BOS: 0.0217
+iter  2600 | loss 50.5317 | lr 9.68e-04 | 27ms/iter
+iter  2700 | loss 48.9976 | lr 9.65e-04 | 26ms/iter
+iter  2800 | loss 54.2664 | lr 9.62e-04 | 26ms/iter
+iter  2900 | loss 53.7878 | lr 9.59e-04 | 26ms/iter
+iter  3000 | loss 46.7478 | lr 9.56e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0720, Head9→BOS: 0.0081
+iter  3100 | loss 48.9461 | lr 9.53e-04 | 27ms/iter
+iter  3200 | loss 46.9244 | lr 9.50e-04 | 26ms/iter
+iter  3300 | loss 53.2519 | lr 9.47e-04 | 26ms/iter
+iter  3400 | loss 48.5537 | lr 9.43e-04 | 26ms/iter
+iter  3500 | loss 50.0315 | lr 9.40e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.0957, Head9→BOS: 0.0410
+iter  3600 | loss 44.8098 | lr 9.36e-04 | 27ms/iter
+iter  3700 | loss 45.9946 | lr 9.32e-04 | 26ms/iter
+iter  3800 | loss 40.6519 | lr 9.29e-04 | 26ms/iter
+iter  3900 | loss 42.3781 | lr 9.25e-04 | 26ms/iter
+iter  4000 | loss 45.3873 | lr 9.21e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1100, Head9→BOS: 0.0052
+iter  4100 | loss 42.3317 | lr 9.17e-04 | 27ms/iter
+iter  4200 | loss 41.5958 | lr 9.12e-04 | 26ms/iter
+iter  4300 | loss 42.0269 | lr 9.08e-04 | 26ms/iter
+iter  4400 | loss 41.4762 | lr 9.04e-04 | 26ms/iter
+iter  4500 | loss 41.6667 | lr 8.99e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1275, Head9→BOS: 0.0257
+iter  4600 | loss 42.9946 | lr 8.95e-04 | 27ms/iter
+iter  4700 | loss 39.7906 | lr 8.90e-04 | 26ms/iter
+iter  4800 | loss 42.0024 | lr 8.85e-04 | 26ms/iter
+iter  4900 | loss 38.6668 | lr 8.81e-04 | 26ms/iter
+iter  5000 | loss 43.5839 | lr 8.76e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1305, Head9→BOS: 0.0438
+iter  5100 | loss 38.2658 | lr 8.71e-04 | 27ms/iter
+iter  5200 | loss 42.9286 | lr 8.66e-04 | 26ms/iter
+iter  5300 | loss 41.2256 | lr 8.61e-04 | 26ms/iter
+iter  5400 | loss 38.4861 | lr 8.55e-04 | 26ms/iter
+iter  5500 | loss 44.3726 | lr 8.50e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1582, Head9→BOS: 0.0338
+iter  5600 | loss 41.2455 | lr 8.45e-04 | 26ms/iter
+iter  5700 | loss 35.9624 | lr 8.39e-04 | 26ms/iter
+iter  5800 | loss 36.4752 | lr 8.34e-04 | 26ms/iter
+iter  5900 | loss 36.3738 | lr 8.28e-04 | 26ms/iter
+iter  6000 | loss 37.6629 | lr 8.23e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1486, Head9→BOS: 0.0604
+iter  6100 | loss 36.3382 | lr 8.17e-04 | 26ms/iter
+iter  6200 | loss 37.5264 | lr 8.11e-04 | 26ms/iter
+iter  6300 | loss 35.4343 | lr 8.05e-04 | 26ms/iter
+iter  6400 | loss 35.3911 | lr 7.99e-04 | 26ms/iter
+iter  6500 | loss 35.2636 | lr 7.93e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1620, Head9→BOS: 0.0208
+iter  6600 | loss 32.2223 | lr 7.87e-04 | 26ms/iter
+iter  6700 | loss 32.7494 | lr 7.81e-04 | 26ms/iter
+iter  6800 | loss 32.3016 | lr 7.75e-04 | 26ms/iter
+iter  6900 | loss 29.1409 | lr 7.69e-04 | 26ms/iter
+iter  7000 | loss 32.4332 | lr 7.63e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.1990, Head9→BOS: 0.0111
+iter  7100 | loss 33.1524 | lr 7.56e-04 | 26ms/iter
+iter  7200 | loss 33.7246 | lr 7.50e-04 | 26ms/iter
+iter  7300 | loss 33.2454 | lr 7.43e-04 | 26ms/iter
+iter  7400 | loss 31.0071 | lr 7.37e-04 | 26ms/iter
+iter  7500 | loss 32.4856 | lr 7.30e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.2182, Head9→BOS: 0.0134
+iter  7600 | loss 32.9392 | lr 7.24e-04 | 26ms/iter
+iter  7700 | loss 31.2968 | lr 7.17e-04 | 26ms/iter
+iter  7800 | loss 29.7945 | lr 7.11e-04 | 26ms/iter
+iter  7900 | loss 28.9116 | lr 7.04e-04 | 26ms/iter
+iter  8000 | loss 30.2829 | lr 6.97e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.3111, Head9→BOS: 0.0496
+iter  8100 | loss 29.9076 | lr 6.90e-04 | 26ms/iter
+iter  8200 | loss 28.0506 | lr 6.84e-04 | 26ms/iter
+iter  8300 | loss 30.0197 | lr 6.77e-04 | 26ms/iter
+iter  8400 | loss 30.4481 | lr 6.70e-04 | 26ms/iter
+iter  8500 | loss 29.0988 | lr 6.63e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.3248, Head9→BOS: 0.0004
+iter  8600 | loss 27.7701 | lr 6.56e-04 | 26ms/iter
+iter  8700 | loss 26.7764 | lr 6.49e-04 | 26ms/iter
+iter  8800 | loss 28.3367 | lr 6.42e-04 | 26ms/iter
+iter  8900 | loss 27.9816 | lr 6.35e-04 | 26ms/iter
+iter  9000 | loss 29.2837 | lr 6.28e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.3746, Head9→BOS: 0.0282
+iter  9100 | loss 27.5668 | lr 6.21e-04 | 26ms/iter
+iter  9200 | loss 25.2655 | lr 6.14e-04 | 26ms/iter
+iter  9300 | loss 23.5515 | lr 6.07e-04 | 26ms/iter
+iter  9400 | loss 24.5923 | lr 6.00e-04 | 26ms/iter
+iter  9500 | loss 22.5488 | lr 5.93e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.5515, Head9→BOS: 0.0092
+iter  9600 | loss 19.8063 | lr 5.86e-04 | 26ms/iter
+iter  9700 | loss 23.2519 | lr 5.79e-04 | 26ms/iter
+iter  9800 | loss 20.9546 | lr 5.71e-04 | 26ms/iter
+iter  9900 | loss 19.3204 | lr 5.64e-04 | 26ms/iter
+iter 10000 | loss 21.0824 | lr 5.57e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.5249, Head9→BOS: 0.0007
+iter 10100 | loss 19.5728 | lr 5.50e-04 | 26ms/iter
+iter 10200 | loss 18.7825 | lr 5.43e-04 | 26ms/iter
+iter 10300 | loss 17.2580 | lr 5.36e-04 | 26ms/iter
+iter 10400 | loss 20.8752 | lr 5.29e-04 | 26ms/iter
+iter 10500 | loss 16.4030 | lr 5.21e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.5603, Head9→BOS: 0.0025
+iter 10600 | loss 16.7903 | lr 5.14e-04 | 26ms/iter
+iter 10700 | loss 18.9574 | lr 5.07e-04 | 26ms/iter
+iter 10800 | loss 17.1557 | lr 5.00e-04 | 26ms/iter
+iter 10900 | loss 16.7560 | lr 4.93e-04 | 26ms/iter
+iter 11000 | loss 12.8578 | lr 4.86e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.5607, Head9→BOS: 0.0031
+iter 11100 | loss 11.5277 | lr 4.79e-04 | 26ms/iter
+iter 11200 | loss 15.9783 | lr 4.72e-04 | 26ms/iter
+iter 11300 | loss 12.4915 | lr 4.65e-04 | 26ms/iter
+iter 11400 | loss 12.9791 | lr 4.58e-04 | 26ms/iter
+iter 11500 | loss 10.2307 | lr 4.51e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6228, Head9→BOS: 0.2262
+iter 11600 | loss 14.5578 | lr 4.44e-04 | 26ms/iter
+iter 11700 | loss 10.1173 | lr 4.37e-04 | 26ms/iter
+iter 11800 | loss 10.5599 | lr 4.30e-04 | 26ms/iter
+iter 11900 | loss 8.4875 | lr 4.23e-04 | 26ms/iter
+iter 12000 | loss 11.5493 | lr 4.16e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6733, Head9→BOS: 0.0446
+iter 12100 | loss 11.9107 | lr 4.10e-04 | 26ms/iter
+iter 12200 | loss 12.5270 | lr 4.03e-04 | 26ms/iter
+iter 12300 | loss 8.1678 | lr 3.96e-04 | 26ms/iter
+iter 12400 | loss 9.6168 | lr 3.89e-04 | 26ms/iter
+iter 12500 | loss 10.1225 | lr 3.83e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6621, Head9→BOS: 0.0219
+iter 12600 | loss 9.2455 | lr 3.76e-04 | 26ms/iter
+iter 12700 | loss 9.0027 | lr 3.70e-04 | 26ms/iter
+iter 12800 | loss 9.6769 | lr 3.63e-04 | 26ms/iter
+iter 12900 | loss 9.1415 | lr 3.57e-04 | 26ms/iter
+iter 13000 | loss 8.6934 | lr 3.50e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6855, Head9→BOS: 0.0428
+iter 13100 | loss 10.0502 | lr 3.44e-04 | 26ms/iter
+iter 13200 | loss 8.2029 | lr 3.37e-04 | 26ms/iter
+iter 13300 | loss 6.0777 | lr 3.31e-04 | 26ms/iter
+iter 13400 | loss 7.4754 | lr 3.25e-04 | 26ms/iter
+iter 13500 | loss 8.3046 | lr 3.19e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6773, Head9→BOS: 0.0101
+iter 13600 | loss 7.1843 | lr 3.13e-04 | 26ms/iter
+iter 13700 | loss 6.9562 | lr 3.07e-04 | 26ms/iter
+iter 13800 | loss 5.4706 | lr 3.01e-04 | 26ms/iter
+iter 13900 | loss 5.7677 | lr 2.95e-04 | 26ms/iter
+iter 14000 | loss 6.4152 | lr 2.89e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6978, Head9→BOS: 0.0075
+iter 14100 | loss 5.6519 | lr 2.83e-04 | 26ms/iter
+iter 14200 | loss 6.2526 | lr 2.77e-04 | 26ms/iter
+iter 14300 | loss 5.6950 | lr 2.72e-04 | 26ms/iter
+iter 14400 | loss 6.1700 | lr 2.66e-04 | 26ms/iter
+iter 14500 | loss 6.6801 | lr 2.61e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6795, Head9→BOS: 0.0134
+iter 14600 | loss 5.3542 | lr 2.55e-04 | 26ms/iter
+iter 14700 | loss 5.3795 | lr 2.50e-04 | 26ms/iter
+iter 14800 | loss 5.3020 | lr 2.45e-04 | 26ms/iter
+iter 14900 | loss 6.0706 | lr 2.39e-04 | 26ms/iter
+iter 15000 | loss 5.8684 | lr 2.34e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.6972, Head9→BOS: 0.0033
+iter 15100 | loss 8.0445 | lr 2.29e-04 | 26ms/iter
+iter 15200 | loss 5.5516 | lr 2.24e-04 | 26ms/iter
+iter 15300 | loss 5.7600 | lr 2.19e-04 | 26ms/iter
+iter 15400 | loss 5.0469 | lr 2.15e-04 | 26ms/iter
+iter 15500 | loss 5.4547 | lr 2.10e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7143, Head9→BOS: 0.0069
+iter 15600 | loss 6.2604 | lr 2.05e-04 | 26ms/iter
+iter 15700 | loss 3.6505 | lr 2.01e-04 | 26ms/iter
+iter 15800 | loss 4.8959 | lr 1.96e-04 | 26ms/iter
+iter 15900 | loss 3.3560 | lr 1.92e-04 | 26ms/iter
+iter 16000 | loss 4.7588 | lr 1.88e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7094, Head9→BOS: 0.0058
+iter 16100 | loss 5.3271 | lr 1.83e-04 | 26ms/iter
+iter 16200 | loss 4.4499 | lr 1.79e-04 | 26ms/iter
+iter 16300 | loss 5.4767 | lr 1.75e-04 | 26ms/iter
+iter 16400 | loss 4.3708 | lr 1.71e-04 | 26ms/iter
+iter 16500 | loss 3.9489 | lr 1.68e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7183, Head9→BOS: 0.0058
+iter 16600 | loss 3.0621 | lr 1.64e-04 | 26ms/iter
+iter 16700 | loss 3.0513 | lr 1.60e-04 | 26ms/iter
+iter 16800 | loss 3.9330 | lr 1.57e-04 | 26ms/iter
+iter 16900 | loss 3.4155 | lr 1.53e-04 | 26ms/iter
+iter 17000 | loss 5.2912 | lr 1.50e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7362, Head9→BOS: 0.0029
+iter 17100 | loss 4.5762 | lr 1.47e-04 | 26ms/iter
+iter 17200 | loss 2.4629 | lr 1.44e-04 | 26ms/iter
+iter 17300 | loss 3.8810 | lr 1.41e-04 | 26ms/iter
+iter 17400 | loss 3.8247 | lr 1.38e-04 | 26ms/iter
+iter 17500 | loss 3.8408 | lr 1.35e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7301, Head9→BOS: 0.0038
+iter 17600 | loss 3.7877 | lr 1.32e-04 | 26ms/iter
+iter 17700 | loss 5.0572 | lr 1.30e-04 | 26ms/iter
+iter 17800 | loss 4.8183 | lr 1.27e-04 | 26ms/iter
+iter 17900 | loss 5.0599 | lr 1.25e-04 | 26ms/iter
+iter 18000 | loss 4.2057 | lr 1.22e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7097, Head9→BOS: 0.0044
+iter 18100 | loss 3.6358 | lr 1.20e-04 | 26ms/iter
+iter 18200 | loss 2.6840 | lr 1.18e-04 | 26ms/iter
+iter 18300 | loss 2.5871 | lr 1.16e-04 | 26ms/iter
+iter 18400 | loss 4.2695 | lr 1.14e-04 | 26ms/iter
+iter 18500 | loss 3.1916 | lr 1.13e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7330, Head9→BOS: 0.0010
+iter 18600 | loss 4.1299 | lr 1.11e-04 | 26ms/iter
+iter 18700 | loss 4.2979 | lr 1.10e-04 | 26ms/iter
+iter 18800 | loss 6.2973 | lr 1.08e-04 | 26ms/iter
+iter 18900 | loss 5.1515 | lr 1.07e-04 | 26ms/iter
+iter 19000 | loss 2.3586 | lr 1.06e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7112, Head9→BOS: 0.0035
+iter 19100 | loss 2.9548 | lr 1.05e-04 | 26ms/iter
+iter 19200 | loss 3.2276 | lr 1.04e-04 | 26ms/iter
+iter 19300 | loss 1.9093 | lr 1.03e-04 | 26ms/iter
+iter 19400 | loss 3.4384 | lr 1.02e-04 | 26ms/iter
+iter 19500 | loss 2.8404 | lr 1.01e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7190, Head9→BOS: 0.0014
+iter 19600 | loss 1.9512 | lr 1.01e-04 | 26ms/iter
+iter 19700 | loss 2.9575 | lr 1.01e-04 | 26ms/iter
+iter 19800 | loss 2.0545 | lr 1.00e-04 | 26ms/iter
+iter 19900 | loss 2.9578 | lr 1.00e-04 | 26ms/iter
+iter 20000 | loss 2.8033 | lr 1.00e-04 | 26ms/iter
+  [EVAL] Head7→pos0: 0.7237, Head9→BOS: 0.0030
+
+Saving training history...
+Creating visualizations...
+Saved: /home/nlp/matan_avitan/git/nopos_locating_new/results/full_training_dynamics/full_training_dynamics.png
+
+======================================================================
+TRAINING DYNAMICS SUMMARY
+======================================================================
+  Head 7 → Pos 0 crosses 50% at iteration 9500
+  Head 9 → BOS never crosses 50%
+  Head 7 → Pos 0 never crosses 90%
+  Head 9 → BOS never crosses 90%
+  Head 7 → Pos 0 never crosses 99%
+  Head 9 → BOS never crosses 99%
+
+Final attention - Head 7 → pos 0: 0.7237
+Final attention - Head 9 → BOS:   0.0030
+
+All outputs saved to: /home/nlp/matan_avitan/git/nopos_locating_new/results/full_training_dynamics

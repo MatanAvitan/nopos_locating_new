@@ -1,0 +1,28 @@
+Loading checkpoint from /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-2layer-mechanism-bos80/R0/best_ckpt.pt
+
+============================================================
+2-Layer Mechanism Analysis Model Initialized
+============================================================
+  Embedding Dim:        768
+  Heads:                12
+  Head Dim:             64
+  Block Size:           128
+  Normalization:        layernorm
+  Regression Mode:      True
+  Parameters:           53.40M
+============================================================
+
+Loaded 4,434,606 tokens
+Block 1 attention shape: torch.Size([64, 12, 128, 128])
+Block 2 attention shape: torch.Size([64, 12, 128, 128])
+
+Logging attention maps to WandB...
+
+==================================================
+BOS Attention Analysis (BOS @ position 80)
+==================================================
+Block 1 - Max BOS attention: 0.8855
+Block 1 - BOS heads (>0.1): [0, 4, 8, 11]
+Block 2 - Max BOS attention: 0.9783
+Block 2 - BOS heads (>0.1): [9]
+==================================================
