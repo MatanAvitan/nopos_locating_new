@@ -497,32 +497,29 @@ def plot_geometric_clock(clock_data, save_path):
 
 
 def evaluate_extrapolation(model, data, context_lengths, n_batches=20, batch_size=32):
-    """Evaluate position decoding at various context lengths."""
+    """Evaluate position decoding at various context lengths (BOS-prepended)."""
     results = {}
-    original_block_size = model.config.block_size
 
     for L in context_lengths:
         print(f"\nEvaluating at L={L}...")
         all_preds, all_positions = [], []
 
         for _ in range(n_batches):
-            # Get batch of length L
-            ix = torch.randint(len(data) - L, (batch_size,))
+            # Get batch of length L with BOS at position 0
+            ix = torch.randint(len(data) - (L - 1), (batch_size,))
             tokens = torch.stack(
-                [torch.from_numpy(data[i : i + L].astype(np.int64)) for i in ix]
+                [
+                    torch.from_numpy(
+                        np.concatenate(
+                            [[BOS_TOKEN_ID], data[i : i + L - 1].astype(np.int64)]
+                        )
+                    )
+                    for i in ix
+                ]
             ).to(DEVICE)
 
             with torch.no_grad():
-                # Manual forward for variable length
-                e = model.wte(tokens)
-                x = model.block1(e)
-
-                # Block 2 with post-attn head
-                ln1 = model.block2.ln_1(x)
-                attn_out = model.block2.attn(ln1)
-                x = x + attn_out
-                x = model.ln_f(x)
-                preds = model.pos_head(x).squeeze(-1)
+                preds = model(tokens, capture_taps=False)[0].squeeze(-1)
 
             positions = (
                 torch.arange(L, device=DEVICE)
