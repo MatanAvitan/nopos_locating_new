@@ -136,14 +136,12 @@ def compute_rotation(model: TwoLayerMechanismModel, tokens: torch.Tensor) -> dic
 def plot_rotation(rotation: dict, stride: int, save_path: Path) -> None:
     proj_bos = rotation["proj_bos"]
     proj_others = rotation["proj_others"]
-    angle = rotation["angle_deg"]
     dial_angle = rotation["dial_angle_deg"]
     positions = np.arange(len(proj_bos))
 
-    fig, axes = plt.subplots(1, 2, figsize=(8.4, 3.4))
+    fig, ax = plt.subplots(1, 1, figsize=(3.6, 3.4))
 
-    # Panel A: dial movement (BOS -> Others, 0..180 degrees)
-    ax = axes[0]
+    # Dial movement (BOS -> Others, 0..180 degrees)
     theta = np.linspace(0, np.pi, 200)
     ax.plot(-np.cos(theta), np.sin(theta), color="#888888", linewidth=0.8, alpha=0.6)
 
@@ -214,37 +212,6 @@ def plot_rotation(rotation: dict, stride: int, save_path: Path) -> None:
     ax.grid(True, alpha=0.2)
     cbar = fig.colorbar(sc, ax=ax, fraction=0.046, pad=0.04)
     cbar.set_label("Position")
-
-    # Panel B: dial angle vs position
-    ax = axes[1]
-    ref = np.linspace(0, 180, len(positions))
-    ax.plot(
-        positions,
-        dial_angle,
-        color=COLOR_PATH,
-        linewidth=1.3,
-        marker="o",
-        markevery=stride_positions,
-        markersize=3.5,
-        markerfacecolor="white",
-        markeredgewidth=1.0,
-        label="Observed",
-    )
-    ax.plot(
-        positions,
-        ref,
-        color=COLOR_REF,
-        linewidth=1.2,
-        linestyle="--",
-        label="Linear ref",
-    )
-    ax.set_title("Dial Angle vs Position")
-    ax.set_xlabel("Position")
-    ax.set_ylabel("Angle (degrees)")
-    ax.set_ylim(0, 180)
-    ax.set_yticks([0, 45, 90, 135, 180])
-    ax.legend(loc="lower right", fontsize=7, frameon=False)
-    ax.grid(True, alpha=0.2)
 
     plt.tight_layout()
     fig.savefig(save_path, bbox_inches="tight")
