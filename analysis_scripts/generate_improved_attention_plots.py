@@ -336,13 +336,19 @@ def plot_appendix_attention_maps(
     # Create figure: 4 rows x 6 columns (2 rows per block)
     fig, axes = plt.subplots(4, 6, figsize=(10, 8))
 
+    def strip_axes(ax):
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+
     # Block 1 attention (rows 0-1)
     for h in range(12):
         row = h // 6
         col = h % 6
         ax = axes[row, col]
 
-        im = ax.imshow(weights1[h], cmap="viridis", aspect="auto", vmin=0, vmax=1)
+        im = ax.imshow(weights1[h], cmap="cividis", aspect="auto", vmin=0, vmax=1)
         ax.set_title(f"H{h}", fontsize=9, pad=2)
 
         if col == 0 and row == 0:
@@ -350,8 +356,7 @@ def plot_appendix_attention_maps(
         elif col == 0 and row == 1:
             ax.set_ylabel("Query", fontsize=9)
 
-        ax.set_xticks([])
-        ax.set_yticks([])
+        strip_axes(ax)
 
     # Block 2 attention (rows 2-3)
     for h in range(12):
@@ -359,7 +364,7 @@ def plot_appendix_attention_maps(
         col = h % 6
         ax = axes[row, col]
 
-        im = ax.imshow(weights2[h], cmap="viridis", aspect="auto", vmin=0, vmax=1)
+        im = ax.imshow(weights2[h], cmap="cividis", aspect="auto", vmin=0, vmax=1)
 
         # Highlight BOS heads with colored title
         is_bos = bos_scores[h] > 0.5
@@ -380,8 +385,7 @@ def plot_appendix_attention_maps(
         if row == 3:
             ax.set_xlabel("Key", fontsize=8)
 
-        ax.set_xticks([])
-        ax.set_yticks([])
+        strip_axes(ax)
 
     # Add colorbar
     fig.subplots_adjust(right=0.92, hspace=0.25, wspace=0.1)
