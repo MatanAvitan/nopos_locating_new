@@ -15,6 +15,7 @@ import os
 import sys
 import json
 import argparse
+from typing import List, Optional
 from pathlib import Path
 
 import numpy as np
@@ -143,6 +144,7 @@ def forward_with_write_intervention(
     U: torch.Tensor,
     rank: int,
     intervention_type: str = "retention",
+    basis_indices: Optional[List[int]] = None,
 ):
     """
     Forward pass with intervention on Block 2 attention output.
@@ -207,8 +209,10 @@ def forward_with_write_intervention(
         attn_out2 = attn2.c_proj(y2)  # This is o_i before residual
 
         # Apply write subspace intervention on attn_out2
-        # P_r = U[:, :rank] @ U[:, :rank].T
-        U_r = U[:, :rank]  # [d, r]
+        # P_r = U[:, idx] @ U[:, idx].T
+        if basis_indices is None:
+            basis_indices = list(range(rank))
+        U_r = U[:, basis_indices]  # [d, r]
 
         if intervention_type == "retention":
             # o_i <- P_r @ o_i = U_r @ U_r.T @ o_i
@@ -240,6 +244,7 @@ def compute_r2_at_rank(
     n_batches: int = 50,
     batch_size: int = 32,
     block_size: int = 128,
+    basis_indices: Optional[List[int]] = None,
 ):
     """Compute R² for a given rank intervention."""
     all_preds = []
@@ -248,7 +253,12 @@ def compute_r2_at_rank(
     for _ in range(n_batches):
         tokens = get_batch(data, batch_size, block_size, DEVICE)
         preds = forward_with_write_intervention(
-            model, tokens, U, rank, intervention_type
+            model,
+            tokens,
+            U,
+            rank,
+            intervention_type,
+            basis_indices=basis_indices,
         )
 
         positions = (
@@ -278,6 +288,7 @@ def run_write_bottleneck_experiment(
     ranks: list,
     n_batches: int = 50,
     batch_size: int = 32,
+    rank1_override_indices: Optional[List[int]] = None,
 ):
     """Run full write bottleneck experiment for a model."""
     print(f"\n{'=' * 60}")
@@ -306,11 +317,30 @@ def run_write_bottleneck_experiment(
     ablation_r2s = []
 
     for rank in tqdm(ranks, desc=f"{model_name} ranks"):
+        basis_indices = None
+        if rank == 1 and rank1_override_indices is not None:
+            basis_indices = rank1_override_indices
         ret_r2 = compute_r2_at_rank(
-            model, data, U, rank, "retention", n_batches, batch_size, block_size
+            model,
+            data,
+            U,
+            rank,
+            "retention",
+            n_batches,
+            batch_size,
+            block_size,
+            basis_indices=basis_indices,
         )
         abl_r2 = compute_r2_at_rank(
-            model, data, U, rank, "ablation", n_batches, batch_size, block_size
+            model,
+            data,
+            U,
+            rank,
+            "ablation",
+            n_batches,
+            batch_size,
+            block_size,
+            basis_indices=basis_indices,
         )
         retention_r2s.append(ret_r2)
         ablation_r2s.append(abl_r2)
@@ -325,7 +355,7 @@ def run_write_bottleneck_experiment(
 
     print(f"r_95 (95% of baseline): {r_95}")
 
-    return {
+    results = {
         "baseline_r2": float(baseline_r2),
         "ranks": ranks,
         "retention_r2s": [float(x) for x in retention_r2s],
@@ -333,6 +363,35 @@ def run_write_bottleneck_experiment(
         "r_95": r_95,
         "singular_values": S.detach().cpu().numpy().tolist(),
     }
+
+    if rank1_override_indices is not None:
+        rank1_retention = compute_r2_at_rank(
+            model,
+            data,
+            U,
+            1,
+            "retention",
+            n_batches,
+            batch_size,
+            block_size,
+            basis_indices=rank1_override_indices,
+        )
+        rank1_ablation = compute_r2_at_rank(
+            model,
+            data,
+            U,
+            1,
+            "ablation",
+            n_batches,
+            batch_size,
+            block_size,
+            basis_indices=rank1_override_indices,
+        )
+        results["rank1_override_indices"] = rank1_override_indices
+        results["rank1_override_retention_r2"] = float(rank1_retention)
+        results["rank1_override_ablation_r2"] = float(rank1_ablation)
+
+    return results
 
 
 def create_main_text_plot(results_r0: dict, results_r2: dict, save_path: str):
@@ -419,6 +478,28 @@ def create_main_text_plot(results_r0: dict, results_r2: dict, save_path: str):
     ax.set_ylabel("Position $R^2$")
     ax.set_xlim(0, max(ranks))
     ax.set_ylim(0, 1.05)
+    # R0 r=1 override markers (u2 retention/ablation)
+    if "rank1_override_retention_r2" in results_r0:
+        ax.scatter(
+            [1],
+            [results_r0["rank1_override_retention_r2"]],
+            color=COLOR_R0,
+            marker="D",
+            s=24,
+            label="R0 r=1 (u2) retention",
+            zorder=4,
+        )
+        ax.scatter(
+            [1],
+            [results_r0["rank1_override_ablation_r2"]],
+            color=COLOR_R0,
+            marker="s",
+            s=24,
+            alpha=0.7,
+            label="R0 r=1 (u2) ablation",
+            zorder=4,
+        )
+
     ax.legend(loc="lower right", fontsize=7, frameon=True, framealpha=0.9)
     ax.grid(True, alpha=0.2, linewidth=0.5)
 
@@ -499,6 +580,27 @@ def create_appendix_plot(all_results: dict, save_path: str):
         ax.set_title(title)
         ax.set_xlim(0, max(ranks))
         ax.set_ylim(0, 1.05)
+        if "rank1_override_retention_r2" in results:
+            ax.scatter(
+                [1],
+                [results["rank1_override_retention_r2"]],
+                color=color,
+                marker="D",
+                s=20,
+                label="r=1 (u2) retention",
+                zorder=4,
+            )
+            ax.scatter(
+                [1],
+                [results["rank1_override_ablation_r2"]],
+                color=color,
+                marker="s",
+                s=20,
+                alpha=0.7,
+                label="r=1 (u2) ablation",
+                zorder=4,
+            )
+
         ax.legend(loc="lower right", fontsize=6, frameon=True)
         ax.grid(True, alpha=0.2, linewidth=0.5)
 
@@ -545,7 +647,13 @@ def main():
     print("\nLoading R0 model...")
     model_r0, config_r0 = load_model(args.r0_checkpoint, DEVICE)
     results_r0 = run_write_bottleneck_experiment(
-        model_r0, val_data, "R0", ranks, args.n_batches, args.batch_size
+        model_r0,
+        val_data,
+        "R0",
+        ranks,
+        args.n_batches,
+        args.batch_size,
+        rank1_override_indices=[1],
     )
     all_results["R0_12head"] = results_r0
     del model_r0
