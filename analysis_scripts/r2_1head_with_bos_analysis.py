@@ -528,6 +528,17 @@ def main():
     parser.add_argument(
         "--paper_dir", type=str, default="overleaf/nopos_icml_2026/plots"
     )
+    parser.add_argument(
+        "--full_block",
+        action="store_true",
+        help="Use full Block 2 output for head (no post-attn head)",
+    )
+    parser.add_argument(
+        "--tag",
+        type=str,
+        default="",
+        help="Optional suffix for saved filenames (e.g., 'fullblock')",
+    )
     parser.add_argument("--n_batches", type=int, default=50)
     parser.add_argument("--batch_size", type=int, default=32)
     args = parser.parse_args()
@@ -535,8 +546,12 @@ def main():
     os.makedirs(args.save_dir, exist_ok=True)
     os.makedirs(args.paper_dir, exist_ok=True)
 
+    tag_suffix = f"_{args.tag}" if args.tag else ""
+
     print("Loading model...")
-    model, config = load_model(str(ROOT_DIR / args.checkpoint), DEVICE, post_attn=True)
+    model, config = load_model(
+        str(ROOT_DIR / args.checkpoint), DEVICE, post_attn=not args.full_block
+    )
     print(f"  n_head={config.n_head}, n_embd={config.n_embd}")
 
     print("Loading data...")
@@ -551,7 +566,8 @@ def main():
     )
     all_results["write_bottleneck"] = wb_results
     plot_write_bottleneck(
-        wb_results, os.path.join(args.save_dir, "write_bottleneck_r2_1head.pdf")
+        wb_results,
+        os.path.join(args.save_dir, f"write_bottleneck_r2_1head{tag_suffix}.pdf"),
     )
 
     # 2. Attention Maps
@@ -559,7 +575,9 @@ def main():
     print("ATTENTION MAPS")
     print("=" * 60)
     plot_attention_maps(
-        model, data, os.path.join(args.save_dir, "attention_maps_r2_1head.pdf")
+        model,
+        data,
+        os.path.join(args.save_dir, f"attention_maps_r2_1head{tag_suffix}.pdf"),
     )
 
     # 3. Geometric Clock
@@ -581,19 +599,23 @@ def main():
         for k, v in clock_data.items()
     }
 
-    plot_geometric_clock(clock_data, os.path.join(args.save_dir, "geometric_clock.pdf"))
+    plot_geometric_clock(
+        clock_data, os.path.join(args.save_dir, f"geometric_clock{tag_suffix}.pdf")
+    )
 
     # Save
-    with open(os.path.join(args.save_dir, "analysis_results.json"), "w") as f:
+    with open(
+        os.path.join(args.save_dir, f"analysis_results{tag_suffix}.json"), "w"
+    ) as f:
         json.dump(all_results, f, indent=2)
 
     # Copy to paper dir
     import shutil
 
     for fname in [
-        "write_bottleneck_r2_1head.pdf",
-        "attention_maps_r2_1head.pdf",
-        "geometric_clock.pdf",
+        f"write_bottleneck_r2_1head{tag_suffix}.pdf",
+        f"attention_maps_r2_1head{tag_suffix}.pdf",
+        f"geometric_clock{tag_suffix}.pdf",
     ]:
         src = os.path.join(args.save_dir, fname)
         dst = os.path.join(args.paper_dir, fname)
