@@ -2,6 +2,7 @@
 Retry R0 at longer context lengths with batch_size=1.
 """
 
+import argparse
 import os
 import sys
 import json
@@ -19,6 +20,8 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
+
+BOS_TOKEN_ID = 50256
 
 
 def load_model(checkpoint_path: str, device: str = "cuda"):
@@ -47,10 +50,17 @@ def load_owt_data(data_dir: str = "nanoGPT/data/openwebtext"):
 
 
 def get_batch(data: np.ndarray, batch_size: int, block_size: int, device: str):
-    max_start = len(data) - block_size
+    max_start = len(data) - (block_size - 1)
     ix = torch.randint(max_start, (batch_size,))
     x = torch.stack(
-        [torch.from_numpy((data[i : i + block_size]).astype(np.int64)) for i in ix]
+        [
+            torch.from_numpy(
+                np.concatenate(
+                    [[BOS_TOKEN_ID], data[i : i + block_size - 1].astype(np.int64)]
+                )
+            )
+            for i in ix
+        ]
     )
     return x.to(device)
 
@@ -124,8 +134,32 @@ def compute_metrics(model, data, context_length, device, batch_size=1, n_batches
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--r0_checkpoint",
+        type=str,
+        default="nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt",
+    )
+    parser.add_argument("--data_dir", type=str, default="nanoGPT/data/openwebtext")
+    parser.add_argument(
+        "--save_dir", type=str, default="results/extrapolation_long_context"
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Recompute metrics even if results exist",
+    )
+    parser.add_argument("--wandb", action="store_true")
+    parser.add_argument(
+        "--wandb_project",
+        type=str,
+        default="nope-position-regression-metrics",
+    )
+    parser.add_argument("--wandb_run_name", type=str, default=None)
+    args = parser.parse_args()
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    save_dir = "results/extrapolation_long_context"
+    save_dir = args.save_dir
 
     # Load existing results
     existing_path = os.path.join(save_dir, "extrapolation_extended_results.json")
@@ -142,11 +176,11 @@ def main():
 
     # Load data
     print("Loading data...", flush=True)
-    val_data = load_owt_data()
+    val_data = load_owt_data(args.data_dir)
 
     # Only retry R0 at 4096, 8192
     model_name = "R0"
-    ckpt_path = "nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt"
+    ckpt_path = args.r0_checkpoint
 
     print(f"\n{'=' * 60}", flush=True)
     print(f"Retrying {model_name} at longer contexts with batch_size=1", flush=True)
@@ -156,8 +190,10 @@ def main():
 
     for L in [4096, 8192]:
         # Check if we already have a successful result
-        if L in all_results[model_name] and all_results[model_name][L].get(
-            "success", False
+        if (
+            not args.force
+            and L in all_results[model_name]
+            and all_results[model_name][L].get("success", False)
         ):
             print(f"\nSkipping L={L} (already have successful result)", flush=True)
             continue
@@ -186,7 +222,8 @@ def main():
     torch.cuda.empty_cache()
 
     # Save updated results
-    with open(os.path.join(save_dir, "extrapolation_extended_results.json"), "w") as f:
+    results_path = os.path.join(save_dir, "extrapolation_extended_results.json")
+    with open(results_path, "w") as f:
         json.dump(all_results, f, indent=2)
 
     # Replot
@@ -221,17 +258,49 @@ def main():
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(
-        os.path.join(save_dir, "extrapolation_long_context.pdf"),
-        bbox_inches="tight",
-        dpi=300,
-    )
-    plt.savefig(
-        os.path.join(save_dir, "extrapolation_long_context.png"),
-        bbox_inches="tight",
-        dpi=300,
-    )
+    plot_pdf = os.path.join(save_dir, "extrapolation_long_context.pdf")
+    plot_png = os.path.join(save_dir, "extrapolation_long_context.png")
+    plt.savefig(plot_pdf, bbox_inches="tight", dpi=300)
+    plt.savefig(plot_png, bbox_inches="tight", dpi=300)
     plt.close()
+
+    if args.wandb:
+        import wandb
+
+        run_name = args.wandb_run_name or "extrapolation-retry-r0"
+        wandb.init(
+            project=args.wandb_project,
+            name=run_name,
+            config={
+                "r0_checkpoint": ckpt_path,
+                "data_dir": args.data_dir,
+                "save_dir": save_dir,
+                "device": device,
+                "retry_lengths": [4096, 8192],
+                "n_batches_4096": 100,
+                "n_batches_8192": 50,
+            },
+        )
+
+        r0_results = all_results.get("R0", {})
+        for length in [4096, 8192]:
+            if length in r0_results and r0_results[length].get("success", True):
+                wandb.log(
+                    {
+                        f"r0/r2_L{length}": r0_results[length]["linear_probe_r2"],
+                        f"r0/mean_abs_corr_L{length}": r0_results[length][
+                            "mean_abs_corr"
+                        ],
+                    }
+                )
+
+        wandb.log({"plots/extrapolation_long_context": wandb.Image(plot_png)})
+        artifact = wandb.Artifact("extrapolation_long_context", type="analysis")
+        artifact.add_file(results_path)
+        artifact.add_file(plot_pdf)
+        artifact.add_file(plot_png)
+        wandb.log_artifact(artifact)
+        wandb.finish()
 
     # Print summary
     print(f"\n{'=' * 60}", flush=True)

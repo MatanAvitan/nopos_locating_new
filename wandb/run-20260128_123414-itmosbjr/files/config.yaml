@@ -1,0 +1,121 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            9zjzcmsgygvlnbtdbxe9htiktvgq8hbe:
+                args:
+                    - --force
+                    - --wandb
+                    - --wandb_project
+                    - nope-position-regression-metrics
+                    - --wandb_run_name
+                    - extrapolation-retry-r0-force
+                    - --r0_checkpoint
+                    - nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt
+                    - --data_dir
+                    - nanoGPT/data/openwebtext
+                    - --save_dir
+                    - results/extrapolation_long_context
+                codePath: analysis_scripts/extrapolation_retry_r0.py
+                codePathLocal: analysis_scripts/extrapolation_retry_r0.py
+                cpu_count: 128
+                cpu_count_logical: 128
+                cudaVersion: "12.7"
+                disk:
+                    /:
+                        total: "3832434667520"
+                        used: "406348587008"
+                email: matan13av@gmail.com
+                executable: /home/nlp/matan_avitan/.conda/envs/py312/bin/python
+                git:
+                    commit: 1d02714c31c4cf9f9371ef612d962dbb4e763785
+                    remote: git@github.com:MatanAvitan/nopos_locating_new.git
+                gpu: NVIDIA A100-SXM4-80GB
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-d76056a1-a64b-df4c-63e6-486693380c5d
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-f66b39ed-9965-9032-3d6e-36acec2f8a2b
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-130ea43a-d14d-ad32-a080-0d0603dfe760
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-16b54c80-6975-58e2-ca10-84b260b12a69
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-92573f03-7d19-3859-aa51-47d17c902e78
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-9d4e5ced-a020-7d98-1a80-b4e3366b797e
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-eaf71afd-8768-c554-ba8b-91c30295b7b3
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100-SXM4-80GB
+                      uuid: GPU-76b83a0e-d509-563d-d6eb-39a8ce79c95b
+                host: dsinlp01
+                memory:
+                    total: "1081493651456"
+                os: Linux-5.14.0-570.52.1.el9_6.x86_64-x86_64-with-glibc2.34
+                program: /home/nlp/matan_avitan/git/nopos_locating_new/analysis_scripts/extrapolation_retry_r0.py
+                python: CPython 3.12.8
+                root: /home/nlp/matan_avitan/git/nopos_locating_new
+                startedAt: "2026-01-28T10:34:14.038531Z"
+                writerId: 9zjzcmsgygvlnbtdbxe9htiktvgq8hbe
+        m: []
+        python_version: 3.12.8
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+                - 105
+            "2":
+                - 1
+                - 5
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.12.8
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": linux-x86_64
+data_dir:
+    value: nanoGPT/data/openwebtext
+device:
+    value: cuda
+n_batches_4096:
+    value: 100
+n_batches_8192:
+    value: 50
+r0_checkpoint:
+    value: nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt
+retry_lengths:
+    value:
+        - 4096
+        - 8192
+save_dir:
+    value: results/extrapolation_long_context

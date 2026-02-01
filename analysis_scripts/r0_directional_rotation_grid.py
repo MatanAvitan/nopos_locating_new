@@ -190,8 +190,11 @@ def plot_grid(
     sm = plt.cm.ScalarMappable(
         cmap="viridis", norm=plt.Normalize(0, len(positions) - 1)
     )
-    cbar = fig.colorbar(sm, ax=axes.ravel().tolist(), fraction=0.02, pad=0.01)
-    cbar.set_label("Position")
+    cbar = fig.colorbar(
+        sm, ax=axes.ravel().tolist(), fraction=0.015, pad=0.008, shrink=0.75
+    )
+    cbar.set_label("Position", fontsize=8)
+    cbar.ax.tick_params(labelsize=7)
 
     fig.text(0.06, 0.99, "BOS (left)", ha="left", va="top", fontsize=9)
     fig.text(0.94, 0.99, "Others (right)", ha="right", va="top", fontsize=9)

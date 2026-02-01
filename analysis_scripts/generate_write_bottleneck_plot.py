@@ -56,8 +56,8 @@ plt.rcParams.update(
 )
 
 # Colors (colorblind-friendly)
-COLOR_R0 = "#0072B2"  # Blue
-COLOR_R2 = "#D55E00"  # Vermillion
+COLOR_R0 = "#0072B2"  # Blue (FULL-12H)
+COLOR_R2 = "#D55E00"  # Vermillion (ATTN2-1H)
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -67,8 +67,10 @@ BOS_TOKEN_ID = 50256
 def load_model(checkpoint_path: str, device: str = "cuda"):
     """Load a trained model from checkpoint."""
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
-    model_args = checkpoint.get("model_args", {})
-    config = TwoLayerMechanismConfig(**model_args)
+    config_dict = checkpoint.get("config", checkpoint.get("model_args", {}))
+    valid_keys = set(TwoLayerMechanismConfig.__dataclass_fields__.keys())
+    filtered = {k: v for k, v in config_dict.items() if k in valid_keys}
+    config = TwoLayerMechanismConfig(**filtered)
     model = TwoLayerMechanismModel(config)
 
     state_dict = checkpoint["model"]
@@ -251,7 +253,7 @@ def compute_r2_at_rank(
     all_positions = []
 
     for _ in range(n_batches):
-        tokens = get_batch(data, batch_size, block_size, DEVICE)
+        tokens = get_batch(data, batch_size, block_size, DEVICE, force_bos=True)
         preds = forward_with_write_intervention(
             model,
             tokens,
@@ -275,8 +277,8 @@ def compute_r2_at_rank(
     all_positions = torch.cat(all_positions, dim=0).flatten().numpy()
 
     # Compute R²
-    r, _ = stats.pearsonr(all_positions, all_preds)
-    r2 = r**2
+    r = float(np.corrcoef(all_positions, all_preds)[0, 1])
+    r2 = r * r
 
     return r2
 
@@ -400,13 +402,13 @@ def create_main_text_plot(results_r0: dict, results_r2: dict, save_path: str):
 
     ranks = results_r0["ranks"]
 
-    # R0 curves (no markers for readability)
+    # FULL-12H curves (no markers for readability)
     ax.plot(
         ranks,
         results_r0["retention_r2s"],
         "-",
         color=COLOR_R0,
-        label="R0 retention",
+        label="FULL-12H retention",
         linewidth=1.5,
     )
     ax.plot(
@@ -414,18 +416,18 @@ def create_main_text_plot(results_r0: dict, results_r2: dict, save_path: str):
         results_r0["ablation_r2s"],
         "--",
         color=COLOR_R0,
-        label="R0 ablation",
+        label="FULL-12H ablation",
         linewidth=1.5,
         alpha=0.7,
     )
 
-    # R2 curves (no markers for readability)
+    # ATTN2-1H curves (no markers for readability)
     ax.plot(
         ranks,
         results_r2["retention_r2s"],
         "-",
         color=COLOR_R2,
-        label="R2 retention",
+        label="ATTN2-1H retention",
         linewidth=1.5,
     )
     ax.plot(
@@ -433,72 +435,15 @@ def create_main_text_plot(results_r0: dict, results_r2: dict, save_path: str):
         results_r2["ablation_r2s"],
         "--",
         color=COLOR_R2,
-        label="R2 ablation",
+        label="ATTN2-1H ablation",
         linewidth=1.5,
         alpha=0.7,
-    )
-
-    # Mark r_95 points
-    if results_r0["r_95"]:
-        idx = ranks.index(results_r0["r_95"])
-        ax.axvline(
-            x=results_r0["r_95"], color=COLOR_R0, linestyle=":", alpha=0.5, linewidth=1
-        )
-        ax.annotate(
-            f"$r_{{95}}$={results_r0['r_95']}",
-            xy=(results_r0["r_95"], results_r0["retention_r2s"][idx]),
-            xytext=(results_r0["r_95"] + 5, results_r0["retention_r2s"][idx] - 0.1),
-            fontsize=7,
-            color=COLOR_R0,
-        )
-
-    if results_r2["r_95"]:
-        idx = ranks.index(results_r2["r_95"])
-        ax.axvline(
-            x=results_r2["r_95"], color=COLOR_R2, linestyle=":", alpha=0.5, linewidth=1
-        )
-        ax.annotate(
-            f"$r_{{95}}$={results_r2['r_95']}",
-            xy=(results_r2["r_95"], results_r2["retention_r2s"][idx]),
-            xytext=(results_r2["r_95"] + 5, results_r2["retention_r2s"][idx] + 0.05),
-            fontsize=7,
-            color=COLOR_R2,
-        )
-
-    # 95% baseline line
-    ax.axhline(
-        y=0.95 * results_r0["baseline_r2"],
-        color="gray",
-        linestyle="--",
-        alpha=0.3,
-        linewidth=0.8,
     )
 
     ax.set_xlabel("Rank $r$")
     ax.set_ylabel("Position $R^2$")
     ax.set_xlim(0, max(ranks))
     ax.set_ylim(0, 1.05)
-    # R0 r=1 override markers (u2 retention/ablation)
-    if "rank1_override_retention_r2" in results_r0:
-        ax.scatter(
-            [1],
-            [results_r0["rank1_override_retention_r2"]],
-            color=COLOR_R0,
-            marker="D",
-            s=24,
-            label="R0 r=1 (u2) retention",
-            zorder=4,
-        )
-        ax.scatter(
-            [1],
-            [results_r0["rank1_override_ablation_r2"]],
-            color=COLOR_R0,
-            marker="s",
-            s=24,
-            alpha=0.7,
-            label="R0 r=1 (u2) ablation",
-            zorder=4,
-        )
 
     ax.legend(loc="lower right", fontsize=7, frameon=True, framealpha=0.9)
     ax.grid(True, alpha=0.2, linewidth=0.5)
@@ -516,7 +461,7 @@ def create_appendix_plot(all_results: dict, save_path: str):
     fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.5))
 
     models = ["R0_12head", "R2_12head"]
-    titles = ["R0", "R2"]
+    titles = ["FULL-12H", "ATTN2-1H"]
     colors = [COLOR_R0, COLOR_R2]
 
     for i, (model_key, title, color) in enumerate(zip(models, titles, colors)):
@@ -557,49 +502,11 @@ def create_appendix_plot(all_results: dict, save_path: str):
             alpha=0.7,
         )
 
-        if results["r_95"]:
-            ax.axvline(x=results["r_95"], color=color, linestyle=":", alpha=0.5)
-            ax.text(
-                results["r_95"] + 2,
-                0.1,
-                f"$r_{{95}}$={results['r_95']}",
-                fontsize=7,
-                color=color,
-            )
-
-        ax.axhline(
-            y=0.95 * results["baseline_r2"],
-            color="gray",
-            linestyle="--",
-            alpha=0.3,
-            linewidth=0.8,
-        )
-
         ax.set_xlabel("Rank $r$")
         ax.set_ylabel("Position $R^2$")
         ax.set_title(title)
         ax.set_xlim(0, max(ranks))
         ax.set_ylim(0, 1.05)
-        if "rank1_override_retention_r2" in results:
-            ax.scatter(
-                [1],
-                [results["rank1_override_retention_r2"]],
-                color=color,
-                marker="D",
-                s=20,
-                label="r=1 (u2) retention",
-                zorder=4,
-            )
-            ax.scatter(
-                [1],
-                [results["rank1_override_ablation_r2"]],
-                color=color,
-                marker="s",
-                s=20,
-                alpha=0.7,
-                label="r=1 (u2) ablation",
-                zorder=4,
-            )
 
         ax.legend(loc="lower right", fontsize=6, frameon=True)
         ax.grid(True, alpha=0.2, linewidth=0.5)

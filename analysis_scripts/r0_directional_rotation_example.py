@@ -210,8 +210,9 @@ def plot_rotation(rotation: dict, stride: int, save_path: Path) -> None:
     ax.set_xticks([])
     ax.set_yticks([])
     ax.grid(True, alpha=0.2)
-    cbar = fig.colorbar(sc, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label("Position")
+    cbar = fig.colorbar(sc, ax=ax, fraction=0.03, pad=0.03, shrink=0.8)
+    cbar.set_label("Position", fontsize=8)
+    cbar.ax.tick_params(labelsize=7)
 
     plt.tight_layout()
     fig.savefig(save_path, bbox_inches="tight")

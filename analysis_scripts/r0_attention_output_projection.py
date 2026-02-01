@@ -6,10 +6,12 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
 import torch.nn.functional as F
+from scipy.stats import spearmanr
 
 import matplotlib
 
@@ -114,43 +116,43 @@ def compute_projection(
     positions = np.arange(seq_len)
 
     corr_bos = float(np.corrcoef(proj_bos, positions)[0, 1])
-    corr_others = float(np.corrcoef(proj_others, positions)[0, 1])
+    corr_non_bos = float(np.corrcoef(proj_others, positions)[0, 1])
+    spearman_bos = float(spearmanr(proj_bos, positions).correlation)
+    spearman_non_bos = float(spearmanr(proj_others, positions).correlation)
 
     return {
         "proj_bos": proj_bos,
-        "proj_others": proj_others,
+        "proj_non_bos": proj_others,
         "corr_bos": corr_bos,
-        "corr_others": corr_others,
+        "corr_non_bos": corr_non_bos,
+        "spearman_bos": spearman_bos,
+        "spearman_non_bos": spearman_non_bos,
     }
 
 
-def plot_projections(results_128: dict, results_4096: dict, save_path: Path) -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(8.2, 3.0))
+def plot_projection_single(results: dict, seq_len: int, save_path: Path) -> None:
+    fig, ax = plt.subplots(1, 1, figsize=(4.1, 3.0))
 
-    for ax, seq_len, results in [
-        (axes[0], 128, results_128),
-        (axes[1], 4096, results_4096),
-    ]:
-        positions = np.arange(seq_len)
-        ax.plot(
-            positions,
-            results["proj_bos"],
-            color=COLOR_BOS,
-            linewidth=1.2,
-            label=f"BOS dir (r={results['corr_bos']:.2f})",
-        )
-        ax.plot(
-            positions,
-            results["proj_others"],
-            color=COLOR_OTHERS,
-            linewidth=1.2,
-            label=f"Others dir (r={results['corr_others']:.2f})",
-        )
-        ax.set_title(f"L={seq_len}")
-        ax.set_xlabel("Position")
-        ax.set_ylabel("Projection")
-        ax.grid(True, alpha=0.2)
-        ax.legend(fontsize=7, loc="best")
+    positions = np.arange(seq_len)
+    ax.plot(
+        positions,
+        results["proj_bos"],
+        color=COLOR_BOS,
+        linewidth=1.2,
+        label=f"BOS dir (\u03c1={results['spearman_bos']:.2f})",
+    )
+    ax.plot(
+        positions,
+        results["proj_non_bos"],
+        color=COLOR_OTHERS,
+        linewidth=1.2,
+        label=f"non-BOS dir (\u03c1={results['spearman_non_bos']:.2f})",
+    )
+    ax.set_title("Attention Output Projection")
+    ax.set_xlabel("Position")
+    ax.set_ylabel("Projection")
+    ax.grid(True, alpha=0.2)
+    ax.legend(fontsize=7, loc="best")
 
     plt.tight_layout()
     fig.savefig(save_path, bbox_inches="tight")
@@ -175,9 +177,8 @@ def main() -> None:
         "--paper_dir", type=str, default="overleaf/nopos_icml_2026/plots"
     )
     parser.add_argument("--batch_size_128", type=int, default=32)
-    parser.add_argument("--batch_size_4096", type=int, default=1)
     parser.add_argument("--n_batches_128", type=int, default=10)
-    parser.add_argument("--n_batches_4096", type=int, default=2)
+    parser.add_argument("--output_tag", type=str, default="full12h")
     args = parser.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -199,18 +200,13 @@ def main() -> None:
         model, data, 128, args.batch_size_128, args.n_batches_128, device
     )
 
-    print("Computing projections at L=4096...")
-    results_4096 = compute_projection(
-        model, data, 4096, args.batch_size_4096, args.n_batches_4096, device
-    )
+    save_path = save_dir / f"attention_output_projection_{args.output_tag}.pdf"
+    plot_projection_single(results_128, 128, save_path)
 
-    save_path = save_dir / "r0_attention_output_projection_128_4096.pdf"
-    plot_projections(results_128, results_4096, save_path)
-
-    def to_serializable(value):
+    def to_serializable(value: Any):
         if isinstance(value, np.ndarray):
             return value.tolist()
-        if isinstance(value, (np.float32, np.float64)):
+        if isinstance(value, np.floating):
             return float(value)
         if isinstance(value, dict):
             return {k: to_serializable(v) for k, v in value.items()}
@@ -220,7 +216,7 @@ def main() -> None:
 
     with open(save_dir / "projection_results.json", "w") as f:
         json.dump(
-            to_serializable({"L128": results_128, "L4096": results_4096}),
+            to_serializable({"L128": results_128}),
             f,
             indent=2,
         )
@@ -234,12 +230,8 @@ def main() -> None:
     print(f"  {paper_path}")
     print("Summary:")
     print(
-        f"  L=128: corr(BOS)={results_128['corr_bos']:.3f}, "
-        f"corr(others)={results_128['corr_others']:.3f}"
-    )
-    print(
-        f"  L=4096: corr(BOS)={results_4096['corr_bos']:.3f}, "
-        f"corr(others)={results_4096['corr_others']:.3f}"
+        f"  L=128: spearman(BOS)={results_128['spearman_bos']:.3f}, "
+        f"spearman(non-BOS)={results_128['spearman_non_bos']:.3f}"
     )
 
 

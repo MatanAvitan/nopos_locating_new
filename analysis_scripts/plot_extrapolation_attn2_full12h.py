@@ -9,12 +9,12 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from scipy.stats import spearmanr
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.ticker import ScalarFormatter
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
@@ -24,6 +24,29 @@ from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismMod
 
 BOS_TOKEN_ID = 50256
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+# ICML style settings (match paper Figure 6)
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
+        "font.size": 9,
+        "axes.labelsize": 10,
+        "axes.titlesize": 10,
+        "legend.fontsize": 8,
+        "xtick.labelsize": 8,
+        "ytick.labelsize": 8,
+        "axes.linewidth": 0.8,
+        "lines.linewidth": 1.5,
+        "lines.markersize": 5,
+        "figure.dpi": 300,
+        "savefig.dpi": 300,
+        "savefig.bbox": "tight",
+        "savefig.pad_inches": 0.02,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+    }
+)
 
 
 def load_model(checkpoint_path: Path) -> TwoLayerMechanismModel:
@@ -86,9 +109,9 @@ def evaluate_extrapolation(
 
         preds_all = torch.cat(preds_all, dim=0).flatten().cpu().numpy()
         targets_all = torch.cat(targets_all, dim=0).flatten().cpu().numpy()
-        r = np.corrcoef(targets_all, preds_all)[0, 1]
-        r2 = float(r * r)
-        results[str(L)] = {"r2": r2, "n": n_batches * batch_size}
+        rho, _ = spearmanr(targets_all, preds_all)
+        rho = float(rho)
+        results[str(L)] = {"spearman": rho, "n": n_batches * batch_size}
 
     return results
 
@@ -135,9 +158,9 @@ def evaluate_extrapolation_scheduled(
 
         preds_all = torch.cat(preds_all, dim=0).flatten().cpu().numpy()
         targets_all = torch.cat(targets_all, dim=0).flatten().cpu().numpy()
-        r = np.corrcoef(targets_all, preds_all)[0, 1]
-        r2 = float(r * r)
-        results[str(L)] = {"r2": r2, "n": n_batches * batch_size}
+        rho, _ = spearmanr(targets_all, preds_all)
+        rho = float(rho)
+        results[str(L)] = {"spearman": rho, "n": n_batches * batch_size}
 
     return results
 
@@ -148,11 +171,11 @@ def plot_extrapolation(
     context_lengths: list[int],
     save_path: Path,
 ) -> None:
-    fig, ax = plt.subplots(figsize=(4.0, 3.0))
+    fig, ax = plt.subplots(figsize=(3.25, 2.4))
 
     lengths = np.array(context_lengths)
-    attn2_vals = np.array([attn2_results[str(L)]["r2"] for L in context_lengths])
-    full_vals = np.array([full_results[str(L)]["r2"] for L in context_lengths])
+    attn2_vals = np.array([attn2_results[str(L)]["spearman"] for L in context_lengths])
+    full_vals = np.array([full_results[str(L)]["spearman"] for L in context_lengths])
 
     ax.plot(
         lengths,
@@ -161,7 +184,7 @@ def plot_extrapolation(
         marker="o",
         markersize=4,
         linewidth=1.5,
-        label="Attn2-1H",
+        label="ATTN2-1H",
     )
     ax.plot(
         lengths,
@@ -170,14 +193,14 @@ def plot_extrapolation(
         marker="s",
         markersize=4,
         linewidth=1.5,
-        label="Full-12H",
+        label="FULL-12H",
     )
 
     ax.set_xscale("log", base=2)
     ax.set_xticks(lengths)
-    ax.get_xaxis().set_major_formatter(ScalarFormatter())
+    ax.set_xticklabels([str(L) for L in lengths])
     ax.set_xlabel("Context length")
-    ax.set_ylabel("R$^2$")
+    ax.set_ylabel(r"Spearman $\rho$")
     ax.set_title("Length Extrapolation")
     ax.grid(True, alpha=0.25)
     ax.legend(loc="best", fontsize=7, frameon=False)
@@ -226,7 +249,7 @@ def main() -> None:
     attn2_model = load_model(ROOT_DIR / args.attn2_ckpt)
     full_model = load_model(ROOT_DIR / args.full12h_ckpt)
 
-    context_lengths = [128, 256, 512, 1024, 2048, 4096]
+    context_lengths = [128, 256, 512, 1024, 2048, 4096, 8192]
 
     attn2_results = evaluate_extrapolation(
         attn2_model, data, context_lengths, args.n_batches, args.batch_size
@@ -239,12 +262,13 @@ def main() -> None:
         1024: 4,
         2048: 2,
         4096: 1,
+        8192: 1,
     }
     full_results = evaluate_extrapolation_scheduled(
         full_model, data, context_lengths, batch_schedule, args.full_target_n
     )
 
-    save_path = save_dir / "extrapolation_attn2_full12h.pdf"
+    save_path = save_dir / "extrapolation_attn2_full12h_spearman.pdf"
     plot_extrapolation(attn2_results, full_results, context_lengths, save_path)
 
     with open(save_dir / "extrapolation_results.json", "w") as f:

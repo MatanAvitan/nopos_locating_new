@@ -21,6 +21,8 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
+BOS_TOKEN_ID = 50256
+
 
 def load_model(checkpoint_path: str, device: str = "cuda"):
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
@@ -51,7 +53,14 @@ def get_batch(data: np.ndarray, batch_size: int, block_size: int, device: str):
     max_start = len(data) - block_size
     ix = torch.randint(max_start, (batch_size,))
     x = torch.stack(
-        [torch.from_numpy((data[i : i + block_size]).astype(np.int64)) for i in ix]
+        [
+            torch.from_numpy(
+                np.concatenate(
+                    [[BOS_TOKEN_ID], data[i : i + block_size - 1].astype(np.int64)]
+                )
+            )
+            for i in ix
+        ]
     )
     return x.to(device)
 
