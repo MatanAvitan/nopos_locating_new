@@ -19,8 +19,22 @@ pip install torch pytorch-lightning transformer_lens transformers datasets plotl
 ```
 
 ### Training NoPE Models
+
+#### Primary: 2-Layer Mechanism Models (R0/R2)
 ```bash
-# Prepare data first (from nanoGPT/ directory)
+# Prepare OpenWebText data first
+cd nanoGPT/data/openwebtext && python prepare.py
+
+# R0: Full 12-head model (BOS-anchored position)
+cd nanoGPT && python train_2layer_mechanism.py --regime R0 --wandb
+
+# R2: Single-head attention-only (mechanistic analysis)
+cd nanoGPT && python train_2layer_mechanism.py --regime R2 --n_head 1 --max_iters 40000 --r2_attn_head_only --wandb
+```
+
+#### Legacy: 1-Layer Shakespeare Models
+```bash
+# Prepare Shakespeare data
 cd nanoGPT/data/shakespeare && python prepare.py
 
 # Train with LayerNorm
@@ -32,14 +46,18 @@ CUDA_VISIBLE_DEVICES=1 python train_nope.py config/train_nope_1layer_rms.py
 
 ### Running Analysis Scripts
 ```bash
-# Analyze trained checkpoints (with CLI arguments)
-python analysis_scripts/analyze_trained_nope.py --checkpoint nanoGPT/out-nope-1layer-ln/ckpt.pt --save_dir results/ --n_samples 1000
+# Analysis scripts are organized by topic:
+python analysis_scripts/figures/plot_extrapolation_icml.py    # Paper figures
+python analysis_scripts/decoding/decoding_vector_paper.py     # Decoding analysis
+python analysis_scripts/attention/attention_std_phases.py     # Attention patterns
+python analysis_scripts/experiments/extrapolation/extrapolation_analysis.py  # Extrapolation
 
-# Most scripts are standalone - run directly
-python analysis_scripts/<script_name>.py
+# R0/R2 specific analysis:
+python analysis_scripts/experiments/r0_analysis/r0_attention_output_projection.py
+python analysis_scripts/experiments/r2_analysis/r2_geometric_clock_complete.py
 
-# Run full experiment pipeline
-./run_all_experiments.sh
+# Archived scripts (older experiments):
+python analysis_scripts/archive/<script_name>.py
 ```
 
 ### LaTeX Compilation
@@ -153,19 +171,35 @@ np.random.seed(42)
 
 | File | Purpose |
 |------|---------|
+| `nanoGPT/model_2layer_mechanism.py` | 2-layer NoPE model for mechanistic analysis |
+| `nanoGPT/train_2layer_mechanism.py` | Main training script (R0/R2 regimes) |
 | `nanoGPT/model_nope.py` | NoPE GPT model (LN/RMSNorm variants) |
-| `nanoGPT/train_nope.py` | Training script with attention logging |
-| `utils.py` | Plotting utilities (line, imshow, model manipulation) |
-| `analysis_scripts/analyze_trained_nope.py` | Hypothesis testing for trained models |
+| `analysis_scripts/core/model_loader.py` | Shared model loading utilities |
+| `analysis_scripts/core/visualization.py` | Shared plotting utilities |
+| `analysis_scripts/figures/plot_extrapolation_icml.py` | Paper extrapolation figure |
+| `analysis_scripts/decoding/decoding_vector_paper.py` | Canonical decoding vector analysis |
+| `experiments/` | Reproduction documentation for R0/R2 |
 | `CLAUDE.md` | Detailed project context (paper overview, hypotheses) |
+| `AGENTS.md` | Guidelines for AI coding agents (this file) |
 
 ## Trained Model Checkpoints
 
-Training is **COMPLETE**. Both models are saved:
+### Primary Models (Jan 2026)
+
+| Model | Architecture | Location | Size |
+|-------|-------------|----------|------|
+| **R0 FULL-12H** | 2-layer, 12 heads, full blocks | `model_backups/R0_FULL-12H/best_ckpt.pt` | 607 MB |
+| **R2 ATTN2-1H** | 2-layer, 1 head, attn-only layer 2 | `model_backups/R2_ATTN2-1H/best_ckpt.pt` | 222 MB |
+
+Original training locations:
+- R0: `nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt`
+- R2: `nanoGPT/out-2layer-mechanism-r2-1head-attnonly-fullblock-40k/R2/o4w7v8dv/best_ckpt.pt`
+
+See `experiments/` directory for reproduction instructions.
+
+### Legacy Models (Shakespeare experiments)
 - **LayerNorm**: `nanoGPT/out-nope-1layer-ln/ckpt.pt` (548MB, 5000 steps)
 - **RMSNorm**: `nanoGPT/out-nope-1layer-rms/ckpt.pt` (548MB, 5000 steps)
-
-Intermediate checkpoints available every 250 steps in the same directories.
 
 ## OWT Large-Scale Training (COMPLETED as of Jan 15, 2026)
 
@@ -249,17 +283,32 @@ WandB project: `nope-decoding-ablation`
 
 ```
 nopos_locating_new/
-├── analysis_scripts/       # Analysis and figure generation
-├── nanoGPT/               # Training framework
-│   ├── config/            # Training configurations
-│   ├── data/              # Dataset preparation scripts
-│   └── model_nope.py      # Main model file
-├── overleaf/              # LaTeX paper source
-├── train/                 # Additional training scripts
-├── logs/                  # Training logs
-├── models/                # Saved checkpoints
-├── results/               # Experiment outputs
-└── slurm_jobs/            # Slurm job submission scripts
+├── analysis_scripts/          # Analysis and figure generation
+│   ├── core/                  # Shared utilities (model_loader, visualization)
+│   ├── decoding/              # Decoding vector analysis
+│   ├── attention/             # Attention pattern analysis
+│   ├── layernorm/             # LayerNorm mechanism
+│   ├── probing/               # Linear probing experiments
+│   ├── experiments/           # Experiment-specific analyses
+│   │   ├── r0_analysis/       # R0 model scripts
+│   │   ├── r2_analysis/       # R2 model scripts
+│   │   ├── extrapolation/     # Length extrapolation
+│   │   └── interventions/     # Causal interventions
+│   ├── figures/               # Paper figure generation
+│   └── archive/               # Old/experimental scripts
+├── experiments/               # Reproduction documentation
+│   ├── R0_FULL-12H/          # Full 12-head model docs
+│   └── R2_ATTN2-1H/          # Single-head attention-only docs
+├── model_backups/            # Checkpoint backups (not in git)
+├── nanoGPT/                  # Training framework (integrated into main repo)
+│   ├── config/               # Training configurations
+│   ├── data/                 # Dataset preparation scripts
+│   ├── model_2layer_mechanism.py  # Main 2-layer model
+│   └── train_2layer_mechanism.py  # Training script
+├── overleaf/                 # LaTeX paper source
+├── logs/                     # Training logs
+├── results/                  # Experiment outputs
+└── slurm_jobs/               # Slurm job submission scripts
 ```
 
 ## Compute Resources

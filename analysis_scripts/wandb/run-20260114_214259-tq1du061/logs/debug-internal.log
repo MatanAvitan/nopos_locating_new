@@ -1,8 +1,0 @@
-{"time":"2026-01-14T21:43:00.214994049+02:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
-{"time":"2026-01-14T21:43:00.66345481+02:00","level":"INFO","msg":"stream: created new stream","id":"tq1du061"}
-{"time":"2026-01-14T21:43:00.663563593+02:00","level":"INFO","msg":"handler: started","stream_id":"tq1du061"}
-{"time":"2026-01-14T21:43:00.664511357+02:00","level":"INFO","msg":"stream: started","id":"tq1du061"}
-{"time":"2026-01-14T21:43:00.664541837+02:00","level":"INFO","msg":"writer: started","stream_id":"tq1du061"}
-{"time":"2026-01-14T21:43:00.664545765+02:00","level":"INFO","msg":"sender: started","stream_id":"tq1du061"}
-{"time":"2026-01-14T21:43:17.610107163+02:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/matan_avitan/nope-linear-probing/tq1du061/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
-{"time":"2026-01-14T21:46:18.44830299+02:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/matan_avitan/nope-linear-probing/tq1du061/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}

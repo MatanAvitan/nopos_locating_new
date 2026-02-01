@@ -1,9 +1,46 @@
+# Data and large files
 datasets/**
 models/**
 tblogs/**
-__pycache__/**
+*.pkl
+*.pt
+*.bin
+top_k_indices.pkl
+
+# Model backups (too large for git)
+model_backups/
+
+# nanoGPT outputs
+nanoGPT/out-*/
+nanoGPT/wandb/
+nanoGPT/data/*/train.bin
+nanoGPT/data/*/val.bin
+
+# Experiment tracking
+wandb/
+*.wandb
+.wandb_tmp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Aider
+.aider*
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Old
 old_repo_stuff/s4/**
 saved_models/
-analysis_notebooks/synthetic_abs_pred/nopos_random_init_extract_LN_statistics_on_a_sample_compared_to_mean_load_trained_w_LN_images/*top_k_indices.pkl
-top_k_indices.pkl
-.aider*
