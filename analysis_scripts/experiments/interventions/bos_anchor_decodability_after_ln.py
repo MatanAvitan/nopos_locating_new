@@ -1,13 +1,13 @@
 """Quantify BOS-anchor decodability after Block-1 attention + succeeding LayerNorm.
 
 This experiment tests Step 1 directly at
-    x_i^(B1-attnLN) = LN(\tilde h_i^(1))
+    hbar_i^(1) = LN(\tilde h_i^(1))
 where \tilde h_i^(1) is the Block-1 post-attention residual.
 
 For each model, we:
-1) Estimate d_BOS^(B1-LN) from x_0 and d_nonBOS^(B1-LN) from mean_{j>0} x_j.
+1) Estimate d_BOS from hbar_0^(1) and d_nonBOS from mean_{j>0} hbar_j^(1).
 2) Project each token representation onto a chosen direction d:
-       s_i = <x_i, d>
+       s_i = <hbar_i, d>
 3) Fit a 1D affine decoder with learnable scale+bias (a, b):
        y_hat_i = a * s_i + b
 4) Evaluate absolute-position decoding on held-out data.
@@ -16,6 +16,11 @@ We report metrics for three directions:
 - bos_b1ln (primary)
 - nonbos_b1ln (control)
 - random (control)
+
+For each projection we also report Spearman monotonicity at:
+- population level (all tokens pooled),
+- population mean-curve level (per-position means across sequences),
+- sample level (single-sequence Spearman, summarized over sequences).
 
 We also evaluate a fixed-form decoder in Block-1 write space that avoids using m directly:
     y_hat_m = 1 / (<B^(1) x_m^(B1-attnLN), d_BOS^(B1-write)>^2 + eps) + b
@@ -353,6 +358,48 @@ def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
     }
 
 
+def _safe_spearman(x: np.ndarray, y: np.ndarray) -> float:
+    """Compute Spearman rho, returning 0.0 for degenerate inputs."""
+    rho = spearmanr(x, y).correlation
+    if rho is None or np.isnan(rho):
+        return 0.0
+    return float(rho)
+
+
+def compute_projection_spearman_stats(
+    projections: np.ndarray,
+    y_positions: np.ndarray,
+    mean_projection_by_position: np.ndarray,
+    block_size: int,
+    n_sequences: int,
+) -> dict[str, float]:
+    """Compute Step-1 projection Spearman statistics.
+
+    Returns both population-level and sample-level monotonicity:
+    - population_token_rho: Spearman over all tokens pooled across sequences
+    - population_mean_curve_rho: Spearman over per-position means E_b[s_{b,i}]
+    - sample_sequence_*: stats of per-sequence Spearman values
+    """
+    positions = np.arange(block_size, dtype=np.float32)
+
+    population_token_rho = _safe_spearman(projections, y_positions)
+    population_mean_curve_rho = _safe_spearman(mean_projection_by_position, positions)
+
+    per_sequence = projections.reshape(n_sequences, block_size)
+    seq_rhos = np.array(
+        [_safe_spearman(per_sequence[idx], positions) for idx in range(n_sequences)],
+        dtype=np.float64,
+    )
+
+    return {
+        "population_token_rho": population_token_rho,
+        "population_mean_curve_rho": population_mean_curve_rho,
+        "sample_sequence_mean_rho": float(seq_rhos.mean()),
+        "sample_sequence_median_rho": float(np.median(seq_rhos)),
+        "sample_sequence_std_rho": float(seq_rhos.std(ddof=1)),
+    }
+
+
 def run_probe_for_model(
     model_name: str,
     model: TwoLayerMechanismModel,
@@ -403,10 +450,19 @@ def run_probe_for_model(
 
     direction_metrics = {}
     block_size = model.config.block_size
+    n_test_sequences = test_batches * batch_size
     for name in directions:
         a, b = fit_affine_decoder(train_proj[name], y_train)
         pred_test = a * test_proj[name] + b
         metrics = compute_metrics(y_test, pred_test)
+
+        projection_spearman = compute_projection_spearman_stats(
+            projections=test_proj[name],
+            y_positions=y_test,
+            mean_projection_by_position=test_mean_by_pos[name],
+            block_size=block_size,
+            n_sequences=n_test_sequences,
+        )
 
         # Compute per-position std from test data
         std_by_pos = np.zeros(block_size, dtype=np.float64)
@@ -421,6 +477,7 @@ def run_probe_for_model(
                 "mean_projection_by_position_train": train_mean_by_pos[name].tolist(),
                 "mean_projection_by_position_test": test_mean_by_pos[name].tolist(),
                 "std_projection_by_position_test": std_by_pos.tolist(),
+                "projection_spearman": projection_spearman,
             }
         )
         direction_metrics[name] = metrics
@@ -557,9 +614,7 @@ def plot_results(results: dict[str, Any], save_path: Path) -> None:
             color=color,
         )
     axes[0].set_xlabel("Position $i$")
-    axes[0].set_ylabel(
-        r"$\langle x_i^{\mathrm{B1\text{-}LN2}},\; d_{\mathrm{BOS}}\rangle$"
-    )
+    axes[0].set_ylabel(r"$\langle \bar{h}_i^{(1)},\; d_{\mathrm{BOS}}\rangle$")
     axes[0].set_title(r"(a) BOS projection after LN2")
     axes[0].grid(True, alpha=0.25)
     axes[0].legend(loc="upper right", fontsize=7)
@@ -585,9 +640,7 @@ def plot_results(results: dict[str, Any], save_path: Path) -> None:
             color=color,
         )
     axes[1].set_xlabel("Position $i$")
-    axes[1].set_ylabel(
-        r"$\langle x_i^{\mathrm{B1\text{-}LN2}},\; d_{\mathrm{nonBOS}}\rangle$"
-    )
+    axes[1].set_ylabel(r"$\langle \bar{h}_i^{(1)},\; d_{\mathrm{nonBOS}}\rangle$")
     axes[1].set_title(r"(b) nonBOS projection after LN2")
     axes[1].grid(True, alpha=0.25)
     axes[1].legend(loc="lower right", fontsize=7)
@@ -718,9 +771,25 @@ def main() -> None:
             f"  BOS 1D decoder:      R^2={primary['r2']:.4f}, "
             f"pearson={primary['pearson_r']:.4f}, spearman={primary['spearman_rho']:.4f}"
         )
+        bos_sp = primary["projection_spearman"]
+        print(
+            "    BOS projection Spearman: "
+            f"pop-token={bos_sp['population_token_rho']:.4f}, "
+            f"pop-mean-curve={bos_sp['population_mean_curve_rho']:.4f}, "
+            f"sample-mean={bos_sp['sample_sequence_mean_rho']:.4f}, "
+            f"sample-median={bos_sp['sample_sequence_median_rho']:.4f}"
+        )
         print(
             f"  nonBOS 1D decoder:   R^2={nonbos['r2']:.4f}, "
             f"pearson={nonbos['pearson_r']:.4f}, spearman={nonbos['spearman_rho']:.4f}"
+        )
+        nonbos_sp = nonbos["projection_spearman"]
+        print(
+            "    nonBOS projection Spearman: "
+            f"pop-token={nonbos_sp['population_token_rho']:.4f}, "
+            f"pop-mean-curve={nonbos_sp['population_mean_curve_rho']:.4f}, "
+            f"sample-mean={nonbos_sp['sample_sequence_mean_rho']:.4f}, "
+            f"sample-median={nonbos_sp['sample_sequence_median_rho']:.4f}"
         )
         print(
             f"  Full linear probe:   R^2={full_probe['test_metrics']['r2']:.4f}, "
