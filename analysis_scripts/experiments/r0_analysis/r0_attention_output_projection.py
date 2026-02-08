@@ -19,7 +19,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 
 from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismModel
@@ -28,6 +28,45 @@ from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismMod
 BOS_TOKEN_ID = 50256
 COLOR_BOS = "#009E73"
 COLOR_OTHERS = "#D55E00"
+
+
+def _safe_spearman(x: np.ndarray, y: np.ndarray) -> float:
+    """Spearman rho that is robust to degenerate inputs."""
+    rho = spearmanr(x, y).correlation
+    if rho is None or np.isnan(rho):
+        return 0.0
+    return float(rho)
+
+
+def summarize_projection_spearman(proj_seq: np.ndarray) -> dict[str, float]:
+    """Summarize monotonicity at population and single-sequence levels.
+
+    Args:
+        proj_seq: [N, T] projection values per sequence and position.
+    """
+    n_sequences, seq_len = proj_seq.shape
+    positions = np.arange(seq_len, dtype=np.float32)
+
+    population_token_rho = _safe_spearman(
+        proj_seq.reshape(-1), np.tile(positions, n_sequences)
+    )
+    population_mean_curve_rho = _safe_spearman(proj_seq.mean(axis=0), positions)
+
+    seq_rhos = np.array(
+        [_safe_spearman(proj_seq[idx], positions) for idx in range(n_sequences)],
+        dtype=np.float64,
+    )
+
+    return {
+        "population_token_rho": population_token_rho,
+        "population_mean_curve_rho": population_mean_curve_rho,
+        "sample_sequence_mean_rho": float(seq_rhos.mean()),
+        "sample_sequence_median_rho": float(np.median(seq_rhos)),
+        "sample_sequence_std_rho": float(seq_rhos.std(ddof=1)),
+        "sample_sequence_min_rho": float(seq_rhos.min()),
+        "sample_sequence_max_rho": float(seq_rhos.max()),
+        "n_sequences": int(n_sequences),
+    }
 
 
 def load_model(checkpoint_path: Path, device: str) -> TwoLayerMechanismModel:
@@ -78,9 +117,9 @@ def compute_projection(
     n_batches: int,
     device: str,
 ) -> dict:
-    D = model.config.n_embd
-    proj_bos_all = []
-    proj_others_all = []
+    d_model = model.config.n_embd
+    proj_bos_batches = []
+    proj_others_batches = []
 
     for _ in range(n_batches):
         tokens = sample_tokens(data, seq_len, batch_size, device)
@@ -88,7 +127,7 @@ def compute_projection(
             model(tokens, capture_taps=True)
             taps = model.get_all_taps()
 
-        W_V = model.block2.attn.c_attn.weight[2 * D :, :].detach()
+        W_V = model.block2.attn.c_attn.weight[2 * d_model :, :].detach()
         W_O = model.block2.attn.c_proj.weight.detach()
         b_O = model.block2.attn.c_proj.bias.detach()
 
@@ -105,20 +144,28 @@ def compute_projection(
         others_dir = F.normalize(others_mean, dim=0)
 
         attn_out_no_bias = attn_out - b_O
-        proj_bos = (attn_out_no_bias @ bos_dir).mean(dim=0)
-        proj_others = (attn_out_no_bias @ others_dir).mean(dim=0)
+        proj_bos = (attn_out_no_bias @ bos_dir).detach().cpu().numpy()  # [B, T]
+        proj_others = (attn_out_no_bias @ others_dir).detach().cpu().numpy()  # [B, T]
 
-        proj_bos_all.append(proj_bos.cpu())
-        proj_others_all.append(proj_others.cpu())
+        proj_bos_batches.append(proj_bos)
+        proj_others_batches.append(proj_others)
 
-    proj_bos = torch.stack(proj_bos_all).mean(dim=0).numpy()
-    proj_others = torch.stack(proj_others_all).mean(dim=0).numpy()
+    proj_bos_seq = np.concatenate(proj_bos_batches, axis=0)
+    proj_others_seq = np.concatenate(proj_others_batches, axis=0)
+
+    proj_bos = proj_bos_seq.mean(axis=0)
+    proj_others = proj_others_seq.mean(axis=0)
     positions = np.arange(seq_len)
 
     corr_bos = float(np.corrcoef(proj_bos, positions)[0, 1])
     corr_non_bos = float(np.corrcoef(proj_others, positions)[0, 1])
-    spearman_bos = float(spearmanr(proj_bos, positions).correlation)
-    spearman_non_bos = float(spearmanr(proj_others, positions).correlation)
+    spearman_bos = _safe_spearman(proj_bos, positions)
+    spearman_non_bos = _safe_spearman(proj_others, positions)
+
+    spearman_stats = {
+        "bos": summarize_projection_spearman(proj_bos_seq),
+        "non_bos": summarize_projection_spearman(proj_others_seq),
+    }
 
     return {
         "proj_bos": proj_bos,
@@ -127,6 +174,7 @@ def compute_projection(
         "corr_non_bos": corr_non_bos,
         "spearman_bos": spearman_bos,
         "spearman_non_bos": spearman_non_bos,
+        "spearman_stats": spearman_stats,
     }
 
 
@@ -221,6 +269,13 @@ def main() -> None:
             indent=2,
         )
 
+    with open(save_dir / f"projection_results_{args.output_tag}.json", "w") as f:
+        json.dump(
+            to_serializable({"L128": results_128}),
+            f,
+            indent=2,
+        )
+
     paper_path = paper_dir / save_path.name
     if save_path.exists():
         paper_path.write_bytes(save_path.read_bytes())
@@ -229,9 +284,15 @@ def main() -> None:
     print(f"  {save_path}")
     print(f"  {paper_path}")
     print("Summary:")
+    stats_bos = results_128["spearman_stats"]["bos"]
+    stats_non = results_128["spearman_stats"]["non_bos"]
     print(
-        f"  L=128: spearman(BOS)={results_128['spearman_bos']:.3f}, "
-        f"spearman(non-BOS)={results_128['spearman_non_bos']:.3f}"
+        f"  L=128 mean-curve Spearman: BOS={results_128['spearman_bos']:.3f}, "
+        f"non-BOS={results_128['spearman_non_bos']:.3f}"
+    )
+    print(
+        f"  L=128 sample-level median Spearman: BOS={stats_bos['sample_sequence_median_rho']:.3f}, "
+        f"non-BOS={stats_non['sample_sequence_median_rho']:.3f}"
     )
 
 
