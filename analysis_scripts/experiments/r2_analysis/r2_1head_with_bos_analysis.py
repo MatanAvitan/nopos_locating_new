@@ -1,5 +1,5 @@
 """
-Complete Analysis for R2-1-Head Geometric Clock with BOS Token
+Complete Analysis for R2-1-Head Geometric Gauge with BOS Token
 ===============================================================
 
 The correct R2-1-head model that achieves R²=0.993 uses:
@@ -24,7 +24,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT_DIR = Path(__file__).parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
@@ -317,11 +317,11 @@ def plot_write_bottleneck(results, save_path):
 
 
 # =============================================================================
-# Geometric Clock Analysis
+# Geometric Gauge Analysis
 # =============================================================================
 
 
-def analyze_geometric_clock(model, data, batch_size=64, n_batches=10):
+def analyze_geometric_gauge(model, data, batch_size=64, n_batches=10):
     D = model.config.n_embd
     T = model.config.block_size
 
@@ -395,24 +395,24 @@ def analyze_geometric_clock(model, data, batch_size=64, n_batches=10):
     }
 
 
-def plot_geometric_clock(clock_data, save_path):
+def plot_geometric_gauge(gauge_data, save_path):
     fig, axes = plt.subplots(1, 3, figsize=(9, 2.8))
 
-    T = len(clock_data["proj_bos"])
+    T = len(gauge_data["proj_bos"])
     positions = np.arange(T)
 
     # Panel A
     axes[0].plot(
         positions,
-        clock_data["proj_bos"],
-        label=f"BOS dir (r={clock_data['corr_bos']:.2f})",
+        gauge_data["proj_bos"],
+        label=f"BOS dir (r={gauge_data['corr_bos']:.2f})",
         color=COLOR_BOS,
         linewidth=1.5,
     )
     axes[0].plot(
         positions,
-        clock_data["proj_others"],
-        label=f"Others dir (r={clock_data['corr_others']:.2f})",
+        gauge_data["proj_others"],
+        label=f"Others dir (r={gauge_data['corr_others']:.2f})",
         color=COLOR_OTHERS,
         linewidth=1.5,
     )
@@ -425,7 +425,7 @@ def plot_geometric_clock(clock_data, save_path):
     # Panel B
     axes[1].plot(
         positions,
-        clock_data["attn_to_bos"],
+        gauge_data["attn_to_bos"],
         color=COLOR_R2,
         linewidth=1.5,
         label="Learned",
@@ -580,27 +580,27 @@ def main():
         os.path.join(args.save_dir, f"attention_maps_r2_1head{tag_suffix}.pdf"),
     )
 
-    # 3. Geometric Clock
+    # 3. Geometric Gauge
     print("\n" + "=" * 60)
-    print("GEOMETRIC CLOCK ANALYSIS")
+    print("GEOMETRIC GAUGE ANALYSIS")
     print("=" * 60)
-    clock_data = analyze_geometric_clock(model, data)
+    gauge_data = analyze_geometric_gauge(model, data)
 
-    print(f"  ||W_O @ v_BOS||: {clock_data['bos_norm']:.1f}")
-    print(f"  ||W_O @ v_others||: {clock_data['others_norm']:.1f}")
-    print(f"  cos(BOS dir, Others dir): {clock_data['cos_bos_others']:.3f}")
-    print(f"  corr(proj_BOS, position): {clock_data['corr_bos']:.3f}")
-    print(f"  corr(proj_others, position): {clock_data['corr_others']:.3f}")
-    print(f"  cos(w_head, BOS dir): {clock_data['cos_w_bos']:.3f}")
-    print(f"  cos(w_head, Others dir): {clock_data['cos_w_others']:.3f}")
+    print(f"  ||W_O @ v_BOS||: {gauge_data['bos_norm']:.1f}")
+    print(f"  ||W_O @ v_others||: {gauge_data['others_norm']:.1f}")
+    print(f"  cos(BOS dir, Others dir): {gauge_data['cos_bos_others']:.3f}")
+    print(f"  corr(proj_BOS, position): {gauge_data['corr_bos']:.3f}")
+    print(f"  corr(proj_others, position): {gauge_data['corr_others']:.3f}")
+    print(f"  cos(w_head, BOS dir): {gauge_data['cos_w_bos']:.3f}")
+    print(f"  cos(w_head, Others dir): {gauge_data['cos_w_others']:.3f}")
 
-    all_results["geometric_clock"] = {
+    all_results["geometric_gauge"] = {
         k: float(v) if isinstance(v, (int, float, np.floating)) else v.tolist()
-        for k, v in clock_data.items()
+        for k, v in gauge_data.items()
     }
 
-    plot_geometric_clock(
-        clock_data, os.path.join(args.save_dir, f"geometric_clock{tag_suffix}.pdf")
+    plot_geometric_gauge(
+        gauge_data, os.path.join(args.save_dir, f"geometric_gauge{tag_suffix}.pdf")
     )
 
     # Save
@@ -615,7 +615,7 @@ def main():
     for fname in [
         f"write_bottleneck_r2_1head{tag_suffix}.pdf",
         f"attention_maps_r2_1head{tag_suffix}.pdf",
-        f"geometric_clock{tag_suffix}.pdf",
+        f"geometric_gauge{tag_suffix}.pdf",
     ]:
         src = os.path.join(args.save_dir, fname)
         dst = os.path.join(args.paper_dir, fname)
@@ -628,11 +628,11 @@ def main():
     print(f"Write Bottleneck:")
     print(f"  Baseline R²: {wb_results['baseline_r2']:.4f}")
     print(f"  r_95: {wb_results['r_95']}")
-    print(f"\nGeometric Clock:")
-    print(f"  ||W_O @ v_BOS||: {clock_data['bos_norm']:.1f}")
-    print(f"  ||W_O @ v_others||: {clock_data['others_norm']:.1f}")
-    print(f"  cos(BOS dir, Others dir): {clock_data['cos_bos_others']:.3f}")
-    print(f"  cos(w_head, Others dir): {clock_data['cos_w_others']:.3f}")
+    print(f"\nGeometric Gauge:")
+    print(f"  ||W_O @ v_BOS||: {gauge_data['bos_norm']:.1f}")
+    print(f"  ||W_O @ v_others||: {gauge_data['others_norm']:.1f}")
+    print(f"  cos(BOS dir, Others dir): {gauge_data['cos_bos_others']:.3f}")
+    print(f"  cos(w_head, Others dir): {gauge_data['cos_w_others']:.3f}")
 
 
 if __name__ == "__main__":

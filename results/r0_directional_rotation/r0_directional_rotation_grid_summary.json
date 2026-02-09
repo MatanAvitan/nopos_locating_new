@@ -1,7 +1,7 @@
 {
-  "checkpoint": "nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt",
+  "checkpoint": "model_backups/R0_FULL-12H/best_ckpt.pt",
   "seq_len": 128,
-  "stride": 16,
+  "stride": 32,
   "seed": 123,
   "n_rows": 6,
   "n_cols": 2,

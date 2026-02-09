@@ -15,16 +15,21 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
+from matplotlib.colors import Normalize
+from matplotlib.patches import FancyArrowPatch
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 
 from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismModel
 
 BOS_TOKEN_ID = 50256
-COLOR_PATH = "#0072B2"
-COLOR_REF = "#D55E00"
-COLOR_STRIDE = "#000000"
+COLOR_PATH = "#0B4F8A"
+COLOR_FACE = "#F6F8FB"
+COLOR_TRACK = "#B8C6DB"
+COLOR_STRIDE = "#1E293B"
+CMAP_NAME = "turbo"
 
 
 def load_model(checkpoint_path: Path, device: str) -> TwoLayerMechanismModel:
@@ -133,86 +138,220 @@ def compute_rotation(model: TwoLayerMechanismModel, tokens: torch.Tensor) -> dic
     }
 
 
-def plot_rotation(rotation: dict, stride: int, save_path: Path) -> None:
+def plot_rotation(
+    rotation: dict, stride: int, save_path: Path, label_stride: int = 16
+) -> None:
     proj_bos = rotation["proj_bos"]
     proj_others = rotation["proj_others"]
     dial_angle = rotation["dial_angle_deg"]
     positions = np.arange(len(proj_bos))
-
-    fig, ax = plt.subplots(1, 1, figsize=(3.6, 3.4))
-
-    # Dial movement (BOS -> Others, 0..180 degrees)
-    theta = np.linspace(0, np.pi, 200)
-    ax.plot(-np.cos(theta), np.sin(theta), color="#888888", linewidth=0.8, alpha=0.6)
-
+    n_positions = len(positions)
     dial_theta = np.radians(dial_angle)
     dial_x = -np.cos(dial_theta)
     dial_y = np.sin(dial_theta)
 
-    ax.plot(dial_x, dial_y, color=COLOR_PATH, alpha=0.2, linewidth=1.0)
+    fig, ax = plt.subplots(1, 1, figsize=(4.8, 4.4))
+    ax.set_facecolor(COLOR_FACE)
+
+    # Half-gauge dial frame (upper semicircle only).
+    theta_top = np.linspace(0, np.pi, 400)
+
+    # -- Gauge aesthetics: shadow arc behind main track --
+    ax.plot(
+        -np.cos(theta_top),
+        np.sin(theta_top),
+        color="#9CADC4",
+        linewidth=5.0,
+        alpha=0.35,
+        zorder=0,
+        solid_capstyle="round",
+    )
+    # Main track arc.
+    ax.plot(
+        -np.cos(theta_top),
+        np.sin(theta_top),
+        color=COLOR_TRACK,
+        linewidth=2.5,
+        alpha=0.95,
+        zorder=1,
+    )
+    # -- Gauge aesthetics: thin inner arc for depth --
+    inner_r = 0.88
+    ax.plot(
+        inner_r * -np.cos(theta_top),
+        inner_r * np.sin(theta_top),
+        color=COLOR_TRACK,
+        linewidth=0.6,
+        alpha=0.45,
+        zorder=1,
+    )
+
+    # -- Gauge aesthetics: tick marks at label positions --
+    tick_label_positions = np.arange(0, n_positions, label_stride)
+    if tick_label_positions[-1] != n_positions - 1:
+        tick_label_positions = np.append(tick_label_positions, n_positions - 1)
+    tick_inner = 0.93
+    tick_outer = 1.00
+    for p in tick_label_positions:
+        if p in (36, 48):
+            continue
+        x_u = dial_x[p]
+        y_u = dial_y[p]
+        ax.plot(
+            [tick_inner * x_u, tick_outer * x_u],
+            [tick_inner * y_u, tick_outer * y_u],
+            color="#64748B",
+            linewidth=1.0,
+            alpha=0.7,
+            zorder=2,
+        )
+
+    # Stride anchor positions for markers and arrows.
+    major_positions = np.arange(0, n_positions, stride)
+    if major_positions[-1] != n_positions - 1:
+        major_positions = np.append(major_positions, n_positions - 1)
+
+    # Gradient trajectory line interpolated along the arc so it follows the
+    # semicircle instead of cutting straight chords between points.
+    n_interp = 8  # sub-steps between consecutive positions
+    arc_segments = []
+    arc_colors = []
+    for i in range(len(dial_theta) - 1):
+        th = np.linspace(dial_theta[i], dial_theta[i + 1], n_interp + 1)
+        xs = -np.cos(th)
+        ys = np.sin(th)
+        for j in range(len(th) - 1):
+            arc_segments.append([(xs[j], ys[j]), (xs[j + 1], ys[j + 1])])
+            arc_colors.append(i + j / (len(th) - 1))
+
+    line = LineCollection(
+        arc_segments,
+        cmap=CMAP_NAME,
+        norm=Normalize(positions.min(), positions.max()),
+        linewidth=2.2,
+        alpha=0.9,
+        zorder=3,
+    )
+    line.set_array(np.array(arc_colors))
+    ax.add_collection(line)
+
     sc = ax.scatter(
         dial_x,
         dial_y,
         c=positions,
-        cmap="viridis",
-        s=8,
-        alpha=0.75,
+        cmap=CMAP_NAME,
+        s=11,
+        alpha=0.92,
+        edgecolors="none",
+        zorder=4,
     )
 
-    stride_positions = np.arange(0, len(positions), stride)
+    stride_positions = major_positions
     ax.scatter(
         dial_x[stride_positions],
         dial_y[stride_positions],
-        s=32,
+        s=38,
         facecolors="white",
         edgecolors=COLOR_STRIDE,
-        linewidths=0.8,
-        zorder=3,
+        linewidths=1.0,
+        zorder=6,
     )
 
+    # Curved direction arrows between stride anchors (arching from the outer part).
     if len(stride_positions) > 1:
         for i in range(len(stride_positions) - 1):
             start = stride_positions[i]
             end = stride_positions[i + 1]
-            ax.annotate(
-                "",
-                xy=(dial_x[end], dial_y[end]),
-                xytext=(dial_x[start], dial_y[start]),
-                arrowprops=dict(arrowstyle="->", color=COLOR_STRIDE, lw=0.8, alpha=0.5),
+            arrow = FancyArrowPatch(
+                posA=(dial_x[start], dial_y[start]),
+                posB=(dial_x[end], dial_y[end]),
+                connectionstyle="arc3,rad=-0.35",
+                arrowstyle="->",
+                mutation_scale=9,
+                color=COLOR_STRIDE,
+                lw=0.9,
+                alpha=0.7,
+                zorder=7,
             )
+            ax.add_patch(arrow)
 
+    # Position labels along the arc at label_stride positions (decoupled from
+    # arrow stride so finer labels are shown even with coarse arrows).
+    label_positions = np.arange(0, n_positions, label_stride)
+    if label_positions[-1] != n_positions - 1:
+        label_positions = np.append(label_positions, n_positions - 1)
+    for p in label_positions:
+        if p == 0 or p == n_positions - 1 or p in (32, 48):
+            continue
+        label_r = 1.12
+        lx, ly = label_r * dial_x[p], label_r * dial_y[p]
+        ax.text(
+            lx,
+            ly,
+            str(p),
+            ha="center",
+            va="center",
+            fontsize=7,
+            color="#334155",
+        )
+
+    # Gauge needle with sharp arrowhead at the final position.
+    hand = FancyArrowPatch(
+        posA=(0.0, 0.0),
+        posB=(dial_x[-1], dial_y[-1]),
+        arrowstyle="-|>",
+        mutation_scale=14,
+        color="#EF4444",
+        lw=1.6,
+        alpha=0.9,
+        zorder=5,
+    )
+    ax.add_patch(hand)
+    # -- Gauge aesthetics: center pivot with metallic look --
+    ax.scatter(
+        [0.0], [0.0], s=120, c="#94A3B8", edgecolors="#475569", linewidths=1.5, zorder=8
+    )
+    ax.scatter([0.0], [0.0], s=30, c="#334155", zorder=9)
+
+    # BOS / Others labels at the arc endpoints, offset below the arc.
     ax.text(
-        0.04,
-        0.04,
+        -1.0,
+        -0.12,
         "BOS",
-        transform=ax.transAxes,
-        ha="left",
-        va="bottom",
-        fontsize=9,
-        bbox=dict(facecolor="white", alpha=0.7, edgecolor="none", pad=1.0),
+        ha="center",
+        va="top",
+        fontsize=9.5,
+        weight="bold",
+        color="#0F172A",
+        bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=1.5),
     )
     ax.text(
-        0.96,
-        0.04,
+        1.0,
+        -0.12,
         "Others",
-        transform=ax.transAxes,
-        ha="right",
-        va="bottom",
-        fontsize=9,
-        bbox=dict(facecolor="white", alpha=0.7, edgecolor="none", pad=1.0),
+        ha="center",
+        va="top",
+        fontsize=9.5,
+        weight="bold",
+        color="#0F172A",
+        bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=1.5),
     )
-    ax.set_title("Dial Movement")
-    ax.set_xlabel("BOS <-> Others subspace")
+
     ax.set_ylabel("")
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlim(-1.15, 1.15)
-    ax.set_ylim(-0.05, 1.15)
+    ax.set_xlim(-1.25, 1.25)
+    ax.set_ylim(-0.25, 1.25)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.grid(True, alpha=0.2)
-    cbar = fig.colorbar(sc, ax=ax, fraction=0.03, pad=0.03, shrink=0.8)
-    cbar.set_label("Position", fontsize=8)
+
+    cbar = fig.colorbar(sc, ax=ax, fraction=0.04, pad=0.03, shrink=0.86)
+    cbar.set_label("Position", fontsize=8.5)
+    cbar.set_ticks(
+        [0, n_positions // 4, n_positions // 2, (3 * n_positions) // 4, n_positions - 1]
+    )
     cbar.ax.tick_params(labelsize=7)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
     plt.tight_layout()
     fig.savefig(save_path, bbox_inches="tight")
@@ -238,7 +377,8 @@ def main() -> None:
     )
     parser.add_argument("--seq_len", type=int, default=128)
     parser.add_argument("--n_sequences", type=int, default=64)
-    parser.add_argument("--stride", type=int, default=16)
+    parser.add_argument("--stride", type=int, default=32)
+    parser.add_argument("--label_stride", type=int, default=16)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--start_idx", type=int, default=None)
     args = parser.parse_args()
@@ -267,7 +407,7 @@ def main() -> None:
     rotation = compute_rotation(model, tokens)
 
     save_path = save_dir / "r0_directional_rotation_example.pdf"
-    plot_rotation(rotation, args.stride, save_path)
+    plot_rotation(rotation, args.stride, save_path, label_stride=args.label_stride)
 
     summary = {
         "checkpoint": str(args.checkpoint),
@@ -282,7 +422,7 @@ def main() -> None:
     def to_serializable(value):
         if isinstance(value, np.ndarray):
             return value.tolist()
-        if isinstance(value, (np.float32, np.float64)):
+        if isinstance(value, np.floating):
             return float(value)
         if isinstance(value, dict):
             return {k: to_serializable(v) for k, v in value.items()}
@@ -296,10 +436,16 @@ def main() -> None:
     paper_path = paper_dir / save_path.name
     if save_path.exists():
         paper_path.write_bytes(save_path.read_bytes())
+    save_png_path = save_path.with_suffix(".png")
+    paper_png_path = paper_dir / save_png_path.name
+    if save_png_path.exists():
+        paper_png_path.write_bytes(save_png_path.read_bytes())
 
     print("Saved:")
     print(f"  {save_path}")
+    print(f"  {save_png_path}")
     print(f"  {paper_path}")
+    print(f"  {paper_png_path}")
     print("Summary:")
     print(f"  n_sequences: {args.n_sequences}")
     print(f"  start_idx[0]: {start_indices[0]}")

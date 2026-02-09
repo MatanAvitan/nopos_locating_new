@@ -1,10 +1,10 @@
 """
-Complete Analysis for R2-1-Head Geometric Clock Mechanism
+Complete Analysis for R2-1-Head Geometric Gauge Mechanism
 =========================================================
 
 This script generates all plots and data for the ICML 2026 paper:
 1. Write bottleneck curves (retention/ablation interventions)
-2. Attention maps showing the geometric clock mechanism
+2. Attention maps showing the geometric gauge mechanism
 3. Directional rotation visualization
 4. Extrapolation analysis to longer sequences
 
@@ -29,7 +29,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # Add nanoGPT to path
-ROOT_DIR = Path(__file__).parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
@@ -346,12 +346,12 @@ def plot_attention_maps(attn1, attn2, save_path):
 
 
 # =============================================================================
-# Geometric Clock Visualization
+# Geometric Gauge Visualization
 # =============================================================================
 
 
-def analyze_geometric_clock(model, data, batch_size=64):
-    """Analyze the geometric clock mechanism."""
+def analyze_geometric_gauge(model, data, batch_size=64):
+    """Analyze the geometric gauge mechanism."""
     tokens = get_batch(data, batch_size, model.config.block_size, DEVICE)
     D = model.config.n_embd
     T = model.config.block_size
@@ -416,24 +416,24 @@ def analyze_geometric_clock(model, data, batch_size=64):
     }
 
 
-def plot_geometric_clock(clock_data, save_path):
-    """Plot the geometric clock mechanism."""
+def plot_geometric_gauge(gauge_data, save_path):
+    """Plot the geometric gauge mechanism."""
     fig, axes = plt.subplots(1, 2, figsize=(7, 3))
 
-    T = len(clock_data["proj_pos0"])
+    T = len(gauge_data["proj_pos0"])
     positions = np.arange(T)
 
     # Projections
     axes[0].plot(
         positions,
-        clock_data["proj_pos0"],
+        gauge_data["proj_pos0"],
         label="Proj. pos-0 dir",
         color=COLOR_POS0,
         linewidth=2,
     )
     axes[0].plot(
         positions,
-        clock_data["proj_others"],
+        gauge_data["proj_others"],
         label="Proj. others dir",
         color=COLOR_OTHERS,
         linewidth=2,
@@ -446,14 +446,14 @@ def plot_geometric_clock(clock_data, save_path):
 
     # Add correlation annotations
     axes[0].annotate(
-        f"r={clock_data['corr_pos0']:.2f}",
-        xy=(T * 0.1, clock_data["proj_pos0"][int(T * 0.1)]),
+        f"r={gauge_data['corr_pos0']:.2f}",
+        xy=(T * 0.1, gauge_data["proj_pos0"][int(T * 0.1)]),
         fontsize=8,
         color=COLOR_POS0,
     )
     axes[0].annotate(
-        f"r={clock_data['corr_others']:.2f}",
-        xy=(T * 0.7, clock_data["proj_others"][int(T * 0.7)]),
+        f"r={gauge_data['corr_others']:.2f}",
+        xy=(T * 0.7, gauge_data["proj_others"][int(T * 0.7)]),
         fontsize=8,
         color=COLOR_OTHERS,
     )
@@ -488,7 +488,7 @@ def plot_geometric_clock(clock_data, save_path):
     plt.savefig(save_path)
     plt.savefig(save_path.replace(".pdf", ".png"), dpi=300)
     plt.close()
-    print(f"Saved geometric clock to {save_path}")
+    print(f"Saved geometric gauge to {save_path}")
 
 
 # =============================================================================
@@ -705,20 +705,20 @@ def main():
         os.path.join(args.save_dir, f"attention_maps_r2_1head{tag_suffix}.pdf"),
     )
 
-    # 3. Geometric Clock Analysis
+    # 3. Geometric Gauge Analysis
     print("\n" + "=" * 60)
-    print("3. GEOMETRIC CLOCK ANALYSIS")
+    print("3. GEOMETRIC GAUGE ANALYSIS")
     print("=" * 60)
-    clock_data = analyze_geometric_clock(model, data)
-    all_results["geometric_clock"] = clock_data
-    print(f"  cos(pos0_dir, others_dir): {clock_data['cos_pos0_others']:.3f}")
-    print(f"  corr(proj_pos0, position): {clock_data['corr_pos0']:.3f}")
-    print(f"  corr(proj_others, position): {clock_data['corr_others']:.3f}")
-    print(f"  cos(w_head, pos0_dir): {clock_data['cos_w_pos0']:.3f}")
-    print(f"  cos(w_head, others_dir): {clock_data['cos_w_others']:.3f}")
+    gauge_data = analyze_geometric_gauge(model, data)
+    all_results["geometric_gauge"] = gauge_data
+    print(f"  cos(pos0_dir, others_dir): {gauge_data['cos_pos0_others']:.3f}")
+    print(f"  corr(proj_pos0, position): {gauge_data['corr_pos0']:.3f}")
+    print(f"  corr(proj_others, position): {gauge_data['corr_others']:.3f}")
+    print(f"  cos(w_head, pos0_dir): {gauge_data['cos_w_pos0']:.3f}")
+    print(f"  cos(w_head, others_dir): {gauge_data['cos_w_others']:.3f}")
 
-    plot_geometric_clock(
-        clock_data, os.path.join(args.save_dir, f"geometric_clock{tag_suffix}.pdf")
+    plot_geometric_gauge(
+        gauge_data, os.path.join(args.save_dir, f"geometric_gauge{tag_suffix}.pdf")
     )
 
     # 4. Extrapolation Analysis
@@ -760,7 +760,7 @@ def main():
     for fname in [
         f"write_bottleneck_r2_1head{tag_suffix}.pdf",
         f"attention_maps_r2_1head{tag_suffix}.pdf",
-        f"geometric_clock{tag_suffix}.pdf",
+        f"geometric_gauge{tag_suffix}.pdf",
         f"extrapolation_r2_1head{tag_suffix}.pdf",
     ]:
         src = os.path.join(args.save_dir, fname)
@@ -777,11 +777,11 @@ def main():
     print(f"  Baseline R²: {wb_results['baseline_r2']:.4f}")
     print(f"  r_95: {wb_results['r_95']}")
 
-    print(f"\nGeometric Clock:")
-    print(f"  cos(pos0_dir, others_dir): {clock_data['cos_pos0_others']:.3f}")
-    print(f"  ||pos0_Wo_v||: {clock_data['pos0_norm']:.1f}")
-    print(f"  ||others_Wo_v||: {clock_data['others_norm']:.1f}")
-    print(f"  cos(w_head, others_dir): {clock_data['cos_w_others']:.3f}")
+    print(f"\nGeometric Gauge:")
+    print(f"  cos(pos0_dir, others_dir): {gauge_data['cos_pos0_others']:.3f}")
+    print(f"  ||pos0_Wo_v||: {gauge_data['pos0_norm']:.1f}")
+    print(f"  ||others_Wo_v||: {gauge_data['others_norm']:.1f}")
+    print(f"  cos(w_head, others_dir): {gauge_data['cos_w_others']:.3f}")
 
     print(f"\nExtrapolation (R²):")
     for L, r2 in sorted(extrap_results.items()):

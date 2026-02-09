@@ -1,16 +1,16 @@
 """
-Complete Analysis for Geometric Clock Mechanism (12-head R2 model)
+Complete Analysis for Geometric Gauge Mechanism (12-head R2 model)
 ===================================================================
 
 This script generates all plots and data for the ICML 2026 paper focusing on:
-1. The complete geometric clock mechanism
+1. The complete geometric gauge mechanism
 2. Write bottleneck curves
 3. Attention maps
 4. Extrapolation analysis
 5. Comparison between R0 and R2
 
 Usage:
-    python analysis_scripts/r2_geometric_clock_complete.py
+    python analysis_scripts/r2_geometric_gauge_complete.py
 """
 
 import os
@@ -29,7 +29,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT_DIR = Path(__file__).parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
@@ -333,12 +333,12 @@ def plot_attention_maps(attn1, attn2, model_name, save_path, n_heads_to_show=4):
 
 
 # =============================================================================
-# Geometric Clock Analysis
+# Geometric Gauge Analysis
 # =============================================================================
 
 
-def analyze_geometric_clock(model, data, batch_size=64, n_batches=10):
-    """Analyze geometric clock mechanism for R2."""
+def analyze_geometric_gauge(model, data, batch_size=64, n_batches=10):
+    """Analyze geometric gauge mechanism for R2."""
     D = model.config.n_embd
     T = model.config.block_size
     n_head = model.config.n_head
@@ -422,25 +422,25 @@ def analyze_geometric_clock(model, data, batch_size=64, n_batches=10):
     }
 
 
-def plot_geometric_clock(clock_data, save_path):
-    """Plot geometric clock mechanism."""
+def plot_geometric_gauge(gauge_data, save_path):
+    """Plot geometric gauge mechanism."""
     fig, axes = plt.subplots(1, 3, figsize=(9, 2.8))
 
-    T = len(clock_data["proj_pos0"])
+    T = len(gauge_data["proj_pos0"])
     positions = np.arange(T)
 
     # Panel A: Projections
     axes[0].plot(
         positions,
-        clock_data["proj_pos0"],
-        label=f"Pos-0 dir (r={clock_data['corr_pos0']:.2f})",
+        gauge_data["proj_pos0"],
+        label=f"Pos-0 dir (r={gauge_data['corr_pos0']:.2f})",
         color=COLOR_POS0,
         linewidth=1.5,
     )
     axes[0].plot(
         positions,
-        clock_data["proj_others"],
-        label=f"Others dir (r={clock_data['corr_others']:.2f})",
+        gauge_data["proj_others"],
+        label=f"Others dir (r={gauge_data['corr_others']:.2f})",
         color=COLOR_OTHERS,
         linewidth=1.5,
     )
@@ -451,7 +451,7 @@ def plot_geometric_clock(clock_data, save_path):
     axes[0].grid(True, alpha=0.3)
 
     # Panel B: Attention to position 0
-    axes[1].plot(positions, clock_data["attn_to_pos0"], color=COLOR_R2, linewidth=1.5)
+    axes[1].plot(positions, gauge_data["attn_to_pos0"], color=COLOR_R2, linewidth=1.5)
     axes[1].plot(
         positions, 1.0 / (positions + 1), "--", color="gray", alpha=0.7, label="Uniform"
     )
@@ -491,7 +491,7 @@ def plot_geometric_clock(clock_data, save_path):
     plt.savefig(save_path)
     plt.savefig(save_path.replace(".pdf", ".png"), dpi=300)
     plt.close()
-    print(f"Saved geometric clock to {save_path}")
+    print(f"Saved geometric gauge to {save_path}")
 
 
 # =============================================================================
@@ -712,7 +712,7 @@ def main():
         default="nanoGPT/out-2layer-mechanism/R2/best_ckpt.pt",
     )
     parser.add_argument(
-        "--save_dir", type=str, default="results/geometric_clock_analysis"
+        "--save_dir", type=str, default="results/geometric_gauge_analysis"
     )
     parser.add_argument(
         "--paper_dir", type=str, default="overleaf/nopos_icml_2026/plots"
@@ -787,27 +787,27 @@ def main():
         attn1_r2, attn2_r2, "R2", os.path.join(args.save_dir, "attention_maps_r2.pdf")
     )
 
-    # 3. Geometric Clock (R2)
+    # 3. Geometric Gauge (R2)
     print("\n" + "=" * 60)
-    print("3. GEOMETRIC CLOCK ANALYSIS (R2)")
+    print("3. GEOMETRIC GAUGE ANALYSIS (R2)")
     print("=" * 60)
-    clock_data = analyze_geometric_clock(model_r2, data)
+    gauge_data = analyze_geometric_gauge(model_r2, data)
 
-    print(f"  cos(pos0_dir, others_dir): {clock_data['cos_pos0_others']:.3f}")
-    print(f"  corr(proj_pos0, position): {clock_data['corr_pos0']:.3f}")
-    print(f"  corr(proj_others, position): {clock_data['corr_others']:.3f}")
-    print(f"  cos(w_head, others_dir): {clock_data['cos_w_others']:.3f}")
+    print(f"  cos(pos0_dir, others_dir): {gauge_data['cos_pos0_others']:.3f}")
+    print(f"  corr(proj_pos0, position): {gauge_data['corr_pos0']:.3f}")
+    print(f"  corr(proj_others, position): {gauge_data['corr_others']:.3f}")
+    print(f"  cos(w_head, others_dir): {gauge_data['cos_w_others']:.3f}")
 
-    all_results["geometric_clock"] = {
+    all_results["geometric_gauge"] = {
         k: float(v)
         if isinstance(v, (int, float, np.floating))
         else v.tolist()
         if isinstance(v, np.ndarray)
         else v
-        for k, v in clock_data.items()
+        for k, v in gauge_data.items()
     }
 
-    plot_geometric_clock(clock_data, os.path.join(args.save_dir, "geometric_clock.pdf"))
+    plot_geometric_gauge(gauge_data, os.path.join(args.save_dir, "geometric_gauge.pdf"))
 
     # 4. Extrapolation
     print("\n" + "=" * 60)
@@ -843,7 +843,7 @@ def main():
         "write_bottleneck_curves.pdf",
         "attention_maps_r0.pdf",
         "attention_maps_r2.pdf",
-        "geometric_clock.pdf",
+        "geometric_gauge.pdf",
         "extrapolation.pdf",
     ]:
         src = os.path.join(args.save_dir, fname)
@@ -860,9 +860,9 @@ def main():
     print(f"  R0: baseline R²={wb_r0['baseline_r2']:.4f}, r_95={wb_r0['r_95']}")
     print(f"  R2: baseline R²={wb_r2['baseline_r2']:.4f}, r_95={wb_r2['r_95']}")
 
-    print(f"\nGeometric Clock (R2):")
-    print(f"  cos(pos0_dir, others_dir): {clock_data['cos_pos0_others']:.3f}")
-    print(f"  corr(proj_others, position): {clock_data['corr_others']:.3f}")
+    print(f"\nGeometric Gauge (R2):")
+    print(f"  cos(pos0_dir, others_dir): {gauge_data['cos_pos0_others']:.3f}")
+    print(f"  corr(proj_others, position): {gauge_data['corr_others']:.3f}")
 
     print(f"\nExtrapolation (R²):")
     print(f"  {'Length':<8} {'R0':<10} {'R2':<10}")

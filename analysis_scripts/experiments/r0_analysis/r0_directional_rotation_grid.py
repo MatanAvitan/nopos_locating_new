@@ -14,15 +14,21 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
+from matplotlib.colors import Normalize
+from matplotlib.patches import FancyArrowPatch
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 
 from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismModel
 
 BOS_TOKEN_ID = 50256
-COLOR_PATH = "#0072B2"
-COLOR_STRIDE = "#000000"
+COLOR_PATH = "#0B4F8A"
+COLOR_FACE = "#F6F8FB"
+COLOR_TRACK = "#B8C6DB"
+COLOR_STRIDE = "#1E293B"
+CMAP_NAME = "turbo"
 
 
 def load_model(checkpoint_path: Path, device: str) -> TwoLayerMechanismModel:
@@ -92,6 +98,7 @@ def compute_dials(model: TwoLayerMechanismModel, tokens: torch.Tensor) -> dict:
 
     dial_x_all = []
     dial_y_all = []
+    dial_theta_all = []
     cos_bos_others_all = []
 
     for b in range(tokens.size(0)):
@@ -116,90 +123,249 @@ def compute_dials(model: TwoLayerMechanismModel, tokens: torch.Tensor) -> dict:
 
         dial_x_all.append(dial_x)
         dial_y_all.append(dial_y)
+        dial_theta_all.append(dial_theta)
         cos_bos_others_all.append(cos_bos_others)
 
     return {
         "dial_x": dial_x_all,
         "dial_y": dial_y_all,
+        "dial_theta": dial_theta_all,
         "cos_bos_others": cos_bos_others_all,
     }
 
 
 def plot_grid(
-    dials: dict, n_rows: int, n_cols: int, stride: int, save_path: Path
+    dials: dict,
+    n_rows: int,
+    n_cols: int,
+    stride: int,
+    save_path: Path,
+    label_stride: int = 16,
 ) -> None:
     positions = np.arange(len(dials["dial_x"][0]))
     stride_positions = np.arange(0, len(positions), stride)
 
-    fig, axes = plt.subplots(n_rows, n_cols, figsize=(7.0, 13.0))
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(7.8, 13.5))
+    fig.patch.set_facecolor("white")
     axes = axes.reshape(n_rows, n_cols)
 
-    theta = np.linspace(0, np.pi, 200)
-    arc_x = -np.cos(theta)
-    arc_y = np.sin(theta)
+    theta_top = np.linspace(0, np.pi, 240)
+    arc_x = -np.cos(theta_top)
+    arc_y = np.sin(theta_top)
 
     for idx in range(n_rows * n_cols):
         ax = axes[idx // n_cols, idx % n_cols]
+        ax.set_facecolor(COLOR_FACE)
         dial_x = dials["dial_x"][idx]
         dial_y = dials["dial_y"][idx]
+        dial_th = dials["dial_theta"][idx]
 
-        ax.plot(arc_x, arc_y, color="#888888", linewidth=0.6, alpha=0.6)
-        ax.plot(dial_x, dial_y, color=COLOR_PATH, alpha=0.2, linewidth=0.8)
+        # Half-gauge frame with gauge aesthetics.
+        # Shadow arc behind main track.
+        ax.plot(
+            arc_x,
+            arc_y,
+            color="#9CADC4",
+            linewidth=3.5,
+            alpha=0.3,
+            zorder=0,
+            solid_capstyle="round",
+        )
+        # Main track arc.
+        ax.plot(arc_x, arc_y, color=COLOR_TRACK, linewidth=1.5, alpha=0.95, zorder=1)
+        # Thin inner arc for depth.
+        inner_r = 0.88
+        ax.plot(
+            inner_r * arc_x,
+            inner_r * arc_y,
+            color=COLOR_TRACK,
+            linewidth=0.4,
+            alpha=0.4,
+            zorder=1,
+        )
+
+        # Tick marks at label positions.
+        n_pos = len(positions)
+        tick_lbl_pos = np.arange(0, n_pos, label_stride)
+        if tick_lbl_pos[-1] != n_pos - 1:
+            tick_lbl_pos = np.append(tick_lbl_pos, n_pos - 1)
+        tick_inner = 0.93
+        tick_outer = 1.00
+        for p in tick_lbl_pos:
+            if p in (36, 48):
+                continue
+            x_u = dial_x[p]
+            y_u = dial_y[p]
+            ax.plot(
+                [tick_inner * x_u, tick_outer * x_u],
+                [tick_inner * y_u, tick_outer * y_u],
+                color="#64748B",
+                linewidth=0.7,
+                alpha=0.6,
+                zorder=2,
+            )
+
+        # Gradient trajectory interpolated along the arc.
+        n_interp = 6
+        arc_segments = []
+        arc_colors = []
+        for i in range(len(dial_th) - 1):
+            th = np.linspace(dial_th[i], dial_th[i + 1], n_interp + 1)
+            xs = -np.cos(th)
+            ys = np.sin(th)
+            for j in range(len(th) - 1):
+                arc_segments.append([(xs[j], ys[j]), (xs[j + 1], ys[j + 1])])
+                arc_colors.append(i + j / (len(th) - 1))
+
+        line = LineCollection(
+            arc_segments,
+            cmap=CMAP_NAME,
+            norm=Normalize(positions.min(), positions.max()),
+            linewidth=1.25,
+            alpha=0.9,
+            zorder=3,
+        )
+        line.set_array(np.array(arc_colors))
+        ax.add_collection(line)
+
         ax.scatter(
             dial_x,
             dial_y,
             c=positions,
-            cmap="viridis",
-            s=6,
-            alpha=0.75,
+            cmap=CMAP_NAME,
+            s=7,
+            alpha=0.9,
+            edgecolors="none",
+            zorder=4,
         )
 
         ax.scatter(
             dial_x[stride_positions],
             dial_y[stride_positions],
-            s=18,
+            s=16,
             facecolors="white",
             edgecolors=COLOR_STRIDE,
             linewidths=0.6,
-            zorder=3,
+            zorder=6,
         )
 
         if len(stride_positions) > 1:
             for i in range(len(stride_positions) - 1):
                 start = stride_positions[i]
                 end = stride_positions[i + 1]
-                ax.annotate(
-                    "",
-                    xy=(dial_x[end], dial_y[end]),
-                    xytext=(dial_x[start], dial_y[start]),
-                    arrowprops=dict(
-                        arrowstyle="->",
-                        color=COLOR_STRIDE,
-                        lw=0.6,
-                        alpha=0.4,
-                    ),
+                arrow = FancyArrowPatch(
+                    posA=(dial_x[start], dial_y[start]),
+                    posB=(dial_x[end], dial_y[end]),
+                    connectionstyle="arc3,rad=-0.35",
+                    arrowstyle="->",
+                    mutation_scale=7,
+                    color=COLOR_STRIDE,
+                    lw=0.6,
+                    alpha=0.6,
+                    zorder=7,
                 )
+                ax.add_patch(arrow)
 
-        ax.set_xlim(-1.1, 1.1)
-        ax.set_ylim(-0.05, 1.1)
+        # Position labels along the arc at label_stride (decoupled from arrow stride).
+        label_positions = np.arange(0, n_pos, label_stride)
+        if label_positions[-1] != n_pos - 1:
+            label_positions = np.append(label_positions, n_pos - 1)
+        for p in label_positions:
+            if p == 0 or p == n_pos - 1 or p in (32, 48):
+                continue
+            label_r = 1.14
+            lx, ly = label_r * dial_x[p], label_r * dial_y[p]
+            ax.text(
+                lx,
+                ly,
+                str(p),
+                ha="center",
+                va="center",
+                fontsize=4,
+                color="#334155",
+            )
+
+        # Gauge needle with sharp arrowhead at the final position.
+        hand = FancyArrowPatch(
+            posA=(0.0, 0.0),
+            posB=(dial_x[-1], dial_y[-1]),
+            arrowstyle="-|>",
+            mutation_scale=10,
+            color="#EF4444",
+            lw=1.0,
+            alpha=0.9,
+            zorder=5,
+        )
+        ax.add_patch(hand)
+
+        ax.scatter([dial_x[0]], [dial_y[0]], s=16, c="#22C55E", zorder=7)
+        ax.scatter([dial_x[-1]], [dial_y[-1]], s=16, c="#EF4444", zorder=7)
+        # Center pivot with metallic look.
+        ax.scatter(
+            [0.0],
+            [0.0],
+            s=50,
+            c="#94A3B8",
+            edgecolors="#475569",
+            linewidths=0.8,
+            zorder=8,
+        )
+        ax.scatter([0.0], [0.0], s=12, c="#334155", zorder=9)
+
+        # BOS / Others at arc endpoints, below the arc.
+        ax.text(
+            -1.0,
+            -0.10,
+            "BOS",
+            ha="center",
+            va="top",
+            fontsize=5,
+            weight="bold",
+            color="#0F172A",
+            bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=0.8),
+        )
+        ax.text(
+            1.0,
+            -0.10,
+            "Others",
+            ha="center",
+            va="top",
+            fontsize=5,
+            weight="bold",
+            color="#0F172A",
+            bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=0.8),
+        )
+
+        ax.text(
+            0.03,
+            0.95,
+            f"Seq {idx + 1}",
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=6.5,
+            color="#334155",
+            weight="bold",
+        )
+
+        ax.set_xlim(-1.25, 1.25)
+        ax.set_ylim(-0.22, 1.25)
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_aspect("equal", adjustable="box")
-        ax.grid(True, alpha=0.15)
+        for spine in ax.spines.values():
+            spine.set_visible(False)
 
-    sm = plt.cm.ScalarMappable(
-        cmap="viridis", norm=plt.Normalize(0, len(positions) - 1)
-    )
+    sm = plt.cm.ScalarMappable(cmap=CMAP_NAME, norm=Normalize(0, len(positions) - 1))
     cbar = fig.colorbar(
-        sm, ax=axes.ravel().tolist(), fraction=0.015, pad=0.008, shrink=0.75
+        sm, ax=axes.ravel().tolist(), fraction=0.018, pad=0.04, shrink=0.78
     )
     cbar.set_label("Position", fontsize=8)
+    n_pos = len(positions)
+    cbar.set_ticks([0, n_pos // 4, n_pos // 2, (3 * n_pos) // 4, n_pos - 1])
     cbar.ax.tick_params(labelsize=7)
 
-    fig.text(0.06, 0.99, "BOS (left)", ha="left", va="top", fontsize=9)
-    fig.text(0.94, 0.99, "Others (right)", ha="right", va="top", fontsize=9)
-
-    plt.subplots_adjust(wspace=0.05, hspace=0.08, right=0.92, top=0.97)
+    plt.subplots_adjust(wspace=0.05, hspace=0.12, right=0.88, top=0.98)
     fig.savefig(save_path, bbox_inches="tight")
     fig.savefig(save_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
     plt.close(fig)
@@ -224,7 +390,8 @@ def main() -> None:
     parser.add_argument("--seq_len", type=int, default=128)
     parser.add_argument("--n_rows", type=int, default=6)
     parser.add_argument("--n_cols", type=int, default=2)
-    parser.add_argument("--stride", type=int, default=16)
+    parser.add_argument("--stride", type=int, default=32)
+    parser.add_argument("--label_stride", type=int, default=16)
     parser.add_argument("--seed", type=int, default=123)
     args = parser.parse_args()
 
@@ -254,7 +421,14 @@ def main() -> None:
     dials = compute_dials(model, tokens)
 
     save_path = save_dir / "r0_directional_rotation_grid.pdf"
-    plot_grid(dials, args.n_rows, args.n_cols, args.stride, save_path)
+    plot_grid(
+        dials,
+        args.n_rows,
+        args.n_cols,
+        args.stride,
+        save_path,
+        label_stride=args.label_stride,
+    )
 
     summary = {
         "checkpoint": str(args.checkpoint),
@@ -270,7 +444,7 @@ def main() -> None:
     def to_serializable(value):
         if isinstance(value, np.ndarray):
             return value.tolist()
-        if isinstance(value, (np.float32, np.float64)):
+        if isinstance(value, np.floating):
             return float(value)
         if isinstance(value, dict):
             return {k: to_serializable(v) for k, v in value.items()}
@@ -284,10 +458,16 @@ def main() -> None:
     paper_path = paper_dir / save_path.name
     if save_path.exists():
         paper_path.write_bytes(save_path.read_bytes())
+    save_png_path = save_path.with_suffix(".png")
+    paper_png_path = paper_dir / save_png_path.name
+    if save_png_path.exists():
+        paper_png_path.write_bytes(save_png_path.read_bytes())
 
     print("Saved:")
     print(f"  {save_path}")
+    print(f"  {save_png_path}")
     print(f"  {paper_path}")
+    print(f"  {paper_png_path}")
 
 
 if __name__ == "__main__":
