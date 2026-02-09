@@ -292,10 +292,11 @@ def plot_rotation(
             weight="bold",
         )
 
-    # Gauge needle with sharp arrowhead at the final position.
+    # Gauge needle with sharp arrowhead, shown at position 48.
+    needle_pos = min(48, n_positions - 1)
     hand = FancyArrowPatch(
         posA=(0.0, 0.0),
-        posB=(dial_x[-1], dial_y[-1]),
+        posB=(dial_x[needle_pos], dial_y[needle_pos]),
         arrowstyle="-|>",
         mutation_scale=14,
         color="#EF4444",
@@ -309,6 +310,46 @@ def plot_rotation(
         [0.0], [0.0], s=120, c="#94A3B8", edgecolors="#475569", linewidths=1.5, zorder=8
     )
     ax.scatter([0.0], [0.0], s=30, c="#334155", zorder=9)
+
+    # Mechanism formula placed horizontally in the empty gauge interior,
+    # with a thin leader line connecting it to the needle.
+    formula_text = (
+        r"$\mathbf{o}^{(2)}_i \;\approx\; "
+        r"\alpha^{(2)}_{i,\mathrm{BOS}}\,\mathbf{d}_{\mathrm{BOS}}"
+        r"\;+\;(1 - \alpha^{(2)}_{i,\mathrm{BOS}})\,"
+        r"\mathbf{d}_{\mathrm{non\text{-}BOS}}$"
+    )
+    # Needle midpoint (for leader line origin).
+    needle_mid_x = 0.5 * dial_x[needle_pos]
+    needle_mid_y = 0.5 * dial_y[needle_pos]
+    # Formula position: lower-right interior of gauge (empty space).
+    formula_x = 0.30
+    formula_y = 0.32
+    # Leader line from needle midpoint to formula.
+    ax.annotate(
+        "",
+        xy=(needle_mid_x, needle_mid_y),
+        xytext=(formula_x, formula_y + 0.04),
+        arrowprops=dict(
+            arrowstyle="-",
+            color="#94A3B8",
+            lw=0.7,
+            connectionstyle="arc3,rad=0.15",
+        ),
+        zorder=2,
+    )
+    ax.text(
+        formula_x,
+        formula_y,
+        formula_text,
+        ha="center",
+        va="top",
+        fontsize=7.0,
+        fontfamily="DejaVu Serif",
+        color="#0F172A",
+        clip_on=False,
+        zorder=10,
+    )
 
     # BOS / non-BOS labels at the arc endpoints, offset below the arc.
     ax.text(
@@ -339,7 +380,7 @@ def plot_rotation(
     ax.set_ylabel("")
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlim(-1.18, 1.18)
-    ax.set_ylim(-0.20, 1.20)
+    ax.set_ylim(-0.20, 1.26)
     ax.set_xticks([])
     ax.set_yticks([])
 
@@ -354,9 +395,11 @@ def plot_rotation(
     for spine in ax.spines.values():
         spine.set_visible(False)
 
-    plt.tight_layout()
-    fig.savefig(save_path, bbox_inches="tight")
-    fig.savefig(save_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
+    fig.subplots_adjust(left=0.06, right=0.88, top=0.96, bottom=0.06)
+    fig.savefig(save_path, bbox_inches="tight", pad_inches=0.08)
+    fig.savefig(
+        save_path.with_suffix(".png"), dpi=300, bbox_inches="tight", pad_inches=0.08
+    )
     plt.close(fig)
 
 
