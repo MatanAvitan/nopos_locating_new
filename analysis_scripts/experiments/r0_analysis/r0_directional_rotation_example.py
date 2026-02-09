@@ -289,6 +289,7 @@ def plot_rotation(
             va="center",
             fontsize=7,
             color="#334155",
+            weight="bold",
         )
 
     # Gauge needle with sharp arrowhead at the final position.
@@ -309,7 +310,7 @@ def plot_rotation(
     )
     ax.scatter([0.0], [0.0], s=30, c="#334155", zorder=9)
 
-    # BOS / Others labels at the arc endpoints, offset below the arc.
+    # BOS / non-BOS labels at the arc endpoints, offset below the arc.
     ax.text(
         -1.0,
         -0.12,
@@ -318,17 +319,19 @@ def plot_rotation(
         va="top",
         fontsize=9.5,
         weight="bold",
+        fontfamily="DejaVu Serif",
         color="#0F172A",
         bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=1.5),
     )
     ax.text(
         1.0,
         -0.12,
-        "Others",
+        "non-BOS",
         ha="center",
         va="top",
         fontsize=9.5,
         weight="bold",
+        fontfamily="DejaVu Serif",
         color="#0F172A",
         bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=1.5),
     )
@@ -341,11 +344,13 @@ def plot_rotation(
     ax.set_yticks([])
 
     cbar = fig.colorbar(sc, ax=ax, fraction=0.028, pad=0.02, shrink=0.72)
-    cbar.set_label("Position", fontsize=8.5)
+    cbar.set_label("Position", fontsize=8.5, fontweight="bold")
     cbar.set_ticks(
         [0, n_positions // 4, n_positions // 2, (3 * n_positions) // 4, n_positions - 1]
     )
     cbar.ax.tick_params(labelsize=7)
+    for tick in cbar.ax.get_yticklabels():
+        tick.set_fontweight("bold")
     for spine in ax.spines.values():
         spine.set_visible(False)
 

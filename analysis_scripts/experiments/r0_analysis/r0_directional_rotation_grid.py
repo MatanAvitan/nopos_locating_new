@@ -279,6 +279,7 @@ def plot_grid(
                 va="center",
                 fontsize=4,
                 color="#334155",
+                weight="bold",
             )
 
         # Gauge needle with sharp arrowhead at the final position.
@@ -308,7 +309,7 @@ def plot_grid(
         )
         ax.scatter([0.0], [0.0], s=12, c="#334155", zorder=9)
 
-        # BOS / Others at arc endpoints, below the arc.
+        # BOS / non-BOS at arc endpoints, below the arc.
         ax.text(
             -1.0,
             -0.10,
@@ -317,17 +318,19 @@ def plot_grid(
             va="top",
             fontsize=5,
             weight="bold",
+            fontfamily="DejaVu Serif",
             color="#0F172A",
             bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=0.8),
         )
         ax.text(
             1.0,
             -0.10,
-            "Others",
+            "non-BOS",
             ha="center",
             va="top",
             fontsize=5,
             weight="bold",
+            fontfamily="DejaVu Serif",
             color="#0F172A",
             bbox=dict(facecolor=COLOR_FACE, alpha=0.85, edgecolor="none", pad=0.8),
         )
@@ -353,15 +356,16 @@ def plot_grid(
             spine.set_visible(False)
 
     sm = plt.cm.ScalarMappable(cmap=CMAP_NAME, norm=Normalize(0, len(positions) - 1))
-    cbar = fig.colorbar(
-        sm, ax=axes.ravel().tolist(), fraction=0.011, pad=0.03, shrink=0.62
-    )
-    cbar.set_label("Position", fontsize=8)
+    plt.subplots_adjust(wspace=0.05, hspace=0.12, right=0.89, top=0.98)
+    cax = fig.add_axes((0.905, 0.21, 0.011, 0.58))
+    cbar = fig.colorbar(sm, cax=cax)
+    cbar.set_label("Position", fontsize=8, fontweight="bold")
     n_pos = len(positions)
     cbar.set_ticks([0, n_pos // 4, n_pos // 2, (3 * n_pos) // 4, n_pos - 1])
     cbar.ax.tick_params(labelsize=7)
+    for tick in cbar.ax.get_yticklabels():
+        tick.set_fontweight("bold")
 
-    plt.subplots_adjust(wspace=0.05, hspace=0.12, right=0.92, top=0.98)
     fig.savefig(save_path, bbox_inches="tight")
     fig.savefig(save_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
     plt.close(fig)
