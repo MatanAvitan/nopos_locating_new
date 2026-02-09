@@ -141,9 +141,17 @@ def plot_grid(
     stride: int,
     save_path: Path,
     label_stride: int = 16,
+    needle_positions: list[int] | None = None,
 ) -> None:
     positions = np.arange(len(dials["dial_x"][0]))
     stride_positions = np.arange(0, len(positions), stride)
+    n_panels = n_rows * n_cols
+    if needle_positions is None:
+        needle_positions = [len(positions) - 1] * n_panels
+    if len(needle_positions) != n_panels:
+        raise ValueError(
+            f"needle_positions length ({len(needle_positions)}) must equal n_rows*n_cols ({n_panels})"
+        )
 
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(7.8, 13.5))
     fig.patch.set_facecolor("white")
@@ -153,12 +161,14 @@ def plot_grid(
     arc_x = -np.cos(theta_top)
     arc_y = np.sin(theta_top)
 
-    for idx in range(n_rows * n_cols):
+    for idx in range(n_panels):
         ax = axes[idx // n_cols, idx % n_cols]
         ax.set_facecolor(COLOR_FACE)
         dial_x = dials["dial_x"][idx]
         dial_y = dials["dial_y"][idx]
         dial_th = dials["dial_theta"][idx]
+        n_pos = len(positions)
+        needle_pos = int(np.clip(needle_positions[idx], 0, n_pos - 1))
 
         # Half-gauge frame with gauge aesthetics.
         # Shadow arc behind main track.
@@ -185,7 +195,6 @@ def plot_grid(
         )
 
         # Tick marks at selected positions.
-        n_pos = len(positions)
         tick_lbl_pos = [p for p in (16, 64, 80, 96, 112) if 0 <= p < n_pos]
         tick_inner = 0.93
         tick_outer = 1.00
@@ -282,10 +291,10 @@ def plot_grid(
                 weight="bold",
             )
 
-        # Gauge needle with sharp arrowhead at the final position.
+        # Gauge needle with sharp arrowhead at a sampled position.
         hand = FancyArrowPatch(
             posA=(0.0, 0.0),
-            posB=(dial_x[-1], dial_y[-1]),
+            posB=(dial_x[needle_pos], dial_y[needle_pos]),
             arrowstyle="-|>",
             mutation_scale=10,
             color="#EF4444",
@@ -296,7 +305,9 @@ def plot_grid(
         ax.add_patch(hand)
 
         ax.scatter([dial_x[0]], [dial_y[0]], s=16, c="#22C55E", zorder=7)
-        ax.scatter([dial_x[-1]], [dial_y[-1]], s=16, c="#EF4444", zorder=7)
+        ax.scatter(
+            [dial_x[needle_pos]], [dial_y[needle_pos]], s=16, c="#EF4444", zorder=7
+        )
         # Center pivot with metallic look.
         ax.scatter(
             [0.0],
@@ -420,6 +431,10 @@ def main() -> None:
 
     dials = compute_dials(model, tokens)
 
+    n_positions = sequences.shape[1]
+    needle_rng = np.random.RandomState(args.seed + 11)
+    needle_positions = needle_rng.randint(1, n_positions, size=n_sequences).tolist()
+
     save_path = save_dir / "r0_directional_rotation_grid.pdf"
     plot_grid(
         dials,
@@ -428,6 +443,7 @@ def main() -> None:
         args.stride,
         save_path,
         label_stride=args.label_stride,
+        needle_positions=needle_positions,
     )
 
     summary = {
@@ -438,6 +454,7 @@ def main() -> None:
         "n_rows": args.n_rows,
         "n_cols": args.n_cols,
         "start_indices": start_indices,
+        "needle_positions": needle_positions,
         "cos_bos_others": dials["cos_bos_others"],
     }
 
