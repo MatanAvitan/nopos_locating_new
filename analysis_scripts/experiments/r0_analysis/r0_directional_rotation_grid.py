@@ -184,16 +184,12 @@ def plot_grid(
             zorder=1,
         )
 
-        # Tick marks at label positions.
+        # Tick marks at selected positions.
         n_pos = len(positions)
-        tick_lbl_pos = np.arange(0, n_pos, label_stride)
-        if tick_lbl_pos[-1] != n_pos - 1:
-            tick_lbl_pos = np.append(tick_lbl_pos, n_pos - 1)
+        tick_lbl_pos = [p for p in (16, 64, 80, 96, 112) if 0 <= p < n_pos]
         tick_inner = 0.93
         tick_outer = 1.00
         for p in tick_lbl_pos:
-            if p in (36, 48):
-                continue
             x_u = dial_x[p]
             y_u = dial_y[p]
             ax.plot(
@@ -348,8 +344,8 @@ def plot_grid(
             weight="bold",
         )
 
-        ax.set_xlim(-1.25, 1.25)
-        ax.set_ylim(-0.22, 1.25)
+        ax.set_xlim(-1.20, 1.20)
+        ax.set_ylim(-0.18, 1.20)
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_aspect("equal", adjustable="box")
@@ -358,14 +354,14 @@ def plot_grid(
 
     sm = plt.cm.ScalarMappable(cmap=CMAP_NAME, norm=Normalize(0, len(positions) - 1))
     cbar = fig.colorbar(
-        sm, ax=axes.ravel().tolist(), fraction=0.018, pad=0.04, shrink=0.78
+        sm, ax=axes.ravel().tolist(), fraction=0.011, pad=0.03, shrink=0.62
     )
     cbar.set_label("Position", fontsize=8)
     n_pos = len(positions)
     cbar.set_ticks([0, n_pos // 4, n_pos // 2, (3 * n_pos) // 4, n_pos - 1])
     cbar.ax.tick_params(labelsize=7)
 
-    plt.subplots_adjust(wspace=0.05, hspace=0.12, right=0.88, top=0.98)
+    plt.subplots_adjust(wspace=0.05, hspace=0.12, right=0.92, top=0.98)
     fig.savefig(save_path, bbox_inches="tight")
     fig.savefig(save_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
     plt.close(fig)

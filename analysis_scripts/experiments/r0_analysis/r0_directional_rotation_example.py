@@ -186,15 +186,11 @@ def plot_rotation(
         zorder=1,
     )
 
-    # -- Gauge aesthetics: tick marks at label positions --
-    tick_label_positions = np.arange(0, n_positions, label_stride)
-    if tick_label_positions[-1] != n_positions - 1:
-        tick_label_positions = np.append(tick_label_positions, n_positions - 1)
+    # -- Gauge aesthetics: selected tick marks --
+    tick_label_positions = [p for p in (16, 64, 80, 96, 112) if 0 <= p < n_positions]
     tick_inner = 0.93
     tick_outer = 1.00
     for p in tick_label_positions:
-        if p in (36, 48):
-            continue
         x_u = dial_x[p]
         y_u = dial_y[p]
         ax.plot(
@@ -339,12 +335,12 @@ def plot_rotation(
 
     ax.set_ylabel("")
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlim(-1.25, 1.25)
-    ax.set_ylim(-0.25, 1.25)
+    ax.set_xlim(-1.18, 1.18)
+    ax.set_ylim(-0.20, 1.20)
     ax.set_xticks([])
     ax.set_yticks([])
 
-    cbar = fig.colorbar(sc, ax=ax, fraction=0.04, pad=0.03, shrink=0.86)
+    cbar = fig.colorbar(sc, ax=ax, fraction=0.028, pad=0.02, shrink=0.72)
     cbar.set_label("Position", fontsize=8.5)
     cbar.set_ticks(
         [0, n_positions // 4, n_positions // 2, (3 * n_positions) // 4, n_positions - 1]
