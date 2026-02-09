@@ -1,0 +1,26 @@
+{
+  "used_citation_keys": [
+    "Baevski2018AdaptiveIR",
+    "Xiong2020OnLN",
+    "alibi",
+    "ba2016layer",
+    "chi-etal-2023-latent",
+    "conmy2023towards",
+    "elhage2021mathematical",
+    "elhage2022toy",
+    "glorot2010understanding",
+    "haviv2022transformer",
+    "kazemnejad2023lenghGeneralization",
+    "olsson2022context",
+    "openwebtext",
+    "radford2019language",
+    "shaw2018self",
+    "vaswani2017attention",
+    "wang2021rotary",
+    "zuo2025position"
+  ],
+  "n_used": 18,
+  "n_entries": 86,
+  "missing_keys": [],
+  "missing_required_fields": []
+}
