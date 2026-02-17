@@ -10,6 +10,11 @@ Research project studying how causal transformers encode position without explic
 - LaTeX paper in `overleaf/nopos---claude-version/`
 - Plotting utilities for publication-quality figures
 
+## Paper Update Workflow (IMPORTANT)
+
+- Active ICML paper source: `overleaf/nopos_icml_2026/main.tex`
+- If `overleaf/nopos_icml_2026/main.tex` is edited, the update must be followed by a git commit and push in the paper repository (`overleaf/nopos_icml_2026`) in the same session unless the user explicitly asks not to push.
+
 ## Build/Run Commands
 
 ### Environment Setup
