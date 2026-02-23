@@ -36,14 +36,14 @@ from pathlib import Path
 import numpy as np
 import torch
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig
 from sklearn.linear_model import Ridge
 
 # Configuration
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-RESULTS_DIR = Path(__file__).parent.parent / "results" / "long_context_ablation"
+RESULTS_DIR = Path(__file__).parent.parent.parent.parent / "results" / "long_context_ablation"
 
 # Ablation dimensions
 CONTEXT_LENGTHS = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
@@ -130,7 +130,7 @@ def get_post_ln2_activations(model, tokens):
 def load_shakespeare_data(n_ctx: int, n_samples: int, vocab_size: int):
     """Load Shakespeare data for natural language experiments."""
     data_path = (
-        Path(__file__).parent.parent / "nanoGPT" / "data" / "shakespeare" / "train.bin"
+        Path(__file__).parent.parent.parent.parent / "nanoGPT" / "data" / "shakespeare" / "train.bin"
     )
 
     if not data_path.exists():

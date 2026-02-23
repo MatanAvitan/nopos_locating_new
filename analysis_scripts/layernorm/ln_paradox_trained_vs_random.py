@@ -22,7 +22,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import r2_score, mean_absolute_error
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 from model_nope import GPT, GPTConfig
 
 

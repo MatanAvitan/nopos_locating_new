@@ -18,7 +18,7 @@ from pathlib import Path
 import json
 import sys
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig
 from sklearn.linear_model import Ridge
@@ -26,7 +26,7 @@ from scipy import stats
 
 # Configuration
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-RESULTS_DIR = Path(__file__).parent.parent / "results" / "long_context_analysis"
+RESULTS_DIR = Path(__file__).parent.parent.parent.parent / "results" / "long_context_analysis"
 
 
 def create_model(n_ctx, n_embd=256, n_layer=1, n_head=4, norm_type="layernorm"):

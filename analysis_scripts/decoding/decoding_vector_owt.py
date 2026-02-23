@@ -26,12 +26,12 @@ from scipy.stats import pearsonr
 
 matplotlib.use("Agg")
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results" / "decoding_vector_owt"
 CHECKPOINT_DIR = PROJECT_ROOT / "nanoGPT"
 PLOTS_DIR = PROJECT_ROOT / "overleaf" / "nopos---claude-version" / "plots"

@@ -26,7 +26,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig
 from sklearn.linear_model import LogisticRegression, Ridge
@@ -34,7 +34,7 @@ from sklearn.preprocessing import StandardScaler
 from scipy import stats
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results" / "owt_sample_level_probing"
 CHECKPOINT_DIR = PROJECT_ROOT / "nanoGPT"
 PLOTS_DIR = PROJECT_ROOT / "overleaf" / "nopos---claude-version" / "plots"

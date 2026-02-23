@@ -10,7 +10,7 @@ import torch
 import numpy as np
 import sys
 
-sys.path.insert(0, "nanoGPT")
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 from model_nope import GPT, GPTConfig
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots

@@ -32,7 +32,7 @@ import argparse
 matplotlib.use("Agg")
 warnings.filterwarnings("ignore")
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig, LayerNorm, RMSNorm
 
@@ -46,7 +46,7 @@ except ImportError:
     print("Warning: wandb not available. Plots will only be saved locally.")
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 RESULTS_DIR = PROJECT_ROOT / "results" / "linear_probe_post_ln"
 CHECKPOINT_DIR = PROJECT_ROOT / "nanoGPT"
 PLOTS_DIR = PROJECT_ROOT / "results" / "linear_probe_post_ln" / "plots"

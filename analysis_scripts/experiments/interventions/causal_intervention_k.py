@@ -34,7 +34,7 @@ from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "nanoGPT"))
 from model_position_classifier import (
     GPTPositionClassifier as GPT,
     GPTPositionClassifierConfig as GPTConfig,
@@ -47,7 +47,7 @@ except ImportError:
     WANDB_AVAILABLE = False
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
 
 def load_checkpoint(ckpt_path: str, device: str = "cuda") -> Tuple[GPT, dict]:

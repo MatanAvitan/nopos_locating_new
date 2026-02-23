@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import PowerNorm
 from matplotlib.patches import Rectangle
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 
 from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismModel
@@ -144,18 +144,34 @@ def plot_attention_grid(
         nrows, ncols, figsize=(3.2 * ncols, 2.6 * nrows), squeeze=False
     )
 
-    vmax = float(np.quantile(attn_weights, 0.99))
-    norm = PowerNorm(gamma=0.5, vmin=0.0, vmax=max(vmax, 1e-6))
+    # Attention weights are probabilities in [0, 1].
+    # Keep a fixed color scale so the colorbar remains interpretable
+    # and row-0 self-attention (exactly 1.0) maps to the top of the bar.
+    norm = PowerNorm(gamma=0.5, vmin=0.0, vmax=1.0)
 
     im = None
     for idx in range(n_head):
         r, c = divmod(idx, ncols)
         ax = axes[r][c]
-        im = ax.imshow(attn_weights[idx], cmap=cmap, norm=norm, aspect="auto")
+        im = ax.imshow(
+            attn_weights[idx],
+            cmap=cmap,
+            norm=norm,
+            aspect="auto",
+            interpolation="nearest",
+        )
         if highlight_col0:
             ax.axvline(0.5, color="#C44E52", linewidth=1.2)
             ax.add_patch(
-                Rectangle((-0.5, -0.5), 1.0, T, fill=True, color="#C44E52", alpha=0.15)
+                Rectangle(
+                    (-0.5, -0.5),
+                    1.0,
+                    T,
+                    fill=True,
+                    color="#C44E52",
+                    alpha=0.12,
+                    linewidth=0,
+                )
             )
         if show_head_titles:
             label = f"Head {idx}"
@@ -164,6 +180,9 @@ def plot_attention_grid(
             ax.set_title(label, fontsize=9)
         ax.set_xticks([])
         ax.set_yticks([])
+        ax.tick_params(left=False, bottom=False)
+        for spine in ax.spines.values():
+            spine.set_visible(False)
 
     # Hide unused axes
     for idx in range(n_head, nrows * ncols):
@@ -175,7 +194,8 @@ def plot_attention_grid(
     if im is None:
         return
     cbar = fig.colorbar(im, cax=cax)
-    cbar.set_label("", fontsize=9)
+    cbar.set_label("Attention weight", fontsize=9)
+    cbar.set_ticks([0.0, 0.25, 0.5, 0.75, 1.0])
     fig.suptitle(title, y=0.98, fontsize=11)
     fig.savefig(save_path, dpi=save_dpi, bbox_inches="tight")
     fig.savefig(save_path.with_suffix(".png"), dpi=save_dpi, bbox_inches="tight")
@@ -322,8 +342,10 @@ def main() -> None:
 
     save_dir = ROOT_DIR / args.save_dir
     paper_dir = ROOT_DIR / args.paper_dir
+    paper_attn_dir = paper_dir / "attention_uniformity"
     save_dir.mkdir(parents=True, exist_ok=True)
     paper_dir.mkdir(parents=True, exist_ok=True)
+    paper_attn_dir.mkdir(parents=True, exist_ok=True)
 
     data = load_data(ROOT_DIR / args.data_dir)
     attn2_model = load_model(ROOT_DIR / args.attn2_ckpt)
@@ -380,20 +402,43 @@ def main() -> None:
         head_labels=[f"ratio {r:.2f}" for r in full_ratio],
     )
 
-    for path in [
+    plot_bases = [
         "attn2_1h_block1_attention.pdf",
         "attn2_1h_block2_attention.pdf",
         "full12h_block1_attention.pdf",
         "full12h_block2_attention.pdf",
-    ]:
-        src = save_dir / path
-        (paper_dir / path).write_bytes(src.read_bytes())
+    ]
+    for path in plot_bases:
+        src_pdf = save_dir / path
+        src_png = src_pdf.with_suffix(".png")
+
+        if src_pdf.exists():
+            (paper_dir / src_pdf.name).write_bytes(src_pdf.read_bytes())
+            (paper_attn_dir / src_pdf.name).write_bytes(src_pdf.read_bytes())
+        if src_png.exists():
+            (paper_dir / src_png.name).write_bytes(src_png.read_bytes())
+            (paper_attn_dir / src_png.name).write_bytes(src_png.read_bytes())
+
+    # Sanity: row-0 can only attend to itself under causal masking.
+    row0_self = {
+        "attn2_block1_min": float(attn2_attn1[:, 0, 0].min()),
+        "attn2_block1_max": float(attn2_attn1[:, 0, 0].max()),
+        "attn2_block2_min": float(attn2_attn2[:, 0, 0].min()),
+        "attn2_block2_max": float(attn2_attn2[:, 0, 0].max()),
+        "full12h_block1_min": float(full_attn1[:, 0, 0].min()),
+        "full12h_block1_max": float(full_attn1[:, 0, 0].max()),
+        "full12h_block2_min": float(full_attn2[:, 0, 0].min()),
+        "full12h_block2_max": float(full_attn2[:, 0, 0].max()),
+    }
+    results["row0_self_attention"] = row0_self
 
     with open(save_dir / "attention_uniformity_metrics.json", "w") as f:
         json.dump(results, f, indent=2)
 
     print("Saved metrics to:", save_dir / "attention_uniformity_metrics.json")
     print("Saved attention maps to:", save_dir)
+    print("Copied attention maps to:", paper_attn_dir)
+    print("Row-0 self-attention sanity:", row0_self)
 
 
 if __name__ == "__main__":

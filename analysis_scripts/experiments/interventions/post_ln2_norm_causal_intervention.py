@@ -26,12 +26,12 @@ from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
 import sys
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "nanoGPT"))
 from model_nope import GPT, GPTConfig
 
 # Configuration
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-RESULTS_DIR = Path(__file__).parent.parent / "results" / "post_ln2_norm_intervention"
+RESULTS_DIR = Path(__file__).parent.parent.parent.parent / "results" / "post_ln2_norm_intervention"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 torch.manual_seed(42)
@@ -448,14 +448,14 @@ def main():
     print("=" * 70)
 
     checkpoint_path = (
-        Path(__file__).parent.parent / "nanoGPT" / "out-nope-1layer-ln" / "ckpt.pt"
+        Path(__file__).parent.parent.parent.parent / "nanoGPT" / "out-nope-1layer-ln" / "ckpt.pt"
     )
     if checkpoint_path.exists():
         trained_model, trained_config = load_trained_model(checkpoint_path)
 
         # Load Shakespeare data
         data_path = (
-            Path(__file__).parent.parent
+            Path(__file__).parent.parent.parent.parent
             / "nanoGPT"
             / "data"
             / "shakespeare"

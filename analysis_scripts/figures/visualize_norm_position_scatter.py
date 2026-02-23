@@ -14,13 +14,13 @@ import sys
 
 matplotlib.use("Agg")
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PLOTS_DIR = (
-    Path(__file__).parent.parent / "overleaf" / "nopos---claude-version" / "plots"
+    Path(__file__).parent.parent.parent / "overleaf" / "nopos---claude-version" / "plots"
 )
 
 

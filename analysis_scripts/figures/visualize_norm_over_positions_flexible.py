@@ -19,7 +19,7 @@ from pathlib import Path
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-sys.path.insert(0, "nanoGPT")
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 from model_position_classifier import (
     GPTPositionClassifier as GPT,
     GPTPositionClassifierConfig as GPTConfig,

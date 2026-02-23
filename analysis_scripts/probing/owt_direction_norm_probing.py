@@ -22,14 +22,14 @@ import json
 import sys
 from typing import Dict, Tuple, Optional
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 
 from model_nope import GPT, GPTConfig
 from sklearn.linear_model import Ridge
 from sklearn.decomposition import PCA
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-RESULTS_DIR = Path(__file__).parent.parent / "results" / "owt_direction_norm_probing"
+RESULTS_DIR = Path(__file__).parent.parent.parent / "results" / "owt_direction_norm_probing"
 
 
 def load_trained_model(

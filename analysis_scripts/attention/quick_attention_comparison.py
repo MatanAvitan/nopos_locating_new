@@ -12,7 +12,7 @@ import torch
 import json
 from scipy.stats import pearsonr
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 from model_nope import GPT, GPTConfig
 
 

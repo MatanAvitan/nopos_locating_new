@@ -14,7 +14,7 @@ from sklearn.metrics import r2_score
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 from model_nope import GPT, GPTConfig
 
 device = "cuda" if torch.cuda.is_available() else "cpu"

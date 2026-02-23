@@ -19,7 +19,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT_DIR = Path(__file__).resolve().parents[1]
+ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_DIR / "nanoGPT"))
 
 from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismModel

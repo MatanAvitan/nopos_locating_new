@@ -25,7 +25,7 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from scipy import stats
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'nanoGPT'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'nanoGPT'))
 
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 

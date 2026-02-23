@@ -7,6 +7,7 @@ import inspect
 from dataclasses import dataclass
 from typing import Literal, Optional, Dict, Tuple
 
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -45,6 +46,7 @@ class CausalSelfAttention(nn.Module):
         self.c_proj = nn.Linear(config.n_embd, config.n_embd, bias=config.bias)
         self.n_head = config.n_head
         self.n_embd = config.n_embd
+        self.attn_weights = None  # Store for visualization
 
     def forward(self, x):
         B, T, C = x.size()
@@ -57,6 +59,7 @@ class CausalSelfAttention(nn.Module):
         mask = torch.tril(torch.ones(T, T, device=x.device)).view(1, 1, T, T)
         att = att.masked_fill(mask[:, :, :T, :T] == 0, float("-inf"))
         att = F.softmax(att, dim=-1)
+        self.attn_weights = att.detach()  # Store for visualization
         y = att @ v
         y = y.transpose(1, 2).contiguous().view(B, T, C)
         y = self.c_proj(y)
@@ -159,3 +162,55 @@ class OneLayerMechanismModel(nn.Module):
         ]
         optimizer = torch.optim.AdamW(optim_groups, lr=learning_rate, betas=betas)
         return optimizer
+
+    def get_attention_weights(self):
+        """Get attention weights from the block for visualization."""
+        return (
+            self.block.attn.attn_weights
+            if hasattr(self.block.attn, "attn_weights")
+            else None
+        )
+
+
+def compute_position_metrics(
+    preds: torch.Tensor, targets: torch.Tensor
+) -> Dict[str, float]:
+    """Compute comprehensive position prediction metrics."""
+    # Convert to float32 for numerical stability
+    preds_f32 = preds.float()
+    targets_f32 = targets.float()
+
+    # MAE
+    mae = F.l1_loss(preds_f32, targets_f32).item()
+
+    # MSE and RMSE
+    mse = F.mse_loss(preds_f32, targets_f32).item()
+    rmse = math.sqrt(mse)
+
+    # R²
+    preds_flat = preds_f32.cpu().numpy().flatten()
+    targets_flat = targets_f32.cpu().numpy().flatten()
+    ss_res = np.sum((preds_flat - targets_flat) ** 2)
+    ss_tot = np.sum((targets_flat - np.mean(targets_flat)) ** 2)
+    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
+
+    # Correlation
+    corr = np.corrcoef(preds_flat, targets_flat)[0, 1]
+
+    return {
+        "mae": mae,
+        "mse": mse,
+        "rmse": rmse,
+        "r2": r2,
+        "correlation": corr,
+    }
+
+
+def compute_per_position_mae(
+    preds: torch.Tensor, targets: torch.Tensor, block_size: int
+) -> torch.Tensor:
+    """Compute MAE for each position across the sequence."""
+    preds_f32 = preds.float()
+    targets_f32 = targets.float()
+    per_pos_mae = torch.abs(preds_f32 - targets_f32).mean(dim=0)
+    return per_pos_mae

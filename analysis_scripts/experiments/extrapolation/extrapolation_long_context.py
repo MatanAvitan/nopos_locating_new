@@ -32,7 +32,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # Add nanoGPT to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "nanoGPT"))
 from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
 BOS_TOKEN_ID = 50256

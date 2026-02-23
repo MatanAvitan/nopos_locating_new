@@ -29,7 +29,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # Add nanoGPT to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "nanoGPT"))
 
 
 def load_model(checkpoint_path: str, device: str = "cuda"):
@@ -293,7 +293,7 @@ def main():
 
     # Load validation data
     data_path = (
-        Path(__file__).parent.parent / "nanoGPT" / "data" / args.dataset / "val.bin"
+        Path(__file__).parent.parent.parent.parent / "nanoGPT" / "data" / args.dataset / "val.bin"
     )
     print(f"\nLoading validation data from: {data_path}")
     val_data = np.memmap(data_path, dtype=np.uint16, mode="r")

@@ -51,7 +51,7 @@ from tqdm import tqdm
 matplotlib.use("Agg")
 
 # Add nanoGPT to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 from model_nope import GPT, GPTConfig
 
 # Try to import wandb

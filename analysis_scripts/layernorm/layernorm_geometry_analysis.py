@@ -25,8 +25,8 @@ import matplotlib.pyplot as plt
 # Add parent directory for imports
 import sys
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-sys.path.insert(0, str(Path(__file__).parent.parent / "nanoGPT"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "nanoGPT"))
 
 from nanoGPT.model_nope import GPT, GPTConfig
 

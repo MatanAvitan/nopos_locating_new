@@ -59,7 +59,7 @@ python analysis_scripts/experiments/extrapolation/extrapolation_analysis.py  # E
 
 # R0/R2 specific analysis:
 python analysis_scripts/experiments/r0_analysis/r0_attention_output_projection.py
-python analysis_scripts/experiments/r2_analysis/r2_geometric_clock_complete.py
+python analysis_scripts/experiments/r2_analysis/r2_geometric_gauge_complete.py
 
 # Archived scripts (older experiments):
 python analysis_scripts/archive/<script_name>.py
@@ -320,34 +320,26 @@ nopos_locating_new/
 
 ### Resource Priority (Use in This Order)
 
-1. **dgx-b200-01** - 8x NVIDIA B200 (183GB each) - Fastest, use first
-2. **dsinlp01** (current server) - 8x NVIDIA A100-SXM4-80GB - Local, no queue
-3. **Slurm H200** - `H200-4h` or `H200-12h` partitions on hpc8h200-01
-4. **Slurm A100** - `A100-4h` partition on hpc2a100-01
-5. **dgx02-03** - Legacy DGX servers, use as fallback
+**IMPORTANT**: Always use Slurm to submit jobs. Never SSH directly to execute code.
+
+| Priority | Server | Partition | GPUs | Notes |
+|----------|--------|-----------|------|-------|
+| 1 | **dgx-b200-01** | `p_b200_nlp` | 8x NVIDIA B200 (183GB) | Fastest, use first |
+| 2 | **dgx-b200-01** | `p_b200_goldberg` | 8x NVIDIA B200 (183GB) | Secondary priority |
+| 3 | **dsinlp01** | N/A (local) | 8x NVIDIA A100-SXM4-80GB | Local execution, no queue |
+| 4 | **hpc8h200-01** | `H200-4h` or `H200-12h` | 2x H200 | Via Slurm only |
+| 5 | **hpc2a100-01** | `A100-4h` | 2x A100 | Via Slurm only |
+| 6 | **dgx02-03** | N/A | Varies | Legacy SSH access, use as fallback |
 
 ### Server Details
 
 | Server | GPUs | Memory/GPU | Access | Notes |
 |--------|------|------------|--------|-------|
-| `dgx-b200-01` | 8x B200 | 183GB | `ssh dgx-b200-01` | Newest, fastest |
+| `dgx-b200-01` | 8x B200 | 183GB | Slurm `p_b200_nlp` or `p_b200_goldberg` | Newest, fastest - **Via Slurm only** |
 | `dsinlp01` | 8x A100-SXM4 | 80GB | Local (current) | Good for parallel runs |
 | `hpc8h200-01` | 2x H200 | - | Slurm `H200-*` | Via Slurm only |
 | `hpc2a100-01` | 2x A100 | - | Slurm `A100-4h` | Via Slurm only |
 | `dgx02-03` | Varies | - | SSH | Legacy, lower priority |
-
-### Running on dgx-b200-01
-
-```bash
-# Check available GPUs
-ssh dgx-b200-01 "nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu --format=csv"
-
-# Run training on specific GPU
-ssh dgx-b200-01 "cd /home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT && CUDA_VISIBLE_DEVICES=0 nohup python train_nope.py config/train_nope_owt_ln.py > ../logs/train_b200.out 2>&1 &"
-
-# Check running processes
-ssh dgx-b200-01 "nvidia-smi --query-compute-apps=pid,used_memory --format=csv"
-```
 
 ### Running on dsinlp01 (Current Server)
 
