@@ -3,40 +3,40 @@
   "artifact": "results/section5_support/section5_canonical.json",
   "claims": [
     {
-      "claim": "modelminimal final R^2 = 0.991",
-      "paper_line": "~719",
+      "claim": "modelminimal final R^2 = 0.990",
+      "paper_line": "~680",
       "artifact_value": 0.99,
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.final_r2",
       "n_seq": 1600
     },
     {
       "claim": "modelfull final R^2 = 0.999",
-      "paper_line": "~869",
+      "paper_line": "~830",
       "artifact_value": 0.999,
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.final_r2",
       "n_seq": 1600
     },
     {
       "claim": "modelminimal Step 1 pop Spearman BOS/nonBOS = -0.998/+0.999",
-      "paper_line": "~753-755",
+      "paper_line": "~714-716",
       "artifact_value": "-0.9983/0.999",
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step1"
     },
     {
-      "claim": "modelminimal Step 1 sample median = -0.647/+0.693",
-      "paper_line": "~757",
+      "claim": "modelminimal Step 1 sample median = -0.658/+0.707",
+      "paper_line": "~718",
       "artifact_value": "-0.658/0.707",
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step1"
     },
     {
-      "claim": "modelminimal Step 1 probe R^2 = 0.543",
-      "paper_line": "~776",
+      "claim": "modelminimal Step 1 probe R^2 = 0.554",
+      "paper_line": "~737",
       "artifact_value": 0.554,
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step1.full_probe_r2"
     },
     {
-      "claim": "modelminimal Step 2 norms 394.9/89.8 (4.40x), cos=-0.660",
-      "paper_line": "~786-792",
+      "claim": "modelminimal Step 2 norms 394.9/89.6 (4.41x), cos=-0.658",
+      "paper_line": "~746-753",
       "artifact_value": {
         "bos_norm": 394.9,
         "nbos_norm": 89.6,
@@ -47,43 +47,43 @@
     },
     {
       "claim": "modelminimal Step 3 BOS-bias ratio r_h=21.9",
-      "paper_line": "~810",
+      "paper_line": "~771",
       "artifact_value": 21.939,
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step3.bos_bias_ratio.H0"
     },
     {
       "claim": "modelminimal Step 3 BOS mass Spearman = -1.0",
-      "paper_line": "~812-813",
+      "paper_line": "~773-774",
       "artifact_value": -1.0,
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step3.bos_mass_spearman.H0"
     },
     {
       "claim": "modelminimal Step 4 pop Spearman = -1/+1",
-      "paper_line": "~821-822",
+      "paper_line": "~782-784",
       "artifact_value": "-1.0/1.0",
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5"
     },
     {
       "claim": "modelminimal Step 4 sample median = -0.999/+0.999",
-      "paper_line": "~825",
+      "paper_line": "~786",
       "artifact_value": "-0.9993/0.9991",
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5"
     },
     {
       "claim": "modelminimal Step 5 cos(w_head, d_nonBOS) = 0.731",
-      "paper_line": "~844",
+      "paper_line": "~805",
       "artifact_value": 0.731,
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5.step5_cos_head_nonbos"
     },
     {
-      "claim": "modelminimal Step 5 cos(w_head, d_delta) = 0.154",
-      "paper_line": "~847",
+      "claim": "modelminimal Step 5 cos(w_head, d_delta) = 0.155",
+      "paper_line": "~808",
       "artifact_value": 0.155,
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5.step5_cos_head_delta"
     },
     {
       "claim": "modelminimal write: baseline=0.990, ret1=0.809, ret2=0.991, abl1=0.125",
-      "paper_line": "~994-998",
+      "paper_line": "~961-965",
       "artifact_value": {
         "baseline_r2": 0.9898,
         "top1_retention_r2": 0.8095,
@@ -94,26 +94,26 @@
       "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.write"
     },
     {
-      "claim": "modelfull Step 1 pop Spearman = -0.986/+0.981",
-      "paper_line": "~947-948",
+      "claim": "modelfull Step 1 pop Spearman = -0.982/+0.975",
+      "paper_line": "~908-910",
       "artifact_value": "-0.9825/0.9753",
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step1"
     },
     {
-      "claim": "modelfull Step 1 sample median = -0.402/+0.486",
-      "paper_line": "~949",
+      "claim": "modelfull Step 1 sample median = -0.397/+0.487",
+      "paper_line": "~910",
       "artifact_value": "-0.397/0.487",
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step1"
     },
     {
-      "claim": "modelfull Step 1 probe R^2 = 0.556",
-      "paper_line": "~950",
+      "claim": "modelfull Step 1 probe R^2 = 0.560",
+      "paper_line": "~911",
       "artifact_value": 0.56,
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step1.full_probe_r2"
     },
     {
-      "claim": "modelfull Step 2 norms 1847.7/743.4 (2.49x), cos=-0.969",
-      "paper_line": "~1193-1200",
+      "claim": "modelfull Step 2 norms 1847.7/743.6 (2.48x), cos=-0.969",
+      "paper_line": "~1166-1174",
       "artifact_value": {
         "bos_norm": 1847.7,
         "nbos_norm": 743.6,
@@ -123,8 +123,8 @@
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step2"
     },
     {
-      "claim": "modelfull Step 3 BOS-bias ratios H7=100.3, H5=76.5, H11=62.6, H10=33.3",
-      "paper_line": "~883, 1207",
+      "claim": "modelfull Step 3 BOS-bias ratios H7=100.2, H5=76.5, H11=62.6, H10=33.2",
+      "paper_line": "~844, ~1181-1182",
       "artifact_value": {
         "H7": 100.151,
         "H5": 76.48,
@@ -135,7 +135,7 @@
     },
     {
       "claim": "modelfull Step 3 BOS mass Spearman=-1.0 for H7,H5,H11,H10",
-      "paper_line": "~886",
+      "paper_line": "~847",
       "artifact_value": {
         "H7": -1.0,
         "H5": -1.0,
@@ -145,8 +145,20 @@
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step3.bos_mass_spearman"
     },
     {
-      "claim": "modelfull Step 5 cos(w_head, d_nonBOS)=0.320, cos(w_head, d_delta)=0.201",
-      "paper_line": "~958-959, 1282-1285",
+      "claim": "modelfull Step 4 pop Spearman = -1/+1",
+      "paper_line": "~1214-1216",
+      "artifact_value": "-1.0/1.0",
+      "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step4_5"
+    },
+    {
+      "claim": "modelfull Step 4 sample median = -0.999/+0.999",
+      "paper_line": "~1217-1218",
+      "artifact_value": "-0.9993/0.9995",
+      "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step4_5"
+    },
+    {
+      "claim": "modelfull Step 5 cos(w_head, d_nonBOS)=0.318, cos(w_head, d_delta)=0.200",
+      "paper_line": "~919-920, ~1256-1259",
       "artifact_value": {
         "cos_nonbos": 0.318,
         "cos_delta": 0.2
@@ -155,7 +167,7 @@
     },
     {
       "claim": "modelfull write: baseline=0.999, ret1=0.460, ret2=0.951, abl1=0.625",
-      "paper_line": "~1001-1004",
+      "paper_line": "~966-971",
       "artifact_value": {
         "baseline_r2": 0.9988,
         "top1_retention_r2": 0.46,
@@ -166,8 +178,8 @@
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.write"
     },
     {
-      "claim": "cos(d_nonBOS, d_delta) = 0.764 (minimal), 0.984 (full)",
-      "paper_line": "~838-839, 901",
+      "claim": "cos(d_nonBOS, d_delta) = 0.762 (minimal), 0.984 (full)",
+      "paper_line": "~799 (minimal), ~862 (full)",
       "artifact_value": {
         "minimal": 0.762,
         "full": 0.984
@@ -176,13 +188,13 @@
     },
     {
       "claim": "cos(d_BOS, d_nonBOS) approx -0.97 (full)",
-      "paper_line": "~877",
+      "paper_line": "~838",
       "artifact_value": -0.97,
       "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step4_5.cos_bos_nonbos"
     },
     {
-      "claim": "Residual cancellation: 0.046 (minimal), 0.022 (full)",
-      "paper_line": "~940",
+      "claim": "Residual cancellation: 0.045 (minimal), 0.022 (full)",
+      "paper_line": "~901",
       "artifact_value": {
         "minimal": 0.045,
         "full": 0.022
@@ -190,13 +202,27 @@
       "artifact_path": "results/section5_support/section5_canonical.json -> *.step4_5.residual_abs_mean"
     },
     {
-      "claim": "Concentration cos mean ge16: 0.899 (minimal), 0.938 (full)",
-      "paper_line": "~941",
+      "claim": "Concentration cos mean ge16: 0.901 (minimal), 0.938 (full)",
+      "paper_line": "~902",
       "artifact_value": {
         "minimal": 0.901,
         "full": 0.938
       },
       "artifact_path": "results/section5_support/section5_canonical.json -> *.step4_5.concentration_cos_mean_ge16"
+    },
+    {
+      "claim": "modelminimal Step 5 MLP-zero control R^2",
+      "paper_line": "~925-929 (MLP-zero paragraph, line 927)",
+      "artifact_value": 0.9847,
+      "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step5_mlp_zero_control.r2_no_mlp2",
+      "n_seq": 1600
+    },
+    {
+      "claim": "modelfull Step 5 MLP-zero control R^2",
+      "paper_line": "~925-929 (MLP-zero paragraph, line 928)",
+      "artifact_value": 0.4184,
+      "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step5_mlp_zero_control.r2_no_mlp2",
+      "n_seq": 1600
     }
   ]
 }

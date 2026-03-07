@@ -101,7 +101,7 @@ def load_model(checkpoint_path: Path, device: str) -> TwoLayerMechanismModel:
 
 
 def load_data(data_dir: Path) -> np.memmap:
-    return np.memmap(str(data_dir / "train.bin"), dtype=np.uint16, mode="r")
+    return np.memmap(str(data_dir / "val.bin"), dtype=np.uint16, mode="r")
 
 
 def sample_tokens(

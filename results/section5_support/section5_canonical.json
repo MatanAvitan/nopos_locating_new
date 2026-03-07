@@ -197,6 +197,11 @@
       "top2_retention_r2": 0.9908,
       "top1_ablation_r2": 0.1247,
       "n_seq": 1600
+    },
+    "step5_mlp_zero_control": {
+      "r2_no_mlp2": 0.9847,
+      "note": "R^2 when Layer-2 MLP output is zeroed at inference. Cosine alignments (cos(w_head, d_nonBOS), cos(w_head, d_delta)) are weight-level and unchanged by this intervention.",
+      "n_seq": 1600
     }
   },
   "full_12h": {
@@ -1834,6 +1839,11 @@
       "top1_retention_r2": 0.46,
       "top2_retention_r2": 0.9509,
       "top1_ablation_r2": 0.6246,
+      "n_seq": 1600
+    },
+    "step5_mlp_zero_control": {
+      "r2_no_mlp2": 0.4184,
+      "note": "R^2 when Layer-2 MLP output is zeroed at inference. Cosine alignments (cos(w_head, d_nonBOS), cos(w_head, d_delta)) are weight-level and unchanged by this intervention.",
       "n_seq": 1600
     }
   }

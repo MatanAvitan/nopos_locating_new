@@ -21,6 +21,7 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import json
 import sys
@@ -42,15 +43,15 @@ from model_2layer_mechanism import TwoLayerMechanismConfig, TwoLayerMechanismMod
 BOS_TOKEN_ID = 50256
 SEED = 42
 
-ATTN2_CKPT = Path(
-    "/home/nlp/matan_avitan/git/nopos_locating_new/model_backups/R2_ATTN2-1H/best_ckpt.pt"
-)
-FULL12H_CKPT = Path(
-    "/home/nlp/matan_avitan/git/nopos_locating_new/model_backups/R0_FULL-12H/best_ckpt.pt"
-)
-DATA_DIR = Path(
-    "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/data/openwebtext"
-)
+# Default checkpoint / data paths (repo-relative; overridable via CLI)
+# Try repo-local model_backups/ first, fall back to nanoGPT/ subdirs.
+_DEFAULT_ATTN2_CKPT = str(ROOT / "model_backups" / "R2_ATTN2-1H" / "best_ckpt.pt")
+_DEFAULT_FULL12H_CKPT = str(ROOT / "model_backups" / "R0_FULL-12H" / "best_ckpt.pt")
+_DEFAULT_DATA_DIR = str(ROOT / "nanoGPT" / "data" / "openwebtext")
+
+ATTN2_CKPT = Path(_DEFAULT_ATTN2_CKPT)
+FULL12H_CKPT = Path(_DEFAULT_FULL12H_CKPT)
+DATA_DIR = Path(_DEFAULT_DATA_DIR)
 
 SAVE_DIR = ROOT / "results" / "section5_support"
 
@@ -413,10 +414,93 @@ def compute_step1(model, data, device, model_name) -> dict:
     }
 
 
+def compute_step5_mlp_zero_control(model, data, device) -> dict:
+    """Step 5 MLP-zero control: zero Layer-2 MLP at inference and report R².
+
+    Uses model.set_post_attn_head(True) to skip MLP2, computes R² on the
+    same held-out data, then restores the model.  Cosine alignments (Step 5)
+    are weight-level and unchanged by this intervention.
+    """
+    # Enable MLP-zero mode (skips MLP2, uses only attn output + residual)
+    model.set_post_attn_head(True)
+    try:
+        r2_no_mlp = round(compute_final_r2(model, data, device), 4)
+    finally:
+        model.set_post_attn_head(False)
+
+    return {
+        "r2_no_mlp2": r2_no_mlp,
+        "note": (
+            "R^2 when Layer-2 MLP output is zeroed at inference. "
+            "Cosine alignments (cos(w_head, d_nonBOS), cos(w_head, d_delta)) "
+            "are weight-level and unchanged by this intervention."
+        ),
+        "n_seq": FINAL_N_BATCHES * FINAL_BATCH_SIZE,
+    }
+
+
+# ── CLI argument parser ─────────────────────────────────────────────────
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Canonical Section 5 support artifact generator."
+    )
+    parser.add_argument(
+        "--attn2-ckpt",
+        type=str,
+        default=_DEFAULT_ATTN2_CKPT,
+        help="Path to ATTN2-1H checkpoint (default: repo-relative model_backups/R2_ATTN2-1H/best_ckpt.pt)",
+    )
+    parser.add_argument(
+        "--full12h-ckpt",
+        type=str,
+        default=_DEFAULT_FULL12H_CKPT,
+        help="Path to FULL-12H checkpoint (default: repo-relative model_backups/R0_FULL-12H/best_ckpt.pt)",
+    )
+    parser.add_argument(
+        "--data-dir",
+        type=str,
+        default=_DEFAULT_DATA_DIR,
+        help="Path to OpenWebText data directory (default: repo-relative nanoGPT/data/openwebtext)",
+    )
+    args = parser.parse_args()
+
+    # Validate that paths exist, with clear error messages
+    for label, path in [
+        ("ATTN2-1H checkpoint (--attn2-ckpt)", args.attn2_ckpt),
+        ("FULL-12H checkpoint (--full12h-ckpt)", args.full12h_ckpt),
+    ]:
+        if not Path(path).exists():
+            parser.error(
+                f"{label} not found at: {path}\n"
+                f"  Provide the correct path via the corresponding CLI flag."
+            )
+    data_dir = Path(args.data_dir)
+    if not data_dir.exists():
+        parser.error(
+            f"Data directory (--data-dir) not found at: {data_dir}\n"
+            f"  Run nanoGPT/data/openwebtext/prepare.py first, or provide the correct path."
+        )
+    if not (data_dir / "val.bin").exists():
+        parser.error(
+            f"val.bin not found in data directory: {data_dir}\n"
+            f"  Run nanoGPT/data/openwebtext/prepare.py first."
+        )
+
+    return args
+
+
 # ── main ─────────────────────────────────────────────────────────────────
 
 
 def main():
+    # Parse CLI args and resolve paths
+    args = parse_args()
+    global ATTN2_CKPT, FULL12H_CKPT, DATA_DIR
+    ATTN2_CKPT = Path(args.attn2_ckpt).resolve()
+    FULL12H_CKPT = Path(args.full12h_ckpt).resolve()
+    DATA_DIR = Path(args.data_dir).resolve()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(SEED)
     np.random.seed(SEED)
@@ -449,9 +533,9 @@ def main():
             "step3_n_seq": STEP3_N_BATCHES * STEP3_BATCH_SIZE,
             "step4_n_seq": STEP4_N_BATCHES * STEP4_BATCH_SIZE,
             "block_size": 128,
-            "attn2_ckpt": str(ATTN2_CKPT),
-            "full12h_ckpt": str(FULL12H_CKPT),
-            "data_dir": str(DATA_DIR),
+            "attn2_ckpt": str(ATTN2_CKPT),  # resolved absolute path
+            "full12h_ckpt": str(FULL12H_CKPT),  # resolved absolute path
+            "data_dir": str(DATA_DIR),  # resolved absolute path
         }
     }
 
@@ -519,6 +603,17 @@ def main():
             f"    Write: baseline={entry['write']['baseline_r2']}, ret1={entry['write']['top1_retention_r2']}, ret2={entry['write']['top2_retention_r2']}, abl1={entry['write']['top1_ablation_r2']}"
         )
 
+        # Step 5 MLP-zero control (P1-1 causal isolation)
+        print("  Computing Step 5 MLP-zero control ...")
+        torch.manual_seed(SEED)
+        np.random.seed(SEED)
+        entry["step5_mlp_zero_control"] = compute_step5_mlp_zero_control(
+            model, val_data, device
+        )
+        print(
+            f"    Step 5 MLP-zero R^2 = {entry['step5_mlp_zero_control']['r2_no_mlp2']}"
+        )
+
         results[model_key] = entry
 
     # ── save ─────────────────────────────────────────────────────────────
@@ -537,7 +632,10 @@ def main():
 
 
 def build_provenance(results: dict) -> dict:
-    """Build a mapping from each paper claim to its backing artifact."""
+    """Build a mapping from each paper claim to its backing artifact.
+
+    Line references target overleaf/nopos_icml_2026/main.tex (1304 lines).
+    """
     a = results.get("attn2_1h", {})
     f = results.get("full_12h", {})
 
@@ -547,41 +645,45 @@ def build_provenance(results: dict) -> dict:
         return x
 
     claims = [
+        # ── modelminimal final R^2 ──────────────────────────────────────
         {
-            "claim": "modelminimal final R^2 = 0.991",
-            "paper_line": "~719",
+            "claim": "modelminimal final R^2 = 0.990",
+            "paper_line": "~680",
             "artifact_value": _r(a.get("final_r2")),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.final_r2",
             "n_seq": results["metadata"]["final_n_seq"],
         },
+        # ── modelfull final R^2 ─────────────────────────────────────────
         {
             "claim": "modelfull final R^2 = 0.999",
-            "paper_line": "~869",
+            "paper_line": "~830",
             "artifact_value": _r(f.get("final_r2")),
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.final_r2",
             "n_seq": results["metadata"]["final_n_seq"],
         },
+        # ── modelminimal Step 1 ─────────────────────────────────────────
         {
             "claim": "modelminimal Step 1 pop Spearman BOS/nonBOS = -0.998/+0.999",
-            "paper_line": "~753-755",
+            "paper_line": "~714-716",
             "artifact_value": f"{_r(a.get('step1', {}).get('pop_bos'), 4)}/{_r(a.get('step1', {}).get('pop_nonbos'), 4)}",
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step1",
         },
         {
-            "claim": "modelminimal Step 1 sample median = -0.647/+0.693",
-            "paper_line": "~757",
+            "claim": "modelminimal Step 1 sample median = -0.658/+0.707",
+            "paper_line": "~718",
             "artifact_value": f"{_r(a.get('step1', {}).get('sample_median_bos'), 3)}/{_r(a.get('step1', {}).get('sample_median_nonbos'), 3)}",
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step1",
         },
         {
-            "claim": "modelminimal Step 1 probe R^2 = 0.543",
-            "paper_line": "~776",
+            "claim": "modelminimal Step 1 probe R^2 = 0.554",
+            "paper_line": "~737",
             "artifact_value": _r(a.get("step1", {}).get("full_probe_r2")),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step1.full_probe_r2",
         },
+        # ── modelminimal Step 2 ─────────────────────────────────────────
         {
-            "claim": "modelminimal Step 2 norms 394.9/89.8 (4.40x), cos=-0.660",
-            "paper_line": "~786-792",
+            "claim": "modelminimal Step 2 norms 394.9/89.6 (4.41x), cos=-0.658",
+            "paper_line": "~746-753",
             "artifact_value": {
                 "bos_norm": a.get("step2", {}).get("bos_norm"),
                 "nbos_norm": a.get("step2", {}).get("nbos_norm"),
@@ -590,69 +692,75 @@ def build_provenance(results: dict) -> dict:
             },
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step2",
         },
+        # ── modelminimal Step 3 ─────────────────────────────────────────
         {
             "claim": "modelminimal Step 3 BOS-bias ratio r_h=21.9",
-            "paper_line": "~810",
+            "paper_line": "~771",
             "artifact_value": a.get("step3", {}).get("bos_bias_ratio", {}).get("H0"),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step3.bos_bias_ratio.H0",
         },
         {
             "claim": "modelminimal Step 3 BOS mass Spearman = -1.0",
-            "paper_line": "~812-813",
+            "paper_line": "~773-774",
             "artifact_value": a.get("step3", {}).get("bos_mass_spearman", {}).get("H0"),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step3.bos_mass_spearman.H0",
         },
+        # ── modelminimal Step 4 ─────────────────────────────────────────
         {
             "claim": "modelminimal Step 4 pop Spearman = -1/+1",
-            "paper_line": "~821-822",
+            "paper_line": "~782-784",
             "artifact_value": f"{a.get('step4_5', {}).get('step4_pop_bos')}/{a.get('step4_5', {}).get('step4_pop_nonbos')}",
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5",
         },
         {
             "claim": "modelminimal Step 4 sample median = -0.999/+0.999",
-            "paper_line": "~825",
+            "paper_line": "~786",
             "artifact_value": f"{_r(a.get('step4_5', {}).get('step4_sample_median_bos'), 4)}/{_r(a.get('step4_5', {}).get('step4_sample_median_nonbos'), 4)}",
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5",
         },
+        # ── modelminimal Step 5 ─────────────────────────────────────────
         {
             "claim": "modelminimal Step 5 cos(w_head, d_nonBOS) = 0.731",
-            "paper_line": "~844",
+            "paper_line": "~805",
             "artifact_value": _r(a.get("step4_5", {}).get("step5_cos_head_nonbos"), 3),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5.step5_cos_head_nonbos",
         },
         {
-            "claim": "modelminimal Step 5 cos(w_head, d_delta) = 0.154",
-            "paper_line": "~847",
+            "claim": "modelminimal Step 5 cos(w_head, d_delta) = 0.155",
+            "paper_line": "~808",
             "artifact_value": _r(a.get("step4_5", {}).get("step5_cos_head_delta"), 3),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step4_5.step5_cos_head_delta",
         },
+        # ── modelminimal write interventions ────────────────────────────
         {
             "claim": "modelminimal write: baseline=0.990, ret1=0.809, ret2=0.991, abl1=0.125",
-            "paper_line": "~994-998",
+            "paper_line": "~961-965",
             "artifact_value": a.get("write"),
             "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.write",
         },
+        # ── modelfull Step 1 ────────────────────────────────────────────
         {
-            "claim": "modelfull Step 1 pop Spearman = -0.986/+0.981",
-            "paper_line": "~947-948",
+            "claim": "modelfull Step 1 pop Spearman = -0.982/+0.975",
+            "paper_line": "~908-910",
             "artifact_value": f"{_r(f.get('step1', {}).get('pop_bos'), 4)}/{_r(f.get('step1', {}).get('pop_nonbos'), 4)}",
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step1",
         },
         {
-            "claim": "modelfull Step 1 sample median = -0.402/+0.486",
-            "paper_line": "~949",
+            "claim": "modelfull Step 1 sample median = -0.397/+0.487",
+            "paper_line": "~910",
             "artifact_value": f"{_r(f.get('step1', {}).get('sample_median_bos'), 3)}/{_r(f.get('step1', {}).get('sample_median_nonbos'), 3)}",
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step1",
         },
         {
-            "claim": "modelfull Step 1 probe R^2 = 0.556",
-            "paper_line": "~950",
+            "claim": "modelfull Step 1 probe R^2 = 0.560",
+            "paper_line": "~911",
             "artifact_value": _r(f.get("step1", {}).get("full_probe_r2")),
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step1.full_probe_r2",
         },
+        # ── modelfull Step 2 (appendix) ─────────────────────────────────
         {
-            "claim": "modelfull Step 2 norms 1847.7/743.4 (2.49x), cos=-0.969",
-            "paper_line": "~1193-1200",
+            "claim": "modelfull Step 2 norms 1847.7/743.6 (2.48x), cos=-0.969",
+            "paper_line": "~1166-1174",
             "artifact_value": {
                 "bos_norm": f.get("step2", {}).get("bos_norm"),
                 "nbos_norm": f.get("step2", {}).get("nbos_norm"),
@@ -661,9 +769,10 @@ def build_provenance(results: dict) -> dict:
             },
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step2",
         },
+        # ── modelfull Step 3 ────────────────────────────────────────────
         {
-            "claim": "modelfull Step 3 BOS-bias ratios H7=100.3, H5=76.5, H11=62.6, H10=33.3",
-            "paper_line": "~883, 1207",
+            "claim": "modelfull Step 3 BOS-bias ratios H7=100.2, H5=76.5, H11=62.6, H10=33.2",
+            "paper_line": "~844, ~1181-1182",
             "artifact_value": {
                 h: f.get("step3", {}).get("bos_bias_ratio", {}).get(h)
                 for h in ["H7", "H5", "H11", "H10"]
@@ -672,16 +781,30 @@ def build_provenance(results: dict) -> dict:
         },
         {
             "claim": "modelfull Step 3 BOS mass Spearman=-1.0 for H7,H5,H11,H10",
-            "paper_line": "~886",
+            "paper_line": "~847",
             "artifact_value": {
                 h: f.get("step3", {}).get("bos_mass_spearman", {}).get(h)
                 for h in ["H7", "H5", "H11", "H10"]
             },
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step3.bos_mass_spearman",
         },
+        # ── modelfull Step 4 ────────────────────────────────────────────
         {
-            "claim": "modelfull Step 5 cos(w_head, d_nonBOS)=0.320, cos(w_head, d_delta)=0.201",
-            "paper_line": "~958-959, 1282-1285",
+            "claim": "modelfull Step 4 pop Spearman = -1/+1",
+            "paper_line": "~1214-1216",
+            "artifact_value": f"{f.get('step4_5', {}).get('step4_pop_bos')}/{f.get('step4_5', {}).get('step4_pop_nonbos')}",
+            "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step4_5",
+        },
+        {
+            "claim": "modelfull Step 4 sample median = -0.999/+0.999",
+            "paper_line": "~1217-1218",
+            "artifact_value": f"{_r(f.get('step4_5', {}).get('step4_sample_median_bos'), 4)}/{_r(f.get('step4_5', {}).get('step4_sample_median_nonbos'), 4)}",
+            "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step4_5",
+        },
+        # ── modelfull Step 5 ────────────────────────────────────────────
+        {
+            "claim": "modelfull Step 5 cos(w_head, d_nonBOS)=0.318, cos(w_head, d_delta)=0.200",
+            "paper_line": "~919-920, ~1256-1259",
             "artifact_value": {
                 "cos_nonbos": _r(f.get("step4_5", {}).get("step5_cos_head_nonbos"), 3),
                 "cos_delta": _r(f.get("step4_5", {}).get("step5_cos_head_delta"), 3),
@@ -690,13 +813,14 @@ def build_provenance(results: dict) -> dict:
         },
         {
             "claim": "modelfull write: baseline=0.999, ret1=0.460, ret2=0.951, abl1=0.625",
-            "paper_line": "~1001-1004",
+            "paper_line": "~966-971",
             "artifact_value": f.get("write"),
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.write",
         },
+        # ── cross-model diagnostics ─────────────────────────────────────
         {
-            "claim": "cos(d_nonBOS, d_delta) = 0.764 (minimal), 0.984 (full)",
-            "paper_line": "~838-839, 901",
+            "claim": "cos(d_nonBOS, d_delta) = 0.762 (minimal), 0.984 (full)",
+            "paper_line": "~799 (minimal), ~862 (full)",
             "artifact_value": {
                 "minimal": _r(a.get("step4_5", {}).get("cos_nonbos_delta"), 3),
                 "full": _r(f.get("step4_5", {}).get("cos_nonbos_delta"), 3),
@@ -705,13 +829,13 @@ def build_provenance(results: dict) -> dict:
         },
         {
             "claim": "cos(d_BOS, d_nonBOS) approx -0.97 (full)",
-            "paper_line": "~877",
+            "paper_line": "~838",
             "artifact_value": _r(f.get("step4_5", {}).get("cos_bos_nonbos"), 3),
             "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step4_5.cos_bos_nonbos",
         },
         {
-            "claim": "Residual cancellation: 0.046 (minimal), 0.022 (full)",
-            "paper_line": "~940",
+            "claim": "Residual cancellation: 0.045 (minimal), 0.022 (full)",
+            "paper_line": "~901",
             "artifact_value": {
                 "minimal": _r(a.get("step4_5", {}).get("residual_abs_mean"), 3),
                 "full": _r(f.get("step4_5", {}).get("residual_abs_mean"), 3),
@@ -719,8 +843,8 @@ def build_provenance(results: dict) -> dict:
             "artifact_path": "results/section5_support/section5_canonical.json -> *.step4_5.residual_abs_mean",
         },
         {
-            "claim": "Concentration cos mean ge16: 0.899 (minimal), 0.938 (full)",
-            "paper_line": "~941",
+            "claim": "Concentration cos mean ge16: 0.901 (minimal), 0.938 (full)",
+            "paper_line": "~902",
             "artifact_value": {
                 "minimal": _r(
                     a.get("step4_5", {}).get("concentration_cos_mean_ge16"), 3
@@ -728,6 +852,25 @@ def build_provenance(results: dict) -> dict:
                 "full": _r(f.get("step4_5", {}).get("concentration_cos_mean_ge16"), 3),
             },
             "artifact_path": "results/section5_support/section5_canonical.json -> *.step4_5.concentration_cos_mean_ge16",
+        },
+        # ── Step 5 MLP-zero control (P1-1) ──────────────────────────────
+        {
+            "claim": "modelminimal Step 5 MLP-zero control R^2",
+            "paper_line": "~925-929 (MLP-zero paragraph, line 927)",
+            "artifact_value": _r(
+                a.get("step5_mlp_zero_control", {}).get("r2_no_mlp2"), 4
+            ),
+            "artifact_path": "results/section5_support/section5_canonical.json -> attn2_1h.step5_mlp_zero_control.r2_no_mlp2",
+            "n_seq": results["metadata"]["final_n_seq"],
+        },
+        {
+            "claim": "modelfull Step 5 MLP-zero control R^2",
+            "paper_line": "~925-929 (MLP-zero paragraph, line 928)",
+            "artifact_value": _r(
+                f.get("step5_mlp_zero_control", {}).get("r2_no_mlp2"), 4
+            ),
+            "artifact_path": "results/section5_support/section5_canonical.json -> full_12h.step5_mlp_zero_control.r2_no_mlp2",
+            "n_seq": results["metadata"]["final_n_seq"],
         },
     ]
 
