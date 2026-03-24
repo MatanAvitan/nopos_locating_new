@@ -1,0 +1,38 @@
+% Attention uniformity and BOS ratio tables (OpenWebText val, BOS prepended, L=128)
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Layer 1 attention entropy (causal prefix).}
+For each head $h$, we compute $\mathrm{H}_h = \mathbb{E}_{b,t}\!\left[-\sum_{j=0}^{t} a^{(1)}_{b,h}(t,j)\log a^{(1)}_{b,h}(t,j)\right]$ where $a^{(1)}$ is the Layer~1 attention and the sum is over keys $j\le t$ (zeros for $j>t$). Values are averaged over 20 batches $\times$ 64 sequences from OpenWebText with BOS prepended ($T{=}128$). The \textit{Single-key BOS} baseline is a delta distribution at key $0$ for all $t$ (head-agnostic, repeated across columns).}
+\label{tab:block1_entropy}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{l cccccccccccc}
+\toprule
+Model & H0 & H1 & H2 & H3 & H4 & H5 & H6 & H7 & H8 & H9 & H10 & H11 \\
+\midrule
+ATTN2-1H & 3.770 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+FULL-12H & 0.180 & 0.194 & 0.508 & 0.457 & 0.368 & 0.555 & 0.181 & 0.208 & 0.342 & 0.192 & 0.319 & 0.319 \\
+Single-key BOS & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Layer 2 BOS-bias ratio per head.}
+For each head $h$, we compute $r_h = \frac{\mathbb{E}_{b,t\ge1}[a^{(2)}_{b,h}(t,0)]}{\mathbb{E}_{b,t\ge1}[\frac{1}{t}\sum_{j=1}^{t} a^{(2)}_{b,h}(t,j)]}$ using BOS-prepended OpenWebText validation sequences ($T{=}128$), averaged over 20 batches $\times$ 64 sequences.}
+\label{tab:block2_bos_ratio}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{l cccccccccccc}
+\toprule
+Model & H0 & H1 & H2 & H3 & H4 & H5 & H6 & H7 & H8 & H9 & H10 & H11 \\
+\midrule
+ATTN2-1H & 21.900 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+FULL-12H & 0.369 & 15.472 & $7.22\times10^{-18}$ & 11.200 & 36.013 & 76.720 & 0.029 & 101.295 & 3.026 & 26.638 & 33.347 & 62.871 \\
+\bottomrule
+\end{tabular}}
+\end{table}

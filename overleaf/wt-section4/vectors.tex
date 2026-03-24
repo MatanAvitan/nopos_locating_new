@@ -1,0 +1,78 @@
+\begin{tikzpicture}[>=Stealth, scale=1.2]
+    
+    % Define colors
+    \definecolor{boscolor}{RGB}{220,50,50}
+    \definecolor{othercolor}{RGB}{50,120,220}
+    \definecolor{mixcolor}{RGB}{150,100,180}
+    
+    % Origin
+    \coordinate (O) at (0,0);
+    
+    % Two main directions (exactly opposite - 180 degrees apart)
+    \coordinate (BOS) at (-2.0, 0);
+    \coordinate (OTHER) at (2.0, 0);
+    
+    % Draw the shaded region (plane spanned by the two vectors)
+    \fill[gray!10] (O) -- (BOS) -- ($(BOS)+(OTHER)$) -- (OTHER) -- cycle;
+    
+    % Draw the two main direction vectors
+    \draw[->, very thick, boscolor] (O) -- (BOS) node[left=3pt, font=\small] {$w_0$ (BOS)};
+    \draw[->, very thick, othercolor] (O) -- (OTHER) node[right=3pt, font=\small] {$w_{\text{other}}$ (others)};
+    
+    % Manually define intermediate positions showing the rotation
+    % Position 0: alpha = 1.0 (all BOS)
+    \coordinate (pos0) at (-2.0, 0);
+    \draw[->, thick, mixcolor!90] (O) -- (pos0);
+    \node[circle, fill=mixcolor, inner sep=1.5pt] at (pos0) {};
+    \node[below=2pt, font=\scriptsize] at (pos0) {$i=0$};
+    
+    % Position 1: alpha = 0.8 (arc upward)
+    \coordinate (pos1) at ($0.8*(BOS) + 0.2*(OTHER) + (0,0.6)$);
+    \draw[->, thick, mixcolor!80] (O) -- (pos1);
+    \node[circle, fill=mixcolor, inner sep=1.5pt] at (pos1) {};
+    \node[above=2pt, font=\scriptsize] at (pos1) {$i=1$};
+    
+    % Position 2: alpha = 0.6 (arc higher)
+    \coordinate (pos2) at ($0.6*(BOS) + 0.4*(OTHER) + (0,0.95)$);
+    \draw[->, thick, mixcolor!70] (O) -- (pos2);
+    \node[circle, fill=mixcolor, inner sep=1.5pt] at (pos2) {};
+    \node[above=2pt, font=\scriptsize] at (pos2) {$i=2$};
+    
+    % Position 3: alpha = 0.4 (top of arc - gauge midpoint)
+    \coordinate (pos3) at ($0.4*(BOS) + 0.6*(OTHER) + (0,0.95)$);
+    \draw[->, thick, mixcolor!60] (O) -- (pos3);
+    \node[circle, fill=mixcolor, inner sep=1.5pt] at (pos3) {};
+    \node[above=2pt, font=\scriptsize] at (pos3) {$i=3$};
+    
+    % Position 4: alpha = 0.2 (arc descending)
+    \coordinate (pos4) at ($0.2*(BOS) + 0.8*(OTHER) + (0,0.6)$);
+    \draw[->, thick, mixcolor!50] (O) -- (pos4);
+    \node[circle, fill=mixcolor, inner sep=1.5pt] at (pos4) {};
+    \node[above=2pt, font=\scriptsize] at (pos4) {$i=4$};
+    
+    % Position 5+: alpha ≈ 0.05 (near right endpoint but slightly above)
+    \coordinate (pos5) at ($0.05*(BOS) + 0.95*(OTHER) + (0,0.2)$);
+    \draw[->, thick, mixcolor!40] (O) -- (pos5);
+    \node[circle, fill=mixcolor, inner sep=1.5pt] at (pos5) {};
+    \node[above right=1pt, font=\scriptsize] at (pos5) {$i\gg 0$};
+    
+    % Draw curved arrow showing the rotation trajectory
+    \draw[->, very thick, mixcolor!60, densely dashed] 
+        plot[smooth, tension=0.8] coordinates {(pos0) (pos1) (pos2) (pos3) (pos4) (pos5)};
+    
+    \node[font=\small, mixcolor!80] at (0, 1.6) {rotation trajectory};
+    
+    % Add formula annotation
+    \node[align=center, font=\scriptsize, text width=3.8cm, draw, fill=white, rounded corners] 
+        at (0, -0.9) 
+        {$o_i^{(2)} \approx \alpha_{i,0}^{(2)} \, w_0 + (1-\alpha_{i,0}^{(2)}) \, w_{\text{other}}$\\[1pt]
+         as $i \to \infty$: $\alpha_{i,0}^{(2)} \to 0$};
+    
+    % Add grid origin marker
+    \fill (O) circle (1.5pt);
+    \node[below, font=\scriptsize] at (O) {origin};
+    
+    % Arrow showing the plane
+    \node[font=\scriptsize, gray] at (0, -1.5) {$\mathrm{span}\{w_0, w_{\text{other}}\}$};
+    
+\end{tikzpicture}
