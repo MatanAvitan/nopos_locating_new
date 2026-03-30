@@ -247,8 +247,15 @@ def compute_r2_at_rank(
     batch_size: int = 32,
     block_size: int = 128,
     basis_indices: Optional[List[int]] = None,
-):
-    """Compute R² for a given rank intervention."""
+) -> dict:
+    """Compute position-decoding metrics for a given rank intervention.
+
+    Returns:
+        Dictionary with keys:
+            - cod: Coefficient of determination R² = 1 - SS_res/SS_tot
+            - corr2: Pearson correlation squared (legacy, for comparison)
+            - spearman_r: Spearman rank correlation
+    """
     all_preds = []
     all_positions = []
 
@@ -276,11 +283,19 @@ def compute_r2_at_rank(
     all_preds = torch.cat(all_preds, dim=0).flatten().numpy()
     all_positions = torch.cat(all_positions, dim=0).flatten().numpy()
 
-    # Compute R²
-    r = float(np.corrcoef(all_positions, all_preds)[0, 1])
-    r2 = r * r
+    # Coefficient of determination (the correct R² per paper definition)
+    ss_res = float(np.sum((all_positions - all_preds) ** 2))
+    ss_tot = float(np.sum((all_positions - all_positions.mean()) ** 2))
+    cod = 1.0 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
 
-    return r2
+    # Pearson correlation squared (legacy metric, kept for comparison)
+    r = float(np.corrcoef(all_positions, all_preds)[0, 1])
+    corr2 = r * r
+
+    # Spearman rank correlation (information retention metric)
+    spearman_r = float(stats.spearmanr(all_positions, all_preds).correlation)
+
+    return {"cod": cod, "corr2": corr2, "spearman_r": spearman_r}
 
 
 def run_write_bottleneck_experiment(

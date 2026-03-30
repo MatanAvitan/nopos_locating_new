@@ -82,11 +82,12 @@ class CausalSelfAttention(nn.Module):
         self.dropout = config.dropout
         self.head_dim = config.n_embd // config.n_head
 
-        # Always capture attention weights for analysis
+        # Attention weight capture (only when using manual attention)
         self.last_attention_weights = None
 
-        # Flash attention - disable to capture weights
+        # Flash attention support for long contexts
         self.flash = hasattr(torch.nn.functional, "scaled_dot_product_attention")
+        self.use_flash = getattr(config, "use_flash", False)
 
     def forward(self, x, return_attn_weights=False):
         B, T, C = x.size()
@@ -97,19 +98,29 @@ class CausalSelfAttention(nn.Module):
         q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)
         v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)
 
-        # Always compute attention manually to capture weights
-        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-        causal_mask = torch.triu(
-            torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
-        )
-        att = att.masked_fill(causal_mask, float("-inf"))
-        att = F.softmax(att, dim=-1)
+        if self.use_flash and self.flash and not return_attn_weights:
+            # Use flash attention for O(n) memory — no weight capture
+            y = F.scaled_dot_product_attention(
+                q, k, v,
+                attn_mask=None,
+                dropout_p=self.dropout if self.training else 0.0,
+                is_causal=True,
+            )
+            self.last_attention_weights = None
+        else:
+            # Manual attention to capture weights (O(n²) memory)
+            att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+            causal_mask = torch.triu(
+                torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
+            )
+            att = att.masked_fill(causal_mask, float("-inf"))
+            att = F.softmax(att, dim=-1)
 
-        # Store attention weights
-        self.last_attention_weights = att.detach()
+            # Store attention weights
+            self.last_attention_weights = att.detach()
 
-        att = self.attn_dropout(att)
-        y = att @ v
+            att = self.attn_dropout(att)
+            y = att @ v
 
         # Re-assemble all head outputs
         y = y.transpose(1, 2).contiguous().view(B, T, C)
@@ -242,6 +253,7 @@ class TwoLayerMechanismConfig:
     bias: bool = True  # Include biases
     norm_type: Literal["layernorm", "rmsnorm"] = "layernorm"
     use_regression: bool = True  # MSE loss for position regression
+    use_flash: bool = False  # Use flash attention (O(n) memory, no weight capture)
 
 
 class TwoLayerMechanismModel(nn.Module):

@@ -83,6 +83,7 @@ class ExperimentConfig:
     head_on_post_attn: bool = False
     r2_attn_head_only: bool = False
     use_bos: bool = True
+    use_flash: bool = False  # Flash attention for long contexts
 
     # Training
     max_iters: int = 20000
@@ -162,6 +163,24 @@ def parse_args():
         action="store_true",
         help="Do not inject BOS token at position 0",
     )
+    parser.add_argument(
+        "--use_flash",
+        action="store_true",
+        help="Use flash attention for long contexts (no weight capture during training)",
+    )
+    parser.add_argument(
+        "--gradient_accumulation_steps",
+        type=int,
+        default=2,
+    )
+    parser.add_argument(
+        "--max_iters_override",
+        type=int,
+        default=None,
+        help="Override lr_decay_iters to match max_iters",
+    )
+    parser.add_argument("--eval_iters", type=int, default=None)
+    parser.add_argument("--eval_interval", type=int, default=None)
     return parser.parse_args()
 
 
@@ -269,12 +288,13 @@ def get_batch(split: str, config: ExperimentConfig, device: str):
             sequences.append(torch.from_numpy(seq))
         x = torch.stack(sequences)
 
-    # Position targets: each position predicts its own index (0 to block_size-1)
+    # Position targets: normalized to [0, 1] for stable training across context lengths
     pos_targets = (
-        torch.arange(config.block_size)
+        torch.arange(config.block_size, dtype=torch.float32)
         .unsqueeze(0)
         .expand(config.batch_size, -1)
         .clone()
+        / max(config.block_size - 1, 1)
     )
 
     if device.startswith("cuda"):
@@ -348,17 +368,19 @@ def evaluate(model, config: ExperimentConfig, device: str, ctx) -> Dict:
         all_preds = torch.cat(all_preds, dim=0)
         all_targets = torch.cat(all_targets, dim=0)
 
-        # Compute metrics
+        # Compute metrics (predictions and targets are in [0,1] normalized space)
         metrics = compute_position_metrics(all_preds, all_targets)
         per_pos_mae = compute_per_position_mae(
             all_preds, all_targets, config.block_size
         )
 
+        # Scale MAE/RMSE back to absolute position units for reporting
+        scale = max(config.block_size - 1, 1)
         results[f"{split}_loss"] = np.mean(losses)
-        results[f"{split}_mae"] = metrics["mae"]
+        results[f"{split}_mae"] = metrics["mae"] * scale
         results[f"{split}_r2"] = metrics["r2"]
-        results[f"{split}_rmse"] = metrics["rmse"]
-        results[f"{split}_per_pos_mae"] = per_pos_mae.cpu().numpy()
+        results[f"{split}_rmse"] = metrics["rmse"] * scale
+        results[f"{split}_per_pos_mae"] = per_pos_mae.cpu().numpy() * scale
 
     model.train()
     return results
@@ -436,6 +458,14 @@ def sample_attention_maps(
     was_training = model.training
     model.eval()
 
+    # Skip attention map sampling when using flash attention or long contexts
+    if config.use_flash or config.block_size > 4096:
+        if was_training:
+            model.train()
+        T = min(config.block_size, 128)
+        dummy = torch.zeros(1, config.n_head, T, T)
+        return dummy, dummy
+
     x, targets = get_batch("val", config, device)
     with torch.no_grad():
         with ctx:
@@ -444,6 +474,10 @@ def sample_attention_maps(
     attn1, attn2 = model.get_attention_weights()
     if was_training:
         model.train()
+    if attn1 is None or attn2 is None:
+        T = config.block_size
+        dummy = torch.zeros(1, config.n_head, T, T)
+        return dummy, dummy
     return attn1.detach().cpu(), attn2.detach().cpu()
 
 
@@ -477,6 +511,7 @@ def train_regime(regime: str, config: ExperimentConfig, args) -> Dict:
         dropout=config.dropout,
         norm_type=config.norm_type,
         use_regression=True,
+        use_flash=config.use_flash,
     )
     model = TwoLayerMechanismModel(model_config)
     if config.head_on_post_attn:
@@ -847,7 +882,15 @@ def main():
         head_on_post_attn=args.head_on_post_attn,
         r2_attn_head_only=args.r2_attn_head_only,
         use_bos=not args.no_bos,
+        use_flash=args.use_flash,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
     )
+    if args.max_iters_override is not None:
+        config.lr_decay_iters = args.max_iters
+    if args.eval_iters is not None:
+        config.eval_iters = args.eval_iters
+    if args.eval_interval is not None:
+        config.eval_interval = args.eval_interval
 
     # Load data
     load_data(config)
