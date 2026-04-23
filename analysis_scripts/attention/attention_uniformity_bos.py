@@ -64,6 +64,9 @@ def load_model(checkpoint_path: Path) -> TwoLayerMechanismModel:
     }
     model.load_state_dict(state_dict)
     model.to(DEVICE).eval()
+    # Force manual attention so weights can be captured for analysis
+    model.block1.attn.use_flash = False
+    model.block2.attn.use_flash = False
     return model
 
 
@@ -320,15 +323,12 @@ def main() -> None:
     parser.add_argument(
         "--attn2_ckpt",
         type=str,
-        default=(
-            "nanoGPT/out-2layer-mechanism-r2-1head-attnonly-fullblock-40k/"
-            "R2/o4w7v8dv/best_ckpt.pt"
-        ),
+        default="nanoGPT/out-mechanism-R2-1024/R2/t72g9e8p/best_ckpt.pt",
     )
     parser.add_argument(
         "--full12h_ckpt",
         type=str,
-        default="nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt",
+        default="nanoGPT/out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
     )
     parser.add_argument("--data_dir", type=str, default="nanoGPT/data/openwebtext")
     parser.add_argument("--save_dir", type=str, default="results/attention_uniformity")

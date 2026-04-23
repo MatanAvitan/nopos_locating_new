@@ -79,17 +79,10 @@ def summarize_projection_spearman(proj_seq: np.ndarray) -> dict[str, float]:
 
 def load_model(checkpoint_path: Path, device: str) -> TwoLayerMechanismModel:
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
-    config_dict = checkpoint["config"]
-    config = TwoLayerMechanismConfig(
-        block_size=config_dict["block_size"],
-        vocab_size=config_dict["vocab_size"],
-        n_embd=config_dict["n_embd"],
-        n_head=config_dict["n_head"],
-        dropout=0.0,
-        norm_type=config_dict["norm_type"],
-        bias=True,
-        use_regression=True,
-    )
+    config_dict = checkpoint.get("config", checkpoint.get("model_args", {}))
+    valid_keys = set(TwoLayerMechanismConfig.__dataclass_fields__.keys())
+    filtered = {k: v for k, v in config_dict.items() if k in valid_keys}
+    config = TwoLayerMechanismConfig(**filtered)
 
     model = TwoLayerMechanismModel(config)
     state_dict = {
@@ -97,6 +90,9 @@ def load_model(checkpoint_path: Path, device: str) -> TwoLayerMechanismModel:
     }
     model.load_state_dict(state_dict)
     model.to(device).eval()
+    # Force manual attention so weights can be captured for analysis
+    model.block1.attn.use_flash = False
+    model.block2.attn.use_flash = False
     return model
 
 
@@ -469,7 +465,7 @@ def main() -> None:
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="nanoGPT/out-2layer-mechanism/R0/best_ckpt.pt",
+        default="nanoGPT/out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
     )
     parser.add_argument("--data_dir", type=str, default="nanoGPT/data/openwebtext")
     parser.add_argument(
@@ -478,8 +474,8 @@ def main() -> None:
     parser.add_argument(
         "--paper_dir", type=str, default="overleaf/nopos_icml_2026/plots"
     )
-    parser.add_argument("--batch_size_128", type=int, default=32)
-    parser.add_argument("--n_batches_128", type=int, default=10)
+    parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--n_batches", type=int, default=10)
     parser.add_argument("--output_tag", type=str, default="full12h")
     args = parser.parse_args()
 
@@ -499,23 +495,24 @@ def main() -> None:
     model = load_model(checkpoint_path, device)
     data = load_data(data_dir)
 
-    print("Computing projections at L=128...")
-    results_128 = compute_projection(
-        model, data, 128, args.batch_size_128, args.n_batches_128, device
+    seq_len = model.config.block_size
+    print(f"Computing projections at L={seq_len}...")
+    results = compute_projection(
+        model, data, seq_len, args.batch_size, args.n_batches, device
     )
 
     save_path = save_dir / f"attention_output_projection_{args.output_tag}.pdf"
-    plot_projection_single(results_128, 128, save_path)
+    plot_projection_single(results, seq_len, save_path)
 
     axis_compare_path = (
         save_dir / f"attention_output_axis_compare_{args.output_tag}.pdf"
     )
-    plot_projection_axis_comparison(results_128, 128, axis_compare_path)
+    plot_projection_axis_comparison(results, seq_len, axis_compare_path)
 
     residual_conc_path = (
         save_dir / f"attention_output_residual_concentration_{args.output_tag}.pdf"
     )
-    plot_residual_concentration(results_128, 128, residual_conc_path)
+    plot_residual_concentration(results, seq_len, residual_conc_path)
 
     def to_serializable(value: Any):
         if isinstance(value, np.ndarray):
@@ -530,14 +527,14 @@ def main() -> None:
 
     with open(save_dir / "projection_results.json", "w") as f:
         json.dump(
-            to_serializable({"L128": results_128}),
+            to_serializable({f"L{seq_len}": results}),
             f,
             indent=2,
         )
 
     with open(save_dir / f"projection_results_{args.output_tag}.json", "w") as f:
         json.dump(
-            to_serializable({"L128": results_128}),
+            to_serializable({f"L{seq_len}": results}),
             f,
             indent=2,
         )
@@ -604,51 +601,51 @@ def main() -> None:
     print(f"  {paper_resid_path}")
     print(f"  {paper_resid_path_subdir}")
     print("Summary:")
-    stats_bos = results_128["spearman_stats"]["bos"]
-    stats_non = results_128["spearman_stats"]["non_bos"]
+    stats_bos = results["spearman_stats"]["bos"]
+    stats_non = results["spearman_stats"]["non_bos"]
     print(
-        f"  L=128 mean-curve Spearman: BOS={results_128['spearman_bos']:.3f}, "
-        f"non-BOS={results_128['spearman_non_bos']:.3f}"
+        f"  L={seq_len} mean-curve Spearman: BOS={results['spearman_bos']:.3f}, "
+        f"non-BOS={results['spearman_non_bos']:.3f}"
     )
     print(
-        f"  L=128 sample-level median Spearman: BOS={stats_bos['sample_sequence_median_rho']:.3f}, "
+        f"  L={seq_len} sample-level median Spearman: BOS={stats_bos['sample_sequence_median_rho']:.3f}, "
         f"non-BOS={stats_non['sample_sequence_median_rho']:.3f}"
     )
     print(
-        f"  L=128 mean-curve Spearman (delta axis): {results_128['spearman_delta']:.3f}"
+        f"  L={seq_len} mean-curve Spearman (delta axis): {results['spearman_delta']:.3f}"
     )
     print(
-        f"  cos(d_BOS, d_nonBOS)={results_128['cos_bos_non_bos']:.3f} "
-        f"(angle={results_128['angle_bos_non_bos_deg']:.2f} deg)"
+        f"  cos(d_BOS, d_nonBOS)={results['cos_bos_non_bos']:.3f} "
+        f"(angle={results['angle_bos_non_bos_deg']:.2f} deg)"
     )
     print(
-        f"  cos(d_nonBOS, d_delta)={results_128['cos_non_bos_delta']:.3f} "
-        f"(angle={results_128['angle_non_bos_delta_deg']:.2f} deg)"
+        f"  cos(d_nonBOS, d_delta)={results['cos_non_bos_delta']:.3f} "
+        f"(angle={results['angle_non_bos_delta_deg']:.2f} deg)"
     )
     print(
-        f"  cos(w_head, d_nonBOS)={results_128['cos_head_non_bos']:.3f}, "
-        f"cos(w_head, d_delta)={results_128['cos_head_delta']:.3f}"
+        f"  cos(w_head, d_nonBOS)={results['cos_head_non_bos']:.3f}, "
+        f"cos(w_head, d_delta)={results['cos_head_delta']:.3f}"
     )
     print(
-        f"  residual |<r_i,Delta>|/||Delta||^2: mean={results_128['residual_proj_norm_abs_mean']:.4f}, "
-        f"median={results_128['residual_proj_norm_abs_median']:.4f}, "
-        f"p95={results_128['residual_proj_norm_abs_p95']:.4f}"
+        f"  residual |<r_i,Delta>|/||Delta||^2: mean={results['residual_proj_norm_abs_mean']:.4f}, "
+        f"median={results['residual_proj_norm_abs_median']:.4f}, "
+        f"p95={results['residual_proj_norm_abs_p95']:.4f}"
     )
     print(
         f"  concentration cos(mean/median/p05)="
-        f"{results_128['concentration_cos_mean']:.4f}/"
-        f"{results_128['concentration_cos_median']:.4f}/"
-        f"{results_128['concentration_cos_p05']:.4f}"
+        f"{results['concentration_cos_mean']:.4f}/"
+        f"{results['concentration_cos_median']:.4f}/"
+        f"{results['concentration_cos_p05']:.4f}"
     )
     print(
         f"  concentration rel-error mean/median="
-        f"{results_128['concentration_rel_err_mean']:.4f}/"
-        f"{results_128['concentration_rel_err_median']:.4f}"
+        f"{results['concentration_rel_err_mean']:.4f}/"
+        f"{results['concentration_rel_err_median']:.4f}"
     )
     print(
-        f"  concentration mean-curve (i>=16): mean={results_128['concentration_cos_mean_curve_mean_ge16']:.4f}, "
-        f"min={results_128['concentration_cos_mean_curve_min_ge16']:.4f}, "
-        f"residual-abs-mean={results_128['residual_proj_norm_abs_mean_curve_ge16']:.4f}"
+        f"  concentration mean-curve (i>=16): mean={results['concentration_cos_mean_curve_mean_ge16']:.4f}, "
+        f"min={results['concentration_cos_mean_curve_min_ge16']:.4f}, "
+        f"residual-abs-mean={results['residual_proj_norm_abs_mean_curve_ge16']:.4f}"
     )
 
 

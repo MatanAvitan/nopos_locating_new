@@ -671,12 +671,12 @@ def main() -> None:
     parser.add_argument(
         "--attn2_ckpt",
         type=str,
-        default="model_backups/R2_ATTN2-1H/best_ckpt.pt",
+        default="nanoGPT/out-mechanism-R2-1024/R2/t72g9e8p/best_ckpt.pt",
     )
     parser.add_argument(
         "--full12h_ckpt",
         type=str,
-        default="model_backups/R0_FULL-12H/best_ckpt.pt",
+        default="nanoGPT/out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
     )
     parser.add_argument("--data_dir", type=str, default="nanoGPT/data/openwebtext")
     parser.add_argument(
