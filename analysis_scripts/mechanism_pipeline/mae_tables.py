@@ -19,11 +19,18 @@ def rows_for(preds: np.ndarray, L: int):
     """preds: [n_seq, L] absolute-position predictions."""
     t = np.arange(L)[None, :].astype(np.float64)
     err = np.abs(preds - t)
-    rel = err / np.maximum(t, 1)
-    out = {"MAE": float(np.nanmean(err[:, 1:]))}
+    rel = err[:, 1:] / t[:, 1:]
+    out = {
+        "MAE": float(np.nanmean(err[:, 1:])),
+        "relMAE_mean": float(np.nanmean(rel)),
+        "relMAE_med": float(np.nanmedian(rel)),
+    }
     for name, (a, b) in position_bins(L).items():
+        a = max(a, 1)
+        r = err[:, a:b + 1] / t[:, a:b + 1]
         out[f"MAE_{name}"] = float(np.nanmean(err[:, a:b + 1]))
-        out[f"relMAE_{name}"] = float(np.nanmedian(rel[:, a:b + 1]))
+        out[f"relMAE_{name}_mean"] = float(np.nanmean(r))
+        out[f"relMAE_{name}_med"] = float(np.nanmedian(r))
     return out
 
 
@@ -31,17 +38,22 @@ def fmt(v, pct=False):
     return f"{100*v:.1f}%" if pct else f"{v:.1f}"
 
 
+def relcell(r, key):
+    return f"{fmt(r[key + '_mean'], pct=True)} ({fmt(r[key + '_med'], pct=True)})"
+
+
 def table(title, entries, L):
     bins = list(position_bins(L))
     lines = [f"\n### {title} (L={L})\n",
-             "| experiment | MAE | " + " | ".join(f"MAE {b}" for b in bins)
-             + " | " + " | ".join(f"relMAE {b} (median)" for b in bins) + " |",
-             "|---|" + "---|" * (1 + 2 * len(bins))]
+             "| experiment | relMAE | " + " | ".join(f"relMAE {b}" for b in bins)
+             + " | MAE | " + " | ".join(f"MAE {b}" for b in bins) + " |",
+             "|---|" + "---|" * (2 + 2 * len(bins))]
     for name, r in entries:
         lines.append(
-            f"| {name} | {fmt(r['MAE'])} | "
-            + " | ".join(fmt(r[f'MAE_{b}']) for b in bins) + " | "
-            + " | ".join(fmt(r[f'relMAE_{b}'], pct=True) for b in bins) + " |")
+            f"| {name} | {relcell(r, 'relMAE')} | "
+            + " | ".join(relcell(r, f'relMAE_{b}') for b in bins)
+            + f" | {fmt(r['MAE'])} | "
+            + " | ".join(fmt(r[f'MAE_{b}']) for b in bins) + " |")
     return "\n".join(lines)
 
 
@@ -95,10 +107,11 @@ def main():
                             rows_for(np.load(f), L)))
         parts.append(table(f"{run} — NoPE LM block-wise position probes",
                            entries, L))
-    doc = ("# MAE / relative-MAE for all experiments\n\n"
-           "MAE in absolute positions; relMAE = median |ŷ−i|/max(i,1) per "
-           "bin. Position 0 excluded from overall MAE. Bins: early 1–15, "
-           "middle 16–127, late 128–L−1.\n" + "\n".join(parts) + "\n")
+    doc = ("# Relative-MAE / MAE for all experiments\n\n"
+           "Primary metric: relMAE = |ŷ−i|/i over positions i ≥ 1, shown as "
+           "mean (median). Absolute-position MAE kept as secondary columns. "
+           "Position 0 excluded everywhere. Bins: early 1–15, middle 16–127, "
+           "late 128–L−1.\n" + "\n".join(parts) + "\n")
     (RESULTS_ROOT / "mae_tables.md").write_text(doc)
     print(doc)
 
