@@ -1,0 +1,19 @@
+{
+  "model": "nope_lm",
+  "checkpoint_path": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-lm-6layer-fulltrain-ddp/ckpt.pt",
+  "checkpoint_hash": "d4ee2d1f1444671be307a9c7bed8d36acbcfd1dc7800345596dc6cec099d15d5",
+  "iter_num": 20000,
+  "n_layer": 6,
+  "n_head": 12,
+  "n_embd": 768,
+  "context_length": 128,
+  "use_bos": true,
+  "splits": {
+    "reference": 640,
+    "calibration": 320,
+    "evaluation": 1600
+  },
+  "git_commit": "df5456b23f7a017984cd17cd8ed805aa0cad422f",
+  "run_command": "analysis_scripts/mechanism_pipeline/lm_mechanism.py --run-id lm6_L128 --context-length 128 --batch-size 32",
+  "trained_on": "openwebtext LM (train_lm_only)"
+}
