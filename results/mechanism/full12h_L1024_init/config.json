@@ -1,0 +1,28 @@
+{
+  "model_name": "full12h",
+  "checkpoint_path": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
+  "checkpoint_hash": "468660b95b4fe20a9f06c8399f91fb80a7d73308d2fe1f0a01ab1377228f46af",
+  "iter_num": 15000,
+  "best_val_loss": 2.2155020051286556e-05,
+  "regime": "R0",
+  "n_head": 12,
+  "n_embd": 768,
+  "block_size_train": 1024,
+  "seed": 42,
+  "bos_token_id": 50256,
+  "init_only": true,
+  "context_length": 1024,
+  "splits": {
+    "reference": 640,
+    "calibration": 320,
+    "evaluation": 640
+  },
+  "split_seed": 1234,
+  "batch_size": 4,
+  "dataset": "nanoGPT/data/openwebtext/val.bin",
+  "tokenizer": "gpt2-bpe",
+  "dtype_forward": "float32",
+  "dtype_accumulation": "float64",
+  "run_command": "analysis_scripts/mechanism_pipeline/extract.py --model full12h --context-length 1024 --batch-size 4 --init --n-eval 640",
+  "git_commit": "df5456b23f7a017984cd17cd8ed805aa0cad422f"
+}

@@ -1,0 +1,1 @@
+analysis_scripts/mechanism_pipeline/extract.py --model full12h --context-length 1024 --batch-size 4 --init --n-eval 640

@@ -1,0 +1,211 @@
+{
+  "attn2_1h_L1024": {
+    "context_length": 1024,
+    "n_eval": 1600,
+    "checkpoint": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-mechanism-R2-1024/R2/t72g9e8p/best_ckpt.pt",
+    "checkpoint_hash": "bd39cd83202393d5",
+    "bos_bias_ratio_per_head": [
+      115.37
+    ],
+    "bos_bias_ratio_sorted_desc": [
+      115.37
+    ],
+    "cos_bos_nonbos_per_head": [
+      -0.6814
+    ],
+    "cos_bos_nonbos_headsummed": -0.6814,
+    "norm_ratio_bos_over_nonbos_mean": [
+      4.595
+    ],
+    "final_decoding_model_head": {
+      "r2": 0.9918512007983894,
+      "pearson_r2": 0.9919103579445612,
+      "mae": 18.431822258538627
+    },
+    "final_decoding_intervention_baseline": {
+      "r2_zeroshot": 0.9918512008088125,
+      "pearson_r2": 0.9919103579541212,
+      "mae": 18.43182225235281
+    }
+  },
+  "full12h_L1024": {
+    "context_length": 1024,
+    "n_eval": 1600,
+    "checkpoint": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
+    "checkpoint_hash": "468660b95b4fe20a",
+    "bos_bias_ratio_per_head": [
+      34.392,
+      0.157,
+      0.028,
+      31.034,
+      62.129,
+      53.489,
+      3.726,
+      0.15,
+      58.091,
+      71.679,
+      38.207,
+      41.664
+    ],
+    "bos_bias_ratio_sorted_desc": [
+      71.679,
+      62.129,
+      58.091,
+      53.489,
+      41.664,
+      38.207,
+      34.392,
+      31.034,
+      3.726,
+      0.157,
+      0.15,
+      0.028
+    ],
+    "cos_bos_nonbos_per_head": [
+      -0.9998,
+      -0.988,
+      -0.9908,
+      -0.9964,
+      -0.9998,
+      -0.9999,
+      -0.9839,
+      -0.9995,
+      -0.9996,
+      -0.9986,
+      -0.9995,
+      -0.9986
+    ],
+    "cos_bos_nonbos_headsummed": -0.9315,
+    "norm_ratio_bos_over_nonbos_mean": [
+      6.596,
+      56.697,
+      19.392,
+      7.518,
+      6.116,
+      9.141,
+      3.456,
+      52.191,
+      6.078,
+      5.496,
+      5.081,
+      6.653
+    ],
+    "final_decoding_model_head": {
+      "r2": 0.9991376831935066,
+      "pearson_r2": 0.9991860209774561,
+      "mae": 2.6276345169043567
+    },
+    "final_decoding_intervention_baseline": {
+      "r2_zeroshot": 0.9991376831926115,
+      "pearson_r2": 0.9991860209758245,
+      "mae": 2.627634502486693
+    }
+  },
+  "attn2_1h_L128": {
+    "context_length": 128,
+    "n_eval": 1600,
+    "checkpoint": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-mechanism-R2-1024/R2/t72g9e8p/best_ckpt.pt",
+    "checkpoint_hash": "bd39cd83202393d5",
+    "bos_bias_ratio_per_head": [
+      81.154
+    ],
+    "bos_bias_ratio_sorted_desc": [
+      81.154
+    ],
+    "cos_bos_nonbos_per_head": [
+      -0.6123
+    ],
+    "cos_bos_nonbos_headsummed": -0.6123,
+    "norm_ratio_bos_over_nonbos_mean": [
+      4.611
+    ],
+    "final_decoding_model_head": {
+      "r2": 0.8863658687921617,
+      "pearson_r2": 0.9075474138113984,
+      "mae": 9.628325272937218
+    },
+    "final_decoding_intervention_baseline": {
+      "r2_zeroshot": 0.8863658693456473,
+      "pearson_r2": 0.907547413980482,
+      "mae": 9.628325243379095
+    }
+  },
+  "full12h_L128": {
+    "context_length": 128,
+    "n_eval": 1600,
+    "checkpoint": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
+    "checkpoint_hash": "468660b95b4fe20a",
+    "bos_bias_ratio_per_head": [
+      22.539,
+      0.232,
+      0.039,
+      19.318,
+      36.008,
+      39.126,
+      1.285,
+      0.22,
+      37.466,
+      36.877,
+      22.706,
+      23.784
+    ],
+    "bos_bias_ratio_sorted_desc": [
+      39.126,
+      37.466,
+      36.877,
+      36.008,
+      23.784,
+      22.706,
+      22.539,
+      19.318,
+      1.285,
+      0.232,
+      0.22,
+      0.039
+    ],
+    "cos_bos_nonbos_per_head": [
+      -0.9983,
+      -0.761,
+      -0.9613,
+      -0.9039,
+      -0.9943,
+      -0.9642,
+      -0.96,
+      -0.9981,
+      -0.9933,
+      -0.9904,
+      -0.9986,
+      -0.9785
+    ],
+    "cos_bos_nonbos_headsummed": -0.9255,
+    "norm_ratio_bos_over_nonbos_mean": [
+      6.228,
+      34.534,
+      17.44,
+      8.933,
+      6.454,
+      19.183,
+      2.7,
+      24.9,
+      6.153,
+      5.368,
+      4.864,
+      6.351
+    ]
+  },
+  "_reconciliation_notes": [
+    "attn2_1h_L1024: r_h=[115.37] (manuscript claims 287.3 main / 21.939 appendix)",
+    "attn2_1h_L128: r_h=[81.154] (manuscript claims 287.3 main / 21.939 appendix)",
+    "full12h_L1024: top-4 r_h=[71.679, 62.129, 58.091, 53.489]",
+    "full12h_L128: top-4 r_h=[39.126, 37.466, 36.877, 36.008]"
+  ],
+  "_provenance_resolution": {
+    "attn2_bos_ratio_287.3_main_text": "NOT REPRODUCIBLE on any existing checkpoint (canonical L1024: 115.37; canonical ckpt at L128: 81.15; legacy model_backups L128-trained ckpt: 21.97). Replace with canonical 115.37 (attn2_1h_L1024, key p0_audit.bos_bias_ratio_per_head).",
+    "attn2_bos_ratio_21.939_appendix": "Legacy L=128-trained checkpoint model_backups/R2_ATTN2-1H/best_ckpt.pt (reproduced: 21.97).",
+    "full12h_ratios_100.2_76.5_62.6_33.2_and_table": "Legacy L=128-trained checkpoint model_backups/R0_FULL-12H/best_ckpt.pt (reproduced: 100.19/76.04/62.62/36.01).",
+    "full12h_ratios_254.4_223.7_204.3_186.2": "NOT REPRODUCIBLE on any existing checkpoint. Remove.",
+    "full12h_cosine_-0.93": "Head-summed aggregation cos(sum_h w_bos, sum_h w_nonbos) = -0.9255 (canonical L1024).",
+    "full12h_cosine_-0.969": "Per-head cosines of BOS-heavy heads (range -0.96..-0.999, canonical L1024).",
+    "final_decoding": "Canonical eval split (1600 seqs): ATTN2-1H R2=0.9919 (probes model_head) / 0.9921 (interventions baseline); FULL-12H R2=0.9991. Use these; 0.9999 vs 0.999 was eval-set variation."
+  }
+}
