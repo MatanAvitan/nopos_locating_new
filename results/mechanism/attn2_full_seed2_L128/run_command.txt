@@ -1,0 +1,1 @@
+extract.py --model attn2_full_seed2 --context-length 128

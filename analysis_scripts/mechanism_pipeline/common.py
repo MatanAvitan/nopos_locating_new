@@ -25,7 +25,28 @@ RESULTS_ROOT = REPO_ROOT / "results" / "mechanism"
 CHECKPOINTS = {
     "attn2_1h": NANOGPT / "out-mechanism-R2-1024/R2/t72g9e8p/best_ckpt.pt",
     "full12h": NANOGPT / "out-mechanism-R0-1024/R0/nuacla0w/best_ckpt.pt",
+    # ATTN2-FULL (exps.md P1): fully trained 2-layer single-head. Wandb run
+    # ids vary, so these are glob patterns resolved in load_model.
+    "attn2_full": NANOGPT / "out-mechanism-ATTN2FULL-1024-s1/R0/*/best_ckpt.pt",
+    "attn2_full_lr3": NANOGPT / "out-mechanism-ATTN2FULL-1024-lr3e4/R0/*/best_ckpt.pt",
+    "attn2_full_s42fail": NANOGPT / "out-mechanism-ATTN2FULL-1024/R0/*/best_ckpt.pt",
+    "attn2_full_seed1": NANOGPT / "out-mechanism-ATTN2FULL-128-seed1/R0/*/best_ckpt.pt",
+    "attn2_full_seed2": NANOGPT / "out-mechanism-ATTN2FULL-128-seed2/R0/*/best_ckpt.pt",
+    "attn2_full_seed3": NANOGPT / "out-mechanism-ATTN2FULL-128-seed3/R0/*/best_ckpt.pt",
+    "attn2_full_seed4": NANOGPT / "out-mechanism-ATTN2FULL-128-seed4/R0/*/best_ckpt.pt",
 }
+
+
+def resolve_checkpoint(model_name: str) -> Path:
+    path = CHECKPOINTS[model_name]
+    if "*" in str(path):
+        matches = sorted(path.parent.parent.glob(f"*/{path.name}"))
+        if len(matches) != 1:
+            raise FileNotFoundError(
+                f"{model_name}: expected exactly one match for {path}, "
+                f"got {matches}")
+        path = matches[0]
+    return path
 
 VAL_BIN = NANOGPT / "data/openwebtext/val.bin"
 BOS_TOKEN_ID = 50256
@@ -64,7 +85,7 @@ def load_model(model_name: str, device: str = "cuda", init_only: bool = False):
     add_nanogpt_to_path()
     from model_2layer_mechanism import TwoLayerMechanismModel, TwoLayerMechanismConfig
 
-    ckpt_path = CHECKPOINTS[model_name]
+    ckpt_path = resolve_checkpoint(model_name)
     ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     cfg = ckpt["config"]
     model_cfg = TwoLayerMechanismConfig(

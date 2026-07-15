@@ -81,8 +81,12 @@ IV_ORDER = [
 
 def main():
     parts = []
-    for run in ["attn2_1h_L1024", "full12h_L1024"]:
+    runs = ["attn2_1h_L1024", "full12h_L1024"] + [
+        f"attn2_full_seed{s}_L128" for s in (1, 2, 3, 4)]
+    for run in runs:
         out = RESULTS_ROOT / run
+        if not out.exists():
+            continue
         L = json.loads((out / "config.json").read_text())["context_length"]
         entries = []
         for name in PROBE_ORDER:

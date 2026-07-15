@@ -1,0 +1,28 @@
+{
+  "model_name": "attn2_full_seed4",
+  "checkpoint_path": "/home/nlp/matan_avitan/git/nopos_locating_new/nanoGPT/out-mechanism-ATTN2FULL-128-seed4/R0/y776r8g5/best_ckpt.pt",
+  "checkpoint_hash": "6def60e16407f022a31c99abf91a0180d552164d5980de581f05fd676d51a03a",
+  "iter_num": 20000,
+  "best_val_loss": 3.5872907801604015e-05,
+  "regime": "R0",
+  "n_head": 1,
+  "n_embd": 768,
+  "block_size_train": 128,
+  "seed": 4,
+  "bos_token_id": 50256,
+  "init_only": false,
+  "context_length": 128,
+  "splits": {
+    "reference": 640,
+    "calibration": 320,
+    "evaluation": 1600
+  },
+  "split_seed": 1234,
+  "batch_size": 4,
+  "dataset": "nanoGPT/data/openwebtext/val.bin",
+  "tokenizer": "gpt2-bpe",
+  "dtype_forward": "float32",
+  "dtype_accumulation": "float64",
+  "run_command": "extract.py --model attn2_full_seed4 --context-length 128 --batch-size 4",
+  "git_commit": "c03fe63c66ef0562737bbee01d58771305493600"
+}
