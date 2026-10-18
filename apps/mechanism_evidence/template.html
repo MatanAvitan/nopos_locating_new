@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NoPE Mechanism Evidence</title>
+  <style>{{CSS}}</style>
+</head>
+<body>
+  <a class="skip-link" href="#step-title">Skip to evidence</a>
+  <main>
+    <header class="page-header">
+      <p class="eyebrow">NoPE / cached mechanism evidence</p>
+      <h1>How a transformer reads position</h1>
+      <p>Follow the BOS component from first-layer attention to the projected readout.</p>
+      <p class="scope-note">Selected checkpoints, not a claim about every seed. All evidence and sources work offline.</p>
+    </header>
+    <nav aria-label="Mechanism steps">
+      <div class="mechanism" role="tablist" aria-label="Mechanism steps">
+        <button role="tab" aria-label="1 Attention" id="tab-1" aria-controls="evidence-panel" aria-selected="true" tabindex="0" data-step="1"><strong>1 Attention</strong><span>BOS + content</span></button>
+        <button role="tab" aria-label="2 MLP" id="tab-2" aria-controls="evidence-panel" aria-selected="false" tabindex="-1" data-step="2"><strong>2 MLP</strong><span>Change the component</span></button>
+        <button role="tab" aria-label="3 Keys" id="tab-3" aria-controls="evidence-panel" aria-selected="false" tabindex="-1" data-step="3"><strong>3 Keys</strong><span>Share to attention</span></button>
+        <button role="tab" aria-label="4 Values" id="tab-4" aria-controls="evidence-panel" aria-selected="false" tabindex="-1" data-step="4"><strong>4 Values</strong><span>Share to readout</span></button>
+      </div>
+    </nav>
+    <section class="step-intro" aria-labelledby="step-title">
+      <div><p class="eyebrow">Prediction</p><h2 id="step-title" tabindex="-1"></h2><p id="prediction"></p></div>
+      <div class="illustration" id="illustration" aria-label="Selected mechanism path"></div>
+    </section>
+    <section id="step-notes" class="step-notes" aria-label="How to read this step"></section>
+    <div class="model-filter" role="group" aria-label="Model filter">
+      <span>Compare</span>
+      <button data-model="all" aria-pressed="true">All models</button>
+    </div>
+    <p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+    <section id="evidence-panel" role="tabpanel" aria-labelledby="tab-1" class="cards"></section>
+    <details class="protocol-details"><summary>Protocol, counts, and metric definitions</summary><div id="protocol"></div></details>
+    <footer>Read observations and causal dependence separately. These tests do not uniquely prove the full mechanism.</footer>
+    <noscript>This app needs JavaScript. All data and code are embedded in this file.</noscript>
+  </main>
+  <script id="evidence-data" type="application/json">{{DATA}}</script>
+  <script>{{JS}}</script>
+</body>
+</html>
