@@ -30,9 +30,6 @@ from beta_common import (MODELS, RESULTS_ROOT, bins_for, err_by_bin, make_adapte
                          spec_splits)
 from common import batch_from_offsets, head_weights
 
-# The selected LM is registered the same way as in the shared-input runs.
-MODELS.setdefault("lmbos_L1024_s17", ("lm", "out-lm-6layer-fulltrain-bos-L1024-seed17/ckpt_20000.pt",
-                                      1024, "seeds/lmbos_L1024_s17"))
 N_EVAL, N_REF = 1600, 160
 ARMS = ["clean", "levels_exact", "levels_exact_rand", "error_refmean", "error_refmean_rand",
         "gap_collapse", "gap_collapse_rand", "readout_remove", "readout_remove_rand"]
@@ -143,6 +140,7 @@ def main():
         S["arms"][arm] = e
     od = RESULTS_ROOT / "story_evidence" / args.model
     (od / "value_level_interventions.json").write_text(json.dumps(S, indent=2))
+    np.savez(od / "value_level_interventions_preds.npz", **{x: torch.cat(preds[x]).numpy().astype(np.float32) for x in preds})
     print(f"== {args.model}: a={a} heads={heads}")
     for arm, e in S["arms"].items():
         print(f"  {arm:22s} relMAE " + " ".join(f"{b}={100 * e[f'relmae_{b}']:.1f}" for b in bins)

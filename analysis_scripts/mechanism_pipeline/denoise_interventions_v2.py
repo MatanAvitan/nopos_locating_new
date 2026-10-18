@@ -144,6 +144,7 @@ def main():
         S["arms"][arm] = e
     od = RESULTS_ROOT / "story_evidence" / args.model; od.mkdir(parents=True, exist_ok=True)
     (od / "denoise_interventions_v2.json").write_text(json.dumps(S, indent=2))
+    np.savez(od / "denoise_interventions_v2_preds.npz", **{x: torch.cat(preds[x]).numpy().astype(np.float32) for x in preds})
     print(f"== {args.model}: a={a}")
     for arm, e in S["arms"].items():
         print(f"  {arm:20s} MAE " + " ".join(f"{b}={e[f'mae_{b}']:.1f}" for b in bins)

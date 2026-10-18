@@ -64,6 +64,7 @@ _register("pv_unifL1_s42", "previews/unifL1_s42.pt", 1024, "sweep/preview_L1024_
 for _s in (1, 2, 3):
     _register(f"seed_12h_s{_s}", f"out-mechanism-12H-1024-seed{_s}/run/best_ckpt.pt", 1024, f"seeds/12h_s{_s}")
 _register("seed_1h_s3", "out-mechanism-1H-1024-seed3/run/best_ckpt.pt", 1024, "seeds/1h_s3")
+MODELS["lmbos_L1024_s17"] = ("lm", "out-lm-6layer-fulltrain-bos-L1024-seed17/ckpt_20000.pt", 1024, "seeds/lmbos_L1024_s17")
 MODELS["lmbos_s42"] = ("lm", "out-lm-6layer-fulltrain-bos/ckpt.pt", 128, "seeds/lmbos_s42")
 for _s in range(1, 10):
     MODELS[f"lmbos_s{_s}"] = ("lm", f"out-lm-6layer-fulltrain-bos-seed{_s}/ckpt.pt", 128, f"seeds/lmbos_s{_s}")
@@ -338,4 +339,7 @@ def err_by_bin(pred, L, bins):
         out[f"mae_{name}"] = float(e.mean())
     sel = i >= 1
     out["mae_all"] = float(np.abs(pred[sel] - i[sel]).mean())
+    # R^2 over positions 1..L-1, the same positions as the other metrics.
+    y = i[sel].astype(np.float64)
+    out["r2_all"] = float(1 - np.sum((pred[sel] - y) ** 2) / np.sum((y - y.mean()) ** 2))
     return out
